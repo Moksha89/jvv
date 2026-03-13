@@ -27,6 +27,25 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('combined'));
 
+// Serve portal (main interface)
+app.get('/', (req, res) => {
+    const portalPath = path.join(DASHBOARD_DIR, 'portal.html');
+    if (fs.existsSync(portalPath)) {
+        res.sendFile(portalPath);
+    } else {
+        res.redirect('/dashboard');
+    }
+});
+
+app.get('/portal', (req, res) => {
+    const portalPath = path.join(DASHBOARD_DIR, 'portal.html');
+    if (fs.existsSync(portalPath)) {
+        res.sendFile(portalPath);
+    } else {
+        res.status(404).send('Portal not found');
+    }
+});
+
 // Serve dashboard
 app.get('/dashboard', (req, res) => {
     const dashboardPath = path.join(DASHBOARD_DIR, 'dashboard.html');

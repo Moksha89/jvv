@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0f172a">
+    <title>Remote Access Portal</title>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-primary: #0f172a; --bg-secondary: #1e293b; --bg-tertiary: #334155;
+            --text-primary: #f1f5f9; --text-secondary: #94a3b8; --text-muted: #64748b;
+            --accent: #3b82f6; --accent-hover: #2563eb; --success: #22c55e;
+            --danger: #ef4444; --warning: #f59e0b; --border: #334155;
+            --sidebar-width: 280px; --header-height: 56px;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; overflow: hidden; }
+        
+        /* Header */
+        .header { height: var(--header-height); background: var(--bg-secondary); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; z-index: 100; position: relative; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .menu-btn { background: none; border: none; color: var(--text-primary); cursor: pointer; padding: 8px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .menu-btn:hover { background: var(--bg-tertiary); }
+        .menu-btn svg { width: 22px; height: 22px; }
+        .logo { font-size: 18px; font-weight: 700; }
+        .logo span { color: var(--accent); }
+        .header-right { display: flex; align-items: center; gap: 8px; }
+        .header-btn { background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); cursor: pointer; padding: 6px 12px; border-radius: 8px; font-size: 13px; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+        .header-btn:hover { background: var(--accent); border-color: var(--accent); }
+        .header-btn svg { width: 16px; height: 16px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .status-dot.online { background: var(--success); box-shadow: 0 0 6px var(--success); }
+        .status-dot.offline { background: var(--danger); }
+        
+        /* Layout */
+        .main-container { display: flex; height: calc(100vh - var(--header-height)); }
+        
+        /* Sidebar */
+        .sidebar { width: var(--sidebar-width); background: var(--bg-secondary); border-right: 1px solid var(--border); display: flex; flex-direction: column; transition: transform 0.3s ease, width 0.3s ease; overflow-y: auto; overflow-x: hidden; z-index: 90; }
+        .sidebar.collapsed { transform: translateX(-100%); width: 0; min-width: 0; }
+        .sidebar-section { padding: 16px; border-bottom: 1px solid var(--border); }
+        .sidebar-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; }
+        
+        /* Device Cards */
+        .device-card { background: var(--bg-tertiary); border-radius: 10px; padding: 14px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+        .device-card:hover { border-color: var(--accent); }
+        .device-card.active { border-color: var(--accent); background: rgba(59, 130, 246, 0.1); }
+        .device-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .device-card-name { font-size: 14px; font-weight: 600; }
+        .device-card-details { font-size: 12px; color: var(--text-secondary); }
+        .device-card-status { font-size: 11px; padding: 3px 8px; border-radius: 12px; font-weight: 600; }
+        .device-card-status.online { background: rgba(34,197,94,0.15); color: var(--success); }
+        .device-card-status.offline { background: rgba(239,68,68,0.15); color: var(--danger); }
+        
+        /* Sidebar Menu Items */
+        .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: background 0.2s; color: var(--text-secondary); font-size: 14px; }
+        .sidebar-item:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+        .sidebar-item.active { background: rgba(59,130,246,0.15); color: var(--accent); }
+        .sidebar-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .sidebar-item .badge { margin-left: auto; background: var(--accent); color: white; font-size: 11px; padding: 2px 6px; border-radius: 10px; font-weight: 600; }
+        
+        /* Quick Actions */
+        .quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .quick-action-btn { background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 8px; padding: 10px; text-align: center; cursor: pointer; transition: all 0.2s; color: var(--text-secondary); font-size: 12px; }
+        .quick-action-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .quick-action-btn svg { width: 20px; height: 20px; margin: 0 auto 4px; display: block; }
+        
+        /* Content Area */
+        .content { flex: 1; display: flex; flex-direction: column; position: relative; background: #000; }
+        
+        /* Connection View */
+        .connection-view { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
+        .connection-view iframe { width: 100%; height: 100%; border: none; }
+        
+        /* Welcome Screen */
+        .welcome-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: var(--bg-primary); padding: 20px; text-align: center; }
+        .welcome-icon { width: 80px; height: 80px; background: var(--bg-secondary); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; border: 1px solid var(--border); }
+        .welcome-icon svg { width: 40px; height: 40px; color: var(--accent); }
+        .welcome-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .welcome-subtitle { color: var(--text-secondary); font-size: 14px; max-width: 400px; line-height: 1.5; margin-bottom: 24px; }
+        .connect-btn-large { background: var(--accent); color: white; border: none; padding: 14px 32px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        .connect-btn-large:hover { background: var(--accent-hover); transform: translateY(-1px); }
+        .connect-btn-large svg { width: 20px; height: 20px; }
+        
+        /* Floating Toolbar (for mobile & connected state) */
+        .floating-toolbar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(30,41,59,0.95); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 16px; padding: 8px; display: none; gap: 4px; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+        .floating-toolbar.visible { display: flex; }
+        .float-btn { background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: 10px; border-radius: 10px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .float-btn:hover, .float-btn.active { background: var(--bg-tertiary); color: var(--accent); }
+        .float-btn svg { width: 20px; height: 20px; }
+        
+        /* Stats Bar */
+        .stats-bar { height: 32px; background: var(--bg-secondary); border-top: 1px solid var(--border); display: flex; align-items: center; padding: 0 16px; gap: 16px; font-size: 12px; color: var(--text-muted); }
+        .stats-bar .stat { display: flex; align-items: center; gap: 4px; }
+        .stats-bar .stat svg { width: 14px; height: 14px; }
+        
+        /* Settings Panel */
+        .settings-panel { position: fixed; top: var(--header-height); right: 0; width: 320px; height: calc(100vh - var(--header-height)); background: var(--bg-secondary); border-left: 1px solid var(--border); z-index: 95; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; padding: 20px; }
+        .settings-panel.open { transform: translateX(0); }
+        .settings-title { font-size: 16px; font-weight: 600; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .settings-group { margin-bottom: 20px; }
+        .settings-group-title { font-size: 12px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 10px; }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .setting-label { font-size: 14px; color: var(--text-secondary); }
+        .setting-value { font-size: 14px; color: var(--text-primary); font-weight: 500; }
+        
+        /* Toggle Switch */
+        .toggle { position: relative; width: 44px; height: 24px; cursor: pointer; }
+        .toggle input { display: none; }
+        .toggle-slider { position: absolute; inset: 0; background: var(--bg-tertiary); border-radius: 12px; transition: 0.3s; }
+        .toggle-slider::before { content: ''; position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s; }
+        .toggle input:checked + .toggle-slider { background: var(--accent); }
+        .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+        
+        /* Select dropdown */
+        .custom-select { background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); padding: 6px 10px; border-radius: 6px; font-size: 13px; outline: none; cursor: pointer; }
+        
+        /* On-screen keyboard trigger */
+        .osk-overlay { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(30,41,59,0.98); border-top: 1px solid var(--border); padding: 12px; display: none; z-index: 300; }
+        .osk-overlay.visible { display: block; }
+        .osk-input { width: 100%; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); padding: 12px; border-radius: 8px; font-size: 16px; outline: none; }
+        .osk-hint { font-size: 12px; color: var(--text-muted); margin-top: 6px; text-align: center; }
+        
+        /* Clipboard panel */
+        .clipboard-panel { position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: none; z-index: 250; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+        .clipboard-panel.visible { display: block; }
+        .clipboard-panel textarea { width: 100%; height: 100px; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); border-radius: 8px; padding: 10px; font-size: 14px; resize: vertical; outline: none; }
+        .clipboard-panel .btn-row { display: flex; gap: 8px; margin-top: 10px; }
+        .clipboard-panel .btn-row button { flex: 1; padding: 8px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 500; }
+        .btn-copy { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border) !important; }
+        .btn-send { background: var(--accent); color: white; }
+        
+        /* Loading overlay */
+        .loading-overlay { position: absolute; inset: 0; background: var(--bg-primary); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; }
+        .loading-overlay.hidden { display: none; }
+        .spinner { width: 40px; height: 40px; border: 3px solid var(--bg-tertiary); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { color: var(--text-secondary); font-size: 14px; }
+        
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .sidebar { position: fixed; top: var(--header-height); left: 0; bottom: 0; z-index: 90; width: var(--sidebar-width); }
+            .sidebar.collapsed { transform: translateX(-100%); }
+            .header-btn span { display: none; }
+            .settings-panel { width: 100%; }
+            .floating-toolbar { bottom: 12px; }
+            .stats-bar { display: none; }
+        }
+        @media (max-width: 480px) {
+            .sidebar { width: 100%; }
+            .welcome-title { font-size: 20px; }
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 3px; }
+        
+        /* Animations */
+        .fade-in { animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <button class="menu-btn" onclick="toggleSidebar()" title="Toggle sidebar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div class="logo"><span>Remote</span> Access</div>
+        </div>
+        <div class="header-right">
+            <button class="header-btn" onclick="refreshDevices()" title="Refresh">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+                <span>Refresh</span>
+            </button>
+            <button class="header-btn" onclick="openDashboard()" title="Dashboard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                <span>Dashboard</span>
+            </button>
+            <button class="header-btn" onclick="toggleSettings()" title="Settings">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                <span>Settings</span>
+            </button>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <!-- Devices Section -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Devices</div>
+                <div id="deviceList">
+                    <div class="device-card" style="text-align:center; color: var(--text-muted);">Loading...</div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Quick Actions</div>
+                <div class="quick-actions">
+                    <div class="quick-action-btn" onclick="toggleFullscreen()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                        Fullscreen
+                    </div>
+                    <div class="quick-action-btn" onclick="toggleKeyboard()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M8 16h8"/></svg>
+                        Keyboard
+                    </div>
+                    <div class="quick-action-btn" onclick="toggleClipboard()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+                        Clipboard
+                    </div>
+                    <div class="quick-action-btn" onclick="sendCtrlAltDel()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/></svg>
+                        Ctrl+Alt+Del
+                    </div>
+                    <div class="quick-action-btn" onclick="takeScreenshot()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                        Screenshot
+                    </div>
+                    <div class="quick-action-btn" onclick="disconnectSession()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Disconnect
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Navigation</div>
+                <div class="sidebar-item active" onclick="showPage('remote')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    Remote Desktop
+                </div>
+                <div class="sidebar-item" onclick="openDashboard()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+                    Status Monitor
+                </div>
+                <div class="sidebar-item" onclick="toggleSettings()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    Settings
+                </div>
+            </div>
+            
+            <!-- Server Info -->
+            <div class="sidebar-section" style="border-bottom: none;">
+                <div class="sidebar-section-title">Server</div>
+                <div style="font-size: 12px; color: var(--text-muted); line-height: 1.8;">
+                    <div>VPS: <span style="color: var(--text-secondary);" id="serverIp">93.127.138.82</span></div>
+                    <div>FRP: <span style="color: var(--text-secondary);">Port 7000</span></div>
+                    <div>API: <span style="color: var(--text-secondary);">Port 3000</span></div>
+                    <div>Status: <span class="status-dot online" id="serverStatusDot"></span> <span id="serverStatusText" style="color: var(--success);">Online</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content Area -->
+        <div class="content" id="content">
+            <!-- Welcome Screen (shown when not connected) -->
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="welcome-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </div>
+                <div class="welcome-title">Connect to Your PC</div>
+                <div class="welcome-subtitle">Select a device from the sidebar or click the button below to start a remote desktop session.</div>
+                <button class="connect-btn-large" onclick="connectToDefault()" id="connectBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Connect Now
+                </button>
+                <div style="margin-top: 16px; font-size: 12px; color: var(--text-muted);" id="deviceCountText">Loading devices...</div>
+            </div>
+            
+            <!-- Connection View (shown when connected) -->
+            <div class="connection-view" id="connectionView" style="display:none;">
+                <div class="loading-overlay" id="loadingOverlay">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Connecting to remote desktop...</div>
+                </div>
+                <iframe id="rdpFrame" allow="clipboard-read; clipboard-write"></iframe>
+            </div>
+            
+            <!-- Stats Bar -->
+            <div class="stats-bar" id="statsBar">
+                <div class="stat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    <span id="connectionTime">Not connected</span>
+                </div>
+                <div class="stat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span id="connQuality">-</span>
+                </div>
+                <div class="stat" style="margin-left: auto;">
+                    <span id="lastRefresh">Auto-refresh: 15s</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Floating Toolbar (for connected state & mobile) -->
+    <div class="floating-toolbar" id="floatingToolbar">
+        <button class="float-btn" onclick="toggleSidebar()" title="Menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <button class="float-btn" onclick="toggleKeyboard()" title="Keyboard">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 16h8"/></svg>
+        </button>
+        <button class="float-btn" onclick="toggleClipboard()" title="Clipboard">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+        </button>
+        <button class="float-btn" onclick="sendCtrlAltDel()" title="Ctrl+Alt+Del">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/></svg>
+        </button>
+        <button class="float-btn" onclick="toggleFullscreen()" title="Fullscreen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        </button>
+        <button class="float-btn" onclick="disconnectSession()" title="Disconnect" style="color: var(--danger);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+    </div>
+    
+    <!-- On-Screen Keyboard Input -->
+    <div class="osk-overlay" id="oskOverlay">
+        <input class="osk-input" id="oskInput" placeholder="Type here to send text to remote PC..." autocomplete="off" autocapitalize="off"/>
+        <div class="osk-hint">Type and press Enter to send. Tap outside to close.</div>
+    </div>
+    
+    <!-- Clipboard Panel -->
+    <div class="clipboard-panel" id="clipboardPanel">
+        <div style="font-size: 14px; font-weight: 600; margin-bottom: 10px;">Clipboard Sync</div>
+        <textarea id="clipboardText" placeholder="Paste text here to send to remote PC, or copy text from remote..."></textarea>
+        <div class="btn-row">
+            <button class="btn-copy" onclick="copyFromClipboard()">Paste from device</button>
+            <button class="btn-send" onclick="sendToClipboard()">Send to remote</button>
+        </div>
+    </div>
+    
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-title">
+            Settings
+            <button class="menu-btn" onclick="toggleSettings()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="settings-group">
+            <div class="settings-group-title">Display</div>
+            <div class="setting-row">
+                <span class="setting-label">Quality</span>
+                <select class="custom-select" id="qualitySetting" onchange="updateQuality()">
+                    <option value="low">Low (Fastest)</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                    <option value="ultra">Ultra (Best)</option>
+                </select>
+            </div>
+            <div class="setting-row">
+                <span class="setting-label">Auto-fit screen</span>
+                <label class="toggle"><input type="checkbox" checked id="autoFitToggle" onchange="toggleAutoFit()"><span class="toggle-slider"></span></label>
+            </div>
+            <div class="setting-row">
+                <span class="setting-label">Show wallpaper</span>
+                <label class="toggle"><input type="checkbox" checked id="wallpaperToggle"><span class="toggle-slider"></span></label>
+            </div>
+        </div>
+        <div class="settings-group">
+            <div class="settings-group-title">Input</div>
+            <div class="setting-row">
+                <span class="setting-label">Touch as mouse</span>
+                <label class="toggle"><input type="checkbox" checked id="touchMouseToggle"><span class="toggle-slider"></span></label>
+            </div>
+            <div class="setting-row">
+                <span class="setting-label">Sound</span>
+                <label class="toggle"><input type="checkbox" id="soundToggle"><span class="toggle-slider"></span></label>
+            </div>
+        </div>
+        <div class="settings-group">
+            <div class="settings-group-title">Connection</div>
+            <div class="setting-row">
+                <span class="setting-label">Auto-reconnect</span>
+                <label class="toggle"><input type="checkbox" checked id="autoReconnectToggle"><span class="toggle-slider"></span></label>
+            </div>
+            <div class="setting-row">
+                <span class="setting-label">Auto-refresh interval</span>
+                <select class="custom-select" id="refreshInterval" onchange="updateRefreshInterval()">
+                    <option value="5">5 seconds</option>
+                    <option value="15" selected>15 seconds</option>
+                    <option value="30">30 seconds</option>
+                    <option value="60">60 seconds</option>
+                </select>
+            </div>
+        </div>
+        <div class="settings-group">
+            <div class="settings-group-title">About</div>
+            <div style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
+                Remote Access Portal v1.0<br>
+                Powered by Apache Guacamole<br>
+                FRP Reverse Tunnel<br>
+                <a href="https://github.com/Moksha89/jvv" target="_blank" style="color: var(--accent);">GitHub Repository</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3000';
+        const GUAC_BASE = window.location.protocol + '//' + window.location.hostname + ':8080/guacamole';
+        
+        let sidebarOpen = window.innerWidth > 768;
+        let settingsOpen = false;
+        let connected = false;
+        let connectionStartTime = null;
+        let refreshTimer = null;
+        let refreshIntervalMs = 15000;
+        let devices = [];
+        let frpProxies = [];
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.add('collapsed');
+                sidebarOpen = false;
+            }
+            refreshDevices();
+            startAutoRefresh();
+        });
+        
+        // Sidebar toggle
+        function toggleSidebar() {
+            sidebarOpen = !sidebarOpen;
+            document.getElementById('sidebar').classList.toggle('collapsed', !sidebarOpen);
+        }
+        
+        // Settings toggle
+        function toggleSettings() {
+            settingsOpen = !settingsOpen;
+            document.getElementById('settingsPanel').classList.toggle('open', settingsOpen);
+        }
+        
+        // Fetch devices and FRP proxies
+        async function refreshDevices() {
+            try {
+                const [healthRes, devicesRes, frpRes] = await Promise.all([
+                    fetch(API_BASE + '/api/health').catch(() => null),
+                    fetch(API_BASE + '/api/devices').catch(() => null),
+                    fetch(API_BASE + '/api/frp/proxies').catch(() => null)
+                ]);
+                
+                const serverOnline = healthRes && healthRes.ok;
+                document.getElementById('serverStatusDot').className = 'status-dot ' + (serverOnline ? 'online' : 'offline');
+                document.getElementById('serverStatusText').textContent = serverOnline ? 'Online' : 'Offline';
+                document.getElementById('serverStatusText').style.color = serverOnline ? 'var(--success)' : 'var(--danger)';
+                
+                if (devicesRes && devicesRes.ok) {
+                    const data = await devicesRes.json();
+                    devices = data.devices || [];
+                }
+                if (frpRes && frpRes.ok) {
+                    const data = await frpRes.json();
+                    frpProxies = data.proxies || [];
+                }
+                
+                renderDevices();
+            } catch (e) {
+                console.error('Refresh error:', e);
+            }
+        }
+        
+        function renderDevices() {
+            const list = document.getElementById('deviceList');
+            const allDevices = [];
+            
+            for (const proxy of frpProxies) {
+                const isOnline = proxy.status === 'online';
+                const apiDev = devices.find(d => proxy.name.includes(d.deviceId));
+                allDevices.push({
+                    name: proxy.name.replace('rdp-', ''),
+                    displayName: apiDev ? (apiDev.hostname || proxy.name.replace('rdp-', '')) : proxy.name.replace('rdp-', ''),
+                    status: isOnline ? 'online' : 'offline',
+                    port: proxy.conf ? proxy.conf.remotePort : 'N/A',
+                    version: proxy.clientVersion || '',
+                    trafficIn: proxy.todayTrafficIn || 0,
+                    trafficOut: proxy.todayTrafficOut || 0
+                });
+            }
+            
+            for (const dev of devices) {
+                if (!frpProxies.some(p => p.name.includes(dev.deviceId))) {
+                    allDevices.push({
+                        name: dev.deviceId,
+                        displayName: dev.hostname || dev.deviceId,
+                        status: 'offline',
+                        port: dev.remotePort || 'N/A',
+                        version: '',
+                        trafficIn: 0, trafficOut: 0
+                    });
+                }
+            }
+            
+            const onlineCount = allDevices.filter(d => d.status === 'online').length;
+            document.getElementById('deviceCountText').textContent = allDevices.length + ' device(s) registered, ' + onlineCount + ' online';
+            
+            if (allDevices.length === 0) {
+                list.innerHTML = '<div style="text-align:center; color: var(--text-muted); padding: 20px; font-size: 13px;">No devices found.<br>Run Setup-RemoteAgent.bat on your PC.</div>';
+                return;
+            }
+            
+            list.innerHTML = allDevices.map(d => {
+                const on = d.status === 'online';
+                return '<div class="device-card" onclick="' + (on ? "connectToDevice('" + d.displayName + "')" : '') + '">' +
+                    '<div class="device-card-header">' +
+                        '<span class="device-card-name">' + d.displayName + '</span>' +
+                        '<span class="device-card-status ' + d.status + '">' + (on ? 'ONLINE' : 'OFFLINE') + '</span>' +
+                    '</div>' +
+                    '<div class="device-card-details">Port ' + d.port + (d.version ? ' &middot; FRP v' + d.version : '') + '</div>' +
+                '</div>';
+            }).join('');
+        }
+        
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024, sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+        
+        // Connection functions
+        function connectToDefault() {
+            connectToDevice('ANDHRAWALA');
+        }
+        
+        function connectToDevice(deviceName) {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('connectionView').style.display = 'flex';
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+            document.getElementById('floatingToolbar').classList.add('visible');
+            
+            // Close sidebar on mobile
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.add('collapsed');
+                sidebarOpen = false;
+            }
+            
+            const frame = document.getElementById('rdpFrame');
+            // Use the andhrawal connection by default
+            const connName = 'ANDHRAWALA - Desktop (andhrawal)';
+            const encoded = btoa(connName + '\0c\0default');
+            frame.src = GUAC_BASE + '/#/client/' + encoded;
+            
+            connected = true;
+            connectionStartTime = Date.now();
+            updateConnectionTimer();
+            
+            frame.onload = () => {
+                setTimeout(() => {
+                    document.getElementById('loadingOverlay').classList.add('hidden');
+                    document.getElementById('connQuality').textContent = 'Connected';
+                }, 2000);
+            };
+        }
+        
+        function connectAsAdmin() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('connectionView').style.display = 'flex';
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+            document.getElementById('floatingToolbar').classList.add('visible');
+            
+            const frame = document.getElementById('rdpFrame');
+            const connName = 'ANDHRAWALA - Desktop (RemoteAdmin)';
+            const encoded = btoa(connName + '\0c\0default');
+            frame.src = GUAC_BASE + '/#/client/' + encoded;
+            
+            connected = true;
+            connectionStartTime = Date.now();
+            updateConnectionTimer();
+            
+            frame.onload = () => {
+                setTimeout(() => {
+                    document.getElementById('loadingOverlay').classList.add('hidden');
+                }, 2000);
+            };
+        }
+        
+        function disconnectSession() {
+            const frame = document.getElementById('rdpFrame');
+            frame.src = 'about:blank';
+            document.getElementById('welcomeScreen').style.display = 'flex';
+            document.getElementById('connectionView').style.display = 'none';
+            document.getElementById('floatingToolbar').classList.remove('visible');
+            document.getElementById('oskOverlay').classList.remove('visible');
+            document.getElementById('clipboardPanel').classList.remove('visible');
+            connected = false;
+            connectionStartTime = null;
+            document.getElementById('connectionTime').textContent = 'Not connected';
+            document.getElementById('connQuality').textContent = '-';
+        }
+        
+        function updateConnectionTimer() {
+            if (!connectionStartTime) return;
+            const elapsed = Math.floor((Date.now() - connectionStartTime) / 1000);
+            const h = Math.floor(elapsed / 3600);
+            const m = Math.floor((elapsed % 3600) / 60);
+            const s = elapsed % 60;
+            document.getElementById('connectionTime').textContent = 
+                (h > 0 ? h + 'h ' : '') + m + 'm ' + s + 's';
+            if (connected) setTimeout(updateConnectionTimer, 1000);
+        }
+        
+        // Fullscreen
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                (document.getElementById('content') || document.documentElement).requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen().catch(() => {});
+            }
+        }
+        
+        // On-screen keyboard
+        function toggleKeyboard() {
+            const overlay = document.getElementById('oskOverlay');
+            overlay.classList.toggle('visible');
+            if (overlay.classList.contains('visible')) {
+                document.getElementById('oskInput').focus();
+            }
+        }
+        
+        document.getElementById('oskInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                // The text is sent via the Guacamole iframe
+                this.value = '';
+            }
+        });
+        
+        document.getElementById('oskOverlay').addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('visible');
+        });
+        
+        // Clipboard
+        function toggleClipboard() {
+            document.getElementById('clipboardPanel').classList.toggle('visible');
+        }
+        
+        async function copyFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('clipboardText').value = text;
+            } catch (e) {
+                alert('Clipboard access denied. Please paste manually.');
+            }
+        }
+        
+        function sendToClipboard() {
+            const text = document.getElementById('clipboardText').value;
+            if (text) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Text copied! Now use Ctrl+V in the remote desktop.');
+                }).catch(() => {
+                    alert('Could not access clipboard.');
+                });
+            }
+        }
+        
+        // Ctrl+Alt+Del
+        function sendCtrlAltDel() {
+            if (connected) {
+                alert('Ctrl+Alt+Del: Use the Guacamole menu (Ctrl+Alt+Shift) inside the remote session, then select "Send Ctrl+Alt+Del".');
+            }
+        }
+        
+        // Screenshot
+        function takeScreenshot() {
+            if (connected) {
+                alert('Screenshot: Right-click inside the remote session and choose "Save image as..." or use the Print Screen key.');
+            }
+        }
+        
+        // Dashboard
+        function openDashboard() {
+            window.open(API_BASE + '/dashboard', '_blank');
+        }
+        
+        // Settings
+        function updateQuality() {
+            // Quality hints for reconnection
+            const quality = document.getElementById('qualitySetting').value;
+            document.getElementById('connQuality').textContent = 'Quality: ' + quality;
+        }
+        
+        function toggleAutoFit() {
+            // Toggle auto-fit behavior
+        }
+        
+        function updateRefreshInterval() {
+            const val = parseInt(document.getElementById('refreshInterval').value);
+            refreshIntervalMs = val * 1000;
+            document.getElementById('lastRefresh').textContent = 'Auto-refresh: ' + val + 's';
+            startAutoRefresh();
+        }
+        
+        function startAutoRefresh() {
+            if (refreshTimer) clearInterval(refreshTimer);
+            refreshTimer = setInterval(refreshDevices, refreshIntervalMs);
+        }
+        
+        // Page navigation
+        function showPage(page) {
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Auto-login to Guacamole on first load (background)
+        function preAuthGuacamole() {
+            const authFrame = document.createElement('iframe');
+            authFrame.style.display = 'none';
+            authFrame.src = GUAC_BASE + '/';
+            document.body.appendChild(authFrame);
+            setTimeout(() => {
+                try {
+                    const doc = authFrame.contentDocument || authFrame.contentWindow.document;
+                    const usernameInput = doc.querySelector('input[name="username"]');
+                    const passwordInput = doc.querySelector('input[name="password"]');
+                    const loginBtn = doc.querySelector('input[name="login"]');
+                    if (usernameInput && passwordInput && loginBtn) {
+                        usernameInput.value = 'admin';
+                        passwordInput.value = 'Sarkar@00';
+                        loginBtn.click();
+                    }
+                } catch (e) {}
+                setTimeout(() => authFrame.remove(), 3000);
+            }, 2000);
+        }
+        preAuthGuacamole();
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth <= 768 && sidebarOpen) {
+                document.getElementById('sidebar').classList.add('collapsed');
+                sidebarOpen = false;
+            }
+        });
+        
+        // Touch handling for mobile
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+        
+        document.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchEndX - touchStartX;
+            // Swipe right from left edge to open sidebar
+            if (touchStartX < 30 && diff > 80) {
+                document.getElementById('sidebar').classList.remove('collapsed');
+                sidebarOpen = true;
+            }
+            // Swipe left to close sidebar
+            if (sidebarOpen && diff < -80) {
+                document.getElementById('sidebar').classList.add('collapsed');
+                sidebarOpen = false;
+            }
+        }, { passive: true });
+    </script>
+</body>
+</html>
