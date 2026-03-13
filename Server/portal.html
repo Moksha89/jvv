@@ -158,12 +158,45 @@
         ::-webkit-scrollbar-track { background: var(--bg-primary); }
         ::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 3px; }
         
+        /* Login Screen */
+        .login-screen { position: fixed; inset: 0; background: var(--bg-primary); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .login-screen.hidden { display: none; }
+        .login-box { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 40px; width: 90%; max-width: 400px; text-align: center; }
+        .login-box .login-icon { width: 64px; height: 64px; background: var(--bg-tertiary); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+        .login-box .login-icon svg { width: 32px; height: 32px; color: var(--accent); }
+        .login-box h2 { font-size: 22px; margin-bottom: 6px; }
+        .login-box p { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+        .login-field { width: 100%; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); padding: 12px 14px; border-radius: 10px; font-size: 15px; outline: none; margin-bottom: 12px; transition: border-color 0.2s; }
+        .login-field:focus { border-color: var(--accent); }
+        .login-field::placeholder { color: var(--text-muted); }
+        .login-submit { width: 100%; background: var(--accent); color: white; border: none; padding: 13px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 8px; }
+        .login-submit:hover { background: var(--accent-hover); }
+        .login-error { color: var(--danger); font-size: 13px; margin-top: 10px; display: none; }
+        .login-error.visible { display: block; }
+        
         /* Animations */
         .fade-in { animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <div class="login-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h2>Remote Access Portal</h2>
+            <p>Enter your credentials to access the dashboard</p>
+            <form onsubmit="return handleLogin(event)">
+                <input class="login-field" type="text" id="loginUser" placeholder="Username" autocomplete="off" required/>
+                <input class="login-field" type="password" id="loginPass" placeholder="Password" required/>
+                <button class="login-submit" type="submit">Sign In</button>
+            </form>
+            <div class="login-error" id="loginError">Invalid username or password</div>
+        </div>
+    </div>
+
     <!-- Header -->
     <div class="header">
         <div class="header-left">
@@ -519,6 +552,26 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
         }
         
+        // Portal login
+        let portalAuth = sessionStorage.getItem('portalAuth') === 'true';
+        if (portalAuth) document.getElementById('loginScreen').classList.add('hidden');
+        
+        function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('loginUser').value;
+            const pass = document.getElementById('loginPass').value;
+            if (user === 'jvv' && pass === 'Varma@678') {
+                sessionStorage.setItem('portalAuth', 'true');
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('loginError').classList.remove('visible');
+                portalAuth = true;
+                refreshDevices();
+            } else {
+                document.getElementById('loginError').classList.add('visible');
+            }
+            return false;
+        }
+        
         // Guacamole auth token
         let guacToken = null;
         
@@ -541,11 +594,11 @@
         
         // Connection functions
         function connectToDefault() {
-            connectWithProfile('ANDHRAWALA - Desktop (andhrawal)');
+            connectWithProfile('ANDHRAWALA - Desktop');
         }
         
         function connectToDevice(deviceName) {
-            connectWithProfile('ANDHRAWALA - Desktop (andhrawal)');
+            connectWithProfile('ANDHRAWALA - Desktop');
         }
         
         async function connectWithProfile(connName) {
@@ -582,7 +635,7 @@
         }
         
         function connectAsAdmin() {
-            connectWithProfile('ANDHRAWALA - Desktop (RemoteAdmin)');
+            connectWithProfile('ANDHRAWALA - Desktop');
         }
         
         function disconnectSession() {
@@ -709,8 +762,8 @@
             event.currentTarget.classList.add('active');
         }
         
-        // Pre-authenticate with Guacamole on page load
-        getGuacToken().then(t => { if(t) console.log('Guacamole pre-authenticated'); });
+        // Pre-authenticate with Guacamole on page load (only if portal logged in)
+        if (portalAuth) getGuacToken().then(t => { if(t) console.log('Guacamole pre-authenticated'); });
         
         // Handle window resize
         window.addEventListener('resize', () => {
