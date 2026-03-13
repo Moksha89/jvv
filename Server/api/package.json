@@ -1,0 +1,18 @@
+{
+  "name": "remote-access-relay-api",
+  "version": "1.0.0",
+  "description": "REST API for Remote Access Relay Server - Device authentication, heartbeat monitoring, and management",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "better-sqlite3": "^11.6.0",
+    "cors": "^2.8.5",
+    "helmet": "^8.0.0",
+    "morgan": "^1.10.0",
+    "uuid": "^10.0.0"
+  }
+}

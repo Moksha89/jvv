@@ -1,0 +1,34 @@
+# ============================================================
+# FRP Server Configuration - Example
+# Copy this file to frps.toml and modify the values below
+# ============================================================
+
+bindAddr = "0.0.0.0"
+bindPort = 7000
+
+[auth]
+method = "token"
+# IMPORTANT: Change this to a secure random token
+# Generate with: openssl rand -hex 32
+token = "YOUR_SECURE_AUTH_TOKEN_HERE"
+
+[transport]
+tls.force = false
+
+[webServer]
+# FRP admin dashboard (accessible only on localhost)
+addr = "127.0.0.1"
+port = 7500
+user = "admin"
+password = "YOUR_DASHBOARD_PASSWORD_HERE"
+
+[log]
+to = "/var/log/frps/frps.log"
+level = "info"
+maxDays = 30
+
+# Port range for device RDP connections
+# Each device gets a unique port in this range
+allowPorts = [
+    { start = 33800, end = 34000 }
+]

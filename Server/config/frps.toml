@@ -1,0 +1,29 @@
+# FRP Server Configuration
+# This file configures the FRP server on the VPS relay
+
+bindAddr = "0.0.0.0"
+bindPort = 7000
+
+[auth]
+method = "token"
+token = "CHANGE_THIS_TO_A_SECURE_TOKEN"
+
+[transport]
+# TLS configuration
+tls.force = false
+
+[webServer]
+addr = "127.0.0.1"
+port = 7500
+user = "admin"
+password = "CHANGE_THIS_ADMIN_PASSWORD"
+
+[log]
+to = "/var/log/frps/frps.log"
+level = "info"
+maxDays = 30
+
+# Allow port range for device connections
+allowPorts = [
+    { start = 33800, end = 34000 }
+]

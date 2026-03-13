@@ -1,0 +1,14 @@
+{
+  "DeviceId": "AUTO_GENERATED",
+  "ServerAddress": "your-vps-ip-or-hostname",
+  "ServerPort": 7000,
+  "AuthToken": "your-auth-token-from-server-setup",
+  "RdpPort": 3389,
+  "RemotePort": 33890,
+  "HeartbeatIntervalSeconds": 30,
+  "ReconnectDelaySeconds": 5,
+  "MaxReconnectDelaySeconds": 300,
+  "FrpClientPath": "C:\\Program Files\\RemoteAgent\\frpc.exe",
+  "EnableTls": true,
+  "ApiBaseUrl": "https://your-vps-ip-or-hostname:3000"
+}
