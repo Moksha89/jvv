@@ -37,6 +37,16 @@ app.get('/', (req, res) => {
     }
 });
 
+// Download bat file for new PC setup
+app.get('/api/download/setup', (req, res) => {
+    const batPath = path.join(DASHBOARD_DIR, 'Setup-RemoteAgent.bat');
+    if (fs.existsSync(batPath)) {
+        res.download(batPath, 'Setup-RemoteAgent.bat');
+    } else {
+        res.status(404).send('Installer not found');
+    }
+});
+
 app.get('/portal', (req, res) => {
     const portalPath = path.join(DASHBOARD_DIR, 'portal.html');
     if (fs.existsSync(portalPath)) {
