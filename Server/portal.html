@@ -177,10 +177,6 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
                 <span>Refresh</span>
             </button>
-            <button class="header-btn" onclick="openDashboard()" title="Dashboard">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-                <span>Dashboard</span>
-            </button>
             <button class="header-btn" onclick="toggleSettings()" title="Settings">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
                 <span>Settings</span>
@@ -236,10 +232,6 @@
                 <div class="sidebar-item active" onclick="showPage('remote')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                     Remote Desktop
-                </div>
-                <div class="sidebar-item" onclick="openDashboard()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
-                    Status Monitor
                 </div>
                 <div class="sidebar-item" onclick="toggleSettings()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -406,8 +398,8 @@
     </div>
 
     <script>
-        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3000';
-        const GUAC_BASE = window.location.protocol + '//' + window.location.hostname + ':8080/guacamole';
+        const API_BASE = '';
+        const GUAC_BASE = '/guacamole';
         
         let sidebarOpen = window.innerWidth > 768;
         let settingsOpen = false;
@@ -527,28 +519,55 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
         }
         
+        // Guacamole auth token
+        let guacToken = null;
+        
+        async function getGuacToken() {
+            if (guacToken) return guacToken;
+            try {
+                const res = await fetch(GUAC_BASE + '/api/tokens', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'username=admin&password=Sarkar%4000'
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    guacToken = data.authToken;
+                    return guacToken;
+                }
+            } catch (e) { console.error('Guac auth error:', e); }
+            return null;
+        }
+        
         // Connection functions
         function connectToDefault() {
-            connectToDevice('ANDHRAWALA');
+            connectWithProfile('ANDHRAWALA - Desktop (andhrawal)');
         }
         
         function connectToDevice(deviceName) {
+            connectWithProfile('ANDHRAWALA - Desktop (andhrawal)');
+        }
+        
+        async function connectWithProfile(connName) {
             document.getElementById('welcomeScreen').style.display = 'none';
             document.getElementById('connectionView').style.display = 'flex';
             document.getElementById('loadingOverlay').classList.remove('hidden');
             document.getElementById('floatingToolbar').classList.add('visible');
             
-            // Close sidebar on mobile
             if (window.innerWidth <= 768) {
                 document.getElementById('sidebar').classList.add('collapsed');
                 sidebarOpen = false;
             }
             
+            const token = await getGuacToken();
             const frame = document.getElementById('rdpFrame');
-            // Use the andhrawal connection by default
-            const connName = 'ANDHRAWALA - Desktop (andhrawal)';
             const encoded = btoa(connName + '\0c\0default');
-            frame.src = GUAC_BASE + '/#/client/' + encoded;
+            
+            if (token) {
+                frame.src = GUAC_BASE + '/#/client/' + encoded + '?token=' + token;
+            } else {
+                frame.src = GUAC_BASE + '/#/client/' + encoded;
+            }
             
             connected = true;
             connectionStartTime = Date.now();
@@ -563,25 +582,7 @@
         }
         
         function connectAsAdmin() {
-            document.getElementById('welcomeScreen').style.display = 'none';
-            document.getElementById('connectionView').style.display = 'flex';
-            document.getElementById('loadingOverlay').classList.remove('hidden');
-            document.getElementById('floatingToolbar').classList.add('visible');
-            
-            const frame = document.getElementById('rdpFrame');
-            const connName = 'ANDHRAWALA - Desktop (RemoteAdmin)';
-            const encoded = btoa(connName + '\0c\0default');
-            frame.src = GUAC_BASE + '/#/client/' + encoded;
-            
-            connected = true;
-            connectionStartTime = Date.now();
-            updateConnectionTimer();
-            
-            frame.onload = () => {
-                setTimeout(() => {
-                    document.getElementById('loadingOverlay').classList.add('hidden');
-                }, 2000);
-            };
+            connectWithProfile('ANDHRAWALA - Desktop (RemoteAdmin)');
         }
         
         function disconnectSession() {
@@ -678,10 +679,6 @@
             }
         }
         
-        // Dashboard
-        function openDashboard() {
-            window.open(API_BASE + '/dashboard', '_blank');
-        }
         
         // Settings
         function updateQuality() {
@@ -712,28 +709,8 @@
             event.currentTarget.classList.add('active');
         }
         
-        // Auto-login to Guacamole on first load (background)
-        function preAuthGuacamole() {
-            const authFrame = document.createElement('iframe');
-            authFrame.style.display = 'none';
-            authFrame.src = GUAC_BASE + '/';
-            document.body.appendChild(authFrame);
-            setTimeout(() => {
-                try {
-                    const doc = authFrame.contentDocument || authFrame.contentWindow.document;
-                    const usernameInput = doc.querySelector('input[name="username"]');
-                    const passwordInput = doc.querySelector('input[name="password"]');
-                    const loginBtn = doc.querySelector('input[name="login"]');
-                    if (usernameInput && passwordInput && loginBtn) {
-                        usernameInput.value = 'admin';
-                        passwordInput.value = 'Sarkar@00';
-                        loginBtn.click();
-                    }
-                } catch (e) {}
-                setTimeout(() => authFrame.remove(), 3000);
-            }, 2000);
-        }
-        preAuthGuacamole();
+        // Pre-authenticate with Guacamole on page load
+        getGuacToken().then(t => { if(t) console.log('Guacamole pre-authenticated'); });
         
         // Handle window resize
         window.addEventListener('resize', () => {
