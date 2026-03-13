@@ -7,9 +7,13 @@ const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const fs = require('fs');
 
+const http = require('http');
+
 const app = express();
 const PORT = process.env.API_PORT || 3000;
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'data', 'relay.db');
+const FRP_DASHBOARD_PORT = process.env.FRP_DASHBOARD_PORT || 7500;
+const DASHBOARD_DIR = process.env.DASHBOARD_DIR || path.join(__dirname, '..');
 
 // Ensure data directory exists
 const dataDir = path.dirname(DB_PATH);
@@ -18,10 +22,20 @@ if (!fs.existsSync(dataDir)) {
 }
 
 // Middleware
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors());
 app.use(express.json());
 app.use(morgan('combined'));
+
+// Serve dashboard
+app.get('/dashboard', (req, res) => {
+    const dashboardPath = path.join(DASHBOARD_DIR, 'dashboard.html');
+    if (fs.existsSync(dashboardPath)) {
+        res.sendFile(dashboardPath);
+    } else {
+        res.status(404).send('Dashboard not found');
+    }
+});
 
 // Initialize SQLite database
 const db = new Database(DB_PATH);
@@ -310,6 +324,38 @@ app.post('/api/devices/register', (req, res) => {
     } catch (err) {
         console.error('Register error:', err);
         res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+// FRP Proxy status endpoint
+app.get('/api/frp/proxies', async (req, res) => {
+    try {
+        const data = await new Promise((resolve, reject) => {
+            const options = {
+                hostname: '127.0.0.1',
+                port: FRP_DASHBOARD_PORT,
+                path: '/api/proxy/tcp',
+                method: 'GET',
+                headers: { 'Accept': 'application/json' },
+                auth: 'admin:' + (process.env.FRP_DASHBOARD_PASSWORD || 'admin'),
+                timeout: 5000
+            };
+            const request = http.request(options, (response) => {
+                let body = '';
+                response.on('data', chunk => body += chunk);
+                response.on('end', () => {
+                    try { resolve(JSON.parse(body)); }
+                    catch (e) { reject(new Error('Invalid JSON from FRP')); }
+                });
+            });
+            request.on('error', reject);
+            request.on('timeout', () => { request.destroy(); reject(new Error('FRP dashboard timeout')); });
+            request.end();
+        });
+        res.json({ success: true, proxies: data.proxies || [] });
+    } catch (err) {
+        console.error('FRP proxy fetch error:', err.message);
+        res.json({ success: true, proxies: [] });
     }
 });
 
