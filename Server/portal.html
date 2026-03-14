@@ -374,6 +374,7 @@
         let devices = [];
         let frpProxies = [];
         let currentMode = null;
+        let selectedDevice = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             if (window.innerWidth <= 768) { document.getElementById('sidebar').classList.add('collapsed'); sidebarOpen = false; }
@@ -426,29 +427,64 @@
             for (const proxy of frpProxies) {
                 if (proxy.name && proxy.name.startsWith('vnc-')) continue;
                 const isOnline = proxy.status === 'online';
+                const devName = proxy.name.replace('rdp-', '');
+                const rdpPort = proxy.conf ? proxy.conf.remotePort : 33890;
+                const vncProxy = frpProxies.find(p => p.name && p.name.startsWith('vnc-') && p.name.replace('vnc-', '') === devName);
+                const hasVnc = vncProxy && vncProxy.status === 'online';
+                const vncPort = vncProxy && vncProxy.conf ? vncProxy.conf.remotePort : (rdpPort + 25110);
                 const apiDev = devices.find(d => proxy.name.includes(d.deviceId));
                 allDevices.push({
-                    name: proxy.name.replace('rdp-', ''),
-                    displayName: apiDev ? (apiDev.hostname || proxy.name.replace('rdp-', '')) : proxy.name.replace('rdp-', ''),
+                    name: devName,
+                    displayName: apiDev ? (apiDev.hostname || devName) : devName,
                     status: isOnline ? 'online' : 'offline',
-                    port: proxy.conf ? proxy.conf.remotePort : 'N/A',
+                    rdpPort: rdpPort,
+                    vncPort: vncPort,
                     version: proxy.clientVersion || '',
-                    hasVnc: frpProxies.some(p => p.name && p.name.startsWith('vnc-') && p.status === 'online')
+                    hasVnc: hasVnc
                 });
             }
             for (const dev of devices) {
-                if (!frpProxies.some(p => p.name && p.name.includes(dev.deviceId))) {
-                    allDevices.push({ name: dev.deviceId, displayName: dev.hostname || dev.deviceId, status: 'offline', port: dev.remotePort || 'N/A', version: '', hasVnc: false });
+                if (!allDevices.some(d => d.name === dev.deviceId || dev.deviceId.includes(d.name) || d.name.includes(dev.deviceId))) {
+                    allDevices.push({ name: dev.deviceId, displayName: dev.hostname || dev.deviceId, status: 'offline', rdpPort: dev.remotePort || 33890, vncPort: (dev.remotePort || 33890) + 25110, version: '', hasVnc: false });
                 }
             }
             const onlineCount = allDevices.filter(d => d.status === 'online').length;
             document.getElementById('deviceCountText').textContent = allDevices.length + ' device(s) registered, ' + onlineCount + ' online';
             if (allDevices.length === 0) { list.innerHTML = '<div style="text-align:center; color: var(--text-muted); padding: 20px; font-size: 13px;">No devices found.<br>Run Setup-RemoteAgent.bat on your PC.</div>'; return; }
+            if (!selectedDevice && allDevices.length > 0) { selectedDevice = allDevices.find(d => d.status === 'online') || allDevices[0]; }
             list.innerHTML = allDevices.map(d => {
                 const on = d.status === 'online';
+                const sel = selectedDevice && selectedDevice.name === d.name ? ' active' : '';
                 const vncBadge = d.hasVnc ? '<div style="margin-top:4px;"><span style="font-size:10px;background:rgba(139,92,246,0.15);color:#8b5cf6;padding:2px 6px;border-radius:8px;">VNC Ready</span></div>' : '';
-                return '<div class="device-card" onclick="' + (on ? "showConnectOptions()" : '') + '"><div class="device-card-header"><span class="device-card-name">' + d.displayName + '</span><span class="device-card-status ' + d.status + '">' + (on ? 'ONLINE' : 'OFFLINE') + '</span></div><div class="device-card-details">Port ' + d.port + (d.version ? ' &middot; FRP v' + d.version : '') + '</div>' + vncBadge + '</div>';
+                return '<div class="device-card' + sel + '" onclick="selectDevice(\'' + d.name.replace(/'/g, "\\'") + '\');"><div class="device-card-header"><span class="device-card-name">' + d.displayName + '</span><span class="device-card-status ' + d.status + '">' + (on ? 'ONLINE' : 'OFFLINE') + '</span></div><div class="device-card-details">RDP :' + d.rdpPort + (d.hasVnc ? ' &middot; VNC :' + d.vncPort : '') + (d.version ? ' &middot; FRP v' + d.version : '') + '</div>' + vncBadge + '</div>';
             }).join('');
+        }
+
+        function selectDevice(name) {
+            const allDevices = getAllDevicesList();
+            selectedDevice = allDevices.find(d => d.name === name);
+            renderDevices();
+            if (selectedDevice && selectedDevice.status === 'online') showConnectOptions();
+        }
+
+        function getAllDevicesList() {
+            const allDevices = [];
+            for (const proxy of frpProxies) {
+                if (proxy.name && proxy.name.startsWith('vnc-')) continue;
+                const devName = proxy.name.replace('rdp-', '');
+                const rdpPort = proxy.conf ? proxy.conf.remotePort : 33890;
+                const vncProxy = frpProxies.find(p => p.name && p.name.startsWith('vnc-') && p.name.replace('vnc-', '') === devName);
+                const hasVnc = vncProxy && vncProxy.status === 'online';
+                const vncPort = vncProxy && vncProxy.conf ? vncProxy.conf.remotePort : (rdpPort + 25110);
+                const apiDev = devices.find(d => proxy.name.includes(d.deviceId));
+                allDevices.push({ name: devName, displayName: apiDev ? (apiDev.hostname || devName) : devName, status: proxy.status === 'online' ? 'online' : 'offline', rdpPort, vncPort, version: proxy.clientVersion || '', hasVnc });
+            }
+            for (const dev of devices) {
+                if (!allDevices.some(d => d.name === dev.deviceId || dev.deviceId.includes(d.name) || d.name.includes(dev.deviceId))) {
+                    allDevices.push({ name: dev.deviceId, displayName: dev.hostname || dev.deviceId, status: 'offline', rdpPort: dev.remotePort || 33890, vncPort: (dev.remotePort || 33890) + 25110, version: '', hasVnc: false });
+                }
+            }
+            return allDevices;
         }
 
         let portalAuth = sessionStorage.getItem('portalAuth') === 'true';
@@ -489,8 +525,18 @@
             document.getElementById('connectionView').style.display = 'none';
         }
 
-        function connectSameScreen() { currentMode = 'vnc'; connectWithProfile('ANDHRAWALA - Same Screen', 'vnc'); }
-        function connectNewSession() { currentMode = 'rdp'; connectWithProfile('ANDHRAWALA - Desktop', 'rdp'); }
+        function connectSameScreen() {
+            if (!selectedDevice) { alert('No device selected'); return; }
+            currentMode = 'vnc';
+            const connName = selectedDevice.displayName + ' - Same Screen';
+            connectWithProfile(connName, 'vnc');
+        }
+        function connectNewSession() {
+            if (!selectedDevice) { alert('No device selected'); return; }
+            currentMode = 'rdp';
+            const connName = selectedDevice.displayName + ' - Desktop';
+            connectWithProfile(connName, 'rdp');
+        }
 
         async function connectWithProfile(connName, mode) {
             document.getElementById('welcomeScreen').style.display = 'none';

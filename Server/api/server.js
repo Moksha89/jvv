@@ -376,6 +376,28 @@ app.post('/api/devices/register', (req, res) => {
     }
 });
 
+// Assign unique ports for a new device (called by bat installer)
+app.get('/api/assign-ports', (req, res) => {
+    try {
+        const hostname = req.query.hostname || 'UNKNOWN';
+        const devices = stmts.getAllDevices.all();
+        const usedRdpPorts = new Set(devices.map(d => d.remote_port));
+        
+        // Find next available RDP port (starting from 33890)
+        let rdpPort = 33890;
+        while (usedRdpPorts.has(rdpPort) && rdpPort < 34000) rdpPort++;
+        
+        // VNC port = RDP port + 25110 (e.g., 33890->59000, 33891->59001)
+        const vncPort = rdpPort + 25110;
+        
+        console.log(`Port assignment for ${hostname}: RDP=${rdpPort}, VNC=${vncPort}`);
+        res.json({ success: true, rdpPort, vncPort, hostname });
+    } catch (err) {
+        console.error('Port assignment error:', err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
 // FRP Proxy status endpoint
 app.get('/api/frp/proxies', async (req, res) => {
     try {
@@ -423,6 +445,11 @@ function findAvailablePort() {
         }
     }
     throw new Error('No available ports');
+}
+
+function getVncPortForDevice(rdpPort) {
+    // VNC port = RDP port + 25110 (e.g., 33890->59000, 33891->59001)
+    return rdpPort + 25110;
 }
 
 // ============================================================

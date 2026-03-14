@@ -20,13 +20,14 @@ REM ======================== CONFIGURATION ========================
 set "SERVER_ADDRESS=YOUR_SERVER_IP"
 set "SERVER_PORT=7000"
 set "AUTH_TOKEN=YOUR_FRP_AUTH_TOKEN"
-set "REMOTE_PORT=33890"
 set "RDP_PORT=3389"
 set "VNC_PORT=5900"
-set "VNC_REMOTE_PORT=59000"
 set "VNC_PASSWORD=YOUR_VNC_PASSWORD"
 set "API_BASE_URL=http://YOUR_SERVER_IP:3000"
 set "FRP_VERSION=0.61.1"
+REM Remote ports will be assigned dynamically by the server API
+set "REMOTE_PORT="
+set "VNC_REMOTE_PORT="
 set "INSTALL_DIR=C:\Program Files\RemoteAgent"
 set "DATA_DIR=%ProgramData%\RemoteAgent"
 set "LOG_DIR=%DATA_DIR%\Logs"
@@ -82,13 +83,30 @@ if not exist "%DATA_DIR%" mkdir "%DATA_DIR%"
 if not exist "%LOG_DIR%" mkdir "%LOG_DIR%"
 echo         Done.
 
-REM ---- Step 2: Generate Device ID ----
-echo  [2/15] Generating Device ID...
+REM ---- Step 2: Generate Device ID and get assigned ports ----
+echo  [2/15] Generating Device ID and requesting port assignment...
 set "DEVICE_ID="
 set /a "RAND=%random%"
 set "DEVICE_ID=%COMPUTERNAME%-%RAND%"
 set "DEVICE_ID=!DEVICE_ID:~0,16!"
 echo         Device ID: %DEVICE_ID%
+
+REM Request unique port assignment from server API
+echo         Requesting port assignment from server...
+for /f "tokens=*" %%A in ('powershell -NoProfile -ExecutionPolicy Bypass -Command "try { $r = Invoke-RestMethod -Uri '%API_BASE_URL%/api/assign-ports?hostname=%COMPUTERNAME%' -TimeoutSec 10; Write-Host ($r.rdpPort.ToString() + ',' + $r.vncPort.ToString()) } catch { Write-Host 'FAILED' }"') do set "PORT_RESULT=%%A"
+
+if "!PORT_RESULT!"=="FAILED" (
+    echo         WARNING: Could not reach server API. Using default ports.
+    if not defined REMOTE_PORT set "REMOTE_PORT=33890"
+    if not defined VNC_REMOTE_PORT set "VNC_REMOTE_PORT=59000"
+) else (
+    for /f "tokens=1,2 delims=," %%R in ("!PORT_RESULT!") do (
+        set "REMOTE_PORT=%%R"
+        set "VNC_REMOTE_PORT=%%S"
+    )
+    echo         Assigned RDP port: !REMOTE_PORT!
+    echo         Assigned VNC port: !VNC_REMOTE_PORT!
+)
 
 REM ---- Step 3: Download FRP Client ----
 echo  [3/15] Downloading FRP client v%FRP_VERSION%...
