@@ -47,6 +47,26 @@ app.get('/api/download/setup', (req, res) => {
     }
 });
 
+// Download VNC setup bat file
+app.get('/api/download/setup-vnc', (req, res) => {
+    const batPath = path.join(DASHBOARD_DIR, 'Setup-VNCServer.bat');
+    if (fs.existsSync(batPath)) {
+        res.download(batPath, 'Setup-VNCServer.bat');
+    } else {
+        res.status(404).send('VNC installer not found');
+    }
+});
+
+// Download RDP Wrapper setup bat file
+app.get('/api/download/setup-rdpwrapper', (req, res) => {
+    const batPath = path.join(DASHBOARD_DIR, 'Setup-RDPWrapper.bat');
+    if (fs.existsSync(batPath)) {
+        res.download(batPath, 'Setup-RDPWrapper.bat');
+    } else {
+        res.status(404).send('RDP Wrapper installer not found');
+    }
+});
+
 app.get('/portal', (req, res) => {
     const portalPath = path.join(DASHBOARD_DIR, 'portal.html');
     if (fs.existsSync(portalPath)) {
