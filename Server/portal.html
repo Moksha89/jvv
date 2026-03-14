@@ -158,9 +158,9 @@
             </div>
             <h2>Remote Access Portal</h2>
             <p>Enter your credentials to access the dashboard</p>
-            <form onsubmit="return handleLogin(event)">
-                <input class="login-field" type="text" id="loginUser" placeholder="Username" autocomplete="off" required/>
-                <input class="login-field" type="password" id="loginPass" placeholder="Password" required/>
+            <form onsubmit="return handleLogin(event)" autocomplete="off">
+                <input class="login-field" type="text" id="loginUser" placeholder="Username" autocomplete="new-password" required/>
+                <input class="login-field" type="password" id="loginPass" placeholder="Password" autocomplete="new-password" required/>
                 <button class="login-submit" type="submit">Sign In</button>
             </form>
             <div class="login-error" id="loginError">Invalid username or password</div>
@@ -490,6 +490,23 @@
         let portalAuth = sessionStorage.getItem('portalAuth') === 'true';
         if (portalAuth) document.getElementById('loginScreen').classList.add('hidden');
 
+        // Auto-logout after 3 minutes of idle (no mouse/keyboard/touch activity)
+        let idleTimer = null;
+        const IDLE_TIMEOUT = 3 * 60 * 1000; // 3 minutes
+        function resetIdleTimer() {
+            if (idleTimer) clearTimeout(idleTimer);
+            if (portalAuth) {
+                idleTimer = setTimeout(() => {
+                    portalLogout();
+                    alert('You have been logged out due to inactivity.');
+                }, IDLE_TIMEOUT);
+            }
+        }
+        ['mousemove','mousedown','keydown','touchstart','scroll','click'].forEach(evt => {
+            document.addEventListener(evt, resetIdleTimer, { passive: true });
+        });
+        resetIdleTimer();
+
         function handleLogin(e) {
             e.preventDefault();
             const user = document.getElementById('loginUser').value;
@@ -498,13 +515,16 @@
                 sessionStorage.setItem('portalAuth', 'true');
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('loginError').classList.remove('visible');
-                portalAuth = true; refreshDevices();
+                document.getElementById('loginUser').value = '';
+                document.getElementById('loginPass').value = '';
+                portalAuth = true; refreshDevices(); resetIdleTimer();
             } else { document.getElementById('loginError').classList.add('visible'); }
             return false;
         }
 
         function portalLogout() {
             sessionStorage.removeItem('portalAuth'); portalAuth = false; guacToken = null;
+            if (idleTimer) clearTimeout(idleTimer);
             disconnectSession();
             document.getElementById('loginScreen').classList.remove('hidden');
             document.getElementById('loginUser').value = ''; document.getElementById('loginPass').value = '';
