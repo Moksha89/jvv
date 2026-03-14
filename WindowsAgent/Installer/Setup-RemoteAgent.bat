@@ -1,13 +1,15 @@
 @echo off
 REM ============================================================
-REM  Remote Access Agent - Windows Installer
+REM  Remote Access Agent - Complete Windows Installer
 REM  
-REM  This script automatically:
-REM   1. Downloads FRP client
-REM   2. Creates configuration
-REM   3. Installs Windows Service
-REM   4. Configures auto-restart on failure
-REM   5. Starts the tunnel connection
+REM  This script automatically installs EVERYTHING:
+REM   1. Downloads and configures FRP tunnel (CGNAT bypass)
+REM   2. Enables Remote Desktop and configures firewall
+REM   3. Installs RDP Wrapper for multi-session support
+REM   4. Installs TightVNC for same-screen sharing
+REM   5. Optimizes all settings for best performance
+REM   6. Registers device with relay server
+REM   7. Configures auto-start on boot
 REM
 REM  Run as Administrator!
 REM ============================================================
@@ -15,23 +17,28 @@ REM ============================================================
 setlocal enabledelayedexpansion
 
 REM ======================== CONFIGURATION ========================
-REM VPS Server Settings (pre-configured for your relay server)
-set "SERVER_ADDRESS=93.127.138.82"
+set "SERVER_ADDRESS=YOUR_SERVER_IP"
 set "SERVER_PORT=7000"
-set "AUTH_TOKEN=36c2a86e0675e15c2f0fdbb107eec43d24bf5ea36c1aca3761ac2006f5a6f7e8"
+set "AUTH_TOKEN=YOUR_FRP_AUTH_TOKEN"
 set "REMOTE_PORT=33890"
 set "RDP_PORT=3389"
-set "API_BASE_URL=http://93.127.138.82:3000"
-
-REM FRP Settings
+set "VNC_PORT=5900"
+set "VNC_REMOTE_PORT=59000"
+set "VNC_PASSWORD=YOUR_VNC_PASSWORD"
+set "API_BASE_URL=http://YOUR_SERVER_IP:3000"
 set "FRP_VERSION=0.61.1"
 set "INSTALL_DIR=C:\Program Files\RemoteAgent"
 set "DATA_DIR=%ProgramData%\RemoteAgent"
 set "LOG_DIR=%DATA_DIR%\Logs"
 set "SERVICE_NAME=RemoteAccessAgent"
+set "RDPWRAP_DIR=C:\Program Files\RDP Wrapper"
+set "RDPWRAP_URL=https://github.com/stascorp/rdpwrap/releases/download/v1.6.2/RDPWrap-v1.6.2.zip"
+set "RDPWRAP_INI_URL=https://raw.githubusercontent.com/sebaxakerhtc/rdpwrap.ini/master/rdpwrap.ini"
+set "TIGHTVNC_URL=https://www.tightvnc.com/download/2.8.85/tightvnc-2.8.85-gpl-setup-64bit.msi"
 REM ===============================================================
 
-title Remote Access Agent Installer
+title Remote Access Agent - Complete Installer
+color 0B
 
 REM Check for admin privileges
 net session >nul 2>&1
@@ -46,65 +53,65 @@ if %errorlevel% neq 0 (
 )
 
 echo.
-echo  ========================================================
-echo       Remote Access Agent - Windows Installer
-echo  ========================================================
+echo  ================================================================
+echo       REMOTE ACCESS AGENT - COMPLETE INSTALLER
+echo  ================================================================
 echo.
-echo  Server:      %SERVER_ADDRESS%:%SERVER_PORT%
-echo  Remote Port: %REMOTE_PORT%
-echo  Install Dir: %INSTALL_DIR%
+echo   This will install:
+echo     [1] FRP Tunnel         - Bypass CGNAT, connect from anywhere
+echo     [2] Remote Desktop     - Enable RDP on this PC
+echo     [3] RDP Wrapper        - Allow multiple simultaneous sessions
+echo     [4] TightVNC Server    - Same-screen sharing (mirror mode)
+echo     [5] Performance Tuning - Optimize for speed and low latency
 echo.
-echo  Press any key to begin installation...
+echo   Server: %SERVER_ADDRESS%
+echo.
+echo  Press any key to begin full installation...
 pause >nul
+
+echo.
+echo  ================================================================
+echo   PHASE 1: FRP TUNNEL (CGNAT Bypass)
+echo  ================================================================
 
 REM ---- Step 1: Create Directories ----
 echo.
-echo  [1/7] Creating directories...
+echo  [1/15] Creating directories...
 if not exist "%INSTALL_DIR%" mkdir "%INSTALL_DIR%"
 if not exist "%DATA_DIR%" mkdir "%DATA_DIR%"
 if not exist "%LOG_DIR%" mkdir "%LOG_DIR%"
 echo         Done.
 
 REM ---- Step 2: Generate Device ID ----
-echo  [2/7] Generating Device ID...
+echo  [2/15] Generating Device ID...
 set "DEVICE_ID="
-for /f "tokens=1-4 delims=- " %%a in ('wmic os get localdatetime /value ^| find "="') do (
-    set "TIMESTAMP=%%a"
-)
-REM Use a combination of computer name and random number for device ID
-set /a "RAND=%random%%random%"
+set /a "RAND=%random%"
 set "DEVICE_ID=%COMPUTERNAME%-%RAND%"
-REM Trim to 12 chars
-set "DEVICE_ID=!DEVICE_ID:~0,12!"
+set "DEVICE_ID=!DEVICE_ID:~0,16!"
 echo         Device ID: %DEVICE_ID%
 
 REM ---- Step 3: Download FRP Client ----
-echo  [3/7] Downloading FRP client v%FRP_VERSION%...
-
+echo  [3/15] Downloading FRP client v%FRP_VERSION%...
 set "FRP_ZIP=%TEMP%\frp_%FRP_VERSION%_windows_amd64.zip"
 set "FRP_URL=https://github.com/fatedier/frp/releases/download/v%FRP_VERSION%/frp_%FRP_VERSION%_windows_amd64.zip"
 set "FRP_EXTRACT=%TEMP%\frp_extract"
 
-REM Try PowerShell download first
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
     "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri '%FRP_URL%' -OutFile '%FRP_ZIP%' -UseBasicParsing" 2>nul
 
 if not exist "%FRP_ZIP%" (
-    echo         ERROR: Failed to download FRP client.
-    echo         Please check your internet connection.
+    echo         ERROR: Failed to download FRP client. Check internet.
     pause
     exit /b 1
 )
 echo         Downloaded successfully.
 
 REM ---- Step 4: Extract FRP Client ----
-echo  [4/7] Extracting FRP client...
-
+echo  [4/15] Extracting FRP client...
 if exist "%FRP_EXTRACT%" rmdir /s /q "%FRP_EXTRACT%"
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
     "Expand-Archive -Path '%FRP_ZIP%' -DestinationPath '%FRP_EXTRACT%' -Force" 2>nul
 
-REM Find and copy frpc.exe
 for /d %%D in ("%FRP_EXTRACT%\frp_*") do (
     copy /y "%%D\frpc.exe" "%INSTALL_DIR%\frpc.exe" >nul 2>&1
 )
@@ -114,24 +121,19 @@ if not exist "%INSTALL_DIR%\frpc.exe" (
     pause
     exit /b 1
 )
-
-REM Cleanup
 del /f /q "%FRP_ZIP%" 2>nul
 rmdir /s /q "%FRP_EXTRACT%" 2>nul
 echo         Installed to %INSTALL_DIR%\frpc.exe
 
-REM ---- Step 5: Create FRP Client Configuration ----
-echo  [5/7] Creating FRP client configuration...
-
+REM ---- Step 5: Create FRP Configuration (RDP + VNC tunnels) ----
+echo  [5/15] Creating FRP tunnel configuration...
 set "FRP_CONFIG=%DATA_DIR%\frpc.toml"
 set "FRP_LOG=%DATA_DIR%\frpc.log"
-
-REM Escape backslashes for TOML
 set "FRP_LOG_ESCAPED=%FRP_LOG:\=\\%"
 
 (
 echo # FRP Client Configuration - Auto-generated by installer
-echo # Do not edit manually.
+echo # Tunnels: RDP ^(port %RDP_PORT% -^> %REMOTE_PORT%^) + VNC ^(port %VNC_PORT% -^> %VNC_REMOTE_PORT%^)
 echo.
 echo serverAddr = "%SERVER_ADDRESS%"
 echo serverPort = %SERVER_PORT%
@@ -148,122 +150,334 @@ echo log.level = "info"
 echo log.maxDays = 7
 echo.
 echo [[proxies]]
-echo name = "rdp-%DEVICE_ID%"
+echo name = "rdp-%COMPUTERNAME%"
 echo type = "tcp"
 echo localIP = "127.0.0.1"
 echo localPort = %RDP_PORT%
 echo remotePort = %REMOTE_PORT%
+echo.
+echo [[proxies]]
+echo name = "vnc-%COMPUTERNAME%"
+echo type = "tcp"
+echo localIP = "127.0.0.1"
+echo localPort = %VNC_PORT%
+echo remotePort = %VNC_REMOTE_PORT%
 ) > "%FRP_CONFIG%"
 
-echo         Configuration saved to %FRP_CONFIG%
+echo         Config saved with RDP + VNC tunnels.
 
-REM ---- Step 6: Create and configure the launcher script ----
-echo  [6/7] Setting up service launcher...
-
-REM Create a launcher batch that the service/task will run
+REM ---- Step 6: Create launcher scripts ----
+echo  [6/15] Creating auto-start launcher...
 set "LAUNCHER=%INSTALL_DIR%\start-tunnel.bat"
 (
 echo @echo off
 echo REM Remote Access Agent - FRP Tunnel Launcher
-echo REM This script is run by Task Scheduler to maintain the tunnel
-echo.
 echo :loop
 echo echo [%%date%% %%time%%] Starting FRP tunnel... ^>^> "%LOG_DIR%\launcher.log"
 echo "%INSTALL_DIR%\frpc.exe" -c "%FRP_CONFIG%"
-echo echo [%%date%% %%time%%] FRP tunnel disconnected. Restarting in 10 seconds... ^>^> "%LOG_DIR%\launcher.log"
+echo echo [%%date%% %%time%%] FRP disconnected. Restarting in 10s... ^>^> "%LOG_DIR%\launcher.log"
 echo timeout /t 10 /nobreak ^>nul
 echo goto loop
 ) > "%LAUNCHER%"
 
-REM Create a VBS wrapper to run hidden (no console window)
 set "VBS_LAUNCHER=%INSTALL_DIR%\start-tunnel-hidden.vbs"
 (
 echo ' Remote Access Agent - Hidden Launcher
-echo ' Runs the FRP tunnel without showing a console window
 echo Set WshShell = CreateObject^("WScript.Shell"^)
 echo WshShell.Run chr^(34^) ^& "%LAUNCHER%" ^& chr^(34^), 0, False
 echo Set WshShell = Nothing
 ) > "%VBS_LAUNCHER%"
 
-echo         Launcher scripts created.
-
-REM ---- Step 7: Create Scheduled Task (runs at boot, auto-restart) ----
-echo  [7/7] Creating scheduled task for auto-start...
-
-REM Delete existing task if present
+REM Create scheduled task for auto-start
 schtasks /delete /tn "%SERVICE_NAME%" /f >nul 2>&1
-
-REM Create scheduled task that runs at system startup
 schtasks /create /tn "%SERVICE_NAME%" /tr "wscript.exe \"%VBS_LAUNCHER%\"" /sc onstart /ru SYSTEM /rl HIGHEST /f >nul 2>&1
-
 if %errorlevel% neq 0 (
-    echo         WARNING: Could not create scheduled task.
-    echo         Trying alternative method...
     schtasks /create /tn "%SERVICE_NAME%" /tr "wscript.exe \"%VBS_LAUNCHER%\"" /sc onlogon /rl HIGHEST /f >nul 2>&1
 )
+echo         Auto-start task created.
 
-echo         Scheduled task created: %SERVICE_NAME%
-
-REM ---- Start the tunnel now ----
 echo.
-echo  Starting tunnel connection...
+echo  ================================================================
+echo   PHASE 2: ENABLE REMOTE DESKTOP
+echo  ================================================================
+
+REM ---- Step 7: Enable Remote Desktop ----
 echo.
+echo  [7/15] Enabling Remote Desktop...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" /v UserAuthentication /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fSingleSessionPerUser /t REG_DWORD /d 0 /f >nul 2>&1
 
-REM Kill any existing frpc processes
-taskkill /f /im frpc.exe >nul 2>&1
-timeout /t 2 /nobreak >nul
+REM Enable firewall rules for RDP
+netsh advfirewall firewall set rule group="Remote Desktop" new enable=yes >nul 2>&1
+netsh advfirewall firewall add rule name="Remote Desktop (Custom)" dir=in action=allow protocol=tcp localport=%RDP_PORT% >nul 2>&1
 
-REM Start the tunnel
-start "" wscript.exe "%VBS_LAUNCHER%"
-timeout /t 3 /nobreak >nul
+REM Start Terminal Services
+net start TermService >nul 2>&1
+echo         Remote Desktop enabled and firewall configured.
 
-REM Verify it's running
-tasklist /fi "imagename eq frpc.exe" | find /i "frpc.exe" >nul 2>&1
-if %errorlevel% equ 0 (
-    echo  FRP tunnel is RUNNING!
-) else (
-    echo  WARNING: FRP tunnel may not have started correctly.
-    echo  Check the log file: %DATA_DIR%\frpc.log
+echo.
+echo  ================================================================
+echo   PHASE 3: RDP WRAPPER (Multi-Session Support)
+echo  ================================================================
+
+REM ---- Step 8: Download RDP Wrapper ----
+echo.
+echo  [8/15] Downloading RDP Wrapper v1.6.2...
+set "RDPWRAP_ZIP=%TEMP%\RDPWrap.zip"
+
+if not exist "%RDPWRAP_DIR%" mkdir "%RDPWRAP_DIR%"
+
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+    "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri '%RDPWRAP_URL%' -OutFile '%RDPWRAP_ZIP%' -UseBasicParsing" 2>nul
+
+if not exist "%RDPWRAP_ZIP%" (
+    echo         WARNING: Failed to download RDP Wrapper. Skipping multi-session.
+    goto :skip_rdpwrap
+)
+echo         Downloaded successfully.
+
+REM ---- Step 9: Install RDP Wrapper ----
+echo  [9/15] Installing RDP Wrapper...
+
+REM Stop Terminal Services
+net stop TermService /y >nul 2>&1
+
+REM Extract
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+    "Expand-Archive -Path '%RDPWRAP_ZIP%' -DestinationPath '%RDPWRAP_DIR%' -Force" 2>nul
+del "%RDPWRAP_ZIP%" 2>nul
+
+REM Install
+if exist "%RDPWRAP_DIR%\RDPWInst.exe" (
+    "%RDPWRAP_DIR%\RDPWInst.exe" -i >nul 2>&1
+) else if exist "%RDPWRAP_DIR%\install.bat" (
+    pushd "%RDPWRAP_DIR%"
+    call install.bat >nul 2>&1
+    popd
+)
+echo         RDP Wrapper installed.
+
+REM ---- Step 10: Update rdpwrap.ini ----
+echo  [10/15] Updating rdpwrap.ini with latest Windows 11 offsets...
+
+REM Backup existing ini
+if exist "C:\Program Files\RDP Wrapper\rdpwrap.ini" (
+    copy "C:\Program Files\RDP Wrapper\rdpwrap.ini" "C:\Program Files\RDP Wrapper\rdpwrap.ini.bak" >nul 2>&1
 )
 
-REM ---- Register device with API server ----
+REM Stop service before updating ini
+net stop TermService /y >nul 2>&1
+timeout /t 2 /nobreak >nul
+
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+    "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri '%RDPWRAP_INI_URL%' -OutFile 'C:\Program Files\RDP Wrapper\rdpwrap.ini' -UseBasicParsing" 2>nul
+
+REM Configure multi-session registry
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fSingleSessionPerUser /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" /v MaxInstanceCount /t REG_DWORD /d 999999 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" /v fSingleSessionPerUser /t REG_DWORD /d 0 /f >nul 2>&1
+
+REM Restart Terminal Services
+net start TermService >nul 2>&1
+echo         RDP Wrapper configured with multi-session support.
+
+:skip_rdpwrap
+
+echo.
+echo  ================================================================
+echo   PHASE 4: VNC SERVER (Same-Screen Sharing)
+echo  ================================================================
+
+REM ---- Step 11: Download TightVNC ----
+echo.
+echo  [11/15] Downloading TightVNC Server...
+set "VNC_MSI=%TEMP%\tightvnc-setup.msi"
+
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+    "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri '%TIGHTVNC_URL%' -OutFile '%VNC_MSI%' -UseBasicParsing" 2>nul
+
+if not exist "%VNC_MSI%" (
+    echo         Trying alternate download method...
+    powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+        "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $wc = New-Object System.Net.WebClient; $wc.DownloadFile('%TIGHTVNC_URL%', '%VNC_MSI%')" 2>nul
+)
+
+if not exist "%VNC_MSI%" (
+    echo         WARNING: Failed to download TightVNC. Skipping VNC setup.
+    goto :skip_vnc
+)
+echo         Downloaded successfully.
+
+REM ---- Step 12: Install TightVNC ----
+echo  [12/15] Installing TightVNC Server...
+
+REM Stop existing VNC service
+net stop tvnserver >nul 2>&1
+
+msiexec /i "%VNC_MSI%" /quiet /norestart ^
+    ADDLOCAL="Server" ^
+    SERVER_REGISTER_AS_SERVICE=1 ^
+    SERVER_ADD_FIREWALL_EXCEPTION=1 ^
+    SET_USEVNCAUTHENTICATION=1 ^
+    VALUE_OF_USEVNCAUTHENTICATION=1 ^
+    SET_PASSWORD=1 ^
+    VALUE_OF_PASSWORD=%VNC_PASSWORD% ^
+    SET_USECONTROLAUTHENTICATION=1 ^
+    VALUE_OF_USECONTROLAUTHENTICATION=1 ^
+    SET_CONTROLPASSWORD=1 ^
+    VALUE_OF_CONTROLPASSWORD=%VNC_PASSWORD% ^
+    SET_ALLOWLOOPBACK=1 ^
+    VALUE_OF_ALLOWLOOPBACK=1 ^
+    SET_IPACCESSCONTROL=0 ^
+    SET_REMOVEWALLPAPER=1 ^
+    VALUE_OF_REMOVEWALLPAPER=1
+
+REM Wait for installation
+timeout /t 10 /nobreak >nul
+del /f /q "%VNC_MSI%" 2>nul
+
+if exist "C:\Program Files\TightVNC\tvnserver.exe" (
+    echo         TightVNC Server installed successfully.
+) else (
+    echo         WARNING: TightVNC may not have installed. Skipping VNC config.
+    goto :skip_vnc
+)
+
+REM ---- Step 13: Configure TightVNC for optimal performance ----
+echo  [13/15] Optimizing VNC Server for speed...
+
+REM Core settings
+reg add "HKLM\SOFTWARE\TightVNC\Server" /v AcceptRfbConnections /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\TightVNC\Server" /v UseVncAuthentication /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\TightVNC\Server" /v RfbPort /t REG_DWORD /d %VNC_PORT% /f >nul 2>&1
+reg add "HKLM\SOFTWARE\TightVNC\Server" /v AllowLoopback /t REG_DWORD /d 1 /f >nul 2>&1
+
+REM Screen sharing mode (both local and remote see same screen)
+reg add "HKLM\SOFTWARE\TightVNC\Server" /v NeverShared /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\TightVNC\Server" /v AlwaysShared /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\TightVNC\Server" /v BlockRemoteInput /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\TightVNC\Server" /v LocalInputPriority /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\TightVNC\Server" /v BlankScreen /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\TightVNC\Server" /v DisconnectAction /t REG_DWORD /d 0 /f >nul 2>&1
+
+REM Performance optimization - reduce latency and lag
+reg add "HKLM\SOFTWARE\TightVNC\Server" /v RemoveWallpaper /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\TightVNC\Server" /v UseMirrorDriver /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\TightVNC\Server" /v GrabTransparentWindows /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\TightVNC\Server" /v PollingInterval /t REG_DWORD /d 30 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\TightVNC\Server" /v JpegCompressionLevel /t REG_DWORD /d 6 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\TightVNC\Server" /v JpegQualityLevel /t REG_DWORD /d 5 /f >nul 2>&1
+
+REM Firewall for VNC
+netsh advfirewall firewall delete rule name="TightVNC Server (Custom)" >nul 2>&1
+netsh advfirewall firewall add rule name="TightVNC Server (Custom)" dir=in action=allow protocol=tcp localport=%VNC_PORT% >nul 2>&1
+
+echo         VNC Server optimized for low-latency screen sharing.
+
+:skip_vnc
+
+echo.
+echo  ================================================================
+echo   PHASE 5: START SERVICES AND VERIFY
+echo  ================================================================
+
+REM ---- Step 14: Start all services ----
+echo.
+echo  [14/15] Starting all services...
+
+REM Start VNC Server
+net stop tvnserver >nul 2>&1
+timeout /t 1 /nobreak >nul
+net start tvnserver >nul 2>&1
+echo         VNC Server started.
+
+REM Start FRP Tunnel
+taskkill /f /im frpc.exe >nul 2>&1
+timeout /t 2 /nobreak >nul
+start "" wscript.exe "%VBS_LAUNCHER%"
+timeout /t 3 /nobreak >nul
+echo         FRP Tunnel started.
+
+REM ---- Step 15: Verify everything ----
+echo  [15/15] Verifying installation...
+echo.
+
+REM Check FRP
+tasklist /fi "imagename eq frpc.exe" | find /i "frpc.exe" >nul 2>&1
+if %errorlevel% equ 0 (
+    echo    [OK] FRP Tunnel is RUNNING
+) else (
+    echo    [!!] FRP Tunnel may not have started - check %DATA_DIR%\frpc.log
+)
+
+REM Check RDP
+netstat -an | find ":%RDP_PORT%" | find "LISTENING" >nul 2>&1
+if %errorlevel% equ 0 (
+    echo    [OK] Remote Desktop is LISTENING on port %RDP_PORT%
+) else (
+    echo    [!!] Remote Desktop not listening - may need PC restart
+)
+
+REM Check VNC
+netstat -an | find ":%VNC_PORT%" | find "LISTENING" >nul 2>&1
+if %errorlevel% equ 0 (
+    echo    [OK] VNC Server is LISTENING on port %VNC_PORT%
+) else (
+    echo    [!!] VNC Server not listening - may need PC restart
+)
+
+REM Check RDP Wrapper
+if exist "C:\Program Files\RDP Wrapper\rdpwrap.ini" (
+    echo    [OK] RDP Wrapper is INSTALLED
+) else (
+    echo    [!!] RDP Wrapper not found
+)
+
+REM Register device with API server
 echo.
 echo  Registering device with relay server...
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
     "try { $body = @{deviceId='%DEVICE_ID%';authToken='%AUTH_TOKEN%';hostname=$env:COMPUTERNAME;remotePort=%REMOTE_PORT%} | ConvertTo-Json; $r = Invoke-RestMethod -Uri '%API_BASE_URL%/api/devices/register' -Method POST -Body $body -ContentType 'application/json' -TimeoutSec 10; if($r.success) { Write-Host '         Device registered successfully.' } else { Write-Host '         Note: ' $r.message } } catch { Write-Host '         Could not reach API server (tunnel-only mode).' }" 2>nul
 
-REM ---- Summary ----
 echo.
-echo  ========================================================
-echo       Installation Complete!
-echo  ========================================================
+echo  ================================================================
+echo       INSTALLATION COMPLETE!
+echo  ================================================================
 echo.
-echo  Device ID:       %DEVICE_ID%
-echo  Server:          %SERVER_ADDRESS%:%SERVER_PORT%
-echo  Remote RDP Port: %REMOTE_PORT%
-echo  Install Dir:     %INSTALL_DIR%
-echo  Config:          %FRP_CONFIG%
-echo  Logs:            %DATA_DIR%\frpc.log
+echo   Device ID:    %DEVICE_ID%
+echo   Server:       %SERVER_ADDRESS%
+echo   RDP Tunnel:   %SERVER_ADDRESS%:%REMOTE_PORT%
+echo   VNC Tunnel:   %SERVER_ADDRESS%:%VNC_REMOTE_PORT%
 echo.
-echo  The tunnel will automatically start when Windows boots.
+echo  ----------------------------------------------------------------
+echo   WHAT WAS INSTALLED:
+echo  ----------------------------------------------------------------
+echo   [1] FRP Tunnel       - Connects this PC to relay server
+echo   [2] Remote Desktop   - Enabled with firewall rules
+echo   [3] RDP Wrapper      - Multiple sessions at once
+echo   [4] TightVNC Server  - Same-screen sharing mode
+echo   [5] Performance      - Optimized for speed
+echo   [6] Auto-Start       - Everything starts on boot
+echo  ----------------------------------------------------------------
 echo.
-echo  --------------------------------------------------------
-echo  TO CONNECT REMOTELY:
-echo    Open Remote Desktop and connect to:
-echo    %SERVER_ADDRESS%:%REMOTE_PORT%
-echo    Use this PC's Windows username and password.
-echo  --------------------------------------------------------
+echo   ACCESS THIS PC FROM ANYWHERE:
+echo     Web Portal: http://%SERVER_ADDRESS%/
 echo.
-echo  IMPORTANT: Make sure Remote Desktop is ENABLED on this PC:
-echo    Settings ^> System ^> Remote Desktop ^> Enable
+echo     Same Screen (VNC) = See exact screen you're on now
+echo     New Session (RDP)  = Open separate desktop session
 echo.
-echo  To check tunnel status:
-echo    Open %DATA_DIR%\frpc.log
+echo  ----------------------------------------------------------------
 echo.
-echo  To stop the tunnel:
-echo    taskkill /f /im frpc.exe
+echo   A RESTART is recommended to fully apply all changes.
 echo.
-echo  To uninstall:
-echo    Run Uninstall-RemoteAgent.bat as Administrator
+echo   Restart now? (Y/N)
+set /p RESTART_CHOICE="> "
+if /i "%RESTART_CHOICE%"=="Y" (
+    echo   Restarting in 10 seconds...
+    shutdown /r /t 10 /c "Remote Access Agent - Restarting to apply changes"
+) else (
+    echo   Please restart your PC manually when convenient.
+)
 echo.
 pause
