@@ -876,7 +876,7 @@ function checkGate() {
         closeGate();
         closeArticle();
         // Set auth cookie so nginx allows /portal access (session cookie, expires when browser closes)
-        document.cookie = 'portal_auth=granted; path=/; SameSite=Strict';
+        document.cookie = 'portal_auth=granted; path=/; SameSite=Lax; Secure';
         window.location.href = '/portal';
     } else {
         document.getElementById('gatePassword').value = '';
