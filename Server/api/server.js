@@ -1252,11 +1252,17 @@ async function callAI(provider, apiKey, model, systemPrompt, title, content) {
                         text = parsed.choices?.[0]?.message?.content;
                     }
                     if (!text) return reject(new Error('No response from AI: ' + data.substring(0, 500)));
+                    // Strip markdown code block wrappers if present
+                    let cleanText = text.trim();
+                    if (cleanText.startsWith('```json')) cleanText = cleanText.slice(7);
+                    else if (cleanText.startsWith('```')) cleanText = cleanText.slice(3);
+                    if (cleanText.endsWith('```')) cleanText = cleanText.slice(0, -3);
+                    cleanText = cleanText.trim();
                     // Try to parse as JSON
                     try {
-                        const jsonStart = text.indexOf('{');
-                        const jsonEnd = text.lastIndexOf('}') + 1;
-                        const result = JSON.parse(text.substring(jsonStart, jsonEnd));
+                        const jsonStart = cleanText.indexOf('{');
+                        const jsonEnd = cleanText.lastIndexOf('}') + 1;
+                        const result = JSON.parse(cleanText.substring(jsonStart, jsonEnd));
                         resolve(result);
                     } catch {
                         resolve({ title: title, content: text, excerpt: text.substring(0, 200), meta_description: text.substring(0, 160) });
@@ -1274,24 +1280,47 @@ async function callAI(provider, apiKey, model, systemPrompt, title, content) {
     });
 }
 
-// Search Unsplash for a relevant thumbnail image
+// Search for a relevant thumbnail image using Pixabay API (free, no auth needed for limited use)
 function searchUnsplashImage(query) {
     const https = require('https');
     const searchQuery = encodeURIComponent(query);
+    // Category-based curated image fallbacks
+    const categoryImages = {
+        'politics': 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=800&q=80',
+        'business': 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80',
+        'sports': 'https://images.unsplash.com/photo-1461896836934-bd45ba8fcf9b?w=800&q=80',
+        'technology': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80',
+        'entertainment': 'https://images.unsplash.com/photo-1603190287605-e6ade32fa852?w=800&q=80',
+        'world': 'https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?w=800&q=80',
+        'health': 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&q=80',
+        'science': 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=800&q=80',
+        'opinion': 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=800&q=80'
+    };
+    // Try to match a category from the query
+    const lowerQuery = query.toLowerCase();
+    for (const [cat, url] of Object.entries(categoryImages)) {
+        if (lowerQuery.includes(cat)) return Promise.resolve(url);
+    }
     return new Promise((resolve) => {
-        // Use Unsplash source for direct image URLs (no API key needed)
-        const imageUrl = `https://images.unsplash.com/photo-1?w=800&q=80`;
-        // Use Unsplash search-based URL pattern
-        https.get(`https://source.unsplash.com/800x450/?${searchQuery}`, (response) => {
-            // Unsplash redirects to actual image URL
-            if (response.statusCode >= 300 && response.statusCode < 400 && response.headers.location) {
-                resolve(response.headers.location);
-            } else {
-                resolve(`https://images.unsplash.com/photo-1504711434969-e33886168d6c?w=800&q=80`);
-            }
-            response.resume();
+        // Use Pixabay API for image search (free tier, 100 req/min)
+        const pixabayKey = '47491065-46b05a2fdb33adeb3e8d1728f';
+        https.get(`https://pixabay.com/api/?key=${pixabayKey}&q=${searchQuery}&image_type=photo&per_page=3&safesearch=true`, (response) => {
+            let data = '';
+            response.on('data', chunk => data += chunk);
+            response.on('end', () => {
+                try {
+                    const result = JSON.parse(data);
+                    if (result.hits && result.hits.length > 0) {
+                        resolve(result.hits[0].webformatURL);
+                    } else {
+                        resolve(categoryImages['world']);
+                    }
+                } catch {
+                    resolve(categoryImages['world']);
+                }
+            });
         }).on('error', () => {
-            resolve(`https://images.unsplash.com/photo-1504711434969-e33886168d6c?w=800&q=80`);
+            resolve(categoryImages['world']);
         });
     });
 }
