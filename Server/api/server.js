@@ -728,7 +728,7 @@ app.get('/api/cms/articles', (req, res) => {
         if (limit) { sql += ' LIMIT ?'; params.push(parseInt(limit)); }
         if (offset) { sql += ' OFFSET ?'; params.push(parseInt(offset)); }
         const articles = db.prepare(sql).all(...params);
-        const total = db.prepare('SELECT COUNT(*) as c FROM cms_articles' + (status ? ' WHERE status = ?' : '')).get(status || undefined);
+        const total = status ? db.prepare('SELECT COUNT(*) as c FROM cms_articles WHERE status = ?').get(status) : db.prepare('SELECT COUNT(*) as c FROM cms_articles').get();
         res.json({ success: true, articles, total: total ? total.c : articles.length });
     } catch (err) {
         console.error('CMS list articles error:', err);
