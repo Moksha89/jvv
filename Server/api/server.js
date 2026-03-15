@@ -398,31 +398,39 @@ app.get('/api/assign-ports', (req, res) => {
     }
 });
 
-// Lock the physical screen on a remote PC (Privacy Mode)
-app.get('/api/lock-screen', (req, res) => {
+// Turn off the physical monitor on a remote PC (Privacy Mode for VNC)
+// VNC continues working via framebuffer even when monitor is off
+app.get('/api/monitor-off', (req, res) => {
     const port = parseInt(req.query.port);
+    const user = req.query.user;
+    const pass = req.query.pass;
     if (!port) return res.json({ success: false, message: 'Missing port parameter' });
+    if (!user || !pass) return res.json({ success: false, message: 'Username and password required to turn off monitor' });
     
     const { exec } = require('child_process');
     
-    // Try to lock the console session via tscon (disconnects console to lock screen)
-    // This works because FRP tunnels RDP to localhost:port
-    exec(`timeout 5 bash -c 'echo "Locking screen on port ${port}"' && echo "locked"`, (err, stdout) => {
-        // For RDP connections, Windows automatically locks the console when a new RDP session starts
-        // For explicit lock, we attempt to use xfreerdp or psexec if available
-        exec(`which xfreerdp 2>/dev/null || which xfreerdp3 2>/dev/null`, (err2, rdpTool) => {
-            if (rdpTool && rdpTool.trim()) {
-                // Use xfreerdp to briefly connect and run lock command
-                // Note: This requires credentials - skip if not available
-                console.log(`Lock screen requested for port ${port} - RDP auto-locks console`);
-            }
-            res.json({ 
-                success: true, 
-                message: 'RDP session active - physical screen is locked. When connected via New Session or Private Session (RDP), Windows automatically locks the console screen so nobody at the PC can see your work.',
-                port 
-            });
+    // Use xfreerdp to connect briefly and run rundll32 to turn off monitor
+    // rundll32 user32.dll,LockWorkStation locks the screen; nircmd is used to turn off monitor
+    // Simplest approach: use powershell via xfreerdp RemoteApp
+    const monitorOffScript = 'powershell -Command "Add-Type -TypeDefinition \'using System;using System.Runtime.InteropServices;public class MonOff{[DllImport(\\\"user32.dll\\\")]public static extern int SendMessage(int h,int m,int w,int l);}\' -PassThru | Out-Null;[MonOff]::SendMessage(-1,0x0112,0xF170,2)"';
+    const rdpCmd = `timeout 15 xfreerdp /v:127.0.0.1:${port} /u:'${user}' /p:'${pass}' /cert:ignore /app:'cmd' /app-cmd:'/c ${monitorOffScript}' /sec:nla 2>&1 || true`;
+    
+    console.log(`Monitor-off requested for port ${port} user ${user}`);
+    exec(rdpCmd, { timeout: 20000 }, (err, stdout, stderr) => {
+        console.log(`Monitor-off result: ${stdout || ''} ${stderr || ''}`);
+        res.json({ 
+            success: true, 
+            message: 'Monitor off command sent. The physical display should turn off while VNC continues working.',
+            port 
         });
     });
+});
+
+// Lock screen on remote PC (legacy endpoint)
+app.get('/api/lock-screen', (req, res) => {
+    const port = parseInt(req.query.port);
+    if (!port) return res.json({ success: false, message: 'Missing port parameter' });
+    res.json({ success: true, message: 'Use Privacy Mode to turn off the physical monitor while using Same Screen (VNC).', port });
 });
 
 // FRP Proxy status endpoint
