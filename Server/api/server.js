@@ -198,6 +198,41 @@ db.exec(`
     CREATE INDEX IF NOT EXISTS idx_articles_published ON cms_articles(published_at);
 `);
 
+// ============================================================
+// Portal Users & Device Assignments Tables
+// ============================================================
+db.exec(`
+    CREATE TABLE IF NOT EXISTS portal_users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        display_name TEXT DEFAULT '',
+        role TEXT DEFAULT 'user',
+        is_active INTEGER DEFAULT 1,
+        created_at TEXT DEFAULT (datetime('now')),
+        updated_at TEXT DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS device_assignments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        device_id TEXT NOT NULL,
+        assigned_at TEXT DEFAULT (datetime('now')),
+        FOREIGN KEY (user_id) REFERENCES portal_users(id) ON DELETE CASCADE,
+        UNIQUE(user_id, device_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_device_assignments_user ON device_assignments(user_id);
+    CREATE INDEX IF NOT EXISTS idx_device_assignments_device ON device_assignments(device_id);
+`);
+
+// Seed default admin portal user if table is empty
+const portalUserCount = db.prepare('SELECT COUNT(*) as c FROM portal_users').get();
+if (portalUserCount.c === 0) {
+    db.prepare('INSERT INTO portal_users (username, password, display_name, role) VALUES (?, ?, ?, ?)').run('admin', 'admin', 'Administrator', 'admin');
+    console.log('Seeded default portal admin user (admin/admin)');
+}
+
 // Insert default categories if empty
 const catCount = db.prepare('SELECT COUNT(*) as c FROM cms_categories').get();
 if (catCount.c === 0) {
@@ -666,6 +701,201 @@ app.post('/api/clear-rdp-creds', (req, res) => {
     } catch (err) {
         console.error('Clear RDP creds error:', err.message);
         res.json({ success: false, message: err.message });
+    }
+});
+
+// ============================================================
+// Portal Users API Routes
+// ============================================================
+
+// Login - authenticate portal user
+app.post('/api/portal/login', (req, res) => {
+    try {
+        const { username, password } = req.body;
+        if (!username || !password) {
+            return res.status(400).json({ success: false, message: 'Username and password are required' });
+        }
+        const user = db.prepare('SELECT * FROM portal_users WHERE username = ? AND password = ? AND is_active = 1').get(username, password);
+        if (!user) {
+            return res.status(401).json({ success: false, message: 'Invalid username or password' });
+        }
+        // Get assigned devices
+        const assignments = db.prepare('SELECT device_id FROM device_assignments WHERE user_id = ?').all(user.id);
+        const assignedDevices = assignments.map(a => a.device_id);
+        res.json({
+            success: true,
+            user: {
+                id: user.id,
+                username: user.username,
+                displayName: user.display_name,
+                role: user.role,
+                assignedDevices
+            }
+        });
+    } catch (err) {
+        console.error('Portal login error:', err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+// List all portal users
+app.get('/api/portal/users', (req, res) => {
+    try {
+        const users = db.prepare('SELECT id, username, display_name, role, is_active, created_at, updated_at FROM portal_users ORDER BY created_at DESC').all();
+        // Get device assignments for each user
+        const getAssignments = db.prepare('SELECT device_id FROM device_assignments WHERE user_id = ?');
+        const result = users.map(u => ({
+            ...u,
+            assignedDevices: getAssignments.all(u.id).map(a => a.device_id)
+        }));
+        res.json({ success: true, users: result });
+    } catch (err) {
+        console.error('List portal users error:', err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+// Create portal user
+app.post('/api/portal/users', (req, res) => {
+    try {
+        const { username, password, display_name, role } = req.body;
+        if (!username || !password) {
+            return res.status(400).json({ success: false, message: 'Username and password are required' });
+        }
+        const existing = db.prepare('SELECT id FROM portal_users WHERE username = ?').get(username);
+        if (existing) {
+            return res.status(409).json({ success: false, message: 'Username already exists' });
+        }
+        const result = db.prepare('INSERT INTO portal_users (username, password, display_name, role) VALUES (?, ?, ?, ?)').run(
+            username, password, display_name || '', role || 'user'
+        );
+        res.json({ success: true, id: result.lastInsertRowid, message: 'User created' });
+    } catch (err) {
+        console.error('Create portal user error:', err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+// Update portal user
+app.put('/api/portal/users/:id', (req, res) => {
+    try {
+        const { username, password, display_name, role, is_active } = req.body;
+        const user = db.prepare('SELECT * FROM portal_users WHERE id = ?').get(req.params.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        // Check username uniqueness if changing
+        if (username && username !== user.username) {
+            const dup = db.prepare('SELECT id FROM portal_users WHERE username = ? AND id != ?').get(username, req.params.id);
+            if (dup) return res.status(409).json({ success: false, message: 'Username already taken' });
+        }
+        db.prepare(`UPDATE portal_users SET 
+            username = ?, password = ?, display_name = ?, role = ?, is_active = ?, updated_at = datetime('now')
+            WHERE id = ?`).run(
+            username || user.username,
+            password || user.password,
+            display_name !== undefined ? display_name : user.display_name,
+            role || user.role,
+            is_active !== undefined ? (is_active ? 1 : 0) : user.is_active,
+            req.params.id
+        );
+        res.json({ success: true, message: 'User updated' });
+    } catch (err) {
+        console.error('Update portal user error:', err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+// Delete portal user
+app.delete('/api/portal/users/:id', (req, res) => {
+    try {
+        const user = db.prepare('SELECT * FROM portal_users WHERE id = ?').get(req.params.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        // Delete assignments first, then user
+        db.prepare('DELETE FROM device_assignments WHERE user_id = ?').run(req.params.id);
+        db.prepare('DELETE FROM portal_users WHERE id = ?').run(req.params.id);
+        res.json({ success: true, message: 'User deleted' });
+    } catch (err) {
+        console.error('Delete portal user error:', err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+// Assign device to user
+app.post('/api/portal/users/:id/devices', (req, res) => {
+    try {
+        const { device_id } = req.body;
+        if (!device_id) {
+            return res.status(400).json({ success: false, message: 'device_id is required' });
+        }
+        const user = db.prepare('SELECT * FROM portal_users WHERE id = ?').get(req.params.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        try {
+            db.prepare('INSERT INTO device_assignments (user_id, device_id) VALUES (?, ?)').run(req.params.id, device_id);
+        } catch (e) {
+            if (e.message.includes('UNIQUE')) {
+                return res.json({ success: true, message: 'Device already assigned' });
+            }
+            throw e;
+        }
+        res.json({ success: true, message: 'Device assigned' });
+    } catch (err) {
+        console.error('Assign device error:', err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+// Unassign device from user
+app.delete('/api/portal/users/:id/devices/:deviceId', (req, res) => {
+    try {
+        db.prepare('DELETE FROM device_assignments WHERE user_id = ? AND device_id = ?').run(req.params.id, req.params.deviceId);
+        res.json({ success: true, message: 'Device unassigned' });
+    } catch (err) {
+        console.error('Unassign device error:', err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+// Get devices assigned to a user
+app.get('/api/portal/users/:id/devices', (req, res) => {
+    try {
+        const assignments = db.prepare('SELECT device_id FROM device_assignments WHERE user_id = ?').all(req.params.id);
+        res.json({ success: true, devices: assignments.map(a => a.device_id) });
+    } catch (err) {
+        console.error('Get user devices error:', err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+// Bulk update device assignments for a user
+app.put('/api/portal/users/:id/devices', (req, res) => {
+    try {
+        const { device_ids } = req.body;
+        if (!Array.isArray(device_ids)) {
+            return res.status(400).json({ success: false, message: 'device_ids must be an array' });
+        }
+        const user = db.prepare('SELECT * FROM portal_users WHERE id = ?').get(req.params.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        // Replace all assignments
+        const deleteAll = db.prepare('DELETE FROM device_assignments WHERE user_id = ?');
+        const insertOne = db.prepare('INSERT INTO device_assignments (user_id, device_id) VALUES (?, ?)');
+        const updateAssignments = db.transaction((userId, deviceIds) => {
+            deleteAll.run(userId);
+            for (const did of deviceIds) {
+                insertOne.run(userId, did);
+            }
+        });
+        updateAssignments(parseInt(req.params.id), device_ids);
+        res.json({ success: true, message: 'Device assignments updated' });
+    } catch (err) {
+        console.error('Bulk update assignments error:', err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
 

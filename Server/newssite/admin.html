@@ -184,6 +184,11 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg>
         RSS Feeds
     </div>
+    <div class="nav-section">Portal</div>
+    <div class="nav-item" onclick="showPage('users')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        Portal Users
+    </div>
     <div class="nav-section">Settings</div>
     <div class="nav-item" onclick="showPage('settings')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
@@ -466,6 +471,25 @@
         </div>
     </div>
 
+    <!-- Portal Users Page -->
+    <div class="page" id="page-users">
+        <div class="topbar">
+            <h1>Portal Users</h1>
+            <div class="topbar-actions">
+                <button class="btn btn-primary" onclick="openUserModal()">+ New User</button>
+            </div>
+        </div>
+        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">Manage portal access. Assign specific devices to each user so they can only see and connect to their assigned PCs.</p>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr><th>Username</th><th>Display Name</th><th>Role</th><th>Assigned Devices</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="usersTable"><tr><td colspan="6" class="text-center" style="padding:40px;color:var(--text-secondary)">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
     <!-- SEO Page -->
     <div class="page" id="page-seo">
         <div class="topbar"><h1>SEO Settings</h1></div>
@@ -588,6 +612,58 @@
     </div>
 </div>
 
+<!-- User Modal -->
+<div class="modal-overlay hidden" id="userModal">
+    <div class="modal" style="width:600px;">
+        <div class="modal-header">
+            <h2 id="userModalTitle">New User</h2>
+            <button class="btn btn-outline btn-sm" onclick="closeUserModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editUserId">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="userUsername" placeholder="e.g. john">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="text" id="userPassword" placeholder="Enter password">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Display Name</label>
+                    <input type="text" id="userDisplayName" placeholder="e.g. John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="userRole">
+                        <option value="user">User (sees assigned devices only)</option>
+                        <option value="admin">Admin (sees all devices)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Active</label>
+                <label class="toggle">
+                    <input type="checkbox" id="userActive" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="form-group" id="deviceAssignmentGroup">
+                <label>Assign Devices</label>
+                <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">Select which devices this user can access in the portal. Admin users see all devices regardless.</p>
+                <div id="deviceCheckboxes" style="max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:6px;padding:8px;">Loading devices...</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeUserModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveUser()">Save User</button>
+        </div>
+    </div>
+</div>
+
 <!-- Feed Modal -->
 <div class="modal-overlay hidden" id="feedModal">
     <div class="modal" style="width:500px;">
@@ -676,6 +752,7 @@
         if (page === 'settings') loadSiteSettings();
         if (page === 'seo') loadSEOSettings();
         if (page === 'dashboard') loadDashboard();
+        if (page === 'users') loadUsers();
     }
 
     // ===== Init =====
@@ -1246,6 +1323,165 @@
             if (data.success) toast('SEO settings saved', 'success');
             else toast('Error', 'error');
         } catch (e) { toast('Error', 'error'); }
+    }
+
+    // ===== Portal Users =====
+    let allPortalDevices = [];
+
+    async function loadUsers() {
+        try {
+            const res = await fetch(API + '/api/portal/users');
+            const data = await res.json();
+            const tbody = document.getElementById('usersTable');
+            if (!data.users || data.users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="padding:40px;color:var(--text-secondary)">No users. Click "+ New User" to create one.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.users.map(u => {
+                const deviceBadges = (u.assignedDevices || []).map(d => '<span class="badge badge-ai" style="margin-right:4px;">' + escHtml(d) + '</span>').join('') || '<span style="color:var(--text-secondary);font-size:12px;">None</span>';
+                const roleBadge = u.role === 'admin' ? '<span class="badge badge-published">Admin</span>' : '<span class="badge badge-draft">User</span>';
+                const statusBadge = u.is_active ? '<span class="badge badge-published">Active</span>' : '<span class="badge badge-error">Disabled</span>';
+                return `<tr>
+                    <td style="font-weight:600;">${escHtml(u.username)}</td>
+                    <td>${escHtml(u.display_name || '-')}</td>
+                    <td>${roleBadge}</td>
+                    <td>${u.role === 'admin' ? '<span style="color:var(--text-secondary);font-size:12px;">All devices (admin)</span>' : deviceBadges}</td>
+                    <td>${statusBadge}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline" onclick="editUser(${u.id})">Edit</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteUser(${u.id},'${escHtml(u.username)}')">Delete</button>
+                    </td>
+                </tr>`;
+            }).join('');
+        } catch (e) {
+            console.error('Load users error:', e);
+        }
+    }
+
+    async function loadDevicesForAssignment() {
+        try {
+            // Fetch both API devices and FRP proxies
+            const [devRes, frpRes] = await Promise.all([
+                fetch(API + '/api/devices').catch(() => null),
+                fetch(API + '/api/frp/proxies').catch(() => null)
+            ]);
+            const apiDevices = devRes && devRes.ok ? (await devRes.json()).devices || [] : [];
+            const frpData = frpRes && frpRes.ok ? (await frpRes.json()).proxies || [] : [];
+            allPortalDevices = [];
+            // From FRP proxies
+            for (const proxy of frpData) {
+                if (proxy.name && proxy.name.startsWith('vnc-')) continue;
+                const devName = proxy.name.replace('rdp-', '');
+                const apiDev = apiDevices.find(d => proxy.name.includes(d.deviceId));
+                const displayName = apiDev ? (apiDev.hostname || devName) : devName;
+                if (!allPortalDevices.some(d => d.id === devName)) {
+                    allPortalDevices.push({ id: devName, displayName, online: proxy.status === 'online' });
+                }
+            }
+            // From API devices not in FRP
+            for (const dev of apiDevices) {
+                if (!allPortalDevices.some(d => d.id === dev.deviceId || dev.deviceId.includes(d.id) || d.id.includes(dev.deviceId))) {
+                    allPortalDevices.push({ id: dev.deviceId, displayName: dev.hostname || dev.deviceId, online: dev.isOnline });
+                }
+            }
+        } catch (e) {
+            console.error('Load devices for assignment error:', e);
+        }
+    }
+
+    async function openUserModal(user) {
+        document.getElementById('editUserId').value = user ? user.id : '';
+        document.getElementById('userModalTitle').textContent = user ? 'Edit User' : 'New User';
+        document.getElementById('userUsername').value = user ? user.username : '';
+        document.getElementById('userPassword').value = user ? user.password : '';
+        document.getElementById('userDisplayName').value = user ? (user.display_name || '') : '';
+        document.getElementById('userRole').value = user ? user.role : 'user';
+        document.getElementById('userActive').checked = user ? !!user.is_active : true;
+        // Load devices for checkboxes
+        await loadDevicesForAssignment();
+        const assignedDevices = user ? (user.assignedDevices || []) : [];
+        const container = document.getElementById('deviceCheckboxes');
+        if (allPortalDevices.length === 0) {
+            container.innerHTML = '<p style="color:var(--text-secondary);font-size:13px;padding:8px;">No devices registered yet. Devices will appear here once PCs connect.</p>';
+        } else {
+            container.innerHTML = allPortalDevices.map(d => {
+                const checked = assignedDevices.includes(d.id) ? 'checked' : '';
+                const statusDot = d.online ? '<span style="color:#2E7D32;">&#9679;</span>' : '<span style="color:#999;">&#9679;</span>';
+                return `<label style="display:flex;align-items:center;gap:8px;padding:6px 4px;cursor:pointer;border-bottom:1px solid var(--border);">
+                    <input type="checkbox" value="${escHtml(d.id)}" ${checked} style="width:16px;height:16px;">
+                    ${statusDot}
+                    <span style="font-weight:600;font-size:13px;">${escHtml(d.displayName)}</span>
+                    <span style="color:var(--text-secondary);font-size:11px;">(${escHtml(d.id)})</span>
+                </label>`;
+            }).join('');
+        }
+        document.getElementById('userModal').classList.remove('hidden');
+    }
+
+    function closeUserModal() {
+        document.getElementById('userModal').classList.add('hidden');
+    }
+
+    async function editUser(id) {
+        try {
+            const res = await fetch(API + '/api/portal/users');
+            const data = await res.json();
+            const user = (data.users || []).find(u => u.id === id);
+            if (user) {
+                // Also fetch the password for editing
+                openUserModal(user);
+            }
+        } catch (e) { toast('Error loading user', 'error'); }
+    }
+
+    async function saveUser() {
+        const id = document.getElementById('editUserId').value;
+        const username = document.getElementById('userUsername').value;
+        const password = document.getElementById('userPassword').value;
+        const display_name = document.getElementById('userDisplayName').value;
+        const role = document.getElementById('userRole').value;
+        const is_active = document.getElementById('userActive').checked;
+        if (!username || !password) return toast('Username and password are required', 'error');
+
+        // Get selected devices from checkboxes
+        const checkboxes = document.querySelectorAll('#deviceCheckboxes input[type="checkbox"]:checked');
+        const device_ids = Array.from(checkboxes).map(cb => cb.value);
+
+        try {
+            const url = id ? API + '/api/portal/users/' + id : API + '/api/portal/users';
+            const method = id ? 'PUT' : 'POST';
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password, display_name, role, is_active })
+            });
+            const data = await res.json();
+            if (!data.success) {
+                toast(data.message || 'Error saving user', 'error');
+                return;
+            }
+            // Now update device assignments
+            const userId = id || data.id;
+            await fetch(API + '/api/portal/users/' + userId + '/devices', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ device_ids })
+            });
+            toast(id ? 'User updated' : 'User created', 'success');
+            closeUserModal();
+            loadUsers();
+        } catch (e) {
+            toast('Error saving user', 'error');
+        }
+    }
+
+    async function deleteUser(id, username) {
+        if (!confirm('Delete user "' + username + '"? This will also remove all device assignments.')) return;
+        try {
+            await fetch(API + '/api/portal/users/' + id, { method: 'DELETE' });
+            toast('User deleted', 'success');
+            loadUsers();
+        } catch (e) { toast('Error deleting user', 'error'); }
     }
 
     // ===== Utilities =====
