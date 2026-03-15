@@ -25,6 +25,26 @@
             --shadow-hover: 0 4px 16px rgba(0,0,0,0.12);
             --radius: 8px;
         }
+        /* Dark Mode */
+        body.dark-mode {
+            --bg: #121212;
+            --bg-white: #1E1E1E;
+            --text-primary: #E0E0E0;
+            --text-secondary: #B0B0B0;
+            --text-light: #757575;
+            --border: #333;
+            --shadow: 0 2px 8px rgba(0,0,0,0.3);
+            --shadow-hover: 0 4px 16px rgba(0,0,0,0.5);
+        }
+        body.dark-mode .header { background: #1a1a1a; border-color: #333; }
+        body.dark-mode .nav { background: #1a1a1a; border-color: #333; }
+        body.dark-mode .footer { background: #0d0d0d; }
+        body.dark-mode .breaking-bar { background: #B71C1C; }
+        body.dark-mode .article-card { background: var(--bg-white); }
+        body.dark-mode .article-detail { background: var(--bg-white); }
+        body.dark-mode .portal-gate .gate-box { background: #1E1E1E; }
+        .dark-toggle { cursor:pointer;background:none;border:1px solid var(--border);border-radius:20px;padding:6px 12px;font-size:13px;color:var(--text-secondary);display:flex;align-items:center;gap:4px;transition:all .2s; }
+        .dark-toggle:hover { border-color:var(--primary);color:var(--primary); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Noto Sans', sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.6; }
         a { text-decoration: none; color: inherit; }
@@ -535,6 +555,10 @@
             </div>
         </div>
         <div class="header-date" id="currentDate"></div>
+        <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+            <span id="darkModeIcon">&#9790;</span>
+            <span id="darkModeText">Dark</span>
+        </button>
         <div class="search-box">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             <input type="text" placeholder="Search news...">
@@ -616,6 +640,18 @@
             <a href="#">Instagram</a>
             <a href="#">YouTube</a>
             <a href="#">Telegram</a>
+        </div>
+    </div>
+    <!-- Newsletter Subscription -->
+    <div style="background:var(--primary);padding:20px 0;margin-top:20px;border-radius:8px;">
+        <div style="max-width:600px;margin:0 auto;text-align:center;color:white;padding:0 20px;">
+            <h3 style="margin-bottom:8px;">Subscribe to Our Newsletter</h3>
+            <p style="font-size:13px;opacity:0.9;margin-bottom:12px;">Get the latest news delivered to your inbox daily</p>
+            <form onsubmit="subscribeNewsletter(event)" style="display:flex;gap:8px;max-width:400px;margin:0 auto;">
+                <input type="email" id="newsletterEmail" placeholder="Your email address" required style="flex:1;padding:10px 14px;border:none;border-radius:6px;font-size:14px;">
+                <button type="submit" style="padding:10px 20px;background:var(--primary-dark);color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;white-space:nowrap;">Subscribe</button>
+            </form>
+            <div id="newsletterMsg" style="font-size:12px;margin-top:8px;"></div>
         </div>
     </div>
     <div class="footer-bottom">
@@ -802,9 +838,12 @@ async function openArticle(id) {
     }
 
     var initialContent = article.content || ('<p>' + article.excerpt + '</p><p style="color:#9E9E9E;font-style:italic">Loading full article...</p>');
-    document.getElementById('articleContent').innerHTML = renderDetail(article, initialContent);
+    document.getElementById('articleContent').innerHTML = renderDetail(article, initialContent) + renderComments(article.id);
     document.getElementById('articleModal').classList.add('active');
     document.body.style.overflow = 'hidden';
+
+    // Track view
+    trackView(article.id);
 
     if (!article.content && article.slug) {
         try {
@@ -812,12 +851,16 @@ async function openArticle(id) {
             var data = await res.json();
             if (data.success && data.article && data.article.content) {
                 article.content = data.article.content;
-                document.getElementById('articleContent').innerHTML = renderDetail(article, article.content);
+                document.getElementById('articleContent').innerHTML = renderDetail(article, article.content) + renderComments(article.id);
             }
         } catch (e) {
             console.error('Failed to load full article:', e);
         }
     }
+
+    // Load comments and SEO structured data
+    loadComments(article.id);
+    if (article.slug) injectStructuredData(article.slug);
 
     setTimeout(attachTriggers, 200);
 }
@@ -883,6 +926,115 @@ function checkGate() {
         document.getElementById('gatePassword').placeholder = 'Incorrect. Try again.';
         document.getElementById('gatePassword').focus();
     }
+}
+
+// ===== Dark Mode =====
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    var isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDark ? '1' : '0');
+    document.getElementById('darkModeIcon').textContent = isDark ? '\u2600' : '\u263E';
+    document.getElementById('darkModeText').textContent = isDark ? 'Light' : 'Dark';
+}
+if (localStorage.getItem('darkMode') === '1') {
+    document.body.classList.add('dark-mode');
+    document.getElementById('darkModeIcon').textContent = '\u2600';
+    document.getElementById('darkModeText').textContent = 'Light';
+}
+
+// ===== Newsletter Subscription =====
+async function subscribeNewsletter(e) {
+    e.preventDefault();
+    var email = document.getElementById('newsletterEmail').value;
+    var msgEl = document.getElementById('newsletterMsg');
+    try {
+        var res = await fetch('/api/newsletter/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
+        });
+        var data = await res.json();
+        msgEl.textContent = data.success ? 'Thank you for subscribing!' : (data.message || 'Error');
+        if (data.success) document.getElementById('newsletterEmail').value = '';
+    } catch (err) {
+        msgEl.textContent = 'Failed to subscribe. Try again.';
+    }
+}
+
+// ===== Comments Section (in article detail) =====
+function renderComments(articleId) {
+    return '<div style="margin-top:30px;padding-top:20px;border-top:2px solid var(--border);">' +
+        '<h3 style="margin-bottom:16px;">Comments</h3>' +
+        '<div id="commentsList-' + articleId + '" style="margin-bottom:20px;"><p style="color:var(--text-light)">Loading comments...</p></div>' +
+        '<div style="background:var(--bg);padding:16px;border-radius:8px;">' +
+        '<h4 style="margin-bottom:12px;">Leave a Comment</h4>' +
+        '<input type="text" id="commentName-' + articleId + '" placeholder="Your Name" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px;background:var(--bg-white);color:var(--text-primary);">' +
+        '<input type="email" id="commentEmail-' + articleId + '" placeholder="Your Email (optional)" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px;background:var(--bg-white);color:var(--text-primary);">' +
+        '<textarea id="commentText-' + articleId + '" placeholder="Write your comment..." rows="3" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px;resize:vertical;background:var(--bg-white);color:var(--text-primary);"></textarea>' +
+        '<button onclick="postComment(' + articleId + ')" style="padding:10px 20px;background:var(--primary);color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;">Post Comment</button>' +
+        '<div id="commentMsg-' + articleId + '" style="font-size:12px;margin-top:8px;color:var(--text-secondary);"></div>' +
+        '</div></div>';
+}
+
+async function loadComments(articleId) {
+    try {
+        var res = await fetch('/api/comments/' + articleId + '?status=approved');
+        var data = await res.json();
+        var el = document.getElementById('commentsList-' + articleId);
+        if (!el) return;
+        if (!data.success || !data.comments || data.comments.length === 0) {
+            el.innerHTML = '<p style="color:var(--text-light);font-style:italic;">No comments yet. Be the first!</p>';
+            return;
+        }
+        el.innerHTML = data.comments.map(function(c) {
+            return '<div style="padding:12px 0;border-bottom:1px solid var(--border);">' +
+                '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">' +
+                '<strong>' + (c.author_name || 'Anonymous') + '</strong>' +
+                '<span style="font-size:12px;color:var(--text-light);">' + new Date(c.created_at).toLocaleDateString() + '</span></div>' +
+                '<p style="color:var(--text-secondary);">' + c.content + '</p></div>';
+        }).join('');
+    } catch (e) { console.error('Failed to load comments:', e); }
+}
+
+async function postComment(articleId) {
+    var name = document.getElementById('commentName-' + articleId).value;
+    var email = document.getElementById('commentEmail-' + articleId).value;
+    var content = document.getElementById('commentText-' + articleId).value;
+    var msgEl = document.getElementById('commentMsg-' + articleId);
+    if (!name || !content) { msgEl.textContent = 'Name and comment are required.'; return; }
+    try {
+        var res = await fetch('/api/comments', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ article_id: articleId, author_name: name, author_email: email, content: content })
+        });
+        var data = await res.json();
+        if (data.success) {
+            msgEl.textContent = 'Comment submitted! It will appear after moderation.';
+            document.getElementById('commentText-' + articleId).value = '';
+        } else {
+            msgEl.textContent = data.message || 'Failed to post comment.';
+        }
+    } catch (e) { msgEl.textContent = 'Error posting comment.'; }
+}
+
+// ===== SEO Structured Data (JSON-LD) =====
+async function injectStructuredData(slug) {
+    try {
+        var res = await fetch('/api/news/' + slug + '/structured-data');
+        var data = await res.json();
+        if (data.success && data.structuredData) {
+            var script = document.createElement('script');
+            script.type = 'application/ld+json';
+            script.textContent = JSON.stringify(data.structuredData);
+            document.head.appendChild(script);
+        }
+    } catch (e) { console.error('Structured data error:', e); }
+}
+
+// ===== Track Article View =====
+async function trackView(articleId) {
+    try { await fetch('/api/article-view/' + articleId, { method: 'POST' }); } catch (e) {}
 }
 
 loadArticles();

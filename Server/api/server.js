@@ -8,12 +8,16 @@ const path = require('path');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const rateLimit = require('express-rate-limit');
+const multer = require('multer');
+const cron = require('node-cron');
+const crypto = require('crypto');
 
 const http = require('http');
 
-// JWT secret - in production use env var
-const JWT_SECRET = process.env.JWT_SECRET || require('crypto').randomBytes(64).toString('hex');
+// JWT expiry
 const JWT_EXPIRY = '24h';
+const SESSION_INACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 minutes inactivity timeout
 
 const app = express();
 const PORT = process.env.API_PORT || 3000;
@@ -27,11 +31,107 @@ if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
 }
 
-// Middleware
-app.use(helmet({ contentSecurityPolicy: false }));
+// Middleware - Enhanced security headers
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+            fontSrc: ["'self'", "https://fonts.gstatic.com"],
+            imgSrc: ["'self'", "data:", "https:", "http:"],
+            connectSrc: ["'self'", "https:"],
+            frameSrc: ["'none'"],
+            objectSrc: ["'none'"],
+            baseUri: ["'self'"]
+        }
+    },
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: 'cross-origin' }
+}));
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(morgan('combined'));
+
+// Rate limiting - general API
+const generalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 500,
+    message: { success: false, message: 'Too many requests, please try again later' },
+    standardHeaders: true,
+    legacyHeaders: false
+});
+app.use('/api/', generalLimiter);
+
+// Rate limiting - login endpoints (strict)
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 10, // 10 attempts per 15 min
+    message: { success: false, message: 'Too many login attempts. Please try again in 15 minutes.' },
+    standardHeaders: true,
+    legacyHeaders: false,
+    skipSuccessfulRequests: true
+});
+
+// IP-based login lockout tracking
+const loginAttempts = new Map(); // ip -> { count, lockedUntil }
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes
+
+function checkLoginLockout(req, res, next) {
+    const ip = req.ip || req.connection.remoteAddress;
+    const record = loginAttempts.get(ip);
+    if (record && record.lockedUntil && Date.now() < record.lockedUntil) {
+        const remainingMs = record.lockedUntil - Date.now();
+        const remainingMin = Math.ceil(remainingMs / 60000);
+        return res.status(429).json({ success: false, message: `Account locked due to too many failed attempts. Try again in ${remainingMin} minute(s).` });
+    }
+    next();
+}
+
+function recordLoginAttempt(ip, success) {
+    if (success) {
+        loginAttempts.delete(ip);
+        return;
+    }
+    const record = loginAttempts.get(ip) || { count: 0, lockedUntil: null };
+    record.count++;
+    if (record.count >= MAX_LOGIN_ATTEMPTS) {
+        record.lockedUntil = Date.now() + LOCKOUT_DURATION;
+        record.count = 0;
+    }
+    loginAttempts.set(ip, record);
+}
+
+// Clean up old lockout records every 30 minutes
+setInterval(() => {
+    const now = Date.now();
+    for (const [ip, record] of loginAttempts.entries()) {
+        if (record.lockedUntil && now > record.lockedUntil) loginAttempts.delete(ip);
+    }
+}, 30 * 60 * 1000);
+
+// Image upload configuration
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+const upload = multer({
+    storage: multer.diskStorage({
+        destination: (req, file, cb) => cb(null, uploadDir),
+        filename: (req, file, cb) => {
+            const ext = path.extname(file.originalname);
+            cb(null, Date.now() + '-' + crypto.randomBytes(8).toString('hex') + ext);
+        }
+    }),
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+    fileFilter: (req, file, cb) => {
+        const allowed = /\.(jpg|jpeg|png|gif|webp|svg)$/i;
+        if (allowed.test(file.originalname)) cb(null, true);
+        else cb(new Error('Only image files are allowed'));
+    }
+});
+
+// Serve uploaded images
+app.use('/uploads', express.static(uploadDir));
 
 // Serve portal (main interface)
 app.get('/', (req, res) => {
@@ -232,6 +332,102 @@ db.exec(`
     CREATE INDEX IF NOT EXISTS idx_device_assignments_device ON device_assignments(device_id);
 `);
 
+// ============================================================
+// New Feature Tables: Audit Log, Comments, Newsletter, Connection Logs, Scheduled Publishing, TOTP
+// ============================================================
+db.exec(`
+    CREATE TABLE IF NOT EXISTS audit_log (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        action TEXT NOT NULL,
+        details TEXT,
+        ip_address TEXT,
+        user_agent TEXT,
+        created_at TEXT DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS comments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        article_id INTEGER NOT NULL,
+        author_name TEXT NOT NULL,
+        author_email TEXT,
+        content TEXT NOT NULL,
+        status TEXT DEFAULT 'pending',
+        ip_address TEXT,
+        created_at TEXT DEFAULT (datetime('now')),
+        FOREIGN KEY (article_id) REFERENCES cms_articles(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT UNIQUE NOT NULL,
+        name TEXT DEFAULT '',
+        is_active INTEGER DEFAULT 1,
+        subscribed_at TEXT DEFAULT (datetime('now')),
+        unsubscribed_at TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS connection_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        username TEXT,
+        device_id TEXT NOT NULL,
+        connection_type TEXT DEFAULT 'rdp',
+        started_at TEXT DEFAULT (datetime('now')),
+        ended_at TEXT,
+        duration_seconds INTEGER DEFAULT 0,
+        ip_address TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS article_views (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        article_id INTEGER NOT NULL,
+        ip_address TEXT,
+        user_agent TEXT,
+        viewed_at TEXT DEFAULT (datetime('now')),
+        FOREIGN KEY (article_id) REFERENCES cms_articles(id) ON DELETE CASCADE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_audit_log_created ON audit_log(created_at);
+    CREATE INDEX IF NOT EXISTS idx_comments_article ON comments(article_id);
+    CREATE INDEX IF NOT EXISTS idx_comments_status ON comments(status);
+    CREATE INDEX IF NOT EXISTS idx_newsletter_email ON newsletter_subscribers(email);
+    CREATE INDEX IF NOT EXISTS idx_connection_logs_user ON connection_logs(user_id);
+    CREATE INDEX IF NOT EXISTS idx_connection_logs_device ON connection_logs(device_id);
+    CREATE INDEX IF NOT EXISTS idx_article_views_article ON article_views(article_id);
+    CREATE INDEX IF NOT EXISTS idx_article_views_date ON article_views(viewed_at);
+`);
+
+// Add scheduled_at column to articles if not exists
+try {
+    db.exec("ALTER TABLE cms_articles ADD COLUMN scheduled_at TEXT");
+} catch (e) { /* column already exists */ }
+
+// Add totp_secret column to portal_users if not exists
+try {
+    db.exec("ALTER TABLE portal_users ADD COLUMN totp_secret TEXT");
+} catch (e) { /* column already exists */ }
+
+// Add totp_enabled column to portal_users if not exists
+try {
+    db.exec("ALTER TABLE portal_users ADD COLUMN totp_enabled INTEGER DEFAULT 0");
+} catch (e) { /* column already exists */ }
+
+// ============================================================
+// Persistent JWT Secret (stored in DB, survives restarts)
+// ============================================================
+let JWT_SECRET;
+(function initJWTSecret() {
+    const row = db.prepare("SELECT value FROM cms_settings WHERE key = 'jwt_secret'").get();
+    if (row && row.value) {
+        JWT_SECRET = row.value;
+        console.log('Loaded persistent JWT secret from database');
+    } else {
+        JWT_SECRET = crypto.randomBytes(64).toString('hex');
+        db.prepare("INSERT OR REPLACE INTO cms_settings (key, value) VALUES ('jwt_secret', ?)").run(JWT_SECRET);
+        console.log('Generated and stored new persistent JWT secret');
+    }
+})();
+
 // Seed default admin portal user if table is empty
 const portalUserCount = db.prepare('SELECT COUNT(*) as c FROM portal_users').get();
 if (portalUserCount.c === 0) {
@@ -387,6 +583,18 @@ const stmts = {
 // Auth Middleware & Admin Login
 // ============================================================
 
+// Audit logging helper
+function logAudit(action, details, req) {
+    try {
+        const ip = req ? (req.ip || req.connection.remoteAddress) : 'system';
+        const ua = req ? (req.headers['user-agent'] || '') : 'system';
+        db.prepare('INSERT INTO audit_log (action, details, ip_address, user_agent) VALUES (?, ?, ?, ?)').run(action, details, ip, ua);
+    } catch (e) { console.error('Audit log error:', e.message); }
+}
+
+// Session activity tracking
+const sessionActivity = new Map(); // token -> lastActivity timestamp
+
 function requireAdmin(req, res, next) {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -398,6 +606,13 @@ function requireAdmin(req, res, next) {
         if (decoded.role !== 'admin') {
             return res.status(403).json({ success: false, message: 'Admin access required' });
         }
+        // Check session inactivity timeout
+        const lastActivity = sessionActivity.get(token);
+        if (lastActivity && (Date.now() - lastActivity) > SESSION_INACTIVITY_TIMEOUT) {
+            sessionActivity.delete(token);
+            return res.status(401).json({ success: false, message: 'Session expired due to inactivity' });
+        }
+        sessionActivity.set(token, Date.now());
         req.adminUser = decoded;
         next();
     } catch (err) {
@@ -405,10 +620,19 @@ function requireAdmin(req, res, next) {
     }
 }
 
-// Admin login - returns JWT token
-app.post('/api/admin/login', (req, res) => {
+// Clean up expired session activity records every 10 minutes
+setInterval(() => {
+    const now = Date.now();
+    for (const [token, lastActivity] of sessionActivity.entries()) {
+        if ((now - lastActivity) > SESSION_INACTIVITY_TIMEOUT * 2) sessionActivity.delete(token);
+    }
+}, 10 * 60 * 1000);
+
+// Admin login - returns JWT token (with rate limiting and lockout)
+app.post('/api/admin/login', loginLimiter, checkLoginLockout, (req, res) => {
     try {
         const { password } = req.body;
+        const ip = req.ip || req.connection.remoteAddress;
         if (!password) {
             return res.status(400).json({ success: false, message: 'Password is required' });
         }
@@ -418,9 +642,14 @@ app.post('/api/admin/login', (req, res) => {
         }
         const isValid = bcrypt.compareSync(password, row.value);
         if (!isValid) {
+            recordLoginAttempt(ip, false);
+            logAudit('admin_login_failed', 'Failed admin login attempt', req);
             return res.status(401).json({ success: false, message: 'Invalid password' });
         }
+        recordLoginAttempt(ip, true);
         const token = jwt.sign({ role: 'admin', iat: Math.floor(Date.now() / 1000) }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+        sessionActivity.set(token, Date.now());
+        logAudit('admin_login', 'Admin logged in successfully', req);
         res.json({ success: true, token, expiresIn: JWT_EXPIRY });
     } catch (err) {
         console.error('Admin login error:', err);
@@ -445,10 +674,12 @@ app.post('/api/admin/change-password', requireAdmin, (req, res) => {
         }
         const row = db.prepare("SELECT value FROM cms_settings WHERE key = 'admin_password'").get();
         if (!bcrypt.compareSync(currentPassword, row.value)) {
+            logAudit('password_change_failed', 'Incorrect current password', req);
             return res.status(401).json({ success: false, message: 'Current password is incorrect' });
         }
         const hashed = bcrypt.hashSync(newPassword, 10);
         db.prepare("UPDATE cms_settings SET value = ? WHERE key = 'admin_password'").run(hashed);
+        logAudit('password_changed', 'Admin password changed', req);
         res.json({ success: true, message: 'Password changed successfully' });
     } catch (err) {
         console.error('Change password error:', err);
@@ -1517,7 +1748,403 @@ app.get('/api/news/:slug', (req, res) => {
         if (!article) return res.status(404).json({ success: false, message: 'Article not found' });
         // Increment views
         db.prepare('UPDATE cms_articles SET views = views + 1 WHERE id = ?').run(article.id);
+        // Track detailed view
+        try {
+            const ip = req.ip || req.connection.remoteAddress;
+            const ua = req.headers['user-agent'] || '';
+            db.prepare('INSERT INTO article_views (article_id, ip_address, user_agent) VALUES (?, ?, ?)').run(article.id, ip, ua);
+        } catch (e) { /* ignore view tracking errors */ }
         res.json({ success: true, article });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ============================================================
+// Image Upload API
+// ============================================================
+app.post('/api/upload/image', requireAdmin, upload.single('image'), (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ success: false, message: 'No image file provided' });
+        const imageUrl = `/uploads/${req.file.filename}`;
+        logAudit('image_upload', `Uploaded image: ${req.file.originalname}`, req);
+        res.json({ success: true, url: imageUrl, filename: req.file.filename });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ============================================================
+// Comments API
+// ============================================================
+// Public: Submit comment
+app.post('/api/comments', (req, res) => {
+    try {
+        const { article_id, author_name, author_email, content } = req.body;
+        if (!article_id || !author_name || !content) {
+            return res.status(400).json({ success: false, message: 'Article ID, author name, and content are required' });
+        }
+        if (content.length > 2000) return res.status(400).json({ success: false, message: 'Comment too long (max 2000 chars)' });
+        const article = db.prepare('SELECT id FROM cms_articles WHERE id = ? AND status = ?').get(article_id, 'published');
+        if (!article) return res.status(404).json({ success: false, message: 'Article not found' });
+        const ip = req.ip || req.connection.remoteAddress;
+        db.prepare('INSERT INTO comments (article_id, author_name, author_email, content, ip_address) VALUES (?, ?, ?, ?, ?)').run(article_id, author_name, author_email || '', content, ip);
+        res.json({ success: true, message: 'Comment submitted for moderation' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Public: Get approved comments for an article
+app.get('/api/comments/:articleId', (req, res) => {
+    try {
+        const comments = db.prepare('SELECT id, author_name, content, created_at FROM comments WHERE article_id = ? AND status = ? ORDER BY created_at DESC').all(req.params.articleId, 'approved');
+        res.json({ success: true, comments });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Admin: Get all comments with moderation
+app.get('/api/admin/comments', requireAdmin, (req, res) => {
+    try {
+        const { status } = req.query;
+        let sql = 'SELECT c.*, a.title as article_title FROM comments c LEFT JOIN cms_articles a ON c.article_id = a.id';
+        const params = [];
+        if (status) { sql += ' WHERE c.status = ?'; params.push(status); }
+        sql += ' ORDER BY c.created_at DESC LIMIT 100';
+        const comments = db.prepare(sql).all(...params);
+        const counts = {
+            pending: db.prepare('SELECT COUNT(*) as c FROM comments WHERE status = ?').get('pending').c,
+            approved: db.prepare('SELECT COUNT(*) as c FROM comments WHERE status = ?').get('approved').c,
+            rejected: db.prepare('SELECT COUNT(*) as c FROM comments WHERE status = ?').get('rejected').c
+        };
+        res.json({ success: true, comments, counts });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Admin: Moderate comment
+app.put('/api/admin/comments/:id', requireAdmin, (req, res) => {
+    try {
+        const { status } = req.body;
+        if (!['approved', 'rejected'].includes(status)) return res.status(400).json({ success: false, message: 'Status must be approved or rejected' });
+        db.prepare('UPDATE comments SET status = ? WHERE id = ?').run(status, req.params.id);
+        logAudit('comment_moderated', `Comment ${req.params.id} ${status}`, req);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Admin: Delete comment
+app.delete('/api/admin/comments/:id', requireAdmin, (req, res) => {
+    try {
+        db.prepare('DELETE FROM comments WHERE id = ?').run(req.params.id);
+        logAudit('comment_deleted', `Comment ${req.params.id} deleted`, req);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ============================================================
+// Newsletter API
+// ============================================================
+// Public: Subscribe
+app.post('/api/newsletter/subscribe', (req, res) => {
+    try {
+        const { email, name } = req.body;
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            return res.status(400).json({ success: false, message: 'Valid email is required' });
+        }
+        const existing = db.prepare('SELECT * FROM newsletter_subscribers WHERE email = ?').get(email);
+        if (existing) {
+            if (existing.is_active) return res.json({ success: true, message: 'Already subscribed' });
+            db.prepare('UPDATE newsletter_subscribers SET is_active = 1, unsubscribed_at = NULL WHERE email = ?').run(email);
+            return res.json({ success: true, message: 'Re-subscribed successfully' });
+        }
+        db.prepare('INSERT INTO newsletter_subscribers (email, name) VALUES (?, ?)').run(email, name || '');
+        res.json({ success: true, message: 'Subscribed successfully' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Public: Unsubscribe
+app.post('/api/newsletter/unsubscribe', (req, res) => {
+    try {
+        const { email } = req.body;
+        db.prepare("UPDATE newsletter_subscribers SET is_active = 0, unsubscribed_at = datetime('now') WHERE email = ?").run(email);
+        res.json({ success: true, message: 'Unsubscribed successfully' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Admin: Get subscribers
+app.get('/api/admin/newsletter', requireAdmin, (req, res) => {
+    try {
+        const subscribers = db.prepare('SELECT * FROM newsletter_subscribers ORDER BY subscribed_at DESC').all();
+        const active = subscribers.filter(s => s.is_active).length;
+        res.json({ success: true, subscribers, activeCount: active, totalCount: subscribers.length });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Admin: Delete subscriber
+app.delete('/api/admin/newsletter/:id', requireAdmin, (req, res) => {
+    try {
+        db.prepare('DELETE FROM newsletter_subscribers WHERE id = ?').run(req.params.id);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ============================================================
+// Analytics API
+// ============================================================
+app.get('/api/admin/analytics', requireAdmin, (req, res) => {
+    try {
+        const { period } = req.query; // 7d, 30d, 90d
+        const days = period === '90d' ? 90 : period === '30d' ? 30 : 7;
+        
+        // Views over time
+        const viewsByDay = db.prepare(`
+            SELECT DATE(viewed_at) as date, COUNT(*) as views 
+            FROM article_views 
+            WHERE viewed_at >= datetime('now', '-${days} days')
+            GROUP BY DATE(viewed_at) ORDER BY date
+        `).all();
+
+        // Popular articles
+        const popularArticles = db.prepare(`
+            SELECT a.id, a.title, a.category, a.views, COUNT(av.id) as recent_views
+            FROM cms_articles a
+            LEFT JOIN article_views av ON a.id = av.article_id AND av.viewed_at >= datetime('now', '-${days} days')
+            WHERE a.status = 'published'
+            GROUP BY a.id ORDER BY recent_views DESC LIMIT 10
+        `).all();
+
+        // Popular categories
+        const popularCategories = db.prepare(`
+            SELECT a.category, SUM(a.views) as total_views, COUNT(a.id) as article_count
+            FROM cms_articles a WHERE a.status = 'published'
+            GROUP BY a.category ORDER BY total_views DESC
+        `).all();
+
+        // Total stats
+        const totalViews = db.prepare('SELECT COUNT(*) as c FROM article_views').get().c;
+        const todayViews = db.prepare("SELECT COUNT(*) as c FROM article_views WHERE viewed_at >= datetime('now', 'start of day')").get().c;
+        const totalArticles = db.prepare("SELECT COUNT(*) as c FROM cms_articles WHERE status = 'published'").get().c;
+        const totalComments = db.prepare('SELECT COUNT(*) as c FROM comments').get().c;
+        const totalSubscribers = db.prepare('SELECT COUNT(*) as c FROM newsletter_subscribers WHERE is_active = 1').get().c;
+
+        res.json({
+            success: true,
+            analytics: {
+                viewsByDay, popularArticles, popularCategories,
+                totalViews, todayViews, totalArticles, totalComments, totalSubscribers
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ============================================================
+// Audit Log API
+// ============================================================
+app.get('/api/admin/audit-log', requireAdmin, (req, res) => {
+    try {
+        const { limit } = req.query;
+        const logs = db.prepare('SELECT * FROM audit_log ORDER BY created_at DESC LIMIT ?').all(parseInt(limit) || 100);
+        res.json({ success: true, logs });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ============================================================
+// Scheduled Publishing
+// ============================================================
+// Cron job: check for scheduled articles every minute
+cron.schedule('* * * * *', () => {
+    try {
+        const now = new Date().toISOString();
+        const scheduled = db.prepare("SELECT id, title FROM cms_articles WHERE status = 'scheduled' AND scheduled_at <= ?").all(now);
+        for (const article of scheduled) {
+            db.prepare("UPDATE cms_articles SET status = 'published', published_at = datetime('now') WHERE id = ?").run(article.id);
+            logAudit('scheduled_publish', `Auto-published scheduled article: ${article.title}`, { ip: 'system', headers: {} });
+            console.log(`Auto-published scheduled article: ${article.title}`);
+        }
+    } catch (e) { console.error('Scheduled publish error:', e.message); }
+});
+
+// ============================================================
+// Connection Activity Logs API
+// ============================================================
+app.post('/api/connection-log', (req, res) => {
+    try {
+        const { user_id, username, device_id, connection_type } = req.body;
+        if (!device_id) return res.status(400).json({ success: false, message: 'device_id required' });
+        const ip = req.ip || req.connection.remoteAddress;
+        const result = db.prepare('INSERT INTO connection_logs (user_id, username, device_id, connection_type, ip_address) VALUES (?, ?, ?, ?, ?)').run(user_id || null, username || 'unknown', device_id, connection_type || 'rdp', ip);
+        res.json({ success: true, logId: result.lastInsertRowid });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+app.put('/api/connection-log/:id/end', (req, res) => {
+    try {
+        db.prepare("UPDATE connection_logs SET ended_at = datetime('now'), duration_seconds = CAST((julianday('now') - julianday(started_at)) * 86400 AS INTEGER) WHERE id = ?").run(req.params.id);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+app.get('/api/admin/connection-logs', requireAdmin, (req, res) => {
+    try {
+        const logs = db.prepare('SELECT * FROM connection_logs ORDER BY started_at DESC LIMIT 200').all();
+        res.json({ success: true, logs });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ============================================================
+// Wake-on-LAN API
+// ============================================================
+app.post('/api/admin/wake-on-lan', requireAdmin, (req, res) => {
+    try {
+        const { mac_address, device_id } = req.body;
+        if (!mac_address) return res.status(400).json({ success: false, message: 'MAC address required' });
+        // Build WOL magic packet
+        const macBytes = mac_address.replace(/[:-]/g, '').match(/.{2}/g).map(b => parseInt(b, 16));
+        const magicPacket = Buffer.alloc(102);
+        for (let i = 0; i < 6; i++) magicPacket[i] = 0xff;
+        for (let i = 0; i < 16; i++) {
+            for (let j = 0; j < 6; j++) {
+                magicPacket[6 + i * 6 + j] = macBytes[j];
+            }
+        }
+        const dgram = require('dgram');
+        const client = dgram.createSocket('udp4');
+        client.send(magicPacket, 0, magicPacket.length, 9, '255.255.255.255', (err) => {
+            client.close();
+            if (err) return res.status(500).json({ success: false, message: 'Failed to send WOL packet' });
+            logAudit('wake_on_lan', `WOL sent to ${mac_address} (${device_id || 'unknown'})`, req);
+            res.json({ success: true, message: 'Wake-on-LAN packet sent' });
+        });
+        client.setBroadcast(true);
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ============================================================
+// Portal Login with Rate Limiting + TOTP/2FA
+// ============================================================
+// TOTP helper functions
+function generateTOTPSecret() {
+    return crypto.randomBytes(20).toString('hex');
+}
+
+function getTOTPCode(secret, timeStep) {
+    timeStep = timeStep || Math.floor(Date.now() / 30000);
+    const buffer = Buffer.alloc(8);
+    buffer.writeUInt32BE(0, 0);
+    buffer.writeUInt32BE(timeStep, 4);
+    const hmac = crypto.createHmac('sha1', Buffer.from(secret, 'hex'));
+    hmac.update(buffer);
+    const hash = hmac.digest();
+    const offset = hash[hash.length - 1] & 0xf;
+    const code = ((hash[offset] & 0x7f) << 24 | (hash[offset + 1] & 0xff) << 16 | (hash[offset + 2] & 0xff) << 8 | (hash[offset + 3] & 0xff)) % 1000000;
+    return code.toString().padStart(6, '0');
+}
+
+function verifyTOTP(secret, token) {
+    const timeStep = Math.floor(Date.now() / 30000);
+    for (let i = -1; i <= 1; i++) {
+        if (getTOTPCode(secret, timeStep + i) === token) return true;
+    }
+    return false;
+}
+
+// Setup 2FA for portal user
+app.post('/api/portal/users/:id/setup-2fa', requireAdmin, (req, res) => {
+    try {
+        const user = db.prepare('SELECT * FROM portal_users WHERE id = ?').get(req.params.id);
+        if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+        const secret = generateTOTPSecret();
+        db.prepare('UPDATE portal_users SET totp_secret = ? WHERE id = ?').run(secret, req.params.id);
+        // Generate otpauth URI for QR code
+        const otpauthUrl = `otpauth://totp/NewsReporter:${user.username}?secret=${Buffer.from(secret, 'hex').toString('base32') || secret}&issuer=NewsReporter&algorithm=SHA1&digits=6&period=30`;
+        logAudit('2fa_setup', `2FA setup for portal user: ${user.username}`, req);
+        res.json({ success: true, secret, otpauthUrl, message: 'Scan the QR code or enter the secret in your authenticator app' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Enable 2FA for portal user
+app.post('/api/portal/users/:id/enable-2fa', requireAdmin, (req, res) => {
+    try {
+        const { token } = req.body;
+        const user = db.prepare('SELECT * FROM portal_users WHERE id = ?').get(req.params.id);
+        if (!user || !user.totp_secret) return res.status(400).json({ success: false, message: 'Setup 2FA first' });
+        if (!verifyTOTP(user.totp_secret, token)) return res.status(400).json({ success: false, message: 'Invalid TOTP code' });
+        db.prepare('UPDATE portal_users SET totp_enabled = 1 WHERE id = ?').run(req.params.id);
+        logAudit('2fa_enabled', `2FA enabled for portal user: ${user.username}`, req);
+        res.json({ success: true, message: '2FA enabled successfully' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Disable 2FA for portal user
+app.post('/api/portal/users/:id/disable-2fa', requireAdmin, (req, res) => {
+    try {
+        db.prepare('UPDATE portal_users SET totp_enabled = 0, totp_secret = NULL WHERE id = ?').run(req.params.id);
+        logAudit('2fa_disabled', `2FA disabled for portal user ${req.params.id}`, req);
+        res.json({ success: true, message: '2FA disabled' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ============================================================
+// SEO Structured Data API (JSON-LD)
+// ============================================================
+app.get('/api/news/:slug/structured-data', (req, res) => {
+    try {
+        const article = db.prepare('SELECT * FROM cms_articles WHERE slug = ? AND status = ?').get(req.params.slug, 'published');
+        if (!article) return res.status(404).json({ success: false });
+        const siteName = db.prepare("SELECT value FROM cms_settings WHERE key = 'site_name'").get();
+        const jsonLd = {
+            "@context": "https://schema.org",
+            "@type": "NewsArticle",
+            "headline": article.title,
+            "description": article.meta_description || article.excerpt || '',
+            "image": article.image_url ? [article.image_url] : [],
+            "datePublished": article.published_at || article.created_at,
+            "dateModified": article.updated_at || article.published_at,
+            "author": { "@type": "Person", "name": article.author || 'News Reporter' },
+            "publisher": {
+                "@type": "Organization",
+                "name": (siteName && siteName.value) || "News Reporter Live",
+                "logo": { "@type": "ImageObject", "url": "https://newsreporter.live/logo.png" }
+            },
+            "mainEntityOfPage": { "@type": "WebPage", "@id": `https://newsreporter.live/article/${article.slug}` },
+            "articleSection": article.category,
+            "keywords": article.meta_keywords || ''
+        };
+        res.json({ success: true, jsonLd });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }

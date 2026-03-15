@@ -338,10 +338,27 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg>
         RSS Feeds
     </div>
+    <div class="nav-section">Engagement</div>
+    <div class="nav-item" onclick="showPage('analytics')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+        Analytics
+    </div>
+    <div class="nav-item" onclick="showPage('comments')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Comments
+    </div>
+    <div class="nav-item" onclick="showPage('newsletter')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Newsletter
+    </div>
     <div class="nav-section">Portal</div>
     <div class="nav-item" onclick="showPage('users')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
         Portal Users
+    </div>
+    <div class="nav-item" onclick="showPage('connlogs')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Connection Logs
     </div>
     <div class="nav-section">Settings</div>
     <div class="nav-item" onclick="showPage('settings')">
@@ -351,6 +368,10 @@
     <div class="nav-item" onclick="showPage('seo')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         SEO
+    </div>
+    <div class="nav-item" onclick="showPage('auditlog')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Audit Log
     </div>
     <div style="position:absolute;bottom:0;left:0;right:0;padding:16px 20px;border-top:1px solid rgba(255,255,255,.1);">
         <div class="nav-item" onclick="window.open('/','_blank')" style="padding:8px 0;">
@@ -666,6 +687,120 @@
         </div>
     </div>
 
+    <!-- Analytics Page -->
+    <div class="page" id="page-analytics">
+        <div class="topbar">
+            <h1>Analytics</h1>
+            <div class="topbar-actions">
+                <select id="analyticsPeriod" onchange="loadAnalytics()" style="padding:8px;border-radius:6px;border:1px solid var(--border);">
+                    <option value="7d">Last 7 Days</option>
+                    <option value="30d" selected>Last 30 Days</option>
+                    <option value="90d">Last 90 Days</option>
+                </select>
+            </div>
+        </div>
+        <div class="stats-grid" id="analyticsStatsGrid">
+            <div class="stat-card"><div class="stat-value" id="ana-total-views">0</div><div class="stat-label">Total Views</div></div>
+            <div class="stat-card"><div class="stat-value" id="ana-today-views" style="color:var(--success)">0</div><div class="stat-label">Today's Views</div></div>
+            <div class="stat-card"><div class="stat-value" id="ana-total-articles" style="color:var(--info)">0</div><div class="stat-label">Published Articles</div></div>
+            <div class="stat-card"><div class="stat-value" id="ana-total-comments" style="color:var(--warning)">0</div><div class="stat-label">Comments</div></div>
+            <div class="stat-card"><div class="stat-value" id="ana-subscribers" style="color:#7B1FA2">0</div><div class="stat-label">Newsletter Subscribers</div></div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Views Over Time</h3></div>
+            <div class="card-body" id="viewsChart" style="min-height:200px;overflow-x:auto;">
+                <p style="color:var(--text-secondary);text-align:center;">Loading...</p>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;">
+            <div class="card">
+                <div class="card-header"><h3>Popular Articles</h3></div>
+                <div class="card-body" id="popularArticlesList"><p style="color:var(--text-secondary)">Loading...</p></div>
+            </div>
+            <div class="card">
+                <div class="card-header"><h3>Popular Categories</h3></div>
+                <div class="card-body" id="popularCategoriesList"><p style="color:var(--text-secondary)">Loading...</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comments Page -->
+    <div class="page" id="page-comments">
+        <div class="topbar">
+            <h1>Comments</h1>
+            <div class="topbar-actions">
+                <select id="commentsFilter" onchange="loadComments()" style="padding:8px;border-radius:6px;border:1px solid var(--border);">
+                    <option value="">All</option>
+                    <option value="pending" selected>Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+        </div>
+        <div class="stats-grid" style="margin-bottom:16px;" id="commentStatsGrid">
+            <div class="stat-card"><div class="stat-value" id="comment-pending" style="color:var(--warning)">0</div><div class="stat-label">Pending</div></div>
+            <div class="stat-card"><div class="stat-value" id="comment-approved" style="color:var(--success)">0</div><div class="stat-label">Approved</div></div>
+            <div class="stat-card"><div class="stat-value" id="comment-rejected">0</div><div class="stat-label">Rejected</div></div>
+        </div>
+        <div class="card">
+            <table>
+                <thead><tr><th>Author</th><th>Comment</th><th>Article</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+                <tbody id="commentsTable"><tr><td colspan="6" class="text-center" style="padding:40px;color:var(--text-secondary)">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Newsletter Page -->
+    <div class="page" id="page-newsletter">
+        <div class="topbar">
+            <h1>Newsletter Subscribers</h1>
+        </div>
+        <div class="stats-grid" style="margin-bottom:16px;">
+            <div class="stat-card"><div class="stat-value" id="newsletter-active" style="color:var(--success)">0</div><div class="stat-label">Active Subscribers</div></div>
+            <div class="stat-card"><div class="stat-value" id="newsletter-total">0</div><div class="stat-label">Total Subscribers</div></div>
+        </div>
+        <div class="card">
+            <table>
+                <thead><tr><th>Email</th><th>Name</th><th>Status</th><th>Subscribed</th><th>Actions</th></tr></thead>
+                <tbody id="newsletterTable"><tr><td colspan="5" class="text-center" style="padding:40px;color:var(--text-secondary)">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Connection Logs Page -->
+    <div class="page" id="page-connlogs">
+        <div class="topbar">
+            <h1>Connection Logs</h1>
+            <div class="topbar-actions">
+                <button class="btn btn-outline" onclick="loadConnectionLogs()">Refresh</button>
+            </div>
+        </div>
+        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">Track who connected to which device, when, and for how long.</p>
+        <div class="card">
+            <table>
+                <thead><tr><th>User</th><th>Device</th><th>Type</th><th>Started</th><th>Duration</th><th>IP Address</th></tr></thead>
+                <tbody id="connLogsTable"><tr><td colspan="6" class="text-center" style="padding:40px;color:var(--text-secondary)">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Audit Log Page -->
+    <div class="page" id="page-auditlog">
+        <div class="topbar">
+            <h1>Audit Log</h1>
+            <div class="topbar-actions">
+                <button class="btn btn-outline" onclick="loadAuditLog()">Refresh</button>
+            </div>
+        </div>
+        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">All admin actions are tracked with timestamps, IP addresses, and details.</p>
+        <div class="card">
+            <table>
+                <thead><tr><th>Action</th><th>Details</th><th>IP Address</th><th>Time</th></tr></thead>
+                <tbody id="auditLogTable"><tr><td colspan="4" class="text-center" style="padding:40px;color:var(--text-secondary)">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
 
 <!-- Article Editor Modal -->
@@ -701,7 +836,14 @@
             </div>
             <div class="form-group">
                 <label>Image URL</label>
-                <input type="text" id="artImage" placeholder="https://example.com/image.jpg">
+                <div style="display:flex;gap:8px;">
+                    <input type="text" id="artImage" placeholder="https://example.com/image.jpg" style="flex:1">
+                    <label class="btn btn-outline" style="cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px;margin:0;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        Upload
+                        <input type="file" id="artImageUpload" accept="image/*" onchange="uploadArticleImage(this)" style="display:none">
+                    </label>
+                </div>
             </div>
             <div class="form-row-3">
                 <div class="form-group">
@@ -727,16 +869,22 @@
                 </div>
                 <div class="form-group">
                     <label>Status</label>
-                    <select id="artStatus">
+                    <select id="artStatus" onchange="toggleScheduleField()">
                         <option value="draft">Draft</option>
                         <option value="published">Published</option>
+                        <option value="scheduled">Scheduled</option>
                     </select>
                 </div>
+            </div>
+            <div class="form-group" id="scheduleGroup" style="display:none;">
+                <label>Schedule Publish Date/Time</label>
+                <input type="datetime-local" id="artScheduleAt">
             </div>
         </div>
         <div class="modal-footer">
             <button class="btn btn-outline" onclick="closeArticleEditor()">Cancel</button>
             <button class="btn btn-success" onclick="saveArticle('draft')">Save as Draft</button>
+            <button class="btn btn-warning" onclick="saveArticle('scheduled')" id="btnSchedule" style="display:none;">Schedule</button>
             <button class="btn btn-primary" onclick="saveArticle('published')">Publish</button>
         </div>
     </div>
@@ -996,6 +1144,11 @@
         if (page === 'seo') loadSEOSettings();
         if (page === 'dashboard') loadDashboard();
         if (page === 'users') loadUsers();
+        if (page === 'analytics') loadAnalytics();
+        if (page === 'comments') loadComments();
+        if (page === 'newsletter') loadNewsletter();
+        if (page === 'connlogs') loadConnectionLogs();
+        if (page === 'auditlog') loadAuditLog();
     }
 
     // ===== Init =====
@@ -1920,6 +2073,241 @@
     document.getElementById('pubArticleModal').addEventListener('click', function(e) {
         if (e.target === this) pubCloseArticle();
     });
+
+    // ===== Session Inactivity Timeout (Frontend) =====
+    let inactivityTimer;
+    function resetInactivityTimer() {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(() => {
+            if (getToken()) {
+                clearToken();
+                hideAdminPanel();
+                pubLoadArticles();
+                showToast('Session expired due to inactivity (30 min). Please login again.', 'error');
+            }
+        }, 30 * 60 * 1000); // 30 minutes
+    }
+    ['click', 'keydown', 'mousemove', 'scroll'].forEach(evt => document.addEventListener(evt, resetInactivityTimer));
+    resetInactivityTimer();
+
+    // ===== Image Upload =====
+    async function uploadArticleImage(input) {
+        if (!input.files || !input.files[0]) return;
+        const formData = new FormData();
+        formData.append('image', input.files[0]);
+        try {
+            showToast('Uploading image...', 'info');
+            const token = getToken();
+            const res = await fetch(API + '/api/upload/image', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token },
+                body: formData
+            });
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('artImage').value = data.url;
+                showToast('Image uploaded successfully', 'success');
+            } else {
+                showToast(data.message || 'Upload failed', 'error');
+            }
+        } catch (err) {
+            showToast('Upload failed: ' + err.message, 'error');
+        }
+        input.value = '';
+    }
+
+    // ===== Scheduled Publishing UI =====
+    function toggleScheduleField() {
+        const status = document.getElementById('artStatus').value;
+        const scheduleGroup = document.getElementById('scheduleGroup');
+        const btnSchedule = document.getElementById('btnSchedule');
+        if (status === 'scheduled') {
+            scheduleGroup.style.display = '';
+            btnSchedule.style.display = '';
+        } else {
+            scheduleGroup.style.display = 'none';
+            btnSchedule.style.display = 'none';
+        }
+    }
+
+    // ===== Analytics =====
+    async function loadAnalytics() {
+        try {
+            const period = document.getElementById('analyticsPeriod').value;
+            const res = await authFetch(API + '/api/admin/analytics?period=' + period);
+            const data = await res.json();
+            if (!data.success) return;
+            const a = data.analytics;
+            document.getElementById('ana-total-views').textContent = (a.totalViews || 0).toLocaleString();
+            document.getElementById('ana-today-views').textContent = (a.todayViews || 0).toLocaleString();
+            document.getElementById('ana-total-articles').textContent = a.totalArticles || 0;
+            document.getElementById('ana-total-comments').textContent = a.totalComments || 0;
+            document.getElementById('ana-subscribers').textContent = a.totalSubscribers || 0;
+
+            // Simple bar chart for views over time
+            const chartEl = document.getElementById('viewsChart');
+            if (a.viewsByDay && a.viewsByDay.length > 0) {
+                const maxViews = Math.max(...a.viewsByDay.map(d => d.views), 1);
+                chartEl.innerHTML = '<div style="display:flex;align-items:flex-end;gap:4px;height:180px;padding:10px 0;">' +
+                    a.viewsByDay.map(d => {
+                        const h = Math.max((d.views / maxViews) * 160, 4);
+                        return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">' +
+                            '<span style="font-size:10px;color:var(--text-secondary)">' + d.views + '</span>' +
+                            '<div style="width:100%;max-width:40px;height:' + h + 'px;background:var(--primary);border-radius:4px 4px 0 0;"></div>' +
+                            '<span style="font-size:9px;color:var(--text-secondary);white-space:nowrap;">' + (d.date || '').slice(5) + '</span></div>';
+                    }).join('') + '</div>';
+            } else {
+                chartEl.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:40px;">No view data yet</p>';
+            }
+
+            // Popular articles
+            const popArt = document.getElementById('popularArticlesList');
+            if (a.popularArticles && a.popularArticles.length > 0) {
+                popArt.innerHTML = a.popularArticles.map((art, i) =>
+                    '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">' +
+                    '<div><span style="color:var(--text-secondary);font-size:12px;margin-right:8px;">#' + (i+1) + '</span>' + (art.title || '').substring(0, 60) + '</div>' +
+                    '<span style="color:var(--primary);font-weight:600;white-space:nowrap;">' + (art.views || 0) + ' views</span></div>'
+                ).join('');
+            } else {
+                popArt.innerHTML = '<p style="color:var(--text-secondary)">No data yet</p>';
+            }
+
+            // Popular categories
+            const popCat = document.getElementById('popularCategoriesList');
+            if (a.popularCategories && a.popularCategories.length > 0) {
+                popCat.innerHTML = a.popularCategories.map(c =>
+                    '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">' +
+                    '<div><strong>' + c.category + '</strong> <span style="color:var(--text-secondary);font-size:12px;">(' + c.article_count + ' articles)</span></div>' +
+                    '<span style="color:var(--success);font-weight:600;">' + (c.total_views || 0) + ' views</span></div>'
+                ).join('');
+            } else {
+                popCat.innerHTML = '<p style="color:var(--text-secondary)">No data yet</p>';
+            }
+        } catch (err) { console.error('Analytics error:', err); }
+    }
+
+    // ===== Comments Management =====
+    async function loadComments() {
+        try {
+            const status = document.getElementById('commentsFilter').value;
+            const res = await authFetch(API + '/api/admin/comments?status=' + status);
+            const data = await res.json();
+            if (!data.success) return;
+            document.getElementById('comment-pending').textContent = data.counts.pending || 0;
+            document.getElementById('comment-approved').textContent = data.counts.approved || 0;
+            document.getElementById('comment-rejected').textContent = data.counts.rejected || 0;
+            const tbody = document.getElementById('commentsTable');
+            if (!data.comments || data.comments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="padding:40px;color:var(--text-secondary)">No comments found</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.comments.map(c => {
+                const statusBadge = c.status === 'approved' ? '<span style="color:var(--success)">Approved</span>' :
+                    c.status === 'rejected' ? '<span style="color:var(--danger)">Rejected</span>' :
+                    '<span style="color:var(--warning)">Pending</span>';
+                const actions = c.status === 'pending' ?
+                    '<button class="btn btn-sm btn-success" onclick="moderateComment(' + c.id + ',\'approved\')" style="margin-right:4px;">Approve</button>' +
+                    '<button class="btn btn-sm btn-outline" onclick="moderateComment(' + c.id + ',\'rejected\')">Reject</button>' :
+                    '<button class="btn btn-sm btn-outline" onclick="deleteComment(' + c.id + ')">Delete</button>';
+                return '<tr><td><strong>' + (c.author_name || '') + '</strong><br><small style="color:var(--text-secondary)">' + (c.author_email || '') + '</small></td>' +
+                    '<td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;">' + (c.content || '').substring(0, 100) + '</td>' +
+                    '<td style="font-size:12px;">' + (c.article_title || 'Unknown') + '</td>' +
+                    '<td>' + statusBadge + '</td>' +
+                    '<td style="font-size:12px;white-space:nowrap;">' + new Date(c.created_at).toLocaleDateString() + '</td>' +
+                    '<td style="white-space:nowrap;">' + actions + '</td></tr>';
+            }).join('');
+        } catch (err) { console.error('Comments error:', err); }
+    }
+
+    async function moderateComment(id, status) {
+        try {
+            await authFetch(API + '/api/admin/comments/' + id, { method: 'PUT', body: JSON.stringify({ status }) });
+            showToast('Comment ' + status, 'success');
+            loadComments();
+        } catch (err) { showToast('Error: ' + err.message, 'error'); }
+    }
+
+    async function deleteComment(id) {
+        if (!confirm('Delete this comment?')) return;
+        try {
+            await authFetch(API + '/api/admin/comments/' + id, { method: 'DELETE' });
+            showToast('Comment deleted', 'success');
+            loadComments();
+        } catch (err) { showToast('Error: ' + err.message, 'error'); }
+    }
+
+    // ===== Newsletter Management =====
+    async function loadNewsletter() {
+        try {
+            const res = await authFetch(API + '/api/admin/newsletter');
+            const data = await res.json();
+            if (!data.success) return;
+            document.getElementById('newsletter-active').textContent = data.activeCount || 0;
+            document.getElementById('newsletter-total').textContent = data.totalCount || 0;
+            const tbody = document.getElementById('newsletterTable');
+            if (!data.subscribers || data.subscribers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center" style="padding:40px;color:var(--text-secondary)">No subscribers yet</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.subscribers.map(s =>
+                '<tr><td>' + s.email + '</td><td>' + (s.name || '-') + '</td>' +
+                '<td>' + (s.is_active ? '<span style="color:var(--success)">Active</span>' : '<span style="color:var(--text-secondary)">Unsubscribed</span>') + '</td>' +
+                '<td style="font-size:12px;">' + new Date(s.subscribed_at).toLocaleDateString() + '</td>' +
+                '<td><button class="btn btn-sm btn-outline" onclick="deleteSubscriber(' + s.id + ')">Remove</button></td></tr>'
+            ).join('');
+        } catch (err) { console.error('Newsletter error:', err); }
+    }
+
+    async function deleteSubscriber(id) {
+        if (!confirm('Remove this subscriber?')) return;
+        try {
+            await authFetch(API + '/api/admin/newsletter/' + id, { method: 'DELETE' });
+            showToast('Subscriber removed', 'success');
+            loadNewsletter();
+        } catch (err) { showToast('Error: ' + err.message, 'error'); }
+    }
+
+    // ===== Connection Logs =====
+    async function loadConnectionLogs() {
+        try {
+            const res = await authFetch(API + '/api/admin/connection-logs');
+            const data = await res.json();
+            if (!data.success) return;
+            const tbody = document.getElementById('connLogsTable');
+            if (!data.logs || data.logs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="padding:40px;color:var(--text-secondary)">No connection logs yet</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.logs.map(l => {
+                const duration = l.duration_seconds ? (l.duration_seconds > 3600 ? Math.floor(l.duration_seconds/3600) + 'h ' + Math.floor((l.duration_seconds%3600)/60) + 'm' : Math.floor(l.duration_seconds/60) + 'm ' + (l.duration_seconds%60) + 's') : 'Active';
+                return '<tr><td>' + (l.username || 'unknown') + '</td><td>' + l.device_id + '</td><td>' + (l.connection_type || 'rdp') + '</td>' +
+                    '<td style="font-size:12px;white-space:nowrap;">' + new Date(l.started_at).toLocaleString() + '</td>' +
+                    '<td>' + (l.ended_at ? duration : '<span style="color:var(--success)">Active</span>') + '</td>' +
+                    '<td style="font-size:12px;">' + (l.ip_address || '-') + '</td></tr>';
+            }).join('');
+        } catch (err) { console.error('Connection logs error:', err); }
+    }
+
+    // ===== Audit Log =====
+    async function loadAuditLog() {
+        try {
+            const res = await authFetch(API + '/api/admin/audit-log');
+            const data = await res.json();
+            if (!data.success) return;
+            const tbody = document.getElementById('auditLogTable');
+            if (!data.logs || data.logs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center" style="padding:40px;color:var(--text-secondary)">No audit logs yet</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.logs.map(l => {
+                const actionColor = l.action.includes('login') ? 'var(--info)' : l.action.includes('failed') ? 'var(--danger)' : 'var(--text-primary)';
+                return '<tr><td style="color:' + actionColor + ';font-weight:600;white-space:nowrap;">' + l.action + '</td>' +
+                    '<td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;">' + (l.details || '-') + '</td>' +
+                    '<td style="font-size:12px;">' + (l.ip_address || '-') + '</td>' +
+                    '<td style="font-size:12px;white-space:nowrap;">' + new Date(l.created_at).toLocaleString() + '</td></tr>';
+            }).join('');
+        } catch (err) { console.error('Audit log error:', err); }
+    }
 
     // Init on load
     checkAuth();

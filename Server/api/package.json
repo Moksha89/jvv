@@ -12,9 +12,12 @@
     "better-sqlite3": "^11.6.0",
     "cors": "^2.8.5",
     "express": "^4.21.0",
+    "express-rate-limit": "^8.3.1",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.10.0",
+    "multer": "^2.1.1",
+    "node-cron": "^4.2.1",
     "uuid": "^10.0.0"
   }
 }
