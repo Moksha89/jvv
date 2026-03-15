@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Reporter Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #D32F2F; --primary-dark: #B71C1C; --bg: #f5f5f5; --card: #fff;
+            --text: #212121; --text-secondary: #757575; --border: #e0e0e0;
+            --success: #2E7D32; --warning: #FF6F00; --info: #1565C0; --sidebar-w: 240px;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); }
+
+        /* Login */
+        .login-overlay { position: fixed; inset: 0; background: linear-gradient(135deg, #B71C1C, #D32F2F); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .login-box { background: #fff; padding: 40px; border-radius: 12px; width: 360px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+        .login-box h2 { color: var(--primary); margin-bottom: 8px; }
+        .login-box p { color: var(--text-secondary); margin-bottom: 24px; font-size: 14px; }
+        .login-box input { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; margin-bottom: 12px; }
+        .login-box button { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; font-weight: 600; }
+        .login-box button:hover { background: var(--primary-dark); }
+
+        /* Layout */
+        .sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: var(--sidebar-w); background: #1a1a2e; color: #fff; overflow-y: auto; z-index: 100; transition: transform .3s; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,.1); }
+        .sidebar-header h3 { font-size: 16px; color: #fff; }
+        .sidebar-header small { color: rgba(255,255,255,.5); font-size: 11px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; cursor: pointer; color: rgba(255,255,255,.7); transition: .2s; font-size: 14px; }
+        .nav-item:hover, .nav-item.active { background: rgba(255,255,255,.1); color: #fff; }
+        .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .nav-section { padding: 16px 20px 8px; font-size: 11px; text-transform: uppercase; color: rgba(255,255,255,.3); letter-spacing: 1px; }
+        .main { margin-left: var(--sidebar-w); padding: 24px; min-height: 100vh; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+        .topbar h1 { font-size: 24px; font-weight: 700; }
+        .topbar-actions { display: flex; gap: 8px; }
+
+        /* Buttons */
+        .btn { padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 6px; transition: .2s; }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-success { background: var(--success); color: #fff; }
+        .btn-info { background: var(--info); color: #fff; }
+        .btn-warning { background: var(--warning); color: #fff; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+        .btn-outline:hover { background: var(--bg); }
+        .btn-sm { padding: 5px 10px; font-size: 12px; }
+        .btn-danger { background: #c62828; color: #fff; }
+
+        /* Cards */
+        .card { background: var(--card); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; }
+        .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .card-header h3 { font-size: 16px; }
+        .card-body { padding: 20px; }
+
+        /* Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: var(--card); border-radius: 10px; border: 1px solid var(--border); padding: 20px; }
+        .stat-card .stat-value { font-size: 28px; font-weight: 700; color: var(--primary); }
+        .stat-card .stat-label { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+        /* Table */
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; }
+        th { font-weight: 600; color: var(--text-secondary); font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
+        tr:hover td { background: #fafafa; }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .badge-published { background: #e8f5e9; color: #2E7D32; }
+        .badge-draft { background: #fff3e0; color: #FF6F00; }
+        .badge-ai { background: #e3f2fd; color: #1565C0; }
+        .badge-error { background: #ffebee; color: #c62828; }
+        .badge-success { background: #e8f5e9; color: #2E7D32; }
+
+        /* Forms */
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; font-family: inherit; }
+        .form-group textarea { min-height: 200px; resize: vertical; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+        /* Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 1000; display: flex; align-items: flex-start; justify-content: center; padding: 40px; overflow-y: auto; }
+        .modal { background: #fff; border-radius: 12px; width: 900px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
+        .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h2 { font-size: 18px; }
+        .modal-body { padding: 24px; }
+        .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+
+        /* Tabs */
+        .tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 20px; }
+        .tab { padding: 10px 20px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text-secondary); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: .2s; }
+        .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+        /* Filter bar */
+        .filter-bar { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+        .filter-bar input, .filter-bar select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; }
+        .filter-bar input { min-width: 200px; }
+
+        /* Toggle */
+        .toggle { position: relative; width: 44px; height: 24px; display: inline-block; }
+        .toggle input { display: none; }
+        .toggle-slider { position: absolute; inset: 0; background: #ccc; border-radius: 24px; cursor: pointer; transition: .3s; }
+        .toggle-slider:before { content: ''; position: absolute; width: 18px; height: 18px; background: #fff; border-radius: 50%; top: 3px; left: 3px; transition: .3s; }
+        .toggle input:checked + .toggle-slider { background: var(--success); }
+        .toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+        /* Toast */
+        .toast { position: fixed; bottom: 24px; right: 24px; background: #333; color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 14px; z-index: 9999; transform: translateY(100px); opacity: 0; transition: .3s; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { background: var(--success); }
+        .toast.error { background: #c62828; }
+
+        /* AI section */
+        .ai-config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .ai-test-area { background: #f5f5f5; border-radius: 8px; padding: 16px; margin-top: 16px; }
+        .ai-log-item { padding: 10px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main { margin-left: 0; }
+            .form-row, .form-row-3, .ai-config-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .page { display: none; }
+        .page.active { display: block; }
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .mt-16 { margin-top: 16px; }
+        .mb-16 { margin-bottom: 16px; }
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-secondary); }
+        .empty-state svg { width: 64px; height: 64px; opacity: .3; margin-bottom: 16px; }
+        .empty-state h3 { margin-bottom: 8px; color: var(--text); }
+        .truncate { max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .menu-toggle { display: none; position: fixed; top: 12px; left: 12px; z-index: 200; background: var(--primary); color: #fff; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+        @media (max-width: 768px) { .menu-toggle { display: block; } }
+    </style>
+</head>
+<body>
+
+<!-- Login Gate -->
+<div class="login-overlay" id="loginOverlay">
+    <div class="login-box">
+        <h2>Admin Panel</h2>
+        <p>News Reporter Live - Content Management</p>
+        <input type="password" id="adminPassword" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')adminLogin()">
+        <button onclick="adminLogin()">Sign In</button>
+    </div>
+</div>
+
+<!-- Menu Toggle (mobile) -->
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">Menu</button>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h3>News Reporter</h3>
+        <small>Content Management System</small>
+    </div>
+    <div class="nav-section">Content</div>
+    <div class="nav-item active" onclick="showPage('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        Dashboard
+    </div>
+    <div class="nav-item" onclick="showPage('articles')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+        Articles
+    </div>
+    <div class="nav-item" onclick="showPage('categories')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+        Categories
+    </div>
+    <div class="nav-section">Automation</div>
+    <div class="nav-item" onclick="showPage('ai')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        AI Auto-Publish
+    </div>
+    <div class="nav-item" onclick="showPage('feeds')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg>
+        RSS Feeds
+    </div>
+    <div class="nav-section">Settings</div>
+    <div class="nav-item" onclick="showPage('settings')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        Site Settings
+    </div>
+    <div class="nav-item" onclick="showPage('seo')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        SEO
+    </div>
+    <div style="position:absolute;bottom:0;left:0;right:0;padding:16px 20px;border-top:1px solid rgba(255,255,255,.1);">
+        <div class="nav-item" onclick="window.open('/','_blank')" style="padding:8px 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            View Site
+        </div>
+        <div class="nav-item" onclick="adminLogout()" style="padding:8px 0;color:#ef5350;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Logout
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main" id="mainContent" style="display:none;">
+
+    <!-- Dashboard Page -->
+    <div class="page active" id="page-dashboard">
+        <div class="topbar">
+            <h1>Dashboard</h1>
+            <div class="topbar-actions">
+                <button class="btn btn-primary" onclick="showPage('articles');openArticleEditor()">+ New Article</button>
+                <button class="btn btn-outline" onclick="loadDashboard()">Refresh</button>
+            </div>
+        </div>
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card"><div class="stat-value" id="stat-total">0</div><div class="stat-label">Total Articles</div></div>
+            <div class="stat-card"><div class="stat-value" id="stat-published" style="color:var(--success)">0</div><div class="stat-label">Published</div></div>
+            <div class="stat-card"><div class="stat-value" id="stat-drafts" style="color:var(--warning)">0</div><div class="stat-label">Drafts</div></div>
+            <div class="stat-card"><div class="stat-value" id="stat-ai" style="color:var(--info)">0</div><div class="stat-label">AI Generated</div></div>
+            <div class="stat-card"><div class="stat-value" id="stat-views" style="color:#7B1FA2">0</div><div class="stat-label">Total Views</div></div>
+            <div class="stat-card"><div class="stat-value" id="stat-feeds" style="color:#00838F">0</div><div class="stat-label">Active Feeds</div></div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3>Recent AI Activity</h3></div>
+            <div class="card-body" id="aiActivityLog"><p style="color:var(--text-secondary)">No activity yet</p></div>
+        </div>
+    </div>
+
+    <!-- Articles Page -->
+    <div class="page" id="page-articles">
+        <div class="topbar">
+            <h1>Articles</h1>
+            <div class="topbar-actions">
+                <button class="btn btn-primary" onclick="openArticleEditor()">+ New Article</button>
+            </div>
+        </div>
+        <div class="filter-bar">
+            <input type="text" placeholder="Search articles..." id="articleSearch" oninput="loadArticles()">
+            <select id="articleStatusFilter" onchange="loadArticles()">
+                <option value="">All Status</option>
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
+            </select>
+            <select id="articleCategoryFilter" onchange="loadArticles()"></select>
+        </div>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr><th>Title</th><th>Category</th><th>Status</th><th>Views</th><th>Date</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="articlesTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Categories Page -->
+    <div class="page" id="page-categories">
+        <div class="topbar">
+            <h1>Categories</h1>
+            <div class="topbar-actions">
+                <button class="btn btn-primary" onclick="openCategoryModal()">+ New Category</button>
+            </div>
+        </div>
+        <div class="card">
+            <table>
+                <thead><tr><th>Color</th><th>Name</th><th>Slug</th><th>Articles</th><th>Actions</th></tr></thead>
+                <tbody id="categoriesTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- AI Auto-Publish Page -->
+    <div class="page" id="page-ai">
+        <div class="topbar">
+            <h1>AI Auto-Publish</h1>
+            <div class="topbar-actions">
+                <button class="btn btn-info" onclick="fetchRSSNow()">Fetch RSS Now</button>
+            </div>
+        </div>
+        <div class="card mb-16">
+            <div class="card-header"><h3>AI Configuration</h3></div>
+            <div class="card-body">
+                <div class="ai-config-grid">
+                    <div class="form-group">
+                        <label>AI Provider</label>
+                        <select id="ai_provider" onchange="updateAIModelOptions()">
+                            <option value="openai">OpenAI (GPT)</option>
+                            <option value="gemini">Google Gemini</option>
+                            <option value="groq">Groq</option>
+                            <option value="together">Together AI</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Model</label>
+                        <select id="ai_model">
+                            <option value="gpt-4o-mini">GPT-4o Mini</option>
+                            <option value="gpt-4o">GPT-4o</option>
+                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>API Key</label>
+                        <input type="password" id="ai_api_key" placeholder="Enter your AI API key">
+                        <small style="color:var(--text-secondary)">Your key is stored securely on the server. Supports OpenAI, Gemini, Groq, Together AI.</small>
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Rewrite Prompt</label>
+                        <textarea id="ai_rewrite_prompt" rows="3" style="min-height:80px"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Auto-Publish AI Articles</label>
+                        <label class="toggle">
+                            <input type="checkbox" id="ai_auto_publish">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <small style="color:var(--text-secondary);display:block;margin-top:4px;">When enabled, fetched RSS articles are automatically rewritten and published</small>
+                    </div>
+                    <div class="form-group">
+                        <label>RSS Fetch Interval (minutes)</label>
+                        <input type="number" id="rss_fetch_interval" value="30" min="5" max="1440">
+                    </div>
+                </div>
+                <button class="btn btn-primary mt-16" onclick="saveAISettings()">Save AI Settings</button>
+            </div>
+        </div>
+
+        <div class="card mb-16">
+            <div class="card-header"><h3>Test AI Rewrite</h3></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Paste article title</label>
+                    <input type="text" id="testAITitle" placeholder="Article title">
+                </div>
+                <div class="form-group">
+                    <label>Paste article content to rewrite</label>
+                    <textarea id="testAIContent" rows="4" style="min-height:100px" placeholder="Paste original article text here..."></textarea>
+                </div>
+                <button class="btn btn-info" onclick="testAIRewrite()" id="testAIBtn">Test AI Rewrite</button>
+                <div class="ai-test-area hidden" id="aiTestResult"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header"><h3>AI Activity Log</h3></div>
+            <div class="card-body" id="aiLogTable"><p style="color:var(--text-secondary)">No logs yet</p></div>
+        </div>
+    </div>
+
+    <!-- RSS Feeds Page -->
+    <div class="page" id="page-feeds">
+        <div class="topbar">
+            <h1>RSS Feeds</h1>
+            <div class="topbar-actions">
+                <button class="btn btn-primary" onclick="openFeedModal()">+ Add Feed</button>
+                <button class="btn btn-info" onclick="fetchRSSNow()">Fetch Now</button>
+            </div>
+        </div>
+        <div class="card mb-16">
+            <table>
+                <thead><tr><th>Name</th><th>URL</th><th>Category</th><th>Enabled</th><th>Last Fetched</th><th>Actions</th></tr></thead>
+                <tbody id="feedsTable"></tbody>
+            </table>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3>Popular Indian News RSS Feeds</h3><button class="btn btn-sm btn-outline" onclick="document.getElementById('presetFeeds').classList.toggle('hidden')">Show/Hide</button></div>
+            <div class="card-body hidden" id="presetFeeds">
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Click to add these popular feeds:</p>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;" id="presetFeedButtons"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Page -->
+    <div class="page" id="page-settings">
+        <div class="topbar"><h1>Site Settings</h1></div>
+        <div class="card">
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Site Name</label>
+                        <input type="text" id="set_site_name">
+                    </div>
+                    <div class="form-group">
+                        <label>Tagline</label>
+                        <input type="text" id="set_site_tagline">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Logo URL</label>
+                    <input type="text" id="set_site_logo" placeholder="https://example.com/logo.png (leave empty for text logo)">
+                </div>
+                <div class="form-group">
+                    <label>Admin Password</label>
+                    <input type="password" id="set_admin_password">
+                </div>
+                <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEO Page -->
+    <div class="page" id="page-seo">
+        <div class="topbar"><h1>SEO Settings</h1></div>
+        <div class="card">
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Default Meta Title</label>
+                    <input type="text" id="set_meta_title">
+                </div>
+                <div class="form-group">
+                    <label>Default Meta Description</label>
+                    <textarea id="set_meta_description" rows="2" style="min-height:60px"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Meta Keywords (comma-separated)</label>
+                    <input type="text" id="set_meta_keywords">
+                </div>
+                <button class="btn btn-primary" onclick="saveSEO()">Save SEO Settings</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Article Editor Modal -->
+<div class="modal-overlay hidden" id="articleModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="articleModalTitle">New Article</h2>
+            <button class="btn btn-outline btn-sm" onclick="closeArticleEditor()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editArticleId">
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="artTitle" placeholder="Article title">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="artCategory"></select>
+                </div>
+                <div class="form-group">
+                    <label>Author</label>
+                    <input type="text" id="artAuthor" value="News Reporter">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Excerpt</label>
+                <textarea id="artExcerpt" rows="2" style="min-height:60px" placeholder="Brief summary of the article"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Content (HTML supported)</label>
+                <textarea id="artContent" placeholder="Write your article here. Use <p> tags for paragraphs. Include 'reportersays' somewhere in the text."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Image URL</label>
+                <input type="text" id="artImage" placeholder="https://example.com/image.jpg">
+            </div>
+            <div class="form-row-3">
+                <div class="form-group">
+                    <label>Meta Title (SEO)</label>
+                    <input type="text" id="artMetaTitle">
+                </div>
+                <div class="form-group">
+                    <label>Meta Description (SEO)</label>
+                    <input type="text" id="artMetaDesc">
+                </div>
+                <div class="form-group">
+                    <label>Meta Keywords (SEO)</label>
+                    <input type="text" id="artMetaKeywords">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Featured Article</label>
+                    <label class="toggle">
+                        <input type="checkbox" id="artFeatured">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="artStatus">
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeArticleEditor()">Cancel</button>
+            <button class="btn btn-success" onclick="saveArticle('draft')">Save as Draft</button>
+            <button class="btn btn-primary" onclick="saveArticle('published')">Publish</button>
+        </div>
+    </div>
+</div>
+
+<!-- Category Modal -->
+<div class="modal-overlay hidden" id="categoryModal">
+    <div class="modal" style="width:400px;">
+        <div class="modal-header">
+            <h2>Add Category</h2>
+            <button class="btn btn-outline btn-sm" onclick="closeCategoryModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Category Name</label>
+                <input type="text" id="catName" placeholder="e.g. Opinion">
+            </div>
+            <div class="form-group">
+                <label>Color</label>
+                <input type="color" id="catColor" value="#D32F2F">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeCategoryModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveCategory()">Add Category</button>
+        </div>
+    </div>
+</div>
+
+<!-- Feed Modal -->
+<div class="modal-overlay hidden" id="feedModal">
+    <div class="modal" style="width:500px;">
+        <div class="modal-header">
+            <h2>Add RSS Feed</h2>
+            <button class="btn btn-outline btn-sm" onclick="closeFeedModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Feed Name</label>
+                <input type="text" id="feedName" placeholder="e.g. Times of India - Top Stories">
+            </div>
+            <div class="form-group">
+                <label>RSS Feed URL</label>
+                <input type="text" id="feedUrl" placeholder="https://example.com/rss/feed.xml">
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="feedCategory"></select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeFeedModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveFeed()">Add Feed</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+    const API = window.location.origin;
+    let categories = [];
+    let settings = {};
+
+    // ===== Auth =====
+    function adminLogin() {
+        const pw = document.getElementById('adminPassword').value;
+        // Check against stored admin password
+        fetch(API + '/api/cms/settings').then(r => r.json()).then(data => {
+            const adminPw = data.settings.admin_password || 'Varma@678';
+            if (pw === adminPw) {
+                sessionStorage.setItem('admin_auth', '1');
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                init();
+            } else {
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminPassword').placeholder = 'Incorrect password';
+            }
+        }).catch(() => {
+            if (pw === 'Varma@678') {
+                sessionStorage.setItem('admin_auth', '1');
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                init();
+            }
+        });
+    }
+
+    function adminLogout() {
+        sessionStorage.removeItem('admin_auth');
+        location.reload();
+    }
+
+    function checkAuth() {
+        if (sessionStorage.getItem('admin_auth') === '1') {
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            init();
+        }
+    }
+
+    // ===== Navigation =====
+    function showPage(page) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById('page-' + page).classList.add('active');
+        event.target.closest('.nav-item')?.classList.add('active');
+        document.querySelector('.sidebar').classList.remove('open');
+        if (page === 'articles') loadArticles();
+        if (page === 'categories') loadCategories();
+        if (page === 'ai') loadAISettings();
+        if (page === 'feeds') loadFeeds();
+        if (page === 'settings') loadSiteSettings();
+        if (page === 'seo') loadSEOSettings();
+        if (page === 'dashboard') loadDashboard();
+    }
+
+    // ===== Init =====
+    async function init() {
+        await loadCategoriesData();
+        loadDashboard();
+    }
+
+    async function loadCategoriesData() {
+        try {
+            const res = await fetch(API + '/api/cms/categories');
+            const data = await res.json();
+            categories = data.categories || [];
+            populateCategorySelects();
+        } catch (e) {}
+    }
+
+    function populateCategorySelects() {
+        const selects = ['artCategory', 'articleCategoryFilter', 'feedCategory'];
+        for (const id of selects) {
+            const el = document.getElementById(id);
+            if (!el) continue;
+            const isFilter = id === 'articleCategoryFilter';
+            el.innerHTML = isFilter ? '<option value="">All Categories</option>' : '';
+            for (const cat of categories) {
+                el.innerHTML += `<option value="${cat.slug}">${cat.name}</option>`;
+            }
+        }
+    }
+
+    // ===== Dashboard =====
+    async function loadDashboard() {
+        try {
+            const res = await fetch(API + '/api/cms/stats');
+            const data = await res.json();
+            if (!data.success) return;
+            const s = data.stats;
+            document.getElementById('stat-total').textContent = s.totalArticles;
+            document.getElementById('stat-published').textContent = s.published;
+            document.getElementById('stat-drafts').textContent = s.drafts;
+            document.getElementById('stat-ai').textContent = s.aiGenerated;
+            document.getElementById('stat-views').textContent = s.totalViews;
+            document.getElementById('stat-feeds').textContent = s.feeds;
+            // AI log
+            const logEl = document.getElementById('aiActivityLog');
+            if (s.recentAiLogs && s.recentAiLogs.length > 0) {
+                logEl.innerHTML = s.recentAiLogs.map(l => `
+                    <div class="ai-log-item">
+                        <div>
+                            <strong style="font-size:13px;">${escHtml(l.source_title || 'Unknown')}</strong><br>
+                            <small style="color:var(--text-secondary)">${l.source_url || ''}</small>
+                        </div>
+                        <div>
+                            <span class="badge ${l.status === 'error' ? 'badge-error' : l.status === 'auto-published' ? 'badge-published' : 'badge-ai'}">${l.status}</span>
+                            <small style="color:var(--text-secondary);display:block;margin-top:4px;">${l.created_at || ''}</small>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                logEl.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:20px;">No AI activity yet. Configure AI settings and add RSS feeds to get started.</p>';
+            }
+        } catch (e) {
+            console.error('Dashboard load error:', e);
+        }
+    }
+
+    // ===== Articles =====
+    async function loadArticles() {
+        try {
+            const search = document.getElementById('articleSearch').value;
+            const status = document.getElementById('articleStatusFilter').value;
+            const category = document.getElementById('articleCategoryFilter').value;
+            let url = API + '/api/cms/articles?';
+            if (search) url += 'search=' + encodeURIComponent(search) + '&';
+            if (status) url += 'status=' + status + '&';
+            if (category) url += 'category=' + category + '&';
+            const res = await fetch(url);
+            const data = await res.json();
+            const tbody = document.getElementById('articlesTable');
+            if (!data.articles || data.articles.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="padding:40px;color:var(--text-secondary)">No articles found. Click "+ New Article" to create one.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.articles.map(a => `
+                <tr>
+                    <td>
+                        <div class="truncate" style="font-weight:600;">${escHtml(a.title)}</div>
+                        ${a.ai_generated ? '<span class="badge badge-ai" style="margin-top:4px;">AI</span>' : ''}
+                    </td>
+                    <td>${escHtml(a.category)}</td>
+                    <td><span class="badge badge-${a.status}">${a.status}</span></td>
+                    <td>${a.views || 0}</td>
+                    <td style="font-size:12px;">${a.published_at ? new Date(a.published_at).toLocaleDateString() : (a.created_at ? new Date(a.created_at).toLocaleDateString() : '-')}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline" onclick="editArticle(${a.id})">Edit</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteArticle(${a.id},'${escHtml(a.title)}')">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (e) {
+            console.error('Load articles error:', e);
+        }
+    }
+
+    function openArticleEditor(article) {
+        document.getElementById('editArticleId').value = article ? article.id : '';
+        document.getElementById('articleModalTitle').textContent = article ? 'Edit Article' : 'New Article';
+        document.getElementById('artTitle').value = article ? article.title : '';
+        document.getElementById('artCategory').value = article ? article.category : (categories[0]?.slug || 'general');
+        document.getElementById('artAuthor').value = article ? article.author : 'News Reporter';
+        document.getElementById('artExcerpt').value = article ? article.excerpt : '';
+        document.getElementById('artContent').value = article ? article.content : '';
+        document.getElementById('artImage').value = article ? (article.image_url || '') : '';
+        document.getElementById('artMetaTitle').value = article ? (article.meta_title || '') : '';
+        document.getElementById('artMetaDesc').value = article ? (article.meta_description || '') : '';
+        document.getElementById('artMetaKeywords').value = article ? (article.meta_keywords || '') : '';
+        document.getElementById('artFeatured').checked = article ? !!article.featured : false;
+        document.getElementById('artStatus').value = article ? article.status : 'draft';
+        document.getElementById('articleModal').classList.remove('hidden');
+    }
+
+    function closeArticleEditor() {
+        document.getElementById('articleModal').classList.add('hidden');
+    }
+
+    async function editArticle(id) {
+        try {
+            const res = await fetch(API + '/api/cms/articles/' + id);
+            const data = await res.json();
+            if (data.success) openArticleEditor(data.article);
+        } catch (e) { toast('Error loading article', 'error'); }
+    }
+
+    async function saveArticle(statusOverride) {
+        const id = document.getElementById('editArticleId').value;
+        const body = {
+            title: document.getElementById('artTitle').value,
+            category: document.getElementById('artCategory').value,
+            author: document.getElementById('artAuthor').value,
+            excerpt: document.getElementById('artExcerpt').value,
+            content: document.getElementById('artContent').value,
+            image_url: document.getElementById('artImage').value,
+            meta_title: document.getElementById('artMetaTitle').value,
+            meta_description: document.getElementById('artMetaDesc').value,
+            meta_keywords: document.getElementById('artMetaKeywords').value,
+            featured: document.getElementById('artFeatured').checked ? 1 : 0,
+            status: statusOverride || document.getElementById('artStatus').value
+        };
+        if (!body.title || !body.content) return toast('Title and content are required', 'error');
+        try {
+            const url = id ? API + '/api/cms/articles/' + id : API + '/api/cms/articles';
+            const method = id ? 'PUT' : 'POST';
+            const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            const data = await res.json();
+            if (data.success) {
+                toast(id ? 'Article updated' : 'Article created', 'success');
+                closeArticleEditor();
+                loadArticles();
+            } else {
+                toast(data.message || 'Error', 'error');
+            }
+        } catch (e) { toast('Error saving article', 'error'); }
+    }
+
+    async function deleteArticle(id, title) {
+        if (!confirm('Delete "' + title + '"?')) return;
+        try {
+            await fetch(API + '/api/cms/articles/' + id, { method: 'DELETE' });
+            toast('Article deleted', 'success');
+            loadArticles();
+        } catch (e) { toast('Error deleting', 'error'); }
+    }
+
+    // ===== Categories =====
+    async function loadCategories() {
+        await loadCategoriesData();
+        const tbody = document.getElementById('categoriesTable');
+        if (categories.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center" style="padding:40px;color:var(--text-secondary)">No categories</td></tr>';
+            return;
+        }
+        // Count articles per category
+        let articleCounts = {};
+        try {
+            const res = await fetch(API + '/api/cms/articles');
+            const data = await res.json();
+            (data.articles || []).forEach(a => { articleCounts[a.category] = (articleCounts[a.category] || 0) + 1; });
+        } catch (e) {}
+        tbody.innerHTML = categories.map(c => `
+            <tr>
+                <td><span style="display:inline-block;width:20px;height:20px;border-radius:4px;background:${c.color}"></span></td>
+                <td style="font-weight:600;">${escHtml(c.name)}</td>
+                <td>${c.slug}</td>
+                <td>${articleCounts[c.slug] || 0}</td>
+                <td><button class="btn btn-sm btn-danger" onclick="deleteCategory(${c.id},'${escHtml(c.name)}')">Delete</button></td>
+            </tr>
+        `).join('');
+    }
+
+    function openCategoryModal() { document.getElementById('categoryModal').classList.remove('hidden'); }
+    function closeCategoryModal() { document.getElementById('categoryModal').classList.add('hidden'); document.getElementById('catName').value = ''; }
+
+    async function saveCategory() {
+        const name = document.getElementById('catName').value;
+        const color = document.getElementById('catColor').value;
+        if (!name) return toast('Name is required', 'error');
+        try {
+            const res = await fetch(API + '/api/cms/categories', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, color }) });
+            const data = await res.json();
+            if (data.success) { toast('Category added', 'success'); closeCategoryModal(); loadCategories(); }
+            else toast(data.message || 'Error', 'error');
+        } catch (e) { toast('Error', 'error'); }
+    }
+
+    async function deleteCategory(id, name) {
+        if (!confirm('Delete category "' + name + '"?')) return;
+        try {
+            await fetch(API + '/api/cms/categories/' + id, { method: 'DELETE' });
+            toast('Category deleted', 'success');
+            loadCategories();
+        } catch (e) { toast('Error', 'error'); }
+    }
+
+    // ===== AI =====
+    async function loadAISettings() {
+        try {
+            const res = await fetch(API + '/api/cms/settings');
+            const data = await res.json();
+            settings = data.settings || {};
+            document.getElementById('ai_provider').value = settings.ai_provider || 'openai';
+            document.getElementById('ai_model').value = settings.ai_model || 'gpt-4o-mini';
+            document.getElementById('ai_api_key').value = settings.ai_api_key || '';
+            document.getElementById('ai_rewrite_prompt').value = settings.ai_rewrite_prompt || '';
+            document.getElementById('ai_auto_publish').checked = settings.ai_auto_publish === '1';
+            document.getElementById('rss_fetch_interval').value = settings.rss_fetch_interval || '30';
+            updateAIModelOptions();
+            loadAILog();
+        } catch (e) {}
+    }
+
+    function updateAIModelOptions() {
+        const provider = document.getElementById('ai_provider').value;
+        const modelSel = document.getElementById('ai_model');
+        const models = {
+            openai: [['gpt-4o-mini','GPT-4o Mini'],['gpt-4o','GPT-4o'],['gpt-3.5-turbo','GPT-3.5 Turbo']],
+            gemini: [['gemini-pro','Gemini Pro'],['gemini-1.5-pro','Gemini 1.5 Pro'],['gemini-1.5-flash','Gemini 1.5 Flash']],
+            groq: [['llama-3.1-70b-versatile','Llama 3.1 70B'],['llama-3.1-8b-instant','Llama 3.1 8B'],['mixtral-8x7b-32768','Mixtral 8x7B']],
+            together: [['meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo','Llama 3.1 70B'],['meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo','Llama 3.1 8B'],['mistralai/Mixtral-8x7B-Instruct-v0.1','Mixtral 8x7B']]
+        };
+        const opts = models[provider] || models.openai;
+        modelSel.innerHTML = opts.map(m => `<option value="${m[0]}">${m[1]}</option>`).join('');
+    }
+
+    async function saveAISettings() {
+        try {
+            const body = {
+                ai_provider: document.getElementById('ai_provider').value,
+                ai_model: document.getElementById('ai_model').value,
+                ai_api_key: document.getElementById('ai_api_key').value,
+                ai_rewrite_prompt: document.getElementById('ai_rewrite_prompt').value,
+                ai_auto_publish: document.getElementById('ai_auto_publish').checked ? '1' : '0',
+                rss_fetch_interval: document.getElementById('rss_fetch_interval').value
+            };
+            const res = await fetch(API + '/api/cms/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            const data = await res.json();
+            if (data.success) toast('AI settings saved', 'success');
+            else toast('Error saving', 'error');
+        } catch (e) { toast('Error', 'error'); }
+    }
+
+    async function testAIRewrite() {
+        const title = document.getElementById('testAITitle').value;
+        const content = document.getElementById('testAIContent').value;
+        if (!content) return toast('Paste some content to test', 'error');
+        const btn = document.getElementById('testAIBtn');
+        btn.textContent = 'Rewriting...';
+        btn.disabled = true;
+        try {
+            const res = await fetch(API + '/api/cms/ai-rewrite', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title, content }) });
+            const data = await res.json();
+            const area = document.getElementById('aiTestResult');
+            area.classList.remove('hidden');
+            if (data.success && data.rewritten) {
+                area.innerHTML = `<h4 style="margin-bottom:8px;">${escHtml(data.rewritten.title || title)}</h4><div style="font-size:13px;line-height:1.6;">${data.rewritten.content || ''}</div><p style="margin-top:12px;font-size:12px;color:var(--text-secondary);"><strong>Excerpt:</strong> ${escHtml(data.rewritten.excerpt || '')}</p><button class="btn btn-success btn-sm mt-16" onclick="useAIResult()">Use This &amp; Create Article</button>`;
+                area.dataset.result = JSON.stringify(data.rewritten);
+            } else {
+                area.innerHTML = `<p style="color:#c62828;">${escHtml(data.message || 'AI rewrite failed')}</p>`;
+            }
+        } catch (e) {
+            document.getElementById('aiTestResult').innerHTML = '<p style="color:#c62828;">Error connecting to AI</p>';
+            document.getElementById('aiTestResult').classList.remove('hidden');
+        }
+        btn.textContent = 'Test AI Rewrite';
+        btn.disabled = false;
+    }
+
+    function useAIResult() {
+        const area = document.getElementById('aiTestResult');
+        const result = JSON.parse(area.dataset.result || '{}');
+        showPage('articles');
+        setTimeout(() => {
+            openArticleEditor({
+                title: result.title || '',
+                content: result.content || '',
+                excerpt: result.excerpt || '',
+                meta_description: result.meta_description || '',
+                category: 'general',
+                author: 'News Reporter AI',
+                status: 'draft'
+            });
+        }, 100);
+    }
+
+    async function loadAILog() {
+        try {
+            const res = await fetch(API + '/api/cms/ai-log');
+            const data = await res.json();
+            const el = document.getElementById('aiLogTable');
+            if (!data.logs || data.logs.length === 0) {
+                el.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:20px;">No AI activity yet</p>';
+                return;
+            }
+            el.innerHTML = data.logs.map(l => `
+                <div class="ai-log-item">
+                    <div>
+                        <strong style="font-size:13px;">${escHtml(l.source_title || 'Unknown')}</strong><br>
+                        <small style="color:var(--text-secondary)">${escHtml(l.source_url || '')}</small>
+                    </div>
+                    <div style="text-align:right;">
+                        <span class="badge ${l.status === 'error' ? 'badge-error' : l.status === 'auto-published' ? 'badge-published' : 'badge-success'}">${l.status}</span>
+                        ${l.error_message ? '<br><small style="color:#c62828;">' + escHtml(l.error_message) + '</small>' : ''}
+                        <br><small style="color:var(--text-secondary)">${l.created_at || ''}</small>
+                    </div>
+                </div>
+            `).join('');
+        } catch (e) {}
+    }
+
+    // ===== RSS Feeds =====
+    const PRESET_FEEDS = [
+        { name: 'Times of India - Top', url: 'https://timesofindia.indiatimes.com/rssfeedstopstories.cms', category: 'general' },
+        { name: 'NDTV - Latest', url: 'https://feeds.feedburner.com/ndtvnews-latest', category: 'general' },
+        { name: 'Indian Express - India', url: 'https://indianexpress.com/section/india/feed/', category: 'politics' },
+        { name: 'Hindustan Times - India', url: 'https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml', category: 'politics' },
+        { name: 'Economic Times - Markets', url: 'https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms', category: 'business' },
+        { name: 'Mint - Business', url: 'https://www.livemint.com/rss/companies', category: 'business' },
+        { name: 'ESPN Cricinfo', url: 'https://www.espncricinfo.com/rss/content/story/feeds/0.xml', category: 'sports' },
+        { name: 'NDTV Sports', url: 'https://feeds.feedburner.com/ndtvsports-latest', category: 'sports' },
+        { name: 'Gadgets 360', url: 'https://feeds.feedburner.com/gadgets360-latest', category: 'technology' },
+        { name: 'India Today - Entertainment', url: 'https://www.indiatoday.in/rss/home', category: 'entertainment' },
+        { name: 'The Hindu - World', url: 'https://www.thehindu.com/news/international/feeder/default.rss', category: 'world' },
+        { name: 'TOI - Health', url: 'https://timesofindia.indiatimes.com/rssfeeds/3908999.cms', category: 'health' },
+    ];
+
+    async function loadFeeds() {
+        try {
+            const res = await fetch(API + '/api/cms/feeds');
+            const data = await res.json();
+            const tbody = document.getElementById('feedsTable');
+            if (!data.feeds || data.feeds.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="padding:40px;color:var(--text-secondary)">No feeds. Add RSS feeds to start auto-fetching news.</td></tr>';
+            } else {
+                tbody.innerHTML = data.feeds.map(f => `
+                    <tr>
+                        <td style="font-weight:600;">${escHtml(f.name)}</td>
+                        <td class="truncate" style="max-width:200px;font-size:12px;">${escHtml(f.url)}</td>
+                        <td>${escHtml(f.category)}</td>
+                        <td>${f.enabled ? '<span class="badge badge-published">Active</span>' : '<span class="badge badge-draft">Disabled</span>'}</td>
+                        <td style="font-size:12px;">${f.last_fetched || 'Never'}</td>
+                        <td><button class="btn btn-sm btn-danger" onclick="deleteFeed(${f.id})">Remove</button></td>
+                    </tr>
+                `).join('');
+            }
+            // Preset feeds
+            const presetEl = document.getElementById('presetFeedButtons');
+            presetEl.innerHTML = PRESET_FEEDS.map((f, i) => `<button class="btn btn-sm btn-outline" onclick="addPresetFeed(${i})">${f.name}</button>`).join('');
+        } catch (e) {}
+    }
+
+    function openFeedModal() { document.getElementById('feedModal').classList.remove('hidden'); }
+    function closeFeedModal() { document.getElementById('feedModal').classList.add('hidden'); }
+
+    async function saveFeed() {
+        const name = document.getElementById('feedName').value;
+        const url = document.getElementById('feedUrl').value;
+        const category = document.getElementById('feedCategory').value;
+        if (!name || !url) return toast('Name and URL are required', 'error');
+        try {
+            const res = await fetch(API + '/api/cms/feeds', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, url, category }) });
+            const data = await res.json();
+            if (data.success) { toast('Feed added', 'success'); closeFeedModal(); loadFeeds(); }
+            else toast(data.message || 'Error', 'error');
+        } catch (e) { toast('Error', 'error'); }
+    }
+
+    async function addPresetFeed(index) {
+        const f = PRESET_FEEDS[index];
+        try {
+            const res = await fetch(API + '/api/cms/feeds', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(f) });
+            const data = await res.json();
+            if (data.success) { toast(f.name + ' added', 'success'); loadFeeds(); }
+            else toast(data.message || 'Error (might already exist)', 'error');
+        } catch (e) { toast('Error', 'error'); }
+    }
+
+    async function deleteFeed(id) {
+        if (!confirm('Remove this feed?')) return;
+        try {
+            await fetch(API + '/api/cms/feeds/' + id, { method: 'DELETE' });
+            toast('Feed removed', 'success');
+            loadFeeds();
+        } catch (e) { toast('Error', 'error'); }
+    }
+
+    async function fetchRSSNow() {
+        toast('Fetching RSS feeds...', '');
+        try {
+            const res = await fetch(API + '/api/cms/fetch-rss', { method: 'POST' });
+            const data = await res.json();
+            if (data.success) toast('Fetched ' + (data.fetched || 0) + ' new articles', 'success');
+            else toast(data.message || 'Error', 'error');
+            loadArticles();
+        } catch (e) { toast('Error fetching feeds', 'error'); }
+    }
+
+    // ===== Settings =====
+    async function loadSiteSettings() {
+        try {
+            const res = await fetch(API + '/api/cms/settings');
+            const data = await res.json();
+            settings = data.settings || {};
+            document.getElementById('set_site_name').value = settings.site_name || '';
+            document.getElementById('set_site_tagline').value = settings.site_tagline || '';
+            document.getElementById('set_site_logo').value = settings.site_logo || '';
+            document.getElementById('set_admin_password').value = settings.admin_password || '';
+        } catch (e) {}
+    }
+
+    async function saveSettings() {
+        try {
+            const body = {
+                site_name: document.getElementById('set_site_name').value,
+                site_tagline: document.getElementById('set_site_tagline').value,
+                site_logo: document.getElementById('set_site_logo').value,
+                admin_password: document.getElementById('set_admin_password').value
+            };
+            const res = await fetch(API + '/api/cms/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            const data = await res.json();
+            if (data.success) toast('Settings saved', 'success');
+            else toast('Error', 'error');
+        } catch (e) { toast('Error', 'error'); }
+    }
+
+    async function loadSEOSettings() {
+        try {
+            const res = await fetch(API + '/api/cms/settings');
+            const data = await res.json();
+            settings = data.settings || {};
+            document.getElementById('set_meta_title').value = settings.meta_title || '';
+            document.getElementById('set_meta_description').value = settings.meta_description || '';
+            document.getElementById('set_meta_keywords').value = settings.meta_keywords || '';
+        } catch (e) {}
+    }
+
+    async function saveSEO() {
+        try {
+            const body = {
+                meta_title: document.getElementById('set_meta_title').value,
+                meta_description: document.getElementById('set_meta_description').value,
+                meta_keywords: document.getElementById('set_meta_keywords').value
+            };
+            const res = await fetch(API + '/api/cms/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            const data = await res.json();
+            if (data.success) toast('SEO settings saved', 'success');
+            else toast('Error', 'error');
+        } catch (e) { toast('Error', 'error'); }
+    }
+
+    // ===== Utilities =====
+    function toast(msg, type) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.className = 'toast show' + (type ? ' ' + type : '');
+        setTimeout(() => el.className = 'toast', 3000);
+    }
+
+    function escHtml(s) {
+        if (!s) return '';
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Init on load
+    checkAuth();
+</script>
+</body>
+</html>
