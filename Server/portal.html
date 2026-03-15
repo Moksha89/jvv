@@ -566,9 +566,26 @@
         }
         function connectNewSession() {
             if (!selectedDevice) { alert('No device selected'); return; }
+            const rdpUser = prompt('Enter Windows username for ' + selectedDevice.displayName + ':');
+            if (!rdpUser) return;
+            const rdpPass = prompt('Enter Windows password for ' + rdpUser + ':');
+            if (!rdpPass) return;
             currentMode = 'rdp';
             const connName = selectedDevice.displayName + ' - Desktop';
-            connectWithProfile(connName, 'rdp');
+            const port = selectedDevice.rdpPort;
+            // Set credentials in Guacamole config before connecting
+            fetch(API_BASE + '/api/set-rdp-creds', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ connName, username: rdpUser, password: rdpPass, port: String(port) })
+            }).then(r => r.json()).then(data => {
+                if (data.success) {
+                    // Small delay to let Guacamole pick up the new config
+                    setTimeout(() => connectWithProfile(connName, 'rdp'), 1000);
+                } else {
+                    alert('Failed to set credentials: ' + (data.message || 'Unknown error'));
+                }
+            }).catch(() => alert('Could not reach server to set credentials.'));
         }
         function connectPrivateSameScreen() {
             if (!selectedDevice) { alert('No device selected'); return; }
@@ -600,6 +617,16 @@
         }
 
         function disconnectSession() {
+            // Clear RDP credentials on disconnect for security
+            if (currentMode === 'rdp' && selectedDevice) {
+                const connName = selectedDevice.displayName + ' - Desktop';
+                const port = selectedDevice.rdpPort;
+                fetch(API_BASE + '/api/clear-rdp-creds', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ connName, port: String(port) })
+                }).catch(() => {});
+            }
             document.getElementById('rdpFrame').src = 'about:blank';
             document.getElementById('welcomeScreen').style.display = 'flex';
             document.getElementById('connectionView').style.display = 'none';

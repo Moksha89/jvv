@@ -433,6 +433,96 @@ app.get('/api/lock-screen', (req, res) => {
     res.json({ success: true, message: 'Use Privacy Mode to turn off the physical monitor while using Same Screen (VNC).', port });
 });
 
+// Set RDP credentials for a connection (temporary, used for NLA auth)
+app.post('/api/set-rdp-creds', (req, res) => {
+    const { connName, username, password, port } = req.body;
+    if (!connName || !username || !password || !port) {
+        return res.json({ success: false, message: 'Missing required fields' });
+    }
+    
+    const { execSync } = require('child_process');
+    
+    try {
+        // Read current user-mapping.xml from guacamole container
+        const currentXml = execSync('docker exec guacamole cat /etc/guacamole/user-mapping.xml', { encoding: 'utf8' });
+        
+        // Find the connection and add/update username and password params
+        // Look for the connection by name and port
+        let updatedXml = currentXml;
+        
+        // Build regex to find the connection block for this specific RDP connection
+        const connRegex = new RegExp(
+            `(<connection name="${connName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}">[\\s\\S]*?<param name="port">${port}</param>[\\s\\S]*?)(</connection>)`,
+            'g'
+        );
+        
+        updatedXml = updatedXml.replace(connRegex, (match, before, closing) => {
+            // Remove any existing username/password params
+            let cleaned = before.replace(/<param name="username">.*?<\/param>\s*/g, '');
+            cleaned = cleaned.replace(/<param name="password">.*?<\/param>\s*/g, '');
+            // Don't remove VNC password params (they use just "password" without "username")
+            // Add username and password before closing tag
+            const indent = '            ';
+            return cleaned + `${indent}<param name="username">${username}</param>\n${indent}<param name="password">${password}</param>\n        ${closing}`;
+        });
+        
+        if (updatedXml === currentXml) {
+            return res.json({ success: false, message: 'Connection not found: ' + connName });
+        }
+        
+        // Write updated XML back to container
+        const fs = require('fs');
+        fs.writeFileSync('/tmp/user-mapping-temp.xml', updatedXml);
+        execSync('docker cp /tmp/user-mapping-temp.xml guacamole:/etc/guacamole/user-mapping.xml');
+        
+        // Clear Guacamole auth cache by touching the file (Guacamole re-reads on change)
+        execSync('docker exec guacamole touch /etc/guacamole/user-mapping.xml');
+        
+        console.log(`RDP credentials set for ${connName} port ${port} user ${username}`);
+        res.json({ success: true, message: 'Credentials set' });
+    } catch (err) {
+        console.error('Set RDP creds error:', err.message);
+        res.json({ success: false, message: err.message });
+    }
+});
+
+// Clear RDP credentials after disconnect (security: don't persist)
+app.post('/api/clear-rdp-creds', (req, res) => {
+    const { connName, port } = req.body;
+    if (!connName || !port) {
+        return res.json({ success: false, message: 'Missing required fields' });
+    }
+    
+    const { execSync } = require('child_process');
+    
+    try {
+        const currentXml = execSync('docker exec guacamole cat /etc/guacamole/user-mapping.xml', { encoding: 'utf8' });
+        
+        // Remove username and password params from the specific connection
+        const connRegex = new RegExp(
+            `(<connection name="${connName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}">[\\s\\S]*?<param name="port">${port}</param>[\\s\\S]*?)(</connection>)`,
+            'g'
+        );
+        
+        let updatedXml = currentXml.replace(connRegex, (match, before, closing) => {
+            let cleaned = before.replace(/\s*<param name="username">.*?<\/param>/g, '');
+            cleaned = cleaned.replace(/\s*<param name="password">(?!8096).*?<\/param>/g, '');
+            return cleaned + closing;
+        });
+        
+        const fs = require('fs');
+        fs.writeFileSync('/tmp/user-mapping-temp.xml', updatedXml);
+        execSync('docker cp /tmp/user-mapping-temp.xml guacamole:/etc/guacamole/user-mapping.xml');
+        execSync('docker exec guacamole touch /etc/guacamole/user-mapping.xml');
+        
+        console.log(`RDP credentials cleared for ${connName} port ${port}`);
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Clear RDP creds error:', err.message);
+        res.json({ success: false, message: err.message });
+    }
+});
+
 // FRP Proxy status endpoint
 app.get('/api/frp/proxies', async (req, res) => {
     try {
