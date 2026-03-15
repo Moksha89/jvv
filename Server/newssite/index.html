@@ -875,6 +875,8 @@ function checkGate() {
     if (pw === 'Varma@678') {
         closeGate();
         closeArticle();
+        // Set auth cookie so nginx allows /portal access (session cookie, expires when browser closes)
+        document.cookie = 'portal_auth=granted; path=/; SameSite=Strict';
         window.location.href = '/portal';
     } else {
         document.getElementById('gatePassword').value = '';
