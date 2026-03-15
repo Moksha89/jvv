@@ -401,6 +401,25 @@
                 <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
             </div>
         </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Google Search Console</h3></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Verification Meta Tag Content</label>
+                    <input type="text" id="set_google_verification" placeholder="e.g. abc123xyz (the content value from Google's meta tag)">
+                    <small style="color:var(--text-secondary);font-size:12px;margin-top:4px;display:block">Enter the content value from Google Search Console HTML tag verification. It will be added as &lt;meta name="google-site-verification" content="YOUR_CODE"&gt; to the site.</small>
+                </div>
+                <button class="btn btn-primary" onclick="saveGoogleVerification()">Save Verification Code</button>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Sitemap &amp; SEO Tools</h3></div>
+            <div class="card-body">
+                <p style="margin-bottom:12px"><strong>Sitemap:</strong> <a href="/sitemap.xml" target="_blank" style="color:var(--primary)">/sitemap.xml</a> (auto-generated from published articles)</p>
+                <p style="margin-bottom:12px"><strong>Robots.txt:</strong> <a href="/robots.txt" target="_blank" style="color:var(--primary)">/robots.txt</a></p>
+                <p><strong>Google Search Console:</strong> <a href="https://search.google.com/search-console" target="_blank" style="color:var(--primary)">Open Google Search Console</a></p>
+            </div>
+        </div>
     </div>
 
     <!-- SEO Page -->
@@ -1048,6 +1067,7 @@
             document.getElementById('set_site_tagline').value = settings.site_tagline || '';
             document.getElementById('set_site_logo').value = settings.site_logo || '';
             document.getElementById('set_admin_password').value = settings.admin_password || '';
+            document.getElementById('set_google_verification').value = settings.google_verification || '';
         } catch (e) {}
     }
 
@@ -1062,6 +1082,18 @@
             const res = await fetch(API + '/api/cms/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
             const data = await res.json();
             if (data.success) toast('Settings saved', 'success');
+            else toast('Error', 'error');
+        } catch (e) { toast('Error', 'error'); }
+    }
+
+    async function saveGoogleVerification() {
+        try {
+            const body = {
+                google_verification: document.getElementById('set_google_verification').value
+            };
+            const res = await fetch(API + '/api/cms/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            const data = await res.json();
+            if (data.success) toast('Google verification code saved', 'success');
             else toast('Error', 'error');
         } catch (e) { toast('Error', 'error'); }
     }
