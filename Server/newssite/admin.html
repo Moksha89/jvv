@@ -854,6 +854,35 @@
     let categories = [];
     let settings = {};
 
+    // ===== JWT Auth Helper =====
+    function getToken() { return sessionStorage.getItem('admin_token'); }
+    function setToken(token) { sessionStorage.setItem('admin_token', token); }
+    function clearToken() { sessionStorage.removeItem('admin_token'); }
+
+    // Authenticated fetch - adds JWT Bearer token to all admin API calls
+    function authFetch(url, options = {}) {
+        const token = getToken();
+        if (!token) {
+            adminLogout();
+            return Promise.reject(new Error('No auth token'));
+        }
+        const headers = options.headers || {};
+        headers['Authorization'] = 'Bearer ' + token;
+        if (options.body && typeof options.body === 'string') {
+            headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+        }
+        return fetch(url, { ...options, headers }).then(r => {
+            if (r.status === 401) {
+                clearToken();
+                hideAdminPanel();
+                pubLoadArticles();
+                showToast('Session expired. Please login again.', 'error');
+                return Promise.reject(new Error('Unauthorized'));
+            }
+            return r;
+        });
+    }
+
     // ===== Auth =====
     function showAdminPanel() {
         document.getElementById('publicView').style.display = 'none';
@@ -872,41 +901,42 @@
 
     function adminLogin() {
         const pw = document.getElementById('adminPassword').value;
-        fetch(API + '/api/cms/settings').then(r => r.json()).then(data => {
-            const adminPw = data.settings.admin_password || 'Varma@678';
-            if (pw === adminPw) {
-                sessionStorage.setItem('admin_auth', '1');
+        fetch(API + '/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: pw })
+        }).then(r => r.json()).then(data => {
+            if (data.success && data.token) {
+                setToken(data.token);
                 showAdminPanel();
             } else {
                 document.getElementById('adminPassword').value = '';
-                document.getElementById('adminPassword').placeholder = 'Incorrect password';
+                document.getElementById('adminPassword').placeholder = data.message || 'Incorrect password';
             }
         }).catch(() => {
-            if (pw === 'Varma@678') {
-                sessionStorage.setItem('admin_auth', '1');
-                showAdminPanel();
-            }
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminPassword').placeholder = 'Login failed. Try again.';
         });
     }
 
     function popupAdminLogin() {
         const pw = document.getElementById('popupAdminPassword').value;
-        fetch(API + '/api/cms/settings').then(r => r.json()).then(data => {
-            const adminPw = data.settings.admin_password || 'Varma@678';
-            if (pw === adminPw) {
-                sessionStorage.setItem('admin_auth', '1');
+        fetch(API + '/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: pw })
+        }).then(r => r.json()).then(data => {
+            if (data.success && data.token) {
+                setToken(data.token);
                 closeAdminPopup();
                 showAdminPanel();
             } else {
                 document.getElementById('popupAdminPassword').value = '';
-                document.getElementById('popupAdminPassword').placeholder = 'Incorrect. Try again.';
+                document.getElementById('popupAdminPassword').placeholder = data.message || 'Incorrect. Try again.';
             }
         }).catch(() => {
-            if (pw === 'Varma@678') {
-                sessionStorage.setItem('admin_auth', '1');
-                closeAdminPopup();
-                showAdminPanel();
-            }
+            document.getElementById('popupAdminPassword').value = '';
+            document.getElementById('popupAdminPassword').placeholder = 'Login failed. Try again.';
         });
     }
 
@@ -921,14 +951,30 @@
     }
 
     function adminLogout() {
-        sessionStorage.removeItem('admin_auth');
+        clearToken();
         hideAdminPanel();
         pubLoadArticles();
     }
 
     function checkAuth() {
-        if (sessionStorage.getItem('admin_auth') === '1') {
-            showAdminPanel();
+        const token = getToken();
+        if (token) {
+            // Verify token with server
+            fetch(API + '/api/admin/verify', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            }).then(r => {
+                if (r.ok) {
+                    showAdminPanel();
+                } else {
+                    clearToken();
+                    hideAdminPanel();
+                    pubLoadArticles();
+                }
+            }).catch(() => {
+                clearToken();
+                hideAdminPanel();
+                pubLoadArticles();
+            });
         } else {
             hideAdminPanel();
             pubLoadArticles();
@@ -961,7 +1007,7 @@
 
     async function loadCategoriesData() {
         try {
-            const res = await fetch(API + '/api/cms/categories');
+            const res = await authFetch(API + '/api/cms/categories');
             const data = await res.json();
             categories = data.categories || [];
             populateCategorySelects();
@@ -984,7 +1030,7 @@
     // ===== Dashboard =====
     async function loadDashboard() {
         try {
-            const res = await fetch(API + '/api/cms/stats');
+            const res = await authFetch(API + '/api/cms/stats');
             const data = await res.json();
             if (!data.success) return;
             const s = data.stats;
@@ -1078,7 +1124,7 @@
 
     async function editArticle(id) {
         try {
-            const res = await fetch(API + '/api/cms/articles/' + id);
+            const res = await authFetch(API + '/api/cms/articles/' + id);
             const data = await res.json();
             if (data.success) openArticleEditor(data.article);
         } catch (e) { toast('Error loading article', 'error'); }
@@ -1103,7 +1149,7 @@
         try {
             const url = id ? API + '/api/cms/articles/' + id : API + '/api/cms/articles';
             const method = id ? 'PUT' : 'POST';
-            const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            const res = await authFetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
             const data = await res.json();
             if (data.success) {
                 toast(id ? 'Article updated' : 'Article created', 'success');
@@ -1118,7 +1164,7 @@
     async function deleteArticle(id, title) {
         if (!confirm('Delete "' + title + '"?')) return;
         try {
-            await fetch(API + '/api/cms/articles/' + id, { method: 'DELETE' });
+            await authFetch(API + '/api/cms/articles/' + id, { method: 'DELETE' });
             toast('Article deleted', 'success');
             loadArticles();
         } catch (e) { toast('Error deleting', 'error'); }
@@ -1135,7 +1181,7 @@
         // Count articles per category
         let articleCounts = {};
         try {
-            const res = await fetch(API + '/api/cms/articles');
+            const res = await authFetch(API + '/api/cms/articles');
             const data = await res.json();
             (data.articles || []).forEach(a => { articleCounts[a.category] = (articleCounts[a.category] || 0) + 1; });
         } catch (e) {}
@@ -1158,7 +1204,7 @@
         const color = document.getElementById('catColor').value;
         if (!name) return toast('Name is required', 'error');
         try {
-            const res = await fetch(API + '/api/cms/categories', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, color }) });
+            const res = await authFetch(API + '/api/cms/categories', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, color }) });
             const data = await res.json();
             if (data.success) { toast('Category added', 'success'); closeCategoryModal(); loadCategories(); }
             else toast(data.message || 'Error', 'error');
@@ -1168,7 +1214,7 @@
     async function deleteCategory(id, name) {
         if (!confirm('Delete category "' + name + '"?')) return;
         try {
-            await fetch(API + '/api/cms/categories/' + id, { method: 'DELETE' });
+            await authFetch(API + '/api/cms/categories/' + id, { method: 'DELETE' });
             toast('Category deleted', 'success');
             loadCategories();
         } catch (e) { toast('Error', 'error'); }
@@ -1177,7 +1223,7 @@
     // ===== AI =====
     async function loadAISettings() {
         try {
-            const res = await fetch(API + '/api/cms/settings');
+            const res = await authFetch(API + '/api/cms/settings');
             const data = await res.json();
             settings = data.settings || {};
             document.getElementById('ai_provider').value = settings.ai_provider || 'openrouter';
@@ -1216,7 +1262,7 @@
                 ai_auto_publish: document.getElementById('ai_auto_publish').checked ? '1' : '0',
                 rss_fetch_interval: document.getElementById('rss_fetch_interval').value
             };
-            const res = await fetch(API + '/api/cms/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            const res = await authFetch(API + '/api/cms/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
             const data = await res.json();
             if (data.success) toast('AI settings saved', 'success');
             else toast('Error saving', 'error');
@@ -1231,7 +1277,7 @@
         btn.textContent = 'Rewriting...';
         btn.disabled = true;
         try {
-            const res = await fetch(API + '/api/cms/ai-rewrite', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title, content }) });
+            const res = await authFetch(API + '/api/cms/ai-rewrite', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title, content }) });
             const data = await res.json();
             const area = document.getElementById('aiTestResult');
             area.classList.remove('hidden');
@@ -1289,7 +1335,7 @@
     }
 
     function populateGenCategoryDropdowns() {
-        fetch(API + '/api/cms/categories').then(r => r.json()).then(data => {
+        authFetch(API + '/api/cms/categories').then(r => r.json()).then(data => {
             if (!data.categories) return;
             const selects = [document.getElementById('ai_gen_category'), document.getElementById('ai_gen_topic_category')];
             selects.forEach(sel => {
@@ -1321,7 +1367,7 @@
         const modeLabel = mode === 'all' ? 'all categories' : mode === 'single_category' ? category : `topic: ${topic}`;
         statusEl.innerHTML = `<p style="color:var(--primary);font-weight:600;">Generating ${count} article(s) for ${modeLabel}... Please wait.</p>`;
         try {
-            const res = await fetch(API + '/api/cms/ai-generate', {
+            const res = await authFetch(API + '/api/cms/ai-generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -1346,7 +1392,7 @@
 
     async function loadAILog() {
         try {
-            const res = await fetch(API + '/api/cms/ai-log');
+            const res = await authFetch(API + '/api/cms/ai-log');
             const data = await res.json();
             const el = document.getElementById('aiLogTable');
             if (!data.logs || data.logs.length === 0) {
@@ -1387,7 +1433,7 @@
 
     async function loadFeeds() {
         try {
-            const res = await fetch(API + '/api/cms/feeds');
+            const res = await authFetch(API + '/api/cms/feeds');
             const data = await res.json();
             const tbody = document.getElementById('feedsTable');
             if (!data.feeds || data.feeds.length === 0) {
@@ -1419,7 +1465,7 @@
         const category = document.getElementById('feedCategory').value;
         if (!name || !url) return toast('Name and URL are required', 'error');
         try {
-            const res = await fetch(API + '/api/cms/feeds', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, url, category }) });
+            const res = await authFetch(API + '/api/cms/feeds', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, url, category }) });
             const data = await res.json();
             if (data.success) { toast('Feed added', 'success'); closeFeedModal(); loadFeeds(); }
             else toast(data.message || 'Error', 'error');
@@ -1429,7 +1475,7 @@
     async function addPresetFeed(index) {
         const f = PRESET_FEEDS[index];
         try {
-            const res = await fetch(API + '/api/cms/feeds', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(f) });
+            const res = await authFetch(API + '/api/cms/feeds', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(f) });
             const data = await res.json();
             if (data.success) { toast(f.name + ' added', 'success'); loadFeeds(); }
             else toast(data.message || 'Error (might already exist)', 'error');
@@ -1439,7 +1485,7 @@
     async function deleteFeed(id) {
         if (!confirm('Remove this feed?')) return;
         try {
-            await fetch(API + '/api/cms/feeds/' + id, { method: 'DELETE' });
+            await authFetch(API + '/api/cms/feeds/' + id, { method: 'DELETE' });
             toast('Feed removed', 'success');
             loadFeeds();
         } catch (e) { toast('Error', 'error'); }
@@ -1448,7 +1494,7 @@
     async function fetchRSSNow() {
         toast('Fetching RSS feeds...', '');
         try {
-            const res = await fetch(API + '/api/cms/fetch-rss', { method: 'POST' });
+            const res = await authFetch(API + '/api/cms/fetch-rss', { method: 'POST' });
             const data = await res.json();
             if (data.success) toast('Fetched ' + (data.fetched || 0) + ' new articles', 'success');
             else toast(data.message || 'Error', 'error');
@@ -1459,7 +1505,7 @@
     // ===== Settings =====
     async function loadSiteSettings() {
         try {
-            const res = await fetch(API + '/api/cms/settings');
+            const res = await authFetch(API + '/api/cms/settings');
             const data = await res.json();
             settings = data.settings || {};
             document.getElementById('set_site_name').value = settings.site_name || '';
@@ -1478,7 +1524,7 @@
                 site_logo: document.getElementById('set_site_logo').value,
                 admin_password: document.getElementById('set_admin_password').value
             };
-            const res = await fetch(API + '/api/cms/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            const res = await authFetch(API + '/api/cms/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
             const data = await res.json();
             if (data.success) toast('Settings saved', 'success');
             else toast('Error', 'error');
@@ -1490,7 +1536,7 @@
             const body = {
                 google_verification: document.getElementById('set_google_verification').value
             };
-            const res = await fetch(API + '/api/cms/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            const res = await authFetch(API + '/api/cms/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
             const data = await res.json();
             if (data.success) toast('Google verification code saved', 'success');
             else toast('Error', 'error');
@@ -1499,7 +1545,7 @@
 
     async function loadSEOSettings() {
         try {
-            const res = await fetch(API + '/api/cms/settings');
+            const res = await authFetch(API + '/api/cms/settings');
             const data = await res.json();
             settings = data.settings || {};
             document.getElementById('set_meta_title').value = settings.meta_title || '';
@@ -1515,7 +1561,7 @@
                 meta_description: document.getElementById('set_meta_description').value,
                 meta_keywords: document.getElementById('set_meta_keywords').value
             };
-            const res = await fetch(API + '/api/cms/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            const res = await authFetch(API + '/api/cms/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
             const data = await res.json();
             if (data.success) toast('SEO settings saved', 'success');
             else toast('Error', 'error');
@@ -1527,7 +1573,7 @@
 
     async function loadUsers() {
         try {
-            const res = await fetch(API + '/api/portal/users');
+            const res = await authFetch(API + '/api/portal/users');
             const data = await res.json();
             const tbody = document.getElementById('usersTable');
             if (!data.users || data.users.length === 0) {
@@ -1559,7 +1605,7 @@
         try {
             // Fetch both API devices and FRP proxies
             const [devRes, frpRes] = await Promise.all([
-                fetch(API + '/api/devices').catch(() => null),
+                authFetch(API + '/api/devices').catch(() => null),
                 fetch(API + '/api/frp/proxies').catch(() => null)
             ]);
             const apiDevices = devRes && devRes.ok ? (await devRes.json()).devices || [] : [];
@@ -1621,7 +1667,7 @@
 
     async function editUser(id) {
         try {
-            const res = await fetch(API + '/api/portal/users');
+            const res = await authFetch(API + '/api/portal/users');
             const data = await res.json();
             const user = (data.users || []).find(u => u.id === id);
             if (user) {
@@ -1647,7 +1693,7 @@
         try {
             const url = id ? API + '/api/portal/users/' + id : API + '/api/portal/users';
             const method = id ? 'PUT' : 'POST';
-            const res = await fetch(url, {
+            const res = await authFetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password, display_name, role, is_active })
@@ -1659,7 +1705,7 @@
             }
             // Now update device assignments
             const userId = id || data.id;
-            await fetch(API + '/api/portal/users/' + userId + '/devices', {
+            await authFetch(API + '/api/portal/users/' + userId + '/devices', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ device_ids })
@@ -1675,7 +1721,7 @@
     async function deleteUser(id, username) {
         if (!confirm('Delete user "' + username + '"? This will also remove all device assignments.')) return;
         try {
-            await fetch(API + '/api/portal/users/' + id, { method: 'DELETE' });
+            await authFetch(API + '/api/portal/users/' + id, { method: 'DELETE' });
             toast('User deleted', 'success');
             loadUsers();
         } catch (e) { toast('Error deleting user', 'error'); }

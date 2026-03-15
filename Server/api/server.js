@@ -6,8 +6,14 @@ const Database = require('better-sqlite3');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const fs = require('fs');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const http = require('http');
+
+// JWT secret - in production use env var
+const JWT_SECRET = process.env.JWT_SECRET || require('crypto').randomBytes(64).toString('hex');
+const JWT_EXPIRY = '24h';
 
 const app = express();
 const PORT = process.env.API_PORT || 3000;
@@ -229,9 +235,35 @@ db.exec(`
 // Seed default admin portal user if table is empty
 const portalUserCount = db.prepare('SELECT COUNT(*) as c FROM portal_users').get();
 if (portalUserCount.c === 0) {
-    db.prepare('INSERT INTO portal_users (username, password, display_name, role) VALUES (?, ?, ?, ?)').run('admin', 'admin', 'Administrator', 'admin');
+    db.prepare('INSERT INTO portal_users (username, password, display_name, role) VALUES (?, ?, ?, ?)').run('admin', bcrypt.hashSync('admin', 10), 'Administrator', 'admin');
     console.log('Seeded default portal admin user (admin/admin)');
 }
+
+// Migrate plaintext admin password to bcrypt if needed
+(function migrateAdminPassword() {
+    try {
+        const row = db.prepare("SELECT value FROM cms_settings WHERE key = 'admin_password'").get();
+        if (row && row.value && !row.value.startsWith('$2a$') && !row.value.startsWith('$2b$')) {
+            const hashed = bcrypt.hashSync(row.value, 10);
+            db.prepare("UPDATE cms_settings SET value = ? WHERE key = 'admin_password'").run(hashed);
+            console.log('Migrated admin password from plaintext to bcrypt');
+        }
+    } catch (e) { console.error('Password migration error:', e.message); }
+})();
+
+// Migrate plaintext portal user passwords to bcrypt if needed
+(function migratePortalPasswords() {
+    try {
+        const users = db.prepare('SELECT id, password FROM portal_users').all();
+        for (const u of users) {
+            if (u.password && !u.password.startsWith('$2a$') && !u.password.startsWith('$2b$')) {
+                const hashed = bcrypt.hashSync(u.password, 10);
+                db.prepare('UPDATE portal_users SET password = ? WHERE id = ?').run(hashed, u.id);
+                console.log(`Migrated portal user ${u.id} password to bcrypt`);
+            }
+        }
+    } catch (e) { console.error('Portal password migration error:', e.message); }
+})();
 
 // Insert default categories if empty
 const catCount = db.prepare('SELECT COUNT(*) as c FROM cms_categories').get();
@@ -261,7 +293,7 @@ if (settCount.c === 0) {
     insertSetting.run('meta_title', 'News Reporter Live - Latest India News & Breaking Stories');
     insertSetting.run('meta_description', 'Latest India News, Breaking News, Politics, Business, Sports, Technology, Entertainment');
     insertSetting.run('meta_keywords', 'India news, breaking news, politics, business, sports, technology');
-    insertSetting.run('admin_password', 'Varma@678');
+    insertSetting.run('admin_password', bcrypt.hashSync('Varma@678', 10));
     insertSetting.run('ai_api_key', '');
     insertSetting.run('ai_provider', 'openrouter');
     insertSetting.run('ai_model', 'google/gemini-2.0-flash-001');
@@ -350,6 +382,79 @@ const stmts = {
         WHERE is_online = 1 AND last_heartbeat < datetime('now', '-2 minutes')
     `),
 };
+
+// ============================================================
+// Auth Middleware & Admin Login
+// ============================================================
+
+function requireAdmin(req, res, next) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ success: false, message: 'Authentication required' });
+    }
+    const token = authHeader.split(' ')[1];
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        if (decoded.role !== 'admin') {
+            return res.status(403).json({ success: false, message: 'Admin access required' });
+        }
+        req.adminUser = decoded;
+        next();
+    } catch (err) {
+        return res.status(401).json({ success: false, message: 'Invalid or expired token' });
+    }
+}
+
+// Admin login - returns JWT token
+app.post('/api/admin/login', (req, res) => {
+    try {
+        const { password } = req.body;
+        if (!password) {
+            return res.status(400).json({ success: false, message: 'Password is required' });
+        }
+        const row = db.prepare("SELECT value FROM cms_settings WHERE key = 'admin_password'").get();
+        if (!row) {
+            return res.status(500).json({ success: false, message: 'Admin password not configured' });
+        }
+        const isValid = bcrypt.compareSync(password, row.value);
+        if (!isValid) {
+            return res.status(401).json({ success: false, message: 'Invalid password' });
+        }
+        const token = jwt.sign({ role: 'admin', iat: Math.floor(Date.now() / 1000) }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+        res.json({ success: true, token, expiresIn: JWT_EXPIRY });
+    } catch (err) {
+        console.error('Admin login error:', err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+// Verify token endpoint (for session check)
+app.get('/api/admin/verify', requireAdmin, (req, res) => {
+    res.json({ success: true, message: 'Token is valid' });
+});
+
+// Change admin password
+app.post('/api/admin/change-password', requireAdmin, (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ success: false, message: 'Current and new passwords are required' });
+        }
+        if (newPassword.length < 6) {
+            return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });
+        }
+        const row = db.prepare("SELECT value FROM cms_settings WHERE key = 'admin_password'").get();
+        if (!bcrypt.compareSync(currentPassword, row.value)) {
+            return res.status(401).json({ success: false, message: 'Current password is incorrect' });
+        }
+        const hashed = bcrypt.hashSync(newPassword, 10);
+        db.prepare("UPDATE cms_settings SET value = ? WHERE key = 'admin_password'").run(hashed);
+        res.json({ success: true, message: 'Password changed successfully' });
+    } catch (err) {
+        console.error('Change password error:', err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
 
 // ============================================================
 // API Routes
@@ -453,7 +558,7 @@ app.post('/api/devices/heartbeat', (req, res) => {
 });
 
 // List all devices
-app.get('/api/devices', (req, res) => {
+app.get('/api/devices', requireAdmin, (req, res) => {
     try {
         const devices = stmts.getAllDevices.all();
         res.json({
@@ -504,7 +609,7 @@ app.get('/api/devices/:deviceId', (req, res) => {
 });
 
 // Delete device
-app.delete('/api/devices/:deviceId', (req, res) => {
+app.delete('/api/devices/:deviceId', requireAdmin, (req, res) => {
     try {
         const device = stmts.findDevice.get(req.params.deviceId);
         if (!device) {
@@ -520,7 +625,7 @@ app.delete('/api/devices/:deviceId', (req, res) => {
 });
 
 // Register a new device (admin endpoint)
-app.post('/api/devices/register', (req, res) => {
+app.post('/api/devices/register', requireAdmin, (req, res) => {
     try {
         const { deviceId, authToken, remotePort, hostname } = req.body;
 
@@ -615,7 +720,7 @@ app.get('/api/lock-screen', (req, res) => {
 });
 
 // Set RDP credentials for a connection (temporary, used for NLA auth)
-app.post('/api/set-rdp-creds', (req, res) => {
+app.post('/api/set-rdp-creds', requireAdmin, (req, res) => {
     const { connName, username, password, port } = req.body;
     if (!connName || !username || !password || !port) {
         return res.json({ success: false, message: 'Missing required fields' });
@@ -668,7 +773,7 @@ app.post('/api/set-rdp-creds', (req, res) => {
 });
 
 // Clear RDP credentials after disconnect (security: don't persist)
-app.post('/api/clear-rdp-creds', (req, res) => {
+app.post('/api/clear-rdp-creds', requireAdmin, (req, res) => {
     const { connName, port } = req.body;
     if (!connName || !port) {
         return res.json({ success: false, message: 'Missing required fields' });
@@ -715,8 +820,8 @@ app.post('/api/portal/login', (req, res) => {
         if (!username || !password) {
             return res.status(400).json({ success: false, message: 'Username and password are required' });
         }
-        const user = db.prepare('SELECT * FROM portal_users WHERE username = ? AND password = ? AND is_active = 1').get(username, password);
-        if (!user) {
+        const user = db.prepare('SELECT * FROM portal_users WHERE username = ? AND is_active = 1').get(username);
+        if (!user || !bcrypt.compareSync(password, user.password)) {
             return res.status(401).json({ success: false, message: 'Invalid username or password' });
         }
         // Get assigned devices
@@ -739,7 +844,7 @@ app.post('/api/portal/login', (req, res) => {
 });
 
 // List all portal users
-app.get('/api/portal/users', (req, res) => {
+app.get('/api/portal/users', requireAdmin, (req, res) => {
     try {
         const users = db.prepare('SELECT id, username, display_name, role, is_active, created_at, updated_at FROM portal_users ORDER BY created_at DESC').all();
         // Get device assignments for each user
@@ -756,7 +861,7 @@ app.get('/api/portal/users', (req, res) => {
 });
 
 // Create portal user
-app.post('/api/portal/users', (req, res) => {
+app.post('/api/portal/users', requireAdmin, (req, res) => {
     try {
         const { username, password, display_name, role } = req.body;
         if (!username || !password) {
@@ -766,8 +871,9 @@ app.post('/api/portal/users', (req, res) => {
         if (existing) {
             return res.status(409).json({ success: false, message: 'Username already exists' });
         }
+        const hashedPw = bcrypt.hashSync(password, 10);
         const result = db.prepare('INSERT INTO portal_users (username, password, display_name, role) VALUES (?, ?, ?, ?)').run(
-            username, password, display_name || '', role || 'user'
+            username, hashedPw, display_name || '', role || 'user'
         );
         res.json({ success: true, id: result.lastInsertRowid, message: 'User created' });
     } catch (err) {
@@ -777,7 +883,7 @@ app.post('/api/portal/users', (req, res) => {
 });
 
 // Update portal user
-app.put('/api/portal/users/:id', (req, res) => {
+app.put('/api/portal/users/:id', requireAdmin, (req, res) => {
     try {
         const { username, password, display_name, role, is_active } = req.body;
         const user = db.prepare('SELECT * FROM portal_users WHERE id = ?').get(req.params.id);
@@ -789,11 +895,12 @@ app.put('/api/portal/users/:id', (req, res) => {
             const dup = db.prepare('SELECT id FROM portal_users WHERE username = ? AND id != ?').get(username, req.params.id);
             if (dup) return res.status(409).json({ success: false, message: 'Username already taken' });
         }
+        const hashedPw = password ? bcrypt.hashSync(password, 10) : user.password;
         db.prepare(`UPDATE portal_users SET 
             username = ?, password = ?, display_name = ?, role = ?, is_active = ?, updated_at = datetime('now')
             WHERE id = ?`).run(
             username || user.username,
-            password || user.password,
+            hashedPw,
             display_name !== undefined ? display_name : user.display_name,
             role || user.role,
             is_active !== undefined ? (is_active ? 1 : 0) : user.is_active,
@@ -807,7 +914,7 @@ app.put('/api/portal/users/:id', (req, res) => {
 });
 
 // Delete portal user
-app.delete('/api/portal/users/:id', (req, res) => {
+app.delete('/api/portal/users/:id', requireAdmin, (req, res) => {
     try {
         const user = db.prepare('SELECT * FROM portal_users WHERE id = ?').get(req.params.id);
         if (!user) {
@@ -824,7 +931,7 @@ app.delete('/api/portal/users/:id', (req, res) => {
 });
 
 // Assign device to user
-app.post('/api/portal/users/:id/devices', (req, res) => {
+app.post('/api/portal/users/:id/devices', requireAdmin, (req, res) => {
     try {
         const { device_id } = req.body;
         if (!device_id) {
@@ -850,7 +957,7 @@ app.post('/api/portal/users/:id/devices', (req, res) => {
 });
 
 // Unassign device from user
-app.delete('/api/portal/users/:id/devices/:deviceId', (req, res) => {
+app.delete('/api/portal/users/:id/devices/:deviceId', requireAdmin, (req, res) => {
     try {
         db.prepare('DELETE FROM device_assignments WHERE user_id = ? AND device_id = ?').run(req.params.id, req.params.deviceId);
         res.json({ success: true, message: 'Device unassigned' });
@@ -861,7 +968,7 @@ app.delete('/api/portal/users/:id/devices/:deviceId', (req, res) => {
 });
 
 // Get devices assigned to a user
-app.get('/api/portal/users/:id/devices', (req, res) => {
+app.get('/api/portal/users/:id/devices', requireAdmin, (req, res) => {
     try {
         const assignments = db.prepare('SELECT device_id FROM device_assignments WHERE user_id = ?').all(req.params.id);
         res.json({ success: true, devices: assignments.map(a => a.device_id) });
@@ -872,7 +979,7 @@ app.get('/api/portal/users/:id/devices', (req, res) => {
 });
 
 // Bulk update device assignments for a user
-app.put('/api/portal/users/:id/devices', (req, res) => {
+app.put('/api/portal/users/:id/devices', requireAdmin, (req, res) => {
     try {
         const { device_ids } = req.body;
         if (!Array.isArray(device_ids)) {
@@ -946,7 +1053,7 @@ app.get('/admin', (req, res) => {
 });
 
 // --- Articles CRUD ---
-app.get('/api/cms/articles', (req, res) => {
+app.get('/api/cms/articles', requireAdmin, (req, res) => {
     try {
         const { status, category, limit, offset, search } = req.query;
         let sql = 'SELECT * FROM cms_articles WHERE 1=1';
@@ -966,7 +1073,7 @@ app.get('/api/cms/articles', (req, res) => {
     }
 });
 
-app.get('/api/cms/articles/:id', (req, res) => {
+app.get('/api/cms/articles/:id', requireAdmin, (req, res) => {
     try {
         const article = db.prepare('SELECT * FROM cms_articles WHERE id = ?').get(req.params.id);
         if (!article) return res.status(404).json({ success: false, message: 'Article not found' });
@@ -983,7 +1090,7 @@ function generateSlug(title) {
     return slug;
 }
 
-app.post('/api/cms/articles', (req, res) => {
+app.post('/api/cms/articles', requireAdmin, (req, res) => {
     try {
         const { title, content, excerpt, category, image_url, author, status, featured, meta_title, meta_description, meta_keywords, source_url, ai_generated } = req.body;
         if (!title || !content) return res.status(400).json({ success: false, message: 'Title and content are required' });
@@ -1000,7 +1107,7 @@ app.post('/api/cms/articles', (req, res) => {
     }
 });
 
-app.put('/api/cms/articles/:id', (req, res) => {
+app.put('/api/cms/articles/:id', requireAdmin, (req, res) => {
     try {
         const article = db.prepare('SELECT * FROM cms_articles WHERE id = ?').get(req.params.id);
         if (!article) return res.status(404).json({ success: false, message: 'Article not found' });
@@ -1015,7 +1122,7 @@ app.put('/api/cms/articles/:id', (req, res) => {
     }
 });
 
-app.delete('/api/cms/articles/:id', (req, res) => {
+app.delete('/api/cms/articles/:id', requireAdmin, (req, res) => {
     try {
         db.prepare('DELETE FROM cms_articles WHERE id = ?').run(req.params.id);
         res.json({ success: true });
@@ -1034,7 +1141,7 @@ app.get('/api/cms/categories', (req, res) => {
     }
 });
 
-app.post('/api/cms/categories', (req, res) => {
+app.post('/api/cms/categories', requireAdmin, (req, res) => {
     try {
         const { name, color, description } = req.body;
         if (!name) return res.status(400).json({ success: false, message: 'Name is required' });
@@ -1047,7 +1154,7 @@ app.post('/api/cms/categories', (req, res) => {
     }
 });
 
-app.delete('/api/cms/categories/:id', (req, res) => {
+app.delete('/api/cms/categories/:id', requireAdmin, (req, res) => {
     try {
         db.prepare('DELETE FROM cms_categories WHERE id = ?').run(req.params.id);
         res.json({ success: true });
@@ -1057,22 +1164,26 @@ app.delete('/api/cms/categories/:id', (req, res) => {
 });
 
 // --- Settings ---
-app.get('/api/cms/settings', (req, res) => {
+app.get('/api/cms/settings', requireAdmin, (req, res) => {
     try {
         const rows = db.prepare('SELECT * FROM cms_settings').all();
         const settings = {};
         for (const r of rows) settings[r.key] = r.value;
+        // Never expose admin password hash to client
+        delete settings.admin_password;
         res.json({ success: true, settings });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
 });
 
-app.post('/api/cms/settings', (req, res) => {
+app.post('/api/cms/settings', requireAdmin, (req, res) => {
     try {
         const updates = req.body;
         const upsert = db.prepare('INSERT OR REPLACE INTO cms_settings (key, value) VALUES (?, ?)');
         for (const [key, value] of Object.entries(updates)) {
+            // Don't allow password changes through settings - use /api/admin/change-password
+            if (key === 'admin_password') continue;
             upsert.run(key, String(value));
         }
         res.json({ success: true });
@@ -1082,7 +1193,7 @@ app.post('/api/cms/settings', (req, res) => {
 });
 
 // --- RSS Feeds ---
-app.get('/api/cms/feeds', (req, res) => {
+app.get('/api/cms/feeds', requireAdmin, (req, res) => {
     try {
         const feeds = db.prepare('SELECT * FROM cms_rss_feeds ORDER BY created_at DESC').all();
         res.json({ success: true, feeds });
@@ -1091,7 +1202,7 @@ app.get('/api/cms/feeds', (req, res) => {
     }
 });
 
-app.post('/api/cms/feeds', (req, res) => {
+app.post('/api/cms/feeds', requireAdmin, (req, res) => {
     try {
         const { name, url, category, enabled } = req.body;
         if (!name || !url) return res.status(400).json({ success: false, message: 'Name and URL required' });
@@ -1102,7 +1213,7 @@ app.post('/api/cms/feeds', (req, res) => {
     }
 });
 
-app.delete('/api/cms/feeds/:id', (req, res) => {
+app.delete('/api/cms/feeds/:id', requireAdmin, (req, res) => {
     try {
         db.prepare('DELETE FROM cms_rss_feeds WHERE id = ?').run(req.params.id);
         res.json({ success: true });
@@ -1112,7 +1223,7 @@ app.delete('/api/cms/feeds/:id', (req, res) => {
 });
 
 // --- AI Log ---
-app.get('/api/cms/ai-log', (req, res) => {
+app.get('/api/cms/ai-log', requireAdmin, (req, res) => {
     try {
         const logs = db.prepare('SELECT * FROM cms_ai_log ORDER BY created_at DESC LIMIT 50').all();
         res.json({ success: true, logs });
@@ -1122,7 +1233,7 @@ app.get('/api/cms/ai-log', (req, res) => {
 });
 
 // --- AI Rewrite single article ---
-app.post('/api/cms/ai-rewrite', async (req, res) => {
+app.post('/api/cms/ai-rewrite', requireAdmin, async (req, res) => {
     try {
         const { title, content, source_url } = req.body;
         if (!content) return res.status(400).json({ success: false, message: 'Content is required' });
@@ -1152,7 +1263,7 @@ app.post('/api/cms/ai-rewrite', async (req, res) => {
 });
 
 // --- Fetch RSS and auto-publish ---
-app.post('/api/cms/fetch-rss', async (req, res) => {
+app.post('/api/cms/fetch-rss', requireAdmin, async (req, res) => {
     try {
         const feeds = db.prepare('SELECT * FROM cms_rss_feeds WHERE enabled = 1').all();
         if (feeds.length === 0) return res.json({ success: true, message: 'No enabled feeds', fetched: 0 });
@@ -1215,7 +1326,7 @@ app.post('/api/cms/fetch-rss', async (req, res) => {
 });
 
 // --- AI Generate Articles Across All Categories ---
-app.post('/api/cms/ai-generate', async (req, res) => {
+app.post('/api/cms/ai-generate', requireAdmin, async (req, res) => {
     try {
         const settings = {};
         db.prepare('SELECT * FROM cms_settings').all().forEach(r => settings[r.key] = r.value);
@@ -1335,7 +1446,7 @@ IMPORTANT: Respond ONLY with raw JSON. Do NOT wrap in markdown code blocks. No \
 });
 
 // --- CMS Stats ---
-app.get('/api/cms/stats', (req, res) => {
+app.get('/api/cms/stats', requireAdmin, (req, res) => {
     try {
         const totalArticles = db.prepare('SELECT COUNT(*) as c FROM cms_articles').get().c;
         const published = db.prepare('SELECT COUNT(*) as c FROM cms_articles WHERE status = ?').get('published').c;
