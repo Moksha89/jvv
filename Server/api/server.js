@@ -73,6 +73,30 @@ const loginLimiter = rateLimit({
     skipSuccessfulRequests: true
 });
 
+// Rate limiting - public write endpoints (comments, newsletter, views)
+const publicWriteLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 30, // 30 requests per 15 min per IP
+    message: { success: false, message: 'Too many requests. Please try again later.' },
+    standardHeaders: true,
+    legacyHeaders: false
+});
+
+// XSS sanitization - strip HTML tags and dangerous content
+function sanitizeInput(str) {
+    if (typeof str !== 'string') return str;
+    return str
+        .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+        .replace(/<\/?(script|iframe|object|embed|form|input|button|link|meta|style|svg|math)[^>]*>/gi, '')
+        .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
+        .replace(/on\w+\s*=\s*\S+/gi, '')
+        .replace(/javascript\s*:/gi, '')
+        .replace(/data\s*:\s*text\/html/gi, '')
+        .replace(/expression\s*\(/gi, '')
+        .replace(/vbscript\s*:/gi, '')
+        .trim();
+}
+
 // IP-based login lockout tracking
 const loginAttempts = new Map(); // ip -> { count, lockedUntil }
 const MAX_LOGIN_ATTEMPTS = 5;
@@ -1778,17 +1802,22 @@ app.post('/api/upload/image', requireAdmin, upload.single('image'), (req, res) =
 // Comments API
 // ============================================================
 // Public: Submit comment
-app.post('/api/comments', (req, res) => {
+app.post('/api/comments', publicWriteLimiter, (req, res) => {
     try {
-        const { article_id, author_name, author_email, content } = req.body;
+        const { article_id, author_email } = req.body;
+        let { author_name, content } = req.body;
         if (!article_id || !author_name || !content) {
             return res.status(400).json({ success: false, message: 'Article ID, author name, and content are required' });
         }
+        // XSS sanitization
+        author_name = sanitizeInput(author_name).substring(0, 100);
+        content = sanitizeInput(content);
         if (content.length > 2000) return res.status(400).json({ success: false, message: 'Comment too long (max 2000 chars)' });
+        if (!content.trim()) return res.status(400).json({ success: false, message: 'Comment content cannot be empty after sanitization' });
         const article = db.prepare('SELECT id FROM cms_articles WHERE id = ? AND status = ?').get(article_id, 'published');
         if (!article) return res.status(404).json({ success: false, message: 'Article not found' });
         const ip = req.ip || req.connection.remoteAddress;
-        db.prepare('INSERT INTO comments (article_id, author_name, author_email, content, ip_address) VALUES (?, ?, ?, ?, ?)').run(article_id, author_name, author_email || '', content, ip);
+        db.prepare('INSERT INTO comments (article_id, author_name, author_email, content, ip_address) VALUES (?, ?, ?, ?, ?)').run(article_id, author_name, sanitizeInput(author_email || ''), content, ip);
         res.json({ success: true, message: 'Comment submitted for moderation' });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
@@ -1853,7 +1882,7 @@ app.delete('/api/admin/comments/:id', requireAdmin, (req, res) => {
 // Newsletter API
 // ============================================================
 // Public: Subscribe
-app.post('/api/newsletter/subscribe', (req, res) => {
+app.post('/api/newsletter/subscribe', publicWriteLimiter, (req, res) => {
     try {
         const { email, name } = req.body;
         if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -1873,7 +1902,7 @@ app.post('/api/newsletter/subscribe', (req, res) => {
 });
 
 // Public: Unsubscribe
-app.post('/api/newsletter/unsubscribe', (req, res) => {
+app.post('/api/newsletter/unsubscribe', publicWriteLimiter, (req, res) => {
     try {
         const { email } = req.body;
         db.prepare("UPDATE newsletter_subscribers SET is_active = 0, unsubscribed_at = datetime('now') WHERE email = ?").run(email);

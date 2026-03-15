@@ -987,11 +987,12 @@ async function loadComments(articleId) {
             return;
         }
         el.innerHTML = data.comments.map(function(c) {
+            var esc = function(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
             return '<div style="padding:12px 0;border-bottom:1px solid var(--border);">' +
                 '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">' +
-                '<strong>' + (c.author_name || 'Anonymous') + '</strong>' +
+                '<strong>' + esc(c.author_name || 'Anonymous') + '</strong>' +
                 '<span style="font-size:12px;color:var(--text-light);">' + new Date(c.created_at).toLocaleDateString() + '</span></div>' +
-                '<p style="color:var(--text-secondary);">' + c.content + '</p></div>';
+                '<p style="color:var(--text-secondary);">' + esc(c.content) + '</p></div>';
         }).join('');
     } catch (e) { console.error('Failed to load comments:', e); }
 }
