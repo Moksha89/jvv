@@ -336,16 +336,39 @@
         <div class="card mb-16" style="border:2px solid var(--primary);">
             <div class="card-header" style="background:var(--primary);color:#fff;"><h3>AI Article Generator</h3></div>
             <div class="card-body">
-                <p style="color:var(--text-secondary);margin-bottom:12px;">Generate original, high-SEO articles with thumbnails across ALL categories using AI. Each article is written in natural reporter tone with "reportersays" embedded.</p>
+                <p style="color:var(--text-secondary);margin-bottom:12px;">Generate original, high-SEO articles with thumbnails using AI. Each article is written in natural reporter tone with "reportersays" embedded.</p>
                 <div class="form-group">
-                    <label>Articles per Category</label>
-                    <select id="ai_gen_count">
-                        <option value="1">1 per category (9 articles total)</option>
-                        <option value="2">2 per category (18 articles total)</option>
-                        <option value="3">3 per category (27 articles total)</option>
+                    <label>Generation Mode</label>
+                    <select id="ai_gen_mode" onchange="updateGenModeUI()">
+                        <option value="all">Bulk - All Categories</option>
+                        <option value="single_category">Single Category</option>
+                        <option value="single_topic">Single Topic (Custom)</option>
                     </select>
                 </div>
-                <button class="btn btn-primary" onclick="generateAIArticles()" id="aiGenBtn" style="font-size:16px;padding:12px 32px;">Generate Articles Across All Categories</button>
+                <div class="form-group" id="ai_gen_category_group" style="display:none;">
+                    <label>Select Category</label>
+                    <select id="ai_gen_category"></select>
+                </div>
+                <div class="form-group" id="ai_gen_topic_group" style="display:none;">
+                    <label>Custom Topic</label>
+                    <input type="text" id="ai_gen_topic" placeholder="e.g. India's new space mission, Budget 2026 highlights...">
+                    <small style="color:var(--text-secondary)">Enter any topic and AI will generate an article about it</small>
+                </div>
+                <div class="form-group" id="ai_gen_topic_category_group" style="display:none;">
+                    <label>Publish Under Category</label>
+                    <select id="ai_gen_topic_category"></select>
+                </div>
+                <div class="form-group">
+                    <label>Number of Articles</label>
+                    <select id="ai_gen_count" onchange="updateGenTotalHint()">
+                        <option value="1">1 article</option>
+                        <option value="2">2 articles</option>
+                        <option value="3">3 articles</option>
+                        <option value="5">5 articles</option>
+                    </select>
+                    <small id="ai_gen_total_hint" style="color:var(--text-secondary);display:block;margin-top:4px;"></small>
+                </div>
+                <button class="btn btn-primary" onclick="generateAIArticles()" id="aiGenBtn" style="font-size:16px;padding:12px 32px;">Generate Articles</button>
                 <div id="aiGenStatus" style="margin-top:12px;display:none;"></div>
             </div>
         </div>
@@ -648,7 +671,7 @@
         document.querySelector('.sidebar').classList.remove('open');
         if (page === 'articles') loadArticles();
         if (page === 'categories') loadCategories();
-        if (page === 'ai') loadAISettings();
+        if (page === 'ai') { loadAISettings(); populateGenCategoryDropdowns(); }
         if (page === 'feeds') loadFeeds();
         if (page === 'settings') loadSiteSettings();
         if (page === 'seo') loadSEOSettings();
@@ -658,6 +681,7 @@
     // ===== Init =====
     async function init() {
         await loadCategoriesData();
+        populateGenCategoryDropdowns();
         loadDashboard();
     }
 
@@ -968,23 +992,69 @@
         }, 100);
     }
 
+    function updateGenModeUI() {
+        const mode = document.getElementById('ai_gen_mode').value;
+        document.getElementById('ai_gen_category_group').style.display = mode === 'single_category' ? '' : 'none';
+        document.getElementById('ai_gen_topic_group').style.display = mode === 'single_topic' ? '' : 'none';
+        document.getElementById('ai_gen_topic_category_group').style.display = mode === 'single_topic' ? '' : 'none';
+        updateGenTotalHint();
+    }
+
+    function updateGenTotalHint() {
+        const mode = document.getElementById('ai_gen_mode').value;
+        const count = parseInt(document.getElementById('ai_gen_count').value) || 1;
+        const hint = document.getElementById('ai_gen_total_hint');
+        if (mode === 'all') {
+            const catCount = document.getElementById('ai_gen_category') ? document.getElementById('ai_gen_category').options.length : 0;
+            hint.textContent = catCount > 0 ? `Total: ${count} x ${catCount} categories = ${count * catCount} articles` : `${count} per category`;
+        } else if (mode === 'single_category') {
+            hint.textContent = `${count} article(s) in selected category`;
+        } else {
+            hint.textContent = `${count} article(s) on your custom topic`;
+        }
+    }
+
+    function populateGenCategoryDropdowns() {
+        fetch(API + '/api/cms/categories').then(r => r.json()).then(data => {
+            if (!data.categories) return;
+            const selects = [document.getElementById('ai_gen_category'), document.getElementById('ai_gen_topic_category')];
+            selects.forEach(sel => {
+                if (!sel) return;
+                sel.innerHTML = data.categories.map(c => `<option value="${escHtml(c.name)}">${escHtml(c.name)}</option>`).join('');
+            });
+            updateGenTotalHint();
+        }).catch(() => {});
+    }
+
     async function generateAIArticles() {
         const btn = document.getElementById('aiGenBtn');
         const statusEl = document.getElementById('aiGenStatus');
+        const mode = document.getElementById('ai_gen_mode').value;
         const count = document.getElementById('ai_gen_count').value;
+        const category = document.getElementById('ai_gen_category').value;
+        const topicCategory = document.getElementById('ai_gen_topic_category').value;
+        const topic = document.getElementById('ai_gen_topic').value;
+
+        if (mode === 'single_topic' && !topic) { toast('Enter a topic', 'error'); return; }
+
+        const payload = { count: parseInt(count), mode };
+        if (mode === 'single_category') payload.category = category;
+        if (mode === 'single_topic') { payload.category = topicCategory; payload.topic = topic; payload.mode = 'single_category'; }
+
         btn.disabled = true;
-        btn.textContent = 'Generating... (this may take 2-3 minutes)';
+        btn.textContent = 'Generating... (this may take a few minutes)';
         statusEl.style.display = 'block';
-        statusEl.innerHTML = '<p style="color:var(--primary);font-weight:600;">Generating articles across all 9 categories... Please wait, this takes a few minutes.</p>';
+        const modeLabel = mode === 'all' ? 'all categories' : mode === 'single_category' ? category : `topic: ${topic}`;
+        statusEl.innerHTML = `<p style="color:var(--primary);font-weight:600;">Generating ${count} article(s) for ${modeLabel}... Please wait.</p>`;
         try {
             const res = await fetch(API + '/api/cms/ai-generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ count: parseInt(count) })
+                body: JSON.stringify(payload)
             });
             const data = await res.json();
             if (data.success) {
-                statusEl.innerHTML = `<p style="color:#2e7d32;font-weight:600;">Successfully generated ${data.generated} articles across ${data.total_categories} categories!</p>${data.errors ? '<p style="color:#c62828;font-size:12px;">Some errors: ' + data.errors.join(', ') + '</p>' : ''}`;
+                statusEl.innerHTML = `<p style="color:#2e7d32;font-weight:600;">Successfully generated ${data.generated} article(s) across ${data.total_categories} category/categories!</p>${data.errors ? '<p style="color:#c62828;font-size:12px;">Some errors: ' + data.errors.join(', ') + '</p>' : ''}`;
                 toast(`Generated ${data.generated} articles!`, 'success');
                 loadAILog();
                 loadArticles();
@@ -997,7 +1067,7 @@
             toast('Error generating articles', 'error');
         }
         btn.disabled = false;
-        btn.textContent = 'Generate Articles Across All Categories';
+        btn.textContent = 'Generate Articles';
     }
 
     async function loadAILog() {

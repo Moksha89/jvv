@@ -998,7 +998,7 @@ app.post('/api/cms/ai-generate', async (req, res) => {
         const categories = db.prepare('SELECT * FROM cms_categories ORDER BY sort_order').all();
         if (categories.length === 0) return res.json({ success: false, message: 'No categories found' });
 
-        const { count = 1 } = req.body; // articles per category
+        const { count = 1, mode = 'all', category = '', topic = '' } = req.body;
         const articlesPerCategory = Math.min(Math.max(1, parseInt(count) || 1), 5);
         let totalGenerated = 0;
         const errors = [];
@@ -1013,8 +1013,21 @@ app.post('/api/cms/ai-generate', async (req, res) => {
             'World': ['international diplomacy summit', 'global climate change action', 'UN peacekeeping mission', 'world economy forecast', 'international trade agreement'],
             'Health': ['public health initiative', 'medical research breakthrough', 'mental health awareness campaign', 'nutrition and wellness trends', 'hospital infrastructure development'],
             'Science': ['space exploration discovery', 'quantum computing progress', 'genetic research milestone', 'environmental science study', 'archaeological finding revealed'],
-            'Opinion': ['editorial on education reform', 'opinion on digital privacy', 'analysis of foreign policy', 'commentary on social media impact', 'perspective on urban development']
+            'Opinion': ['editorial on education reform', 'opinion on digital privacy', 'analysis of foreign policy', 'commentary on social media impact', 'perspective on urban development'],
+            'War': ['India border security update', 'military defense technology upgrade', 'geopolitical conflict analysis', 'armed forces modernization', 'peacekeeping operations report'],
+            'Education': ['CBSE board exam reform', 'IIT JEE preparation tips', 'NEP 2020 implementation update', 'university ranking changes', 'scholarship and fellowship announcements'],
+            'Jobs': ['government job recruitment notification', 'IT sector hiring trends', 'startup job market analysis', 'UPSC exam preparation guide', 'skill development initiative launched'],
+            'Cricket': ['India vs Pakistan match analysis', 'Test cricket series highlights', 'women cricket team performance', 'domestic cricket tournament update', 'cricket player injury and fitness news'],
+            'IPL': ['IPL team auction strategy', 'IPL match day highlights and scores', 'IPL player performance review', 'IPL franchise business analysis', 'IPL emerging players to watch'],
+            'Gadget Reviews': ['latest smartphone review and comparison', 'laptop buying guide for students', 'smartwatch and wearable tech review', 'budget gadget recommendations India', 'upcoming gadget launches in India']
         };
+
+        // Filter categories based on mode
+        let targetCategories = categories;
+        if (mode === 'single_category' && category) {
+            targetCategories = categories.filter(c => c.name === category);
+            if (targetCategories.length === 0) return res.json({ success: false, message: `Category "${category}" not found` });
+        }
 
         const seoPrompt = `You are a senior investigative reporter at News Reporter Live, India's trusted digital news source. Write an ORIGINAL, exclusive news article about the given topic. 
 
@@ -1032,17 +1045,17 @@ CRITICAL RULES:
 
 IMPORTANT: Respond ONLY with raw JSON. Do NOT wrap in markdown code blocks. No \`\`\`json or \`\`\`. Just the raw JSON object starting with { and ending with }.`;
 
-        for (const cat of categories) {
+        for (const cat of targetCategories) {
             const topics = topicIdeas[cat.name] || [`latest ${cat.name.toLowerCase()} news in India`, `breaking ${cat.name.toLowerCase()} update today`];
 
             for (let i = 0; i < articlesPerCategory; i++) {
                 try {
-                    const topic = topics[Math.floor(Math.random() * topics.length)];
+                    const chosenTopic = (mode === 'single_topic' && topic) ? topic : topics[Math.floor(Math.random() * topics.length)];
                     const dateContext = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
                     const result = await callAI(provider, apiKey, model, seoPrompt,
-                        `Write an original ${cat.name} news article about: ${topic}`,
-                        `Category: ${cat.name}\nTopic: ${topic}\nDate: ${dateContext}\nPublication: News Reporter Live\n\nWrite a fresh, original article about this topic as if reporting live from India today.`
+                        `Write an original ${cat.name} news article about: ${chosenTopic}`,
+                        `Category: ${cat.name}\nTopic: ${chosenTopic}\nDate: ${dateContext}\nPublication: News Reporter Live\n\nWrite a fresh, original article about this topic as if reporting live from India today.`
                     );
 
                     if (result && result.title && result.content) {
@@ -1294,7 +1307,14 @@ function searchUnsplashImage(query) {
         'world': 'https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?w=800&q=80',
         'health': 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&q=80',
         'science': 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=800&q=80',
-        'opinion': 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=800&q=80'
+        'opinion': 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=800&q=80',
+        'war': 'https://images.unsplash.com/photo-1580752300992-559f8e0734e0?w=800&q=80',
+        'education': 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80',
+        'jobs': 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&q=80',
+        'cricket': 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=800&q=80',
+        'ipl': 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=800&q=80',
+        'gadget reviews': 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=800&q=80',
+        'gadget': 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=800&q=80'
     };
     // Try to match a category from the query
     const lowerQuery = query.toLowerCase();
