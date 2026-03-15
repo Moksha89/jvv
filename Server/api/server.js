@@ -1030,7 +1030,7 @@ CRITICAL RULES:
 9. DO NOT use phrases like "In conclusion", "Furthermore", "It is worth noting" - these sound robotic
 10. Add a compelling, click-worthy headline that includes the main keyword
 
-Respond ONLY with valid JSON.`;
+IMPORTANT: Respond ONLY with raw JSON. Do NOT wrap in markdown code blocks. No \`\`\`json or \`\`\`. Just the raw JSON object starting with { and ending with }.`;
 
         for (const cat of categories) {
             const topics = topicIdeas[cat.name] || [`latest ${cat.name.toLowerCase()} news in India`, `breaking ${cat.name.toLowerCase()} update today`];
@@ -1046,11 +1046,11 @@ Respond ONLY with valid JSON.`;
                     );
 
                     if (result && result.title && result.content) {
-                        // Fetch thumbnail image
+                        // Fetch thumbnail image based on category
                         const imageQuery = result.image_query || topic;
                         let imageUrl = '';
                         try {
-                            imageUrl = await searchUnsplashImage(imageQuery);
+                            imageUrl = await searchUnsplashImage(cat.name.toLowerCase() + ' ' + imageQuery);
                         } catch (imgErr) {
                             console.error('Image search failed:', imgErr.message);
                             imageUrl = `https://images.unsplash.com/photo-1504711434969-e33886168d6c?w=800&q=80`;
