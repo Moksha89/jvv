@@ -575,7 +575,7 @@
             const encoded = btoa(connName + '\0c\0default');
             frame.src = token ? GUAC_BASE + '/#/client/' + encoded + '?token=' + token : GUAC_BASE + '/#/client/' + encoded;
             connected = true; connectionStartTime = Date.now(); updateConnectionTimer();
-            frame.onload = () => { setTimeout(() => { document.getElementById('loadingOverlay').classList.add('hidden'); document.getElementById('connQuality').textContent = 'Connected (' + modeLabel + ')'; }, 2000); };
+            frame.onload = () => { setTimeout(() => { document.getElementById('loadingOverlay').classList.add('hidden'); document.getElementById('connQuality').textContent = 'Connected (' + modeLabel + ')'; focusRemoteFrame(); }, 2000); };
         }
 
         function disconnectSession() {
@@ -599,19 +599,42 @@
             if (connected) setTimeout(updateConnectionTimer, 1000);
         }
 
+        // Focus the Guacamole iframe so keyboard works
+        function focusRemoteFrame() {
+            const frame = document.getElementById('rdpFrame');
+            if (frame && connected) { frame.focus(); }
+        }
+        // Click on connection view focuses iframe
+        document.getElementById('connectionView').addEventListener('click', function(e) {
+            if (e.target === this || e.target.id === 'rdpFrame') focusRemoteFrame();
+        });
+        // Refocus after any floating toolbar button click
+        document.querySelectorAll('.float-btn').forEach(btn => {
+            btn.addEventListener('click', () => { setTimeout(focusRemoteFrame, 300); });
+        });
+        // Refocus after sidebar interactions
+        document.querySelectorAll('.quick-action-btn').forEach(btn => {
+            btn.addEventListener('click', () => { setTimeout(focusRemoteFrame, 300); });
+        });
+
         function toggleFullscreen() {
             if (!document.fullscreenElement) { (document.getElementById('content') || document.documentElement).requestFullscreen().catch(() => {}); }
             else { document.exitFullscreen().catch(() => {}); }
+            setTimeout(focusRemoteFrame, 500);
         }
 
         function toggleKeyboard() {
             const overlay = document.getElementById('oskOverlay');
             overlay.classList.toggle('visible');
-            if (overlay.classList.contains('visible')) document.getElementById('oskInput').focus();
+            if (overlay.classList.contains('visible')) {
+                document.getElementById('oskInput').focus();
+            } else {
+                focusRemoteFrame();
+            }
         }
 
         document.getElementById('oskInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); this.value = ''; } });
-        document.getElementById('oskOverlay').addEventListener('click', function(e) { if (e.target === this) this.classList.remove('visible'); });
+        document.getElementById('oskOverlay').addEventListener('click', function(e) { if (e.target === this) { this.classList.remove('visible'); focusRemoteFrame(); } });
 
         function toggleClipboard() { document.getElementById('clipboardPanel').classList.toggle('visible'); }
         async function copyFromClipboard() { try { document.getElementById('clipboardText').value = await navigator.clipboard.readText(); } catch(e) { alert('Clipboard access denied.'); } }
