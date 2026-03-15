@@ -2264,18 +2264,25 @@ async function callAI(provider, apiKey, model, systemPrompt, title, content) {
                     if (!text) return reject(new Error('No response from AI: ' + data.substring(0, 500)));
                     // Strip markdown code block wrappers if present
                     let cleanText = text.trim();
-                    if (cleanText.startsWith('```json')) cleanText = cleanText.slice(7);
-                    else if (cleanText.startsWith('```')) cleanText = cleanText.slice(3);
-                    if (cleanText.endsWith('```')) cleanText = cleanText.slice(0, -3);
-                    cleanText = cleanText.trim();
+                    cleanText = cleanText.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim();
                     // Try to parse as JSON
                     try {
                         const jsonStart = cleanText.indexOf('{');
                         const jsonEnd = cleanText.lastIndexOf('}') + 1;
+                        if (jsonStart === -1 || jsonEnd <= jsonStart) throw new Error('No JSON object found');
                         const result = JSON.parse(cleanText.substring(jsonStart, jsonEnd));
+                        // Validate required fields
+                        if (!result.title || !result.content) throw new Error('Missing title or content in JSON');
+                        // Clean up content - fix literal \n\n and escaped quotes
+                        result.content = result.content.replace(/\\n\\n/g, '</p><p>').replace(/\\n/g, ' ').replace(/\\"/g, '"');
                         resolve(result);
-                    } catch {
-                        resolve({ title: title, content: text, excerpt: text.substring(0, 200), meta_description: text.substring(0, 160) });
+                    } catch (jsonErr) {
+                        // Fallback: extract a clean title from the content, not the prompt
+                        const firstLine = text.replace(/<[^>]+>/g, '').trim().split(/[.!?\n]/)[0].trim();
+                        const fallbackTitle = firstLine.length > 10 && firstLine.length < 200 ? firstLine : 'Breaking News Update';
+                        const fallbackContent = text.replace(/\\n\\n/g, '</p><p>').replace(/\\n/g, ' ');
+                        console.error('AI JSON parse failed:', jsonErr.message, '| Using fallback title:', fallbackTitle);
+                        resolve({ title: fallbackTitle, content: fallbackContent, excerpt: fallbackContent.replace(/<[^>]+>/g, '').substring(0, 200), meta_description: fallbackContent.replace(/<[^>]+>/g, '').substring(0, 160) });
                     }
                 } catch (e) {
                     reject(new Error('Failed to parse AI response: ' + e.message + ' | Raw: ' + data.substring(0, 300)));
