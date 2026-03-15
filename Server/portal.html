@@ -484,12 +484,12 @@
             const allDevices = [];
             for (const proxy of frpProxies) {
                 if (proxy.name && proxy.name.startsWith('vnc-')) continue;
-                const devName = proxy.name.replace('rdp-', '');
+                const devName = proxy.name.replace('rdp-', '').replace(/-+$/, '');
                 const rdpPort = proxy.conf ? proxy.conf.remotePort : 33890;
-                const vncProxy = frpProxies.find(p => p.name && p.name.startsWith('vnc-') && p.name.replace('vnc-', '') === devName);
+                const vncProxy = frpProxies.find(p => p.name && p.name.startsWith('vnc-') && p.name.replace('vnc-', '').replace(/-+$/, '') === devName);
                 const hasVnc = vncProxy && vncProxy.status === 'online';
                 const vncPort = vncProxy && vncProxy.conf ? vncProxy.conf.remotePort : (rdpPort + 25110);
-                const apiDev = devices.find(d => proxy.name.includes(d.deviceId));
+                const apiDev = devices.find(d => proxy.name.includes(d.deviceId) || devName === d.hostname);
                 allDevices.push({ name: devName, displayName: apiDev ? (apiDev.hostname || devName) : devName, status: proxy.status === 'online' ? 'online' : 'offline', rdpPort, vncPort, version: proxy.clientVersion || '', hasVnc });
             }
             for (const dev of devices) {
