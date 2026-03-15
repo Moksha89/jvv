@@ -560,6 +560,10 @@
 
         function connectSameScreen() {
             if (!selectedDevice) { alert('No device selected'); return; }
+            const vncUser = prompt('Enter Windows username for ' + selectedDevice.displayName + ':');
+            if (!vncUser) return;
+            const vncPass = prompt('Enter Windows password for ' + vncUser + ':');
+            if (!vncPass) return;
             currentMode = 'vnc';
             const connName = selectedDevice.displayName + ' - Same Screen';
             connectWithProfile(connName, 'vnc');
@@ -589,11 +593,23 @@
         }
         function connectPrivateSameScreen() {
             if (!selectedDevice) { alert('No device selected'); return; }
+            const vncUser = prompt('Enter Windows username for ' + selectedDevice.displayName + ':');
+            if (!vncUser) return;
+            const vncPass = prompt('Enter Windows password for ' + vncUser + ':');
+            if (!vncPass) return;
             currentMode = 'vnc';
+            pendingMonitorOffUser = vncUser;
+            pendingMonitorOffPass = vncPass;
             const connName = selectedDevice.displayName + ' - Same Screen';
             connectWithProfile(connName, 'vnc');
-            // Turn off physical monitor after VNC connects (VNC still works via framebuffer)
-            setTimeout(() => { turnOffRemoteMonitor(); }, 5000);
+            // Turn off physical monitor after VNC connects using the credentials provided
+            setTimeout(() => {
+                const port = selectedDevice.rdpPort;
+                fetch(API_BASE + '/api/monitor-off?port=' + port + '&user=' + encodeURIComponent(vncUser) + '&pass=' + encodeURIComponent(vncPass))
+                    .then(r => r.json()).then(data => {
+                        if (data.success) console.log('Monitor off command sent');
+                    }).catch(() => {});
+            }, 5000);
         }
 
         async function connectWithProfile(connName, mode) {
