@@ -228,10 +228,10 @@ if (settCount.c === 0) {
     insertSetting.run('meta_keywords', 'India news, breaking news, politics, business, sports, technology');
     insertSetting.run('admin_password', 'Varma@678');
     insertSetting.run('ai_api_key', '');
-    insertSetting.run('ai_provider', 'openai');
-    insertSetting.run('ai_model', 'gpt-4o-mini');
+    insertSetting.run('ai_provider', 'openrouter');
+    insertSetting.run('ai_model', 'google/gemini-2.0-flash-001');
     insertSetting.run('ai_auto_publish', '0');
-    insertSetting.run('ai_rewrite_prompt', 'Rewrite the following news article in a professional journalistic tone. Keep the facts accurate. Make it engaging and well-structured with multiple paragraphs. Include the word "reportersays" naturally once in the article.');
+    insertSetting.run('ai_rewrite_prompt', 'You are a senior Indian news reporter writing for News Reporter Live. Rewrite this article in a natural, engaging journalistic tone as if you are a real reporter on the ground. Use vivid language, quotes from sources, and proper news structure (inverted pyramid). Ensure HIGH SEO optimization: use relevant keywords naturally in the first paragraph, include semantic variations, and write compelling subheadings. The article must be 500-800 words, split into multiple paragraphs with <p> tags. Include the word "reportersays" naturally once somewhere in the middle of the article. Make it feel authentic and human-written, NOT robotic or AI-generated.');
     insertSetting.run('rss_fetch_interval', '30');
     insertSetting.run('google_verification', '');
     insertSetting.run('robots_txt', '');
@@ -984,6 +984,113 @@ app.post('/api/cms/fetch-rss', async (req, res) => {
     }
 });
 
+// --- AI Generate Articles Across All Categories ---
+app.post('/api/cms/ai-generate', async (req, res) => {
+    try {
+        const settings = {};
+        db.prepare('SELECT * FROM cms_settings').all().forEach(r => settings[r.key] = r.value);
+        const apiKey = settings.ai_api_key;
+        const provider = settings.ai_provider || 'openrouter';
+        const model = settings.ai_model || 'google/gemini-2.0-flash-001';
+
+        if (!apiKey) return res.status(400).json({ success: false, message: 'AI API key not configured. Go to Settings > AI Settings.' });
+
+        const categories = db.prepare('SELECT * FROM cms_categories ORDER BY sort_order').all();
+        if (categories.length === 0) return res.json({ success: false, message: 'No categories found' });
+
+        const { count = 1 } = req.body; // articles per category
+        const articlesPerCategory = Math.min(Math.max(1, parseInt(count) || 1), 5);
+        let totalGenerated = 0;
+        const errors = [];
+
+        // Topic ideas per category for diverse content
+        const topicIdeas = {
+            'Politics': ['government policy reform', 'election campaign updates', 'parliament session highlights', 'state politics developments', 'political alliance shifts'],
+            'Business': ['stock market analysis', 'startup funding news', 'corporate earnings report', 'economic growth indicators', 'trade policy impact'],
+            'Sports': ['cricket match highlights', 'football league updates', 'Olympic athlete training', 'tennis tournament results', 'sports team transfer news'],
+            'Technology': ['AI innovation breakthrough', 'smartphone launch review', 'cybersecurity threat alert', 'space technology mission', 'electric vehicle advancement'],
+            'Entertainment': ['Bollywood movie release', 'OTT platform new series', 'music album launch', 'celebrity interview highlights', 'film festival awards'],
+            'World': ['international diplomacy summit', 'global climate change action', 'UN peacekeeping mission', 'world economy forecast', 'international trade agreement'],
+            'Health': ['public health initiative', 'medical research breakthrough', 'mental health awareness campaign', 'nutrition and wellness trends', 'hospital infrastructure development'],
+            'Science': ['space exploration discovery', 'quantum computing progress', 'genetic research milestone', 'environmental science study', 'archaeological finding revealed'],
+            'Opinion': ['editorial on education reform', 'opinion on digital privacy', 'analysis of foreign policy', 'commentary on social media impact', 'perspective on urban development']
+        };
+
+        const seoPrompt = `You are a senior investigative reporter at News Reporter Live, India's trusted digital news source. Write an ORIGINAL, exclusive news article about the given topic. 
+
+CRITICAL RULES:
+1. Write in first-person reporter style with natural, conversational Indian English
+2. Use the inverted pyramid structure: most important facts first
+3. Include realistic quotes from unnamed sources (e.g., "A senior official told News Reporter Live...")
+4. SEO OPTIMIZATION: Use the main keyword in the title, first paragraph, one subheading, and naturally 3-4 times throughout
+5. Include 2-3 subheadings using <h3> tags for SEO
+6. Write 500-800 words in multiple <p> paragraphs
+7. Include the exact word "reportersays" naturally ONCE in the middle of the article (e.g., "as reportersays from the ground...")
+8. Make it sound like a REAL reporter wrote this - use location details, time references, and specific details
+9. DO NOT use phrases like "In conclusion", "Furthermore", "It is worth noting" - these sound robotic
+10. Add a compelling, click-worthy headline that includes the main keyword
+
+Respond ONLY with valid JSON.`;
+
+        for (const cat of categories) {
+            const topics = topicIdeas[cat.name] || [`latest ${cat.name.toLowerCase()} news in India`, `breaking ${cat.name.toLowerCase()} update today`];
+
+            for (let i = 0; i < articlesPerCategory; i++) {
+                try {
+                    const topic = topics[Math.floor(Math.random() * topics.length)];
+                    const dateContext = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+                    const result = await callAI(provider, apiKey, model, seoPrompt,
+                        `Write an original ${cat.name} news article about: ${topic}`,
+                        `Category: ${cat.name}\nTopic: ${topic}\nDate: ${dateContext}\nPublication: News Reporter Live\n\nWrite a fresh, original article about this topic as if reporting live from India today.`
+                    );
+
+                    if (result && result.title && result.content) {
+                        // Fetch thumbnail image
+                        const imageQuery = result.image_query || topic;
+                        let imageUrl = '';
+                        try {
+                            imageUrl = await searchUnsplashImage(imageQuery);
+                        } catch (imgErr) {
+                            console.error('Image search failed:', imgErr.message);
+                            imageUrl = `https://images.unsplash.com/photo-1504711434969-e33886168d6c?w=800&q=80`;
+                        }
+
+                        const slug = generateSlug(result.title);
+                        const excerpt = result.excerpt || result.content.replace(/<[^>]+>/g, '').substring(0, 200);
+                        const metaDesc = result.meta_description || excerpt.substring(0, 160);
+                        const metaKeywords = result.meta_keywords || '';
+
+                        db.prepare(`
+                            INSERT INTO cms_articles (title, slug, excerpt, content, category, image_url, author, status, source_url, ai_generated, published_at, meta_description)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, 'published', ?, 1, ?, ?)
+                        `).run(result.title, slug, excerpt, result.content, cat.name, imageUrl, 'News Reporter Live', 'ai-generated', new Date().toISOString(), metaDesc);
+
+                        db.prepare('INSERT INTO cms_ai_log (source_url, source_title, status) VALUES (?, ?, ?)').run('ai-generated', result.title, 'auto-published');
+                        totalGenerated++;
+                        console.log(`Generated article: "${result.title}" in ${cat.name}`);
+                    }
+                } catch (genErr) {
+                    const errMsg = `${cat.name}: ${genErr.message}`;
+                    errors.push(errMsg);
+                    console.error('AI generation error:', errMsg);
+                    db.prepare('INSERT INTO cms_ai_log (source_url, source_title, status, error_message) VALUES (?, ?, ?, ?)').run('ai-generate', cat.name, 'error', genErr.message);
+                }
+
+                // Small delay between requests to avoid rate limiting
+                if (i < articlesPerCategory - 1 || categories.indexOf(cat) < categories.length - 1) {
+                    await new Promise(r => setTimeout(r, 2000));
+                }
+            }
+        }
+
+        res.json({ success: true, generated: totalGenerated, total_categories: categories.length, errors: errors.length > 0 ? errors : undefined });
+    } catch (err) {
+        console.error('AI generate error:', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
 // --- CMS Stats ---
 app.get('/api/cms/stats', (req, res) => {
     try {
@@ -1094,7 +1201,18 @@ async function callAI(provider, apiKey, model, systemPrompt, title, content) {
         hostname = 'generativelanguage.googleapis.com';
         apiPath = `/v1beta/models/${model || 'gemini-pro'}:generateContent?key=${apiKey}`;
         body = JSON.stringify({
-            contents: [{ parts: [{ text: `${systemPrompt}\n\nTitle: ${title}\n\nOriginal Article:\n${content}\n\nProvide your response as JSON: {"title": "rewritten title", "content": "rewritten article HTML with <p> tags", "excerpt": "2-3 sentence summary", "meta_description": "SEO meta description"}` }] }]
+            contents: [{ parts: [{ text: `${systemPrompt}\n\nTitle: ${title}\n\nOriginal Article:\n${content}\n\nProvide your response as JSON: {"title": "rewritten title", "content": "rewritten article HTML with <p> tags", "excerpt": "2-3 sentence summary", "meta_description": "SEO meta description", "meta_keywords": "comma separated keywords", "image_query": "short search term for thumbnail image"}` }] }]
+        });
+    } else if (provider === 'openrouter') {
+        hostname = 'openrouter.ai';
+        apiPath = '/api/v1/chat/completions';
+        body = JSON.stringify({
+            model: model || 'google/gemini-2.0-flash-001',
+            messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: `Title: ${title}\n\nOriginal Article:\n${content}\n\nProvide your response as JSON: {"title": "SEO optimized headline", "content": "full article HTML with <p> tags, 500-800 words", "excerpt": "compelling 2-3 sentence summary", "meta_description": "SEO meta description under 160 chars", "meta_keywords": "comma separated SEO keywords", "image_query": "2-3 word search term for a relevant thumbnail photo"}` }
+            ],
+            temperature: 0.8
         });
     } else {
         // OpenAI compatible (works with OpenAI, Groq, Together, etc)
@@ -1104,7 +1222,7 @@ async function callAI(provider, apiKey, model, systemPrompt, title, content) {
             model: model || 'gpt-4o-mini',
             messages: [
                 { role: 'system', content: systemPrompt },
-                { role: 'user', content: `Title: ${title}\n\nOriginal Article:\n${content}\n\nProvide your response as JSON: {"title": "rewritten title", "content": "rewritten article HTML with <p> tags", "excerpt": "2-3 sentence summary", "meta_description": "SEO meta description"}` }
+                { role: 'user', content: `Title: ${title}\n\nOriginal Article:\n${content}\n\nProvide your response as JSON: {"title": "rewritten title", "content": "rewritten article HTML with <p> tags", "excerpt": "2-3 sentence summary", "meta_description": "SEO meta description", "meta_keywords": "comma separated keywords", "image_query": "short search term for thumbnail image"}` }
             ],
             temperature: 0.7,
             response_format: { type: 'json_object' }
@@ -1118,7 +1236,8 @@ async function callAI(provider, apiKey, model, systemPrompt, title, content) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                ...(provider !== 'gemini' && provider !== 'google' ? { 'Authorization': `Bearer ${apiKey}` } : {})
+                ...(provider !== 'gemini' && provider !== 'google' ? { 'Authorization': `Bearer ${apiKey}` } : {}),
+                ...(provider === 'openrouter' ? { 'HTTP-Referer': 'https://newsreporter.live', 'X-Title': 'News Reporter Live' } : {})
             }
         }, (response) => {
             let data = '';
@@ -1132,7 +1251,7 @@ async function callAI(provider, apiKey, model, systemPrompt, title, content) {
                     } else {
                         text = parsed.choices?.[0]?.message?.content;
                     }
-                    if (!text) return reject(new Error('No response from AI: ' + data.substring(0, 200)));
+                    if (!text) return reject(new Error('No response from AI: ' + data.substring(0, 500)));
                     // Try to parse as JSON
                     try {
                         const jsonStart = text.indexOf('{');
@@ -1143,13 +1262,37 @@ async function callAI(provider, apiKey, model, systemPrompt, title, content) {
                         resolve({ title: title, content: text, excerpt: text.substring(0, 200), meta_description: text.substring(0, 160) });
                     }
                 } catch (e) {
-                    reject(new Error('Failed to parse AI response: ' + e.message));
+                    reject(new Error('Failed to parse AI response: ' + e.message + ' | Raw: ' + data.substring(0, 300)));
                 }
             });
         });
         req.on('error', reject);
+        req.on('timeout', () => { req.destroy(); reject(new Error('AI request timeout')); });
+        req.setTimeout(60000);
         req.write(body);
         req.end();
+    });
+}
+
+// Search Unsplash for a relevant thumbnail image
+function searchUnsplashImage(query) {
+    const https = require('https');
+    const searchQuery = encodeURIComponent(query);
+    return new Promise((resolve) => {
+        // Use Unsplash source for direct image URLs (no API key needed)
+        const imageUrl = `https://images.unsplash.com/photo-1?w=800&q=80`;
+        // Use Unsplash search-based URL pattern
+        https.get(`https://source.unsplash.com/800x450/?${searchQuery}`, (response) => {
+            // Unsplash redirects to actual image URL
+            if (response.statusCode >= 300 && response.statusCode < 400 && response.headers.location) {
+                resolve(response.headers.location);
+            } else {
+                resolve(`https://images.unsplash.com/photo-1504711434969-e33886168d6c?w=800&q=80`);
+            }
+            response.resume();
+        }).on('error', () => {
+            resolve(`https://images.unsplash.com/photo-1504711434969-e33886168d6c?w=800&q=80`);
+        });
     });
 }
 
