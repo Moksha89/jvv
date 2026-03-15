@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>News Reporter Admin</title>
+    <title>News Reporter Live - Latest India News & Breaking Stories</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -139,12 +142,85 @@
         .truncate { max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .menu-toggle { display: none; position: fixed; top: 12px; left: 12px; z-index: 200; background: var(--primary); color: #fff; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; }
         @media (max-width: 768px) { .menu-toggle { display: block; } }
+
+        /* ===== Public News View ===== */
+        .public-view { font-family: 'Noto Sans', sans-serif; }
+        .pub-header { background: #fff; border-bottom: 3px solid var(--primary); }
+        .pub-header-inner { max-width: 1280px; margin: 0 auto; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
+        .pub-logo { display: flex; align-items: center; gap: 12px; }
+        .pub-logo-icon { width: 48px; height: 48px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: 800; }
+        .pub-logo-text h1 { font-family: 'Noto Serif', serif; font-size: 28px; font-weight: 700; color: #212121; line-height: 1; }
+        .pub-logo-text span { font-size: 11px; color: #9E9E9E; text-transform: uppercase; letter-spacing: 2px; }
+        .pub-date { font-size: 13px; color: #616161; }
+        .pub-nav { background: #fff; border-bottom: 1px solid #e0e0e0; position: sticky; top: 0; z-index: 100; }
+        .pub-nav-inner { max-width: 1280px; margin: 0 auto; padding: 0 20px; display: flex; overflow-x: auto; gap: 0; scrollbar-width: none; }
+        .pub-nav-inner::-webkit-scrollbar { display: none; }
+        .pub-nav-item { padding: 14px 18px; font-size: 14px; font-weight: 600; color: #616161; cursor: pointer; white-space: nowrap; transition: all 0.2s; border-bottom: 3px solid transparent; }
+        .pub-nav-item:hover, .pub-nav-item.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .pub-main { max-width: 1280px; margin: 0 auto; padding: 24px 20px; }
+        .pub-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+        .pub-hero { position: relative; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); cursor: pointer; transition: box-shadow 0.3s; }
+        .pub-hero:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+        .pub-hero img { width: 100%; height: 420px; object-fit: cover; display: block; }
+        .pub-hero-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85)); padding: 40px 24px 24px; color: white; }
+        .pub-hero-overlay .pub-cat-tag { background: var(--primary); color: white; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; margin-bottom: 10px; }
+        .pub-hero-overlay h2 { font-family: 'Noto Serif', serif; font-size: 26px; line-height: 1.3; margin-bottom: 8px; }
+        .pub-hero-overlay .pub-meta { font-size: 12px; opacity: 0.8; }
+        .pub-article-card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.3s; cursor: pointer; }
+        .pub-article-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); transform: translateY(-2px); }
+        .pub-article-card img { width: 100%; height: 180px; object-fit: cover; display: block; }
+        .pub-article-card .pub-card-body { padding: 16px; }
+        .pub-article-card .pub-cat-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: inline-block; color: var(--primary); }
+        .pub-article-card h3 { font-family: 'Noto Serif', serif; font-size: 17px; line-height: 1.4; margin-bottom: 8px; color: #212121; }
+        .pub-article-card .pub-excerpt { font-size: 13px; color: #616161; line-height: 1.5; margin-bottom: 10px; }
+        .pub-article-card .pub-meta { font-size: 12px; color: #9E9E9E; display: flex; align-items: center; gap: 12px; }
+        .pub-articles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+        .pub-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid var(--primary); }
+        .pub-section-header h2 { font-family: 'Noto Serif', serif; font-size: 22px; color: #212121; }
+        .pub-sidebar-widget { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 20px; margin-bottom: 20px; }
+        .pub-sidebar-widget h3 { font-size: 16px; font-weight: 700; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid var(--primary); }
+        .pub-trending-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid #e0e0e0; cursor: pointer; }
+        .pub-trending-item:last-child { border-bottom: none; }
+        .pub-trending-num { font-size: 24px; font-weight: 800; color: var(--primary); line-height: 1; min-width: 30px; }
+        .pub-trending-item h4 { font-size: 13px; line-height: 1.4; }
+        .pub-trending-item .pub-meta { font-size: 11px; color: #9E9E9E; margin-top: 4px; }
+        .pub-footer { background: #1A1A2E; color: #CCC; padding: 40px 20px; margin-top: 40px; }
+        .pub-footer-inner { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+        .pub-footer h4 { color: white; font-size: 16px; margin-bottom: 14px; }
+        .pub-footer a { color: #AAA; font-size: 13px; display: block; padding: 4px 0; transition: color 0.2s; cursor: pointer; }
+        .pub-footer a:hover { color: var(--primary); }
+        .pub-footer-bottom { max-width: 1280px; margin: 20px auto 0; padding-top: 20px; border-top: 1px solid #333; text-align: center; font-size: 12px; color: #666; }
+        .pub-rs-trigger { cursor: pointer; color: inherit; font: inherit; background: none; border: none; padding: 4px 0; display: block; font-size: 13px; }
+        .pub-rs-trigger:hover { color: var(--primary); }
+        /* Article detail modal for public view */
+        .pub-article-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; overflow-y: auto; }
+        .pub-article-modal.active { display: flex; justify-content: center; padding: 40px 20px; }
+        .pub-article-detail { background: #fff; max-width: 800px; width: 100%; border-radius: 12px; overflow: hidden; max-height: 90vh; overflow-y: auto; position: relative; }
+        .pub-article-detail .pub-close-btn { position: absolute; top: 16px; right: 16px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 20px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; }
+        .pub-article-detail img { width: 100%; height: 350px; object-fit: cover; }
+        .pub-article-detail .pub-detail-body { padding: 30px; }
+        .pub-article-detail h1 { font-family: 'Noto Serif', serif; font-size: 28px; line-height: 1.3; margin-bottom: 12px; }
+        .pub-article-detail .pub-detail-meta { font-size: 13px; color: #9E9E9E; margin-bottom: 20px; }
+        .pub-article-detail .pub-detail-content { font-size: 16px; line-height: 1.8; color: #616161; }
+        .pub-article-detail .pub-detail-content p { margin-bottom: 16px; }
+        /* Admin login popup */
+        .admin-login-popup { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
+        .admin-login-popup.active { display: flex; }
+        .admin-login-popup .login-popup-box { background: #1a1a2e; border-radius: 12px; padding: 30px; width: 340px; text-align: center; color: white; }
+        .admin-login-popup .login-popup-box h3 { margin-bottom: 16px; font-size: 16px; }
+        .admin-login-popup .login-popup-box input { width: 100%; padding: 10px 14px; border: 1px solid #444; border-radius: 6px; background: #2a2a4a; color: white; font-size: 14px; margin-bottom: 12px; outline: none; }
+        .admin-login-popup .login-popup-box input:focus { border-color: var(--primary); }
+        .admin-login-popup .login-popup-box button { width: 100%; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .admin-login-popup .login-popup-box button:hover { background: var(--primary-dark); }
+        .admin-login-popup .popup-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+        @media (max-width: 1024px) { .pub-grid { grid-template-columns: 1fr; } .pub-articles-grid { grid-template-columns: repeat(2, 1fr); } .pub-footer-inner { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { .pub-articles-grid { grid-template-columns: 1fr; } .pub-footer-inner { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-<!-- Login Gate -->
-<div class="login-overlay" id="loginOverlay">
+<!-- Login Gate (hidden by default, not used on page load) -->
+<div class="login-overlay" id="loginOverlay" style="display:none;">
     <div class="login-box">
         <h2>Admin Panel</h2>
         <p>News Reporter Live - Content Management</p>
@@ -153,11 +229,89 @@
     </div>
 </div>
 
+<!-- ===== PUBLIC NEWS VIEW (shown by default) ===== -->
+<div class="public-view" id="publicView">
+    <header class="pub-header">
+        <div class="pub-header-inner">
+            <div class="pub-logo">
+                <div class="pub-logo-icon">NR</div>
+                <div class="pub-logo-text">
+                    <h1>News Reporter</h1>
+                    <span>Live &bull; Trusted &bull; Independent</span>
+                </div>
+            </div>
+            <div class="pub-date" id="pubCurrentDate"></div>
+        </div>
+    </header>
+    <nav class="pub-nav">
+        <div class="pub-nav-inner">
+            <div class="pub-nav-item active" onclick="pubShowCategory('all', this)">Home</div>
+            <div class="pub-nav-item" onclick="pubShowCategory('politics', this)">Politics</div>
+            <div class="pub-nav-item" onclick="pubShowCategory('business', this)">Business</div>
+            <div class="pub-nav-item" onclick="pubShowCategory('sports', this)">Sports</div>
+            <div class="pub-nav-item" onclick="pubShowCategory('technology', this)">Technology</div>
+            <div class="pub-nav-item" onclick="pubShowCategory('entertainment', this)">Entertainment</div>
+            <div class="pub-nav-item" onclick="pubShowCategory('world', this)">World</div>
+            <div class="pub-nav-item" onclick="pubShowCategory('health', this)">Health</div>
+            <div class="pub-nav-item" onclick="pubShowCategory('science', this)">Science</div>
+        </div>
+    </nav>
+    <div class="pub-main" id="pubMainContent"></div>
+    <!-- Article Detail Modal -->
+    <div class="pub-article-modal" id="pubArticleModal">
+        <div class="pub-article-detail" id="pubArticleDetail">
+            <button class="pub-close-btn" onclick="pubCloseArticle()">&times;</button>
+            <div id="pubArticleContent"></div>
+        </div>
+    </div>
+    <footer class="pub-footer">
+        <div class="pub-footer-inner">
+            <div>
+                <h4>News Reporter Live</h4>
+                <a href="/">Home</a>
+                <a href="#">About Us</a>
+                <a href="#">Contact</a>
+            </div>
+            <div>
+                <h4>Categories</h4>
+                <a onclick="pubShowCategory('politics')">Politics</a>
+                <a onclick="pubShowCategory('business')">Business</a>
+                <a onclick="pubShowCategory('sports')">Sports</a>
+                <a onclick="pubShowCategory('technology')">Technology</a>
+            </div>
+            <div>
+                <h4>Quick Links</h4>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="/sitemap.xml">Sitemap</a>
+            </div>
+            <div>
+                <h4>Connect</h4>
+                <a href="#">Twitter / X</a>
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+            </div>
+        </div>
+        <div class="pub-footer-bottom">&copy; 2026 News Reporter Live. All rights reserved.</div>
+    </footer>
+</div>
+
+<!-- Admin Login Popup (triggered by reportersays) -->
+<div class="admin-login-popup" id="adminLoginPopup">
+    <button class="popup-close" onclick="closeAdminPopup()">&times;</button>
+    <div class="login-popup-box">
+        <h3>Access Restricted</h3>
+        <input type="password" id="popupAdminPassword" placeholder="Enter access code" onkeydown="if(event.key==='Enter')popupAdminLogin()">
+        <button onclick="popupAdminLogin()">Enter</button>
+    </div>
+</div>
+
+<!-- ===== ADMIN PANEL (hidden by default, shown after login) ===== -->
 <!-- Menu Toggle (mobile) -->
-<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">Menu</button>
+<button class="menu-toggle" id="adminMenuToggle" style="display:none;" onclick="document.querySelector('.sidebar').classList.toggle('open')">Menu</button>
 
 <!-- Sidebar -->
-<div class="sidebar">
+<div class="sidebar" id="adminSidebar" style="display:none;">
     <div class="sidebar-header">
         <h3>News Reporter</h3>
         <small>Content Management System</small>
@@ -701,16 +855,28 @@
     let settings = {};
 
     // ===== Auth =====
+    function showAdminPanel() {
+        document.getElementById('publicView').style.display = 'none';
+        document.getElementById('adminSidebar').style.display = '';
+        document.getElementById('mainContent').style.display = 'block';
+        document.getElementById('adminMenuToggle').style.display = '';
+        init();
+    }
+
+    function hideAdminPanel() {
+        document.getElementById('publicView').style.display = '';
+        document.getElementById('adminSidebar').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'none';
+        document.getElementById('adminMenuToggle').style.display = 'none';
+    }
+
     function adminLogin() {
         const pw = document.getElementById('adminPassword').value;
-        // Check against stored admin password
         fetch(API + '/api/cms/settings').then(r => r.json()).then(data => {
             const adminPw = data.settings.admin_password || 'Varma@678';
             if (pw === adminPw) {
                 sessionStorage.setItem('admin_auth', '1');
-                document.getElementById('loginOverlay').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
-                init();
+                showAdminPanel();
             } else {
                 document.getElementById('adminPassword').value = '';
                 document.getElementById('adminPassword').placeholder = 'Incorrect password';
@@ -718,23 +884,54 @@
         }).catch(() => {
             if (pw === 'Varma@678') {
                 sessionStorage.setItem('admin_auth', '1');
-                document.getElementById('loginOverlay').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
-                init();
+                showAdminPanel();
             }
         });
     }
 
+    function popupAdminLogin() {
+        const pw = document.getElementById('popupAdminPassword').value;
+        fetch(API + '/api/cms/settings').then(r => r.json()).then(data => {
+            const adminPw = data.settings.admin_password || 'Varma@678';
+            if (pw === adminPw) {
+                sessionStorage.setItem('admin_auth', '1');
+                closeAdminPopup();
+                showAdminPanel();
+            } else {
+                document.getElementById('popupAdminPassword').value = '';
+                document.getElementById('popupAdminPassword').placeholder = 'Incorrect. Try again.';
+            }
+        }).catch(() => {
+            if (pw === 'Varma@678') {
+                sessionStorage.setItem('admin_auth', '1');
+                closeAdminPopup();
+                showAdminPanel();
+            }
+        });
+    }
+
+    function openAdminPopup() {
+        document.getElementById('adminLoginPopup').classList.add('active');
+        document.getElementById('popupAdminPassword').value = '';
+        setTimeout(() => document.getElementById('popupAdminPassword').focus(), 100);
+    }
+
+    function closeAdminPopup() {
+        document.getElementById('adminLoginPopup').classList.remove('active');
+    }
+
     function adminLogout() {
         sessionStorage.removeItem('admin_auth');
-        location.reload();
+        hideAdminPanel();
+        pubLoadArticles();
     }
 
     function checkAuth() {
         if (sessionStorage.getItem('admin_auth') === '1') {
-            document.getElementById('loginOverlay').style.display = 'none';
-            document.getElementById('mainContent').style.display = 'block';
-            init();
+            showAdminPanel();
+        } else {
+            hideAdminPanel();
+            pubLoadArticles();
         }
     }
 
@@ -1496,6 +1693,187 @@
         if (!s) return '';
         return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
+
+    // ===== PUBLIC VIEW LOGIC =====
+    var pubArticles = [];
+    var pubPlaceholderImg = 'https://placehold.co/800x420/e0e0e0/999?text=News+Reporter+Live';
+
+    // Date display
+    (function() {
+        var now = new Date();
+        var el = document.getElementById('pubCurrentDate');
+        if (el) el.textContent = now.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    })();
+
+    function pubTimeAgo(dateStr) {
+        if (!dateStr) return '';
+        var diff = Date.now() - new Date(dateStr).getTime();
+        var hours = Math.floor(diff / 3600000);
+        if (hours < 1) return 'Just now';
+        if (hours < 24) return hours + ' hour' + (hours > 1 ? 's' : '') + ' ago';
+        var days = Math.floor(hours / 24);
+        if (days < 7) return days + ' day' + (days > 1 ? 's' : '') + ' ago';
+        return new Date(dateStr).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function pubReadTime(content) {
+        if (!content) return '3 min read';
+        var words = content.replace(/<[^>]+>/g, ' ').split(/\s+/).length;
+        return Math.max(2, Math.round(words / 200)) + ' min read';
+    }
+
+    function pubEscQ(s) { return s ? s.replace(/"/g, '&quot;') : ''; }
+
+    async function pubLoadArticles() {
+        try {
+            var res = await fetch('/api/news?limit=50');
+            var data = await res.json();
+            if (data.success && data.articles && data.articles.length > 0) {
+                pubArticles = data.articles.map(function(a) {
+                    return {
+                        id: a.id, slug: a.slug,
+                        category: a.category || 'general',
+                        featured: a.featured ? true : false,
+                        image: a.image_url || pubPlaceholderImg,
+                        title: a.title,
+                        excerpt: a.excerpt || '',
+                        content: null,
+                        author: a.author || 'News Reporter',
+                        time: pubTimeAgo(a.published_at),
+                        readTime: pubReadTime(a.excerpt)
+                    };
+                });
+                if (!pubArticles.some(function(a) { return a.featured; })) {
+                    ['politics','business','sports','technology'].forEach(function(cat) {
+                        var first = pubArticles.find(function(a) { return a.category === cat; });
+                        if (first) first.featured = true;
+                    });
+                }
+            }
+        } catch (e) {
+            console.error('Failed to load articles:', e);
+        }
+        pubRenderHome();
+    }
+
+    function pubRenderHome() {
+        if (pubArticles.length === 0) {
+            document.getElementById('pubMainContent').innerHTML = '<div style="text-align:center;padding:60px 20px;color:#9E9E9E"><h2>No articles yet</h2><p>Check back shortly for the latest news.</p></div>';
+            return;
+        }
+        var featured = pubArticles.filter(function(a) { return a.featured; });
+        var hero = featured.length > 0 ? featured[0] : pubArticles[0];
+        var latest = pubArticles.filter(function(a) { return a.id !== hero.id; }).slice(0, 6);
+
+        var html = '<div class="pub-grid"><div>';
+        html += '<div class="pub-hero" onclick="pubOpenArticle(' + hero.id + ')">';
+        html += '<img src="' + hero.image + '" alt="' + pubEscQ(hero.title) + '" onerror="this.src=\'' + pubPlaceholderImg + '\'">';
+        html += '<div class="pub-hero-overlay"><span class="pub-cat-tag">' + hero.category + '</span>';
+        html += '<h2>' + hero.title + '</h2>';
+        html += '<div class="pub-meta">' + hero.author + ' &bull; ' + hero.time + ' &bull; ' + hero.readTime + '</div>';
+        html += '</div></div></div>';
+        // Sidebar with trending + reportersays
+        html += '<div><div class="pub-sidebar-widget"><h3>Trending Now</h3>';
+        pubArticles.slice(0, 5).forEach(function(a, i) {
+            html += '<div class="pub-trending-item" onclick="pubOpenArticle(' + a.id + ')">';
+            html += '<div class="pub-trending-num">' + (i + 1) + '</div><div>';
+            html += '<h4>' + a.title + '</h4>';
+            html += '<div class="pub-meta">' + a.time + '</div></div></div>';
+        });
+        html += '</div>';
+        // reportersays widget
+        html += '<div class="pub-sidebar-widget"><h3>Quick Links</h3>';
+        html += '<a class="pub-rs-trigger" href="/">Home Page</a>';
+        html += '<a class="pub-rs-trigger" href="/sitemap.xml">Sitemap</a>';
+        html += '<a class="pub-rs-trigger" onclick="openAdminPopup()" style="cursor:pointer;">reportersays</a>';
+        html += '</div></div></div>';
+
+        html += '<div style="margin-top:30px"><div class="pub-section-header"><h2>Latest News</h2></div>';
+        html += '<div class="pub-articles-grid">';
+        latest.forEach(function(a) { html += pubRenderCard(a); });
+        html += '</div></div>';
+
+        ['politics','business','sports','technology','entertainment'].forEach(function(cat) {
+            var catArticles = pubArticles.filter(function(a) { return a.category === cat; }).slice(0, 4);
+            if (catArticles.length > 0) {
+                html += '<div><div class="pub-section-header"><h2>' + cat.charAt(0).toUpperCase() + cat.slice(1) + '</h2></div>';
+                html += '<div class="pub-articles-grid">';
+                catArticles.forEach(function(a) { html += pubRenderCard(a); });
+                html += '</div></div>';
+            }
+        });
+
+        document.getElementById('pubMainContent').innerHTML = html;
+    }
+
+    function pubRenderCard(a) {
+        var html = '<div class="pub-article-card" onclick="pubOpenArticle(' + a.id + ')">';
+        html += '<img src="' + a.image + '" alt="' + pubEscQ(a.title) + '" onerror="this.src=\'https://placehold.co/400x180/e0e0e0/999?text=News\'">';
+        html += '<div class="pub-card-body"><span class="pub-cat-tag">' + a.category.toUpperCase() + '</span>';
+        html += '<h3>' + a.title + '</h3>';
+        html += '<p class="pub-excerpt">' + a.excerpt + '</p>';
+        html += '<div class="pub-meta"><span>' + a.author + '</span><span>' + a.time + '</span></div>';
+        html += '</div></div>';
+        return html;
+    }
+
+    function pubRenderCategory(cat) {
+        var catArticles = pubArticles.filter(function(a) { return a.category === cat; });
+        var catName = cat.charAt(0).toUpperCase() + cat.slice(1);
+        var html = '<div class="pub-section-header"><h2>' + catName + '</h2></div>';
+        if (catArticles.length > 0) {
+            html += '<div class="pub-articles-grid">';
+            catArticles.forEach(function(a) { html += pubRenderCard(a); });
+            html += '</div>';
+        } else {
+            html += '<div style="text-align:center;padding:40px;color:#9E9E9E"><p>No articles in this category yet.</p></div>';
+        }
+        document.getElementById('pubMainContent').innerHTML = html;
+    }
+
+    function pubShowCategory(cat, el) {
+        document.querySelectorAll('.pub-nav-item').forEach(function(n) { n.classList.remove('active'); });
+        if (el) el.classList.add('active');
+        if (cat === 'all') pubRenderHome();
+        else pubRenderCategory(cat);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function pubOpenArticle(id) {
+        var article = pubArticles.find(function(a) { return a.id === id; });
+        if (!article) return;
+        function renderDetail(art, body) {
+            return '<img src="' + art.image + '" alt="' + pubEscQ(art.title) + '" onerror="this.src=\'' + pubPlaceholderImg + '\'">' +
+                '<div class="pub-detail-body">' +
+                '<span class="pub-cat-tag" style="color:var(--primary);margin-bottom:10px;display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;">' + art.category.toUpperCase() + '</span>' +
+                '<h1>' + art.title + '</h1>' +
+                '<div class="pub-detail-meta">' + art.author + ' &bull; ' + art.time + ' &bull; ' + art.readTime + '</div>' +
+                '<div class="pub-detail-content">' + body + '</div></div>';
+        }
+        var initialContent = article.content || ('<p>' + article.excerpt + '</p><p style="color:#9E9E9E;font-style:italic">Loading full article...</p>');
+        document.getElementById('pubArticleContent').innerHTML = renderDetail(article, initialContent);
+        document.getElementById('pubArticleModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        if (!article.content && article.slug) {
+            try {
+                var res = await fetch('/api/news/' + article.slug);
+                var data = await res.json();
+                if (data.success && data.article && data.article.content) {
+                    article.content = data.article.content;
+                    document.getElementById('pubArticleContent').innerHTML = renderDetail(article, article.content);
+                }
+            } catch (e) { console.error('Failed to load full article:', e); }
+        }
+    }
+
+    function pubCloseArticle() {
+        document.getElementById('pubArticleModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('pubArticleModal').addEventListener('click', function(e) {
+        if (e.target === this) pubCloseArticle();
+    });
 
     // Init on load
     checkAuth();
