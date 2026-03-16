@@ -3168,6 +3168,147 @@ IMPORTANT: Respond ONLY with raw JSON. Do NOT wrap in markdown code blocks. No \
 }
 startAIAutoPublishTimer();
 
+// ============================================================
+// Cricket Live Score API (CricBuzz via RapidAPI)
+// ============================================================
+const CRICBUZZ_API_KEY = '20bb5c7d6emshe09a76fff2d42b3p187df4jsn96b12af13cf6';
+const CRICBUZZ_HOST = 'cricbuzz-cricket.p.rapidapi.com';
+
+// In-memory cache for cricket API responses (to avoid hitting rate limits)
+const cricketCache = new Map();
+const CRICKET_CACHE_TTL = 60 * 1000; // 60 seconds cache
+
+function getCricketCache(key) {
+    const entry = cricketCache.get(key);
+    if (entry && Date.now() - entry.timestamp < CRICKET_CACHE_TTL) return entry.data;
+    return null;
+}
+
+function setCricketCache(key, data) {
+    cricketCache.set(key, { data, timestamp: Date.now() });
+}
+
+async function fetchCricBuzz(endpoint) {
+    const cached = getCricketCache(endpoint);
+    if (cached) return cached;
+
+    const https = require('https');
+    return new Promise((resolve, reject) => {
+        const options = {
+            hostname: CRICBUZZ_HOST,
+            path: endpoint,
+            method: 'GET',
+            headers: {
+                'x-rapidapi-key': CRICBUZZ_API_KEY,
+                'x-rapidapi-host': CRICBUZZ_HOST
+            }
+        };
+        const req = https.request(options, (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+                try {
+                    const parsed = JSON.parse(data);
+                    setCricketCache(endpoint, parsed);
+                    resolve(parsed);
+                } catch (e) {
+                    reject(new Error('Failed to parse CricBuzz response'));
+                }
+            });
+        });
+        req.on('error', reject);
+        req.setTimeout(10000, () => { req.destroy(); reject(new Error('CricBuzz API timeout')); });
+        req.end();
+    });
+}
+
+// Get current matches (live + recent + upcoming)
+app.get('/api/cricket/matches/current', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz('/matches/v1/current');
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch cricket matches' });
+    }
+});
+
+// Get live matches only
+app.get('/api/cricket/matches/live', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz('/matches/v1/live');
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch live matches' });
+    }
+});
+
+// Get recent matches
+app.get('/api/cricket/matches/recent', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz('/matches/v1/recent');
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch recent matches' });
+    }
+});
+
+// Get upcoming matches
+app.get('/api/cricket/matches/upcoming', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz('/matches/v1/upcoming');
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch upcoming matches' });
+    }
+});
+
+// Get match scorecard
+app.get('/api/cricket/match/:matchId/scorecard', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz(`/mcenter/v1/${req.params.matchId}/scard`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch scorecard' });
+    }
+});
+
+// Get match info/details
+app.get('/api/cricket/match/:matchId/info', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz(`/mcenter/v1/${req.params.matchId}`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch match info' });
+    }
+});
+
+// Get match commentary
+app.get('/api/cricket/match/:matchId/commentary', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz(`/mcenter/v1/${req.params.matchId}/comm`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch commentary' });
+    }
+});
+
+// Serve cricket live page
+app.get('/cricket-live', (req, res) => {
+    const cricketPage = path.join(DASHBOARD_DIR, 'newssite', 'cricket-live.html');
+    if (fs.existsSync(cricketPage)) {
+        res.sendFile(cricketPage);
+    } else {
+        res.status(404).send('Cricket Live page not found');
+    }
+});
+
 // Graceful shutdown
 process.on('SIGTERM', () => {
     console.log('Shutting down relay API server...');

@@ -186,6 +186,46 @@
         @media (max-width: 1024px) { .grid-2col { grid-template-columns: 1fr; } .articles-grid { grid-template-columns: repeat(2, 1fr); } .articles-grid-4 { grid-template-columns: repeat(2, 1fr); } .footer-inner { grid-template-columns: repeat(2, 1fr); } .footer-newsletter { flex-direction: column; text-align: center; } .footer-newsletter form { width: 100%; justify-content: center; } }
         @media (max-width: 768px) { .header-top { padding: 14px 16px; } .logo-text h1 { font-size: 20px; } .logo-text span { font-size: 9px; letter-spacing: 2px; } .logo-icon { width: 42px; height: 42px; font-size: 16px; } .search-box { display: none; } .header-date { display: none; } .hamburger { display: block; } .nav-inner { display: none; padding: 0 16px; } .nav-inner.open { display: flex; flex-direction: column; } .nav-item { padding: 14px 20px; border-bottom: 1px solid var(--border-light); } .main { padding: 20px 16px; } .hero-card img { min-height: 280px; } .hero-overlay h2 { font-size: 20px; } .hero-overlay { padding: 40px 20px 20px; } .articles-grid, .articles-grid-4 { grid-template-columns: 1fr; gap: 16px; } .section-header h2 { font-size: 20px; } .footer-inner { grid-template-columns: 1fr; gap: 28px; } .footer-newsletter input[type="email"] { width: 200px; } .article-modal.active { padding: 16px; } .article-detail h1 { font-size: 22px; } .article-detail .detail-body { padding: 24px; } }
         @media (max-width: 480px) { .hero-card img { min-height: 220px; } .hero-overlay h2 { font-size: 18px; } .article-card img { height: 180px; } .footer-newsletter form { flex-direction: column; } .footer-newsletter input[type="email"] { width: 100%; } }
+        /* Cricket Live Score Widget */
+        .cricket-widget { background: var(--bg-white); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border-light); overflow: hidden; margin-bottom: 28px; }
+        .cricket-widget-header { background: linear-gradient(135deg, #1B5E20, #2E7D32); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
+        .cricket-widget-header h3 { color: white; font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .cricket-widget-header .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #F44336; animation: pulse 1.5s ease-in-out infinite; }
+        .cricket-widget-header a { color: rgba(255,255,255,0.85); font-size: 12px; font-weight: 600; transition: var(--transition); }
+        .cricket-widget-header a:hover { color: white; }
+        .cricket-widget-body { max-height: 360px; overflow-y: auto; scrollbar-width: thin; }
+        .cricket-widget-body::-webkit-scrollbar { width: 4px; } .cricket-widget-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        .cricket-match-card { padding: 14px 20px; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: var(--transition); }
+        .cricket-match-card:hover { background: var(--bg); }
+        .cricket-match-card:last-child { border-bottom: none; }
+        .cricket-match-card .match-series { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .cricket-match-card .match-series .match-format { background: var(--accent); color: white; padding: 1px 6px; border-radius: 3px; font-size: 9px; }
+        .cricket-match-card .match-series .live-badge { background: #F44336; color: white; padding: 1px 6px; border-radius: 3px; font-size: 9px; animation: pulse 1.5s ease-in-out infinite; }
+        .cricket-team-row { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; }
+        .cricket-team-row .team-name { font-size: 13px; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+        .cricket-team-row .team-name img { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
+        .cricket-team-row .team-score { font-size: 14px; font-weight: 700; color: var(--text-primary); font-family: 'Inter', monospace; }
+        .cricket-team-row .team-score .overs { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-left: 4px; }
+        .cricket-match-card .match-status { font-size: 11px; color: var(--primary); font-weight: 600; margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border-light); }
+        .cricket-match-card .match-status.preview { color: var(--text-muted); }
+        .cricket-match-card .match-status.live { color: #F44336; }
+        .cricket-widget-empty { padding: 30px 20px; text-align: center; color: var(--text-muted); font-size: 13px; }
+        .cricket-widget-loading { padding: 20px; text-align: center; }
+        .cricket-widget-loading .dot-loader { display: inline-flex; gap: 4px; } .cricket-widget-loading .dot-loader span { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: dotBounce 1.4s ease-in-out infinite; } .cricket-widget-loading .dot-loader span:nth-child(2) { animation-delay: 0.2s; } .cricket-widget-loading .dot-loader span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotBounce { 0%,80%,100% { transform: scale(0); } 40% { transform: scale(1); } }
+        /* Cricket scores horizontal strip */
+        .cricket-strip { background: linear-gradient(135deg, #1B5E20, #2E7D32); padding: 0; overflow: hidden; position: relative; }
+        .cricket-strip-inner { display: flex; overflow-x: auto; scrollbar-width: none; gap: 0; padding: 0; }
+        .cricket-strip-inner::-webkit-scrollbar { display: none; }
+        .cricket-strip-item { flex-shrink: 0; padding: 10px 20px; border-right: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: background 0.2s; min-width: 200px; }
+        .cricket-strip-item:hover { background: rgba(255,255,255,0.08); }
+        .cricket-strip-item .strip-series { font-size: 9px; color: rgba(255,255,255,0.6); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+        .cricket-strip-item .strip-teams { display: flex; align-items: center; gap: 8px; color: white; font-size: 11px; font-weight: 600; white-space: nowrap; }
+        .cricket-strip-item .strip-teams .vs { color: rgba(255,255,255,0.4); font-size: 9px; font-weight: 400; }
+        .cricket-strip-item .strip-status { font-size: 9px; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+        .cricket-strip-item .strip-status.live { color: #FF5252; } .cricket-strip-item .strip-status.complete { color: #69F0AE; } .cricket-strip-item .strip-status.preview { color: rgba(255,255,255,0.5); }
+        .cricket-strip-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); color: white; border: none; padding: 8px 6px; cursor: pointer; z-index: 2; font-size: 14px; transition: var(--transition); }
+        .cricket-strip-nav:hover { background: rgba(0,0,0,0.6); } .cricket-strip-nav.left { left: 0; border-radius: 0 4px 4px 0; } .cricket-strip-nav.right { right: 0; border-radius: 4px 0 0 4px; }
     </style>
 </head>
 <body>
@@ -243,8 +283,16 @@
         <div class="nav-item" onclick="showCategory('cricket', this)">Cricket</div>
         <div class="nav-item" onclick="showCategory('ipl', this)">IPL</div>
         <div class="nav-item" onclick="showCategory('education', this)">Education</div>
+        <div class="nav-item" style="color:#F44336;font-weight:700;" onclick="window.location.href='/cricket-live'">&#127951; Live Scores</div>
     </div>
 </nav>
+
+<!-- Cricket Live Score Strip -->
+<div class="cricket-strip" id="cricketStrip" style="display:none;">
+    <button class="cricket-strip-nav left" onclick="document.getElementById('cricketStripInner').scrollBy({left:-220,behavior:'smooth'})">&lsaquo;</button>
+    <div class="cricket-strip-inner" id="cricketStripInner"></div>
+    <button class="cricket-strip-nav right" onclick="document.getElementById('cricketStripInner').scrollBy({left:220,behavior:'smooth'})">&rsaquo;</button>
+</div>
 
 <div class="main" id="mainContent">
     <div style="display:grid;grid-template-columns:1fr 380px;gap:28px;">
@@ -448,7 +496,9 @@ function renderHome() {
         html += '</div>';
     }
     html += '</div>';
-    html += '<div class="sidebar"><div class="sidebar-widget"><h3>Trending Now</h3>';
+    html += '<div class="sidebar">';
+    html += '<div class="cricket-widget" id="cricketWidgetHome"><div class="cricket-widget-header"><h3><span class="live-dot"></span> Live Cricket</h3><a href="/cricket-live">View All &rarr;</a></div><div class="cricket-widget-body" id="cricketWidgetBody"><div class="cricket-widget-loading"><div class="dot-loader"><span></span><span></span><span></span></div></div></div></div>';
+    html += '<div class="sidebar-widget"><h3>Trending Now</h3>';
     articles.slice(0, 6).forEach(function(a, i) {
         html += '<div class="trending-item" onclick="openArticle(' + a.id + ')">';
         html += '<div class="trending-num">' + String(i + 1).padStart(2, '0') + '</div><div>';
@@ -684,6 +734,145 @@ async function injectStructuredData(slug) {
 })();
 
 async function trackView(articleId) { try { await fetch('/api/article-view/' + articleId, { method: 'POST' }); } catch (e) {} }
+
+// ============================================================
+// Cricket Live Score Functions
+// ============================================================
+function parseCricketMatches(data) {
+    var matches = [];
+    if (!data || !data.typeMatches) return matches;
+    data.typeMatches.forEach(function(type) {
+        if (!type.seriesMatches) return;
+        type.seriesMatches.forEach(function(sm) {
+            var wrapper = sm.seriesAdWrapper;
+            if (!wrapper || !wrapper.matches) return;
+            wrapper.matches.forEach(function(m) {
+                var info = m.matchInfo;
+                if (!info) return;
+                var match = {
+                    matchId: info.matchId,
+                    seriesName: info.seriesName || '',
+                    matchDesc: info.matchDesc || '',
+                    matchFormat: info.matchFormat || '',
+                    state: info.state || '',
+                    status: info.status || '',
+                    stateTitle: info.stateTitle || '',
+                    team1: { name: info.team1 ? info.team1.teamSName : '?', fullName: info.team1 ? info.team1.teamName : '?', imageId: info.team1 ? info.team1.imageId : null },
+                    team2: { name: info.team2 ? info.team2.teamSName : '?', fullName: info.team2 ? info.team2.teamName : '?', imageId: info.team2 ? info.team2.imageId : null },
+                    venue: info.venueInfo ? (info.venueInfo.ground + ', ' + info.venueInfo.city) : '',
+                    startDate: info.startDate ? new Date(parseInt(info.startDate)) : null,
+                    matchType: type.matchType || '',
+                    score: { team1: null, team2: null }
+                };
+                if (m.matchScore) {
+                    if (m.matchScore.team1Score && m.matchScore.team1Score.inngs1) {
+                        var i1 = m.matchScore.team1Score.inngs1;
+                        match.score.team1 = { runs: i1.runs, wickets: i1.wickets, overs: i1.overs };
+                        if (m.matchScore.team1Score.inngs2) {
+                            var i2 = m.matchScore.team1Score.inngs2;
+                            match.score.team1_2 = { runs: i2.runs, wickets: i2.wickets, overs: i2.overs };
+                        }
+                    }
+                    if (m.matchScore.team2Score && m.matchScore.team2Score.inngs1) {
+                        var j1 = m.matchScore.team2Score.inngs1;
+                        match.score.team2 = { runs: j1.runs, wickets: j1.wickets, overs: j1.overs };
+                        if (m.matchScore.team2Score.inngs2) {
+                            var j2 = m.matchScore.team2Score.inngs2;
+                            match.score.team2_2 = { runs: j2.runs, wickets: j2.wickets, overs: j2.overs };
+                        }
+                    }
+                }
+                matches.push(match);
+            });
+        });
+    });
+    return matches;
+}
+
+function formatScore(score) {
+    if (!score) return '';
+    var s = score.runs + '/' + (score.wickets !== undefined ? score.wickets : '');
+    if (score.overs !== undefined) s += ' <span class="overs">(' + score.overs + ' ov)</span>';
+    return s;
+}
+
+function renderCricketMatchCard(m) {
+    var isLive = m.state === 'In Progress' || m.stateTitle === 'In Progress';
+    var isComplete = m.state === 'Complete';
+    var html = '<div class="cricket-match-card" onclick="window.location.href=\'/cricket-live?match=' + m.matchId + '\'">';
+    html += '<div class="match-series">';
+    html += '<span class="match-format">' + m.matchFormat + '</span>';
+    if (isLive) html += '<span class="live-badge">LIVE</span>';
+    html += m.matchDesc + ' &middot; ' + m.seriesName.substring(0, 40);
+    html += '</div>';
+    html += '<div class="cricket-team-row"><span class="team-name">' + m.team1.name + '</span>';
+    html += '<span class="team-score">' + (m.score.team1 ? formatScore(m.score.team1) : '') + '</span></div>';
+    if (m.score.team1_2) html += '<div class="cricket-team-row"><span class="team-name" style="opacity:0.6">&nbsp;</span><span class="team-score" style="font-size:12px;opacity:0.7">' + formatScore(m.score.team1_2) + '</span></div>';
+    html += '<div class="cricket-team-row"><span class="team-name">' + m.team2.name + '</span>';
+    html += '<span class="team-score">' + (m.score.team2 ? formatScore(m.score.team2) : '') + '</span></div>';
+    if (m.score.team2_2) html += '<div class="cricket-team-row"><span class="team-name" style="opacity:0.6">&nbsp;</span><span class="team-score" style="font-size:12px;opacity:0.7">' + formatScore(m.score.team2_2) + '</span></div>';
+    var statusClass = isLive ? 'live' : (isComplete ? '' : 'preview');
+    html += '<div class="match-status ' + statusClass + '">' + m.status + '</div>';
+    html += '</div>';
+    return html;
+}
+
+async function loadCricketWidget() {
+    try {
+        var res = await fetch('/api/cricket/matches/current');
+        var data = await res.json();
+        if (!data.success) throw new Error('API failed');
+        var matches = parseCricketMatches(data.data);
+        // Sort: live first, then recent, then upcoming
+        matches.sort(function(a, b) {
+            var aLive = (a.state === 'In Progress') ? 0 : (a.state === 'Complete' ? 1 : 2);
+            var bLive = (b.state === 'In Progress') ? 0 : (b.state === 'Complete' ? 1 : 2);
+            return aLive - bLive;
+        });
+        // Render sidebar widget
+        var widgetBody = document.getElementById('cricketWidgetBody');
+        if (widgetBody) {
+            if (matches.length === 0) {
+                widgetBody.innerHTML = '<div class="cricket-widget-empty">No matches currently available</div>';
+            } else {
+                var whtml = '';
+                matches.slice(0, 6).forEach(function(m) { whtml += renderCricketMatchCard(m); });
+                widgetBody.innerHTML = whtml;
+            }
+        }
+        // Render top strip
+        var strip = document.getElementById('cricketStrip');
+        var stripInner = document.getElementById('cricketStripInner');
+        if (strip && stripInner && matches.length > 0) {
+            strip.style.display = 'block';
+            var shtml = '';
+            matches.forEach(function(m) {
+                var isLive = m.state === 'In Progress';
+                var isComplete = m.state === 'Complete';
+                shtml += '<div class="cricket-strip-item" onclick="window.location.href=\'/cricket-live?match=' + m.matchId + '\'">';
+                shtml += '<div class="strip-series">' + m.matchFormat + ' &middot; ' + m.matchDesc + '</div>';
+                shtml += '<div class="strip-teams">';
+                shtml += '<span>' + m.team1.name + (m.score.team1 ? ' ' + m.score.team1.runs + '/' + (m.score.team1.wickets !== undefined ? m.score.team1.wickets : '') : '') + '</span>';
+                shtml += '<span class="vs">vs</span>';
+                shtml += '<span>' + m.team2.name + (m.score.team2 ? ' ' + m.score.team2.runs + '/' + (m.score.team2.wickets !== undefined ? m.score.team2.wickets : '') : '') + '</span>';
+                shtml += '</div>';
+                var cls = isLive ? 'live' : (isComplete ? 'complete' : 'preview');
+                shtml += '<div class="strip-status ' + cls + '">' + m.status.substring(0, 50) + '</div>';
+                shtml += '</div>';
+            });
+            stripInner.innerHTML = shtml;
+        }
+    } catch (e) {
+        console.error('Cricket widget error:', e);
+        var widgetBody = document.getElementById('cricketWidgetBody');
+        if (widgetBody) widgetBody.innerHTML = '<div class="cricket-widget-empty">Unable to load scores</div>';
+    }
+}
+
+// Load cricket widget and auto-refresh every 60 seconds
+loadCricketWidget();
+setInterval(loadCricketWidget, 60000);
+
 loadArticles();
 </script>
 </body>
