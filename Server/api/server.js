@@ -3299,6 +3299,207 @@ app.get('/api/cricket/match/:matchId/commentary', async (req, res) => {
     }
 });
 
+// Get match overs / leanback (mini scorecard)
+app.get('/api/cricket/match/:matchId/overs', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz(`/mcenter/v1/${req.params.matchId}/overs`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch overs' });
+    }
+});
+
+// ============================================================
+// Rankings API
+// ============================================================
+// Batsmen rankings (formatType: test, odi, t20i)
+app.get('/api/cricket/rankings/batsmen', async (req, res) => {
+    try {
+        const format = req.query.formatType || 'test';
+        const data = await fetchCricBuzz(`/stats/v1/rankings/batsmen?formatType=${format}`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch batsmen rankings' });
+    }
+});
+
+// Bowlers rankings
+app.get('/api/cricket/rankings/bowlers', async (req, res) => {
+    try {
+        const format = req.query.formatType || 'test';
+        const data = await fetchCricBuzz(`/stats/v1/rankings/bowlers?formatType=${format}`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch bowlers rankings' });
+    }
+});
+
+// All-rounders rankings
+app.get('/api/cricket/rankings/allrounders', async (req, res) => {
+    try {
+        const format = req.query.formatType || 'test';
+        const data = await fetchCricBuzz(`/stats/v1/rankings/allrounders?formatType=${format}`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch allrounders rankings' });
+    }
+});
+
+// Team rankings
+app.get('/api/cricket/rankings/teams', async (req, res) => {
+    try {
+        const format = req.query.formatType || 'test';
+        const data = await fetchCricBuzz(`/stats/v1/rankings/teams?formatType=${format}`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch team rankings' });
+    }
+});
+
+// ============================================================
+// Player API
+// ============================================================
+app.get('/api/cricket/player/:playerId', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz(`/stats/v1/player/${req.params.playerId}`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch player info' });
+    }
+});
+
+// ============================================================
+// Teams API
+// ============================================================
+// International teams listing
+app.get('/api/cricket/teams/international', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz('/teams/v1/international');
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch teams' });
+    }
+});
+
+// Team players
+app.get('/api/cricket/teams/:teamId/players', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz(`/teams/v1/${req.params.teamId}/players`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch team players' });
+    }
+});
+
+// Team schedule
+app.get('/api/cricket/teams/:teamId/schedule', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz(`/teams/v1/${req.params.teamId}/schedule`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch team schedule' });
+    }
+});
+
+// ============================================================
+// Series API
+// ============================================================
+app.get('/api/cricket/series/international', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz('/series/v1/international');
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch series' });
+    }
+});
+
+// ============================================================
+// News API
+// ============================================================
+app.get('/api/cricket/news', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz('/news/v1/index');
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch cricket news' });
+    }
+});
+
+// ============================================================
+// Photos API
+// ============================================================
+app.get('/api/cricket/photos', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz('/photos/v1/index');
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch photos' });
+    }
+});
+
+// Photo gallery detail
+app.get('/api/cricket/photos/:galleryId', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz(`/photos/v1/detail/${req.params.galleryId}`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch photo gallery' });
+    }
+});
+
+// ============================================================
+// Image proxy (serves CricBuzz images through our server)
+// ============================================================
+app.get('/api/cricket/img/:imageId', (req, res) => {
+    const imageId = req.params.imageId;
+    const cacheKey = `img_${imageId}`;
+    const cachedBuf = getCricketCache(cacheKey);
+    if (cachedBuf) {
+        res.set('Content-Type', 'image/jpeg');
+        res.set('Cache-Control', 'public, max-age=86400');
+        return res.send(cachedBuf);
+    }
+    const https = require('https');
+    const options = {
+        hostname: CRICBUZZ_HOST,
+        path: `/img/v1/i1/c${imageId}/i.jpg`,
+        method: 'GET',
+        headers: {
+            'x-rapidapi-key': CRICBUZZ_API_KEY,
+            'x-rapidapi-host': CRICBUZZ_HOST
+        }
+    };
+    const proxyReq = https.request(options, (proxyRes) => {
+        const chunks = [];
+        proxyRes.on('data', chunk => chunks.push(chunk));
+        proxyRes.on('end', () => {
+            const buf = Buffer.concat(chunks);
+            setCricketCache(cacheKey, buf);
+            res.set('Content-Type', proxyRes.headers['content-type'] || 'image/jpeg');
+            res.set('Cache-Control', 'public, max-age=86400');
+            res.send(buf);
+        });
+    });
+    proxyReq.on('error', () => {
+        res.status(500).send('Failed to load image');
+    });
+    proxyReq.setTimeout(10000, () => { proxyReq.destroy(); res.status(500).send('Image timeout'); });
+    proxyReq.end();
+});
+
 // Serve cricket live page
 app.get('/cricket-live', (req, res) => {
     const cricketPage = path.join(DASHBOARD_DIR, 'newssite', 'cricket-live.html');
