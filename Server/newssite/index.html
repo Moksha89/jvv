@@ -653,6 +653,16 @@
             <a href="#" onclick="showCategory('sports')">Sports</a>
             <a href="#" onclick="showCategory('technology')">Technology</a>
             <a href="#" onclick="showCategory('entertainment')">Entertainment</a>
+            <a href="#" onclick="showCategory('world')">World</a>
+            <a href="#" onclick="showCategory('health')">Health</a>
+            <a href="#" onclick="showCategory('science')">Science</a>
+            <a href="#" onclick="showCategory('opinion')">Opinion</a>
+            <a href="#" onclick="showCategory('cricket')">Cricket</a>
+            <a href="#" onclick="showCategory('ipl')">IPL</a>
+            <a href="#" onclick="showCategory('education')">Education</a>
+            <a href="#" onclick="showCategory('jobs')">Jobs</a>
+            <a href="#" onclick="showCategory('war')">War & Defence</a>
+            <a href="#" onclick="showCategory('gadget reviews')">Gadget Reviews</a>
         </div>
         <div>
             <h4>Quick Links</h4>
@@ -736,17 +746,23 @@ function estimateReadTime(content) {
 
 function escQ(s) { return s ? s.replace(/"/g, '&quot;') : ''; }
 var placeholderImg = 'https://placehold.co/800x420/e0e0e0/999?text=News+Reporter+Live';
+var categoryDisplayNames = {
+    'politics': 'Politics', 'business': 'Business', 'sports': 'Sports', 'technology': 'Technology',
+    'entertainment': 'Entertainment', 'world': 'World', 'health': 'Health', 'science': 'Science',
+    'opinion': 'Opinion', 'war': 'War & Defence', 'education': 'Education', 'jobs': 'Jobs',
+    'cricket': 'Cricket', 'ipl': 'IPL', 'gadget reviews': 'Gadget Reviews'
+};
 
 async function loadArticles() {
     try {
-        var res = await fetch('/api/news?limit=50');
+        var res = await fetch('/api/news?limit=200');
         var data = await res.json();
         if (data.success && data.articles && data.articles.length > 0) {
             articles = data.articles.map(function(a) {
                 return {
                     id: a.id,
                     slug: a.slug,
-                    category: a.category || 'general',
+                    category: (a.category || 'general').toLowerCase(),
                     featured: a.featured ? true : false,
                     image: a.image_url || placeholderImg,
                     title: a.title,
@@ -801,10 +817,10 @@ function renderHome() {
     latest.forEach(function(a) { html += renderArticleCard(a); });
     html += '</div></div>';
 
-    ['politics', 'business', 'sports', 'technology', 'entertainment'].forEach(function(cat) {
+    ['politics', 'business', 'sports', 'technology', 'entertainment', 'world', 'health', 'science', 'opinion', 'cricket', 'ipl', 'education', 'jobs', 'war', 'gadget reviews'].forEach(function(cat) {
         var catArticles = articles.filter(function(a) { return a.category === cat; }).slice(0, 4);
         if (catArticles.length > 0) {
-            html += '<div><div class="section-header"><h2>' + cat.charAt(0).toUpperCase() + cat.slice(1) + '</h2>';
+            html += '<div><div class="section-header"><h2>' + (categoryDisplayNames[cat] || cat.charAt(0).toUpperCase() + cat.slice(1)) + '</h2>';
             html += '<a class="view-all" href="#" onclick="showCategory(\'' + cat + '\')">View All &rarr;</a></div>';
             html += '<div class="articles-grid-4">';
             catArticles.forEach(function(a) { html += renderArticleCard(a); });
@@ -828,7 +844,7 @@ function renderArticleCard(a) {
 
 function renderCategoryPage(cat) {
     var catArticles = articles.filter(function(a) { return a.category === cat; });
-    var catName = cat.charAt(0).toUpperCase() + cat.slice(1);
+    var catName = categoryDisplayNames[cat] || cat.charAt(0).toUpperCase() + cat.slice(1);
     var html = '<div class="section-header"><h2>' + catName + '</h2>';
     html += '<span style="font-size:13px;color:var(--text-light)">' + catArticles.length + ' articles</span></div>';
 
