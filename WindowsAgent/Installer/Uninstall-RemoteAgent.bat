@@ -116,10 +116,15 @@ if exist "%DATA_DIR%\config.json" (
         set "DEVICE_ID=!DEVICE_ID: =!"
         set "DEVICE_ID=!DEVICE_ID:"=!"
     )
+    for /f "tokens=2 delims=:," %%a in ('type "%DATA_DIR%\config.json" ^| findstr "authToken"') do (
+        set "AUTH_TOKEN=%%~a"
+        set "AUTH_TOKEN=!AUTH_TOKEN: =!"
+        set "AUTH_TOKEN=!AUTH_TOKEN:"=!"
+    )
     if defined DEVICE_ID (
         echo         Device ID: !DEVICE_ID!
-        powershell -Command "try { Invoke-RestMethod -Uri 'http://93.127.138.82:3000/api/devices/!DEVICE_ID!' -Method DELETE -ErrorAction SilentlyContinue } catch {}" >nul 2>&1
-        echo         Server notified.
+        powershell -Command "try { $body = @{deviceId='!DEVICE_ID!'; authToken='!AUTH_TOKEN!'} | ConvertTo-Json; Invoke-RestMethod -Uri 'https://newsreporter.live/api/devices/deregister' -Method POST -Body $body -ContentType 'application/json' -ErrorAction SilentlyContinue } catch {}" >nul 2>&1
+        echo         Server notified - device removed from portal.
     )
 ) else (
     echo         No config found (skipped).

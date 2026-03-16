@@ -873,6 +873,29 @@ app.get('/api/devices/:deviceId', (req, res) => {
     }
 });
 
+// Self-deregister device (used by uninstaller, authenticates with device auth token)
+app.post('/api/devices/deregister', (req, res) => {
+    try {
+        const { deviceId, authToken } = req.body;
+        if (!deviceId || !authToken) {
+            return res.status(400).json({ success: false, message: 'deviceId and authToken required' });
+        }
+        const device = stmts.findDevice.get(deviceId);
+        if (!device) {
+            return res.status(404).json({ success: false, message: 'Device not found' });
+        }
+        if (device.auth_token !== authToken) {
+            return res.status(403).json({ success: false, message: 'Invalid auth token' });
+        }
+        stmts.deleteDevice.run(deviceId);
+        db.prepare('DELETE FROM device_assignments WHERE device_id = ?').run(deviceId);
+        res.json({ success: true, message: 'Device deregistered' });
+    } catch (err) {
+        console.error('Deregister device error:', err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
 // Delete device
 app.delete('/api/devices/:deviceId', requireAdmin, (req, res) => {
     try {
