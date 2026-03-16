@@ -290,6 +290,48 @@
                         <div class="connect-mode-desc">Mirrors your desktop remotely and turns off the physical monitor so nobody at the PC can see</div>
                         <span class="connect-mode-badge" style="background:rgba(239,68,68,0.15);color:#ef4444;">VNC + Monitor Off</span>
                     </div>
+                    <div class="connect-mode-card rdp-mode" onclick="showExternalRdpForm()" style="border-color:rgba(34,197,94,0.3);">
+                        <div class="connect-mode-icon" style="color:#22c55e;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        </div>
+                        <div class="connect-mode-title">Connect to Cloud VM</div>
+                        <div class="connect-mode-desc">Connect to any Windows VM using its IP address, username, and password (Azure, AWS, etc.)</div>
+                        <span class="connect-mode-badge" style="background:rgba(34,197,94,0.15);color:#22c55e;">RDP - External IP</span>
+                    </div>
+                </div>
+                <div id="externalRdpForm" style="display:none; margin-top:16px; background:var(--bg-tertiary); border-radius:12px; padding:20px; border:1px solid var(--border);">
+                    <div style="font-size:15px; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" style="width:20px;height:20px;"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        Connect to Cloud VM
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+                        <div>
+                            <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">IP Address / Hostname *</label>
+                            <input id="extRdpHost" type="text" placeholder="e.g. 52.186.10.25" style="width:100%; padding:10px 12px; background:var(--bg-secondary); border:1px solid var(--border); border-radius:8px; color:var(--text-primary); font-size:14px; outline:none;" />
+                        </div>
+                        <div>
+                            <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">Port</label>
+                            <input id="extRdpPort" type="text" placeholder="3389" value="3389" style="width:100%; padding:10px 12px; background:var(--bg-secondary); border:1px solid var(--border); border-radius:8px; color:var(--text-primary); font-size:14px; outline:none;" />
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+                        <div>
+                            <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">Username *</label>
+                            <input id="extRdpUser" type="text" placeholder="Administrator" style="width:100%; padding:10px 12px; background:var(--bg-secondary); border:1px solid var(--border); border-radius:8px; color:var(--text-primary); font-size:14px; outline:none;" />
+                        </div>
+                        <div>
+                            <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">Password *</label>
+                            <input id="extRdpPass" type="password" placeholder="Password" style="width:100%; padding:10px 12px; background:var(--bg-secondary); border:1px solid var(--border); border-radius:8px; color:var(--text-primary); font-size:14px; outline:none;" />
+                        </div>
+                    </div>
+                    <div style="margin-bottom:14px;">
+                        <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">Label (optional)</label>
+                        <input id="extRdpLabel" type="text" placeholder="e.g. Azure Dev Server" style="width:100%; padding:10px 12px; background:var(--bg-secondary); border:1px solid var(--border); border-radius:8px; color:var(--text-primary); font-size:14px; outline:none;" />
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button onclick="connectExternalRdp()" style="flex:1; padding:10px; background:#22c55e; color:white; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#16a34a'" onmouseout="this.style.background='#22c55e'">Connect</button>
+                        <button onclick="hideExternalRdpForm()" style="padding:10px 20px; background:var(--bg-secondary); color:var(--text-secondary); border:1px solid var(--border); border-radius:8px; font-size:14px; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='var(--bg-secondary)'">Cancel</button>
+                    </div>
                 </div>
                 <div style="margin-top: 8px; font-size: 12px; color: var(--text-muted);" id="deviceCountText">Loading devices...</div>
             </div>
@@ -640,6 +682,38 @@
             }, 5000);
         }
 
+        let externalConnName = null;
+
+        function showExternalRdpForm() {
+            document.getElementById('externalRdpForm').style.display = 'block';
+        }
+        function hideExternalRdpForm() {
+            document.getElementById('externalRdpForm').style.display = 'none';
+        }
+
+        function connectExternalRdp() {
+            const host = document.getElementById('extRdpHost').value.trim();
+            const port = document.getElementById('extRdpPort').value.trim() || '3389';
+            const user = document.getElementById('extRdpUser').value.trim();
+            const pass = document.getElementById('extRdpPass').value;
+            const label = document.getElementById('extRdpLabel').value.trim();
+            if (!host || !user || !pass) { alert('Please fill in IP, username, and password.'); return; }
+            hideExternalRdpForm();
+            currentMode = 'external-rdp';
+            fetch(API_BASE + '/api/connect-external-rdp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ hostname: host, port, username: user, password: pass, label: label || undefined })
+            }).then(r => r.json()).then(data => {
+                if (data.success) {
+                    externalConnName = data.connName;
+                    setTimeout(() => connectWithProfile(data.connName, 'rdp'), 1000);
+                } else {
+                    alert('Failed to create connection: ' + (data.message || 'Unknown error'));
+                }
+            }).catch(() => alert('Could not reach server.'));
+        }
+
         async function connectWithProfile(connName, mode) {
             document.getElementById('welcomeScreen').style.display = 'none';
             document.getElementById('connectionView').style.display = 'flex';
@@ -670,6 +744,15 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ connName, port: String(port) })
                 }).catch(() => {});
+            }
+            // Clean up external RDP connection from Guacamole
+            if (currentMode === 'external-rdp' && externalConnName) {
+                fetch(API_BASE + '/api/disconnect-external-rdp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ connName: externalConnName })
+                }).catch(() => {});
+                externalConnName = null;
             }
             document.getElementById('rdpFrame').src = 'about:blank';
             document.getElementById('welcomeScreen').style.display = 'flex';

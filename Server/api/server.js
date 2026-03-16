@@ -1118,6 +1118,95 @@ app.post('/api/clear-rdp-creds', requireAdmin, (req, res) => {
     }
 });
 
+// Connect to external RDP (cloud VM, any IP) - creates ad-hoc Guacamole connection
+app.post('/api/connect-external-rdp', (req, res) => {
+    const { hostname, port, username, password, label } = req.body;
+    if (!hostname || !username || !password) {
+        return res.json({ success: false, message: 'Missing required fields (hostname, username, password)' });
+    }
+    
+    const rdpPort = port || '3389';
+    const connName = label || ('Cloud VM - ' + hostname);
+    const { execSync } = require('child_process');
+    const fs = require('fs');
+    
+    try {
+        const currentXml = execSync('docker exec guacamole cat /etc/guacamole/user-mapping.xml', { encoding: 'utf8' });
+        
+        // Remove existing connection with same name if any
+        let updatedXml = currentXml.replace(
+            new RegExp(`\\s*<connection name="${connName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}">[\\s\\S]*?</connection>`, 'g'),
+            ''
+        );
+        
+        // Build the new external RDP connection block
+        const newConn = `
+        <connection name="${connName}">
+            <protocol>rdp</protocol>
+            <param name="hostname">${hostname}</param>
+            <param name="port">${rdpPort}</param>
+            <param name="username">${username}</param>
+            <param name="password">${password}</param>
+            <param name="ignore-cert">true</param>
+            <param name="security">any</param>
+            <param name="resize-method">reconnect</param>
+            <param name="enable-wallpaper">true</param>
+            <param name="enable-font-smoothing">true</param>
+            <param name="enable-theming">true</param>
+            <param name="enable-full-window-drag">true</param>
+            <param name="disable-copy">false</param>
+            <param name="disable-paste">false</param>
+            <param name="enable-drive">true</param>
+            <param name="drive-name">Shared</param>
+            <param name="drive-path">/tmp/guac-drive</param>
+            <param name="create-drive-path">true</param>
+        </connection>`;
+        
+        // Insert before </authorize>
+        updatedXml = updatedXml.replace('</authorize>', newConn + '\n    </authorize>');
+        
+        fs.writeFileSync('/tmp/user-mapping-temp.xml', updatedXml);
+        execSync('docker cp /tmp/user-mapping-temp.xml guacamole:/etc/guacamole/user-mapping.xml');
+        execSync('docker exec guacamole touch /etc/guacamole/user-mapping.xml');
+        
+        console.log(`External RDP connection created: ${connName} -> ${hostname}:${rdpPort}`);
+        res.json({ success: true, connName, message: 'Connection created' });
+    } catch (err) {
+        console.error('Connect external RDP error:', err.message);
+        res.json({ success: false, message: err.message });
+    }
+});
+
+// Disconnect external RDP - removes the ad-hoc connection from Guacamole
+app.post('/api/disconnect-external-rdp', (req, res) => {
+    const { connName } = req.body;
+    if (!connName) {
+        return res.json({ success: false, message: 'Missing connName' });
+    }
+    
+    const { execSync } = require('child_process');
+    const fs = require('fs');
+    
+    try {
+        const currentXml = execSync('docker exec guacamole cat /etc/guacamole/user-mapping.xml', { encoding: 'utf8' });
+        
+        const updatedXml = currentXml.replace(
+            new RegExp(`\\s*<connection name="${connName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}">[\\s\\S]*?</connection>`, 'g'),
+            ''
+        );
+        
+        fs.writeFileSync('/tmp/user-mapping-temp.xml', updatedXml);
+        execSync('docker cp /tmp/user-mapping-temp.xml guacamole:/etc/guacamole/user-mapping.xml');
+        execSync('docker exec guacamole touch /etc/guacamole/user-mapping.xml');
+        
+        console.log(`External RDP connection removed: ${connName}`);
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Disconnect external RDP error:', err.message);
+        res.json({ success: false, message: err.message });
+    }
+});
+
 // ============================================================
 // Portal Users API Routes
 // ============================================================
