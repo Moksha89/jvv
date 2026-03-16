@@ -197,6 +197,16 @@ app.get('/api/download/setup-rdpwrapper', (req, res) => {
     }
 });
 
+// Download uninstaller bat file
+app.get('/api/download/uninstall', (req, res) => {
+    const batPath = path.join(DASHBOARD_DIR, 'Uninstall-RemoteAgent.bat');
+    if (fs.existsSync(batPath)) {
+        res.download(batPath, 'Uninstall-RemoteAgent.bat');
+    } else {
+        res.status(404).send('Uninstaller not found');
+    }
+});
+
 app.get('/portal', (req, res) => {
     const portalPath = path.join(DASHBOARD_DIR, 'portal.html');
     if (fs.existsSync(portalPath)) {
