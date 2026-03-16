@@ -7,7 +7,6 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
-
 :root {
   --bg: #0a0f1a; --bg2: #111827; --bg3: #1a2236; --bg4: #243049;
   --text: #e8edf5; --text2: #94a3b8; --text3: #64748b;
@@ -26,11 +25,8 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
 a { color:var(--accent); text-decoration:none; }
-
-/* Animations */
 @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 @keyframes slideUp { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
-@keyframes slideRight { from{opacity:0;transform:translateX(-30px)} to{opacity:1;transform:translateX(0)} }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
 @keyframes spin { to{transform:rotate(360deg)} }
 @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
@@ -38,19 +34,12 @@ a { color:var(--accent); text-decoration:none; }
 @keyframes scaleIn { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
 .fade-in { animation: fadeIn 0.4s ease forwards; }
 .slide-up { animation: slideUp 0.5s ease forwards; }
-
-/* Loading skeleton */
 .skeleton { background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: var(--radius); }
 .skeleton-card { height: 140px; margin-bottom: 12px; border-radius: var(--radius); }
 .skeleton-row { height: 48px; margin-bottom: 8px; border-radius: 8px; }
-.skeleton-text { height: 16px; width: 60%; margin-bottom: 8px; border-radius: 4px; }
-
-/* Spinner */
 .spinner { width:40px; height:40px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; margin:40px auto; }
 .loading-overlay { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:200px; gap:12px; }
 .loading-overlay span { color:var(--text2); font-size:14px; }
-
-/* Header */
 .header { background:var(--bg2); border-bottom:1px solid var(--border); padding:12px 20px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; backdrop-filter:blur(20px); }
 .header-left { display:flex; align-items:center; gap:12px; }
 .logo { width:40px; height:40px; background:linear-gradient(135deg,var(--red),#b91c1c); border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:14px; text-decoration:none; }
@@ -59,46 +48,31 @@ a { color:var(--accent); text-decoration:none; }
 .header-right { display:flex; align-items:center; gap:10px; }
 .header-right a, .header-right button { padding:6px 14px; border-radius:8px; font-size:13px; cursor:pointer; border:1px solid var(--border); background:var(--bg3); color:var(--text2); transition:all 0.2s; font-family:'Inter',sans-serif; }
 .header-right a:hover, .header-right button:hover { background:var(--bg4); color:var(--text); }
-
-/* Hero Banner */
 .hero { background:linear-gradient(135deg, #064e3b 0%, #0a0f1a 50%, #1e1b4b 100%); padding:32px 20px; text-align:center; position:relative; overflow:hidden; }
 .hero::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:radial-gradient(circle at 30% 50%, rgba(16,185,129,0.1) 0%, transparent 50%); }
 .hero h2 { font-family:'Playfair Display',serif; font-size:28px; font-weight:900; margin-bottom:6px; position:relative; }
 .hero p { color:var(--text2); font-size:14px; position:relative; }
 .live-badge { display:inline-flex; align-items:center; gap:6px; background:var(--red); color:#fff; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700; animation:livePulse 2s infinite; margin-bottom:10px; }
 .live-badge::before { content:''; width:6px; height:6px; background:#fff; border-radius:50%; }
-
-/* Main Navigation Tabs */
 .main-nav { display:flex; gap:4px; padding:10px 20px; background:var(--bg2); border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none; }
 .main-nav::-webkit-scrollbar { display:none; }
 .nav-tab { padding:10px 18px; border-radius:10px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text2); white-space:nowrap; transition:all 0.25s; display:flex; align-items:center; gap:6px; border:1px solid transparent; user-select:none; }
 .nav-tab:hover { background:var(--bg3); color:var(--text); }
 .nav-tab.active { background:var(--accent); color:#fff; border-color:var(--accent); }
-.nav-tab .icon { font-size:16px; }
-
-/* Content Area */
 .content { max-width:1200px; margin:0 auto; padding:20px; }
 .section { display:none; animation:fadeIn 0.4s ease; }
 .section.active { display:block; }
-
-/* Sub Tabs */
 .sub-tabs { display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; }
 .sub-tab { padding:7px 16px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; color:var(--text2); background:var(--bg3); border:1px solid var(--border); transition:all 0.2s; user-select:none; }
 .sub-tab:hover { background:var(--bg4); color:var(--text); }
 .sub-tab.active { background:var(--accent); color:#fff; border-color:var(--accent); }
-
-/* Format Toggle */
 .format-toggle { display:flex; gap:4px; background:var(--bg3); border-radius:10px; padding:3px; margin-bottom:16px; width:fit-content; }
 .format-btn { padding:6px 16px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; color:var(--text2); transition:all 0.2s; user-select:none; }
 .format-btn:hover { color:var(--text); }
 .format-btn.active { background:var(--accent); color:#fff; }
-
-/* Match Type Filters */
 .type-filters { display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; }
 .type-filter { padding:5px 12px; border-radius:20px; font-size:11px; font-weight:600; cursor:pointer; background:var(--bg3); color:var(--text2); border:1px solid var(--border); transition:all 0.2s; }
 .type-filter.active { background:var(--accent); color:#fff; border-color:var(--accent); }
-
-/* ==================== MATCH CARDS ==================== */
 .matches-grid { display:flex; flex-direction:column; gap:12px; }
 .match-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius2); padding:16px; cursor:pointer; transition:all 0.3s; position:relative; overflow:hidden; }
 .match-card:hover { border-color:var(--accent); transform:translateY(-2px); box-shadow:var(--shadow); }
@@ -106,7 +80,7 @@ a { color:var(--accent); text-decoration:none; }
 .match-card.live-match::after { content:'LIVE'; position:absolute; top:12px; right:12px; background:var(--red); color:#fff; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:700; animation:livePulse 2s infinite; }
 .match-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
 .match-format { display:inline-flex; align-items:center; gap:6px; }
-.match-format .badge { padding:2px 8px; border-radius:4px; font-size:10px; font-weight:700; text-transform:uppercase; }
+.badge { padding:2px 8px; border-radius:4px; font-size:10px; font-weight:700; text-transform:uppercase; }
 .badge-test { background:rgba(59,130,246,0.15); color:var(--blue); }
 .badge-odi { background:rgba(139,92,246,0.15); color:var(--purple); }
 .badge-t20 { background:rgba(236,72,153,0.15); color:var(--pink); }
@@ -120,13 +94,11 @@ a { color:var(--accent); text-decoration:none; }
 .team-logo { width:28px; height:28px; border-radius:6px; object-fit:cover; background:var(--bg3); }
 .team-name { font-weight:600; font-size:14px; }
 .team-name small { font-weight:400; color:var(--text3); font-size:12px; }
-.team-score { font-size:18px; font-weight:700; font-family:'Inter',sans-serif; }
+.team-score { font-size:18px; font-weight:700; }
 .team-score .innings2 { font-size:13px; font-weight:500; color:var(--text2); display:block; text-align:right; }
 .team-score .overs { font-size:12px; font-weight:400; color:var(--text3); }
 .match-status { font-size:12px; color:var(--accent); font-weight:600; margin-top:8px; padding-top:8px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
 .match-venue { font-size:11px; color:var(--text3); font-weight:400; }
-
-/* Upcoming match card */
 .upcoming-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:14px; display:flex; align-items:center; justify-content:space-between; transition:all 0.2s; cursor:pointer; }
 .upcoming-card:hover { border-color:var(--accent); }
 .upcoming-left { display:flex; align-items:center; gap:12px; }
@@ -135,8 +107,6 @@ a { color:var(--accent); text-decoration:none; }
 .upcoming-series { font-size:11px; color:var(--text3); }
 .upcoming-time { font-size:12px; color:var(--text2); text-align:right; }
 .upcoming-time .date { font-weight:600; }
-
-/* ==================== MATCH PAGE ==================== */
 .match-page { display:none; animation:slideUp 0.4s ease; }
 .match-page.active { display:block; }
 .match-page-header { background:linear-gradient(135deg, var(--bg2), var(--bg3)); border-radius:var(--radius2); padding:20px; margin-bottom:16px; border:1px solid var(--border); }
@@ -152,8 +122,6 @@ a { color:var(--accent); text-decoration:none; }
 .match-team-score { font-size:20px; font-weight:800; }
 .match-team-score .overs { font-size:12px; font-weight:400; color:var(--text3); }
 .match-result-text { text-align:center; font-size:13px; color:var(--accent); font-weight:600; padding:8px; background:rgba(16,185,129,0.08); border-radius:8px; }
-
-/* Match Page Tabs */
 .match-tabs { display:flex; gap:4px; margin-bottom:16px; overflow-x:auto; scrollbar-width:none; background:var(--bg2); padding:6px; border-radius:12px; border:1px solid var(--border); }
 .match-tabs::-webkit-scrollbar { display:none; }
 .match-tab { padding:8px 16px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; color:var(--text2); white-space:nowrap; transition:all 0.2s; user-select:none; }
@@ -161,8 +129,6 @@ a { color:var(--accent); text-decoration:none; }
 .match-tab.active { background:var(--accent); color:#fff; }
 .match-tab-content { display:none; animation:fadeIn 0.3s ease; }
 .match-tab-content.active { display:block; }
-
-/* Scorecard Table */
 .scorecard-section { margin-bottom:24px; }
 .innings-title { font-size:16px; font-weight:700; margin-bottom:10px; padding:10px 14px; background:var(--bg3); border-radius:10px; display:flex; justify-content:space-between; align-items:center; }
 .innings-score { color:var(--accent); font-weight:800; }
@@ -172,14 +138,11 @@ a { color:var(--accent); text-decoration:none; }
 .sc-table td { padding:8px 10px; border-bottom:1px solid var(--border); }
 .sc-table td:not(:first-child) { text-align:center; }
 .sc-table tr:hover { background:var(--bg3); }
-.sc-table .batsman-name { font-weight:600; color:var(--text); cursor:pointer; }
-.sc-table .batsman-name:hover { color:var(--accent); }
+.sc-table .bat-name { font-weight:600; color:var(--text); cursor:pointer; }
+.sc-table .bat-name:hover { color:var(--accent); }
 .sc-table .dismissal { font-size:11px; color:var(--text3); display:block; }
 .sc-table .extras-row td { color:var(--text2); font-style:italic; }
 .sc-table .total-row td { font-weight:700; border-top:2px solid var(--border); }
-.bowling-header { margin-top:16px; }
-
-/* Commentary */
 .commentary-list { display:flex; flex-direction:column; gap:8px; }
 .comm-item { padding:12px; background:var(--bg2); border-radius:10px; border:1px solid var(--border); display:flex; gap:12px; transition:all 0.2s; }
 .comm-item:hover { border-color:var(--accent); }
@@ -192,19 +155,13 @@ a { color:var(--accent); text-decoration:none; }
 .ball-dot { background:var(--bg3); color:var(--text3); }
 .ball-run { background:rgba(16,185,129,0.1); color:var(--accent); }
 .comm-text { font-size:13px; line-height:1.6; color:var(--text2); }
-.comm-text strong { color:var(--text); }
-.comm-separator { text-align:center; padding:8px; font-size:12px; font-weight:700; color:var(--text3); background:var(--bg3); border-radius:8px; }
-
-/* Match Info */
 .info-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px; }
 .info-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:14px; }
 .info-card h4 { font-size:13px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
 .info-card p { font-size:14px; font-weight:500; }
-.info-card .info-row { display:flex; justify-content:space-between; padding:4px 0; font-size:13px; }
-.info-card .info-label { color:var(--text3); }
-.info-card .info-value { font-weight:600; }
-
-/* Points Table */
+.info-row { display:flex; justify-content:space-between; padding:4px 0; font-size:13px; }
+.info-label { color:var(--text3); }
+.info-value { font-weight:600; }
 .points-table { width:100%; border-collapse:collapse; font-size:13px; }
 .points-table th { text-align:left; padding:10px 12px; background:var(--bg3); color:var(--text3); font-size:11px; font-weight:600; text-transform:uppercase; }
 .points-table th:not(:first-child) { text-align:center; }
@@ -214,15 +171,10 @@ a { color:var(--accent); text-decoration:none; }
 .points-team { display:flex; align-items:center; gap:8px; font-weight:600; }
 .points-rank { width:24px; height:24px; border-radius:50%; background:var(--bg4); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; }
 .points-rank.top { background:var(--accent); color:#fff; }
-
-/* Series Info */
 .series-detail { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius2); padding:16px; margin-bottom:16px; }
 .series-detail h3 { font-size:16px; font-weight:700; margin-bottom:8px; }
-.series-matches-list { display:flex; flex-direction:column; gap:8px; }
-.series-match-item { display:flex; justify-content:space-between; align-items:center; padding:10px; background:var(--bg3); border-radius:8px; font-size:13px; cursor:pointer; transition:all 0.2s; }
+.series-match-item { display:flex; justify-content:space-between; align-items:center; padding:10px; background:var(--bg3); border-radius:8px; font-size:13px; cursor:pointer; transition:all 0.2s; margin-bottom:6px; }
 .series-match-item:hover { background:var(--bg4); }
-
-/* ==================== RANKINGS ==================== */
 .rankings-table { width:100%; border-collapse:collapse; }
 .rankings-table th { text-align:left; padding:10px 12px; color:var(--text3); font-size:11px; font-weight:600; text-transform:uppercase; border-bottom:2px solid var(--border); }
 .rankings-table td { padding:10px 12px; border-bottom:1px solid var(--border); }
@@ -236,9 +188,7 @@ a { color:var(--accent); text-decoration:none; }
 .rank-rating { font-weight:700; font-size:15px; color:var(--accent); }
 .rank-bar { width:80px; height:6px; background:var(--bg3); border-radius:3px; overflow:hidden; }
 .rank-bar-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--blue)); border-radius:3px; transition:width 0.6s ease; }
-
-/* ==================== PLAYER PROFILE ==================== */
-.player-modal-bg { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:200; display:none; align-items:center; justify-content:center; backdrop-filter:blur(4px); animation:fadeIn 0.3s ease; }
+.player-modal-bg { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:200; display:none; align-items:center; justify-content:center; backdrop-filter:blur(4px); }
 .player-modal-bg.active { display:flex; }
 .player-modal { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius2); width:90%; max-width:680px; max-height:85vh; overflow-y:auto; padding:24px; animation:scaleIn 0.3s ease; }
 .player-close { float:right; cursor:pointer; font-size:20px; color:var(--text3); padding:4px 8px; border-radius:6px; }
@@ -251,22 +201,13 @@ a { color:var(--accent); text-decoration:none; }
 .player-stats-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:10px; margin-bottom:20px; }
 .player-stat { background:var(--bg3); border-radius:10px; padding:12px; text-align:center; }
 .player-stat .val { font-size:20px; font-weight:800; color:var(--accent); }
-.player-stat .label { font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; }
-.player-section { margin-bottom:16px; }
-.player-section h3 { font-size:14px; font-weight:700; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid var(--border); }
-.player-perf-table { width:100%; font-size:12px; border-collapse:collapse; }
-.player-perf-table th { text-align:left; padding:6px 8px; color:var(--text3); font-size:10px; text-transform:uppercase; }
-.player-perf-table td { padding:6px 8px; border-bottom:1px solid var(--border); }
+.player-stat .lbl { font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; }
 .player-bio { font-size:13px; line-height:1.7; color:var(--text2); max-height:200px; overflow-y:auto; }
-
-/* ==================== TEAMS ==================== */
 .teams-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:12px; }
 .team-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:16px; text-align:center; cursor:pointer; transition:all 0.3s; }
 .team-card:hover { border-color:var(--accent); transform:translateY(-3px); box-shadow:var(--shadow); }
 .team-card img { width:48px; height:48px; border-radius:10px; margin-bottom:8px; object-fit:cover; }
 .team-card .name { font-weight:700; font-size:14px; }
-
-/* ==================== NEWS ==================== */
 .news-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:16px; }
 .news-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius2); overflow:hidden; transition:all 0.3s; cursor:pointer; }
 .news-card:hover { border-color:var(--accent); transform:translateY(-2px); box-shadow:var(--shadow); }
@@ -275,16 +216,11 @@ a { color:var(--accent); text-decoration:none; }
 .news-body h3 { font-size:15px; font-weight:700; margin-bottom:6px; line-height:1.4; }
 .news-body p { font-size:13px; color:var(--text2); line-height:1.5; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
 .news-meta { display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:11px; color:var(--text3); }
-.news-source { display:inline-flex; align-items:center; gap:4px; }
-
-/* ==================== PHOTOS ==================== */
 .photos-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:12px; }
 .photo-card { border-radius:var(--radius); overflow:hidden; cursor:pointer; position:relative; transition:all 0.3s; }
 .photo-card:hover { transform:translateY(-3px); box-shadow:var(--shadow); }
 .photo-card img { width:100%; height:200px; object-fit:cover; }
 .photo-card .caption { position:absolute; bottom:0; left:0; right:0; padding:12px; background:linear-gradient(transparent, rgba(0,0,0,0.8)); color:#fff; font-size:13px; font-weight:600; }
-
-/* Lightbox */
 .lightbox { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.9); z-index:300; display:none; align-items:center; justify-content:center; }
 .lightbox.active { display:flex; }
 .lightbox img { max-width:90%; max-height:80vh; border-radius:8px; }
@@ -294,18 +230,12 @@ a { color:var(--accent); text-decoration:none; }
 .lightbox-prev { left:20px; }
 .lightbox-next { right:20px; }
 .lightbox-caption { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); color:#fff; font-size:14px; background:rgba(0,0,0,0.6); padding:8px 16px; border-radius:8px; max-width:80%; text-align:center; }
-
-/* ==================== SERIES ==================== */
 .series-list { display:flex; flex-direction:column; gap:12px; }
 .series-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:14px; cursor:pointer; transition:all 0.2s; }
 .series-card:hover { border-color:var(--accent); }
 .series-card h3 { font-size:14px; font-weight:700; margin-bottom:4px; }
 .series-card .dates { font-size:12px; color:var(--text3); }
-
-/* ==================== FOOTER ==================== */
 .footer { text-align:center; padding:20px; color:var(--text3); font-size:12px; border-top:1px solid var(--border); margin-top:40px; }
-
-/* Responsive */
 @media(max-width:768px) {
   .hero h2 { font-size:22px; }
   .content { padding:12px; }
@@ -318,13 +248,6 @@ a { color:var(--accent); text-decoration:none; }
   .sc-table { font-size:11px; }
   .sc-table th, .sc-table td { padding:6px 4px; }
 }
-@media(max-width:480px) {
-  .main-nav { padding:8px 12px; }
-  .nav-tab { padding:8px 12px; font-size:12px; }
-  .match-tabs { padding:4px; }
-  .match-tab { padding:6px 10px; font-size:11px; }
-}
-
 </style>
 </head>
 <body>
@@ -338,13 +261,11 @@ a { color:var(--accent); text-decoration:none; }
     <button onclick="toggleDarkMode()" id="themeBtn">Light</button>
   </div>
 </header>
-
 <div class="hero">
   <div class="live-badge">LIVE CRICKET</div>
   <h2>Live Cricket Scores</h2>
-  <p>Scores, Scorecards, Commentary, Rankings, Player Profiles, News & Photos</p>
+  <p>Scores, Scorecards, Commentary, Rankings, Player Profiles, News &amp; Photos</p>
 </div>
-
 <nav class="main-nav" id="mainNav">
   <div class="nav-tab active" data-section="matches"><span class="icon">&#127951;</span> Matches</div>
   <div class="nav-tab" data-section="rankings"><span class="icon">&#127942;</span> Rankings</div>
@@ -353,9 +274,7 @@ a { color:var(--accent); text-decoration:none; }
   <div class="nav-tab" data-section="photos"><span class="icon">&#128247;</span> Photos</div>
   <div class="nav-tab" data-section="series"><span class="icon">&#128197;</span> Series</div>
 </nav>
-
 <div class="content">
-  <!-- ==================== MATCHES SECTION ==================== -->
   <div class="section active" id="sec-matches">
     <div class="sub-tabs" id="matchSubTabs">
       <div class="sub-tab active" data-type="live">Live</div>
@@ -366,8 +285,6 @@ a { color:var(--accent); text-decoration:none; }
     <div class="type-filters" id="matchTypeFilters"></div>
     <div id="matchesList" class="matches-grid"></div>
   </div>
-
-  <!-- ==================== MATCH PAGE ==================== -->
   <div class="match-page" id="matchPage">
     <div class="match-page-header" id="matchPageHeader"></div>
     <div class="match-tabs" id="matchPageTabs">
@@ -383,8 +300,6 @@ a { color:var(--accent); text-decoration:none; }
     <div class="match-tab-content" id="mp-points"></div>
     <div class="match-tab-content" id="mp-series"></div>
   </div>
-
-  <!-- ==================== RANKINGS SECTION ==================== -->
   <div class="section" id="sec-rankings">
     <div class="sub-tabs" id="rankSubTabs">
       <div class="sub-tab active" data-type="batsmen">Batsmen</div>
@@ -399,34 +314,14 @@ a { color:var(--accent); text-decoration:none; }
     </div>
     <div id="rankingsContent"></div>
   </div>
-
-  <!-- ==================== TEAMS SECTION ==================== -->
-  <div class="section" id="sec-teams">
-    <div id="teamsContent"></div>
-  </div>
-
-  <!-- ==================== NEWS SECTION ==================== -->
-  <div class="section" id="sec-news">
-    <div id="newsContent"></div>
-  </div>
-
-  <!-- ==================== PHOTOS SECTION ==================== -->
-  <div class="section" id="sec-photos">
-    <div id="photosContent"></div>
-  </div>
-
-  <!-- ==================== SERIES SECTION ==================== -->
-  <div class="section" id="sec-series">
-    <div id="seriesContent"></div>
-  </div>
+  <div class="section" id="sec-teams"><div id="teamsContent"></div></div>
+  <div class="section" id="sec-news"><div id="newsContent"></div></div>
+  <div class="section" id="sec-photos"><div id="photosContent"></div></div>
+  <div class="section" id="sec-series"><div id="seriesContent"></div></div>
 </div>
-
-<!-- Player Profile Modal -->
 <div class="player-modal-bg" id="playerModal">
   <div class="player-modal" id="playerModalContent"></div>
 </div>
-
-<!-- Photo Lightbox -->
 <div class="lightbox" id="lightbox">
   <div class="lightbox-close" onclick="closeLightbox()">&times;</div>
   <div class="lightbox-nav lightbox-prev" onclick="navLightbox(-1)">&#8249;</div>
@@ -434,1015 +329,792 @@ a { color:var(--accent); text-decoration:none; }
   <img id="lightboxImg" src="" alt="">
   <div class="lightbox-caption" id="lightboxCaption"></div>
 </div>
-
-<footer class="footer">
-  &copy; 2026 <a href="/">News Reporter Live</a>. All rights reserved. | Powered by CricBuzz
-</footer>
-
+<footer class="footer">&copy; 2026 <a href="/">News Reporter Live</a>. All rights reserved. | Powered by CricBuzz</footer>
 <script>
 (function(){
-'use strict';
+"use strict";
 
-// ==================== STATE ====================
-let currentMatchType = 'live';
-let currentRankType = 'batsmen';
-let currentFormat = 'test';
-let currentMatchId = null;
-let currentSeriesId = null;
-let matchesData = {};
-let lightboxPhotos = [];
-let lightboxIndex = 0;
-let autoRefreshTimer = null;
+var currentMatchType = "live";
+var currentRankType = "batsmen";
+var currentFormat = "test";
+var currentMatchId = null;
+var currentSeriesId = null;
+var matchesData = {};
+var lightboxPhotos = [];
+var lightboxIndex = 0;
+var autoRefreshTimer = null;
+var API = "/api/cricket";
 
-// ==================== API HELPERS ====================
-const API = '/api/cricket';
-
-async function fetchAPI(url) {
-  try {
-    const r = await fetch(url);
+function fetchAPI(url) {
+  return fetch(url).then(function(r) {
     if (!r.ok) throw new Error(r.statusText);
-    const j = await r.json();
+    return r.json();
+  }).then(function(j) {
     return j.success ? j.data : j;
-  } catch(e) {
-    console.error('API Error:', url, e);
+  }).catch(function(e) {
+    console.error("API Error:", url, e);
     return null;
-  }
+  });
 }
 
 function showLoading(el, text) {
-  el.innerHTML = '<div class="loading-overlay"><div class="spinner"></div><span>' + (text||'Loading...') + '</span></div>';
+  el.innerHTML = "<div class=\"loading-overlay\"><div class=\"spinner\"></div><span>" + (text||"Loading...") + "</span></div>";
 }
 
 function showSkeleton(el, count, type) {
-  let h = '';
-  for(let i=0;i<(count||3);i++) h += '<div class="skeleton '+(type==='row'?'skeleton-row':'skeleton-card')+'"></div>';
+  var h = "";
+  for(var i=0;i<(count||3);i++) h += "<div class=\"skeleton " + (type==="row"?"skeleton-row":"skeleton-card") + "\"></div>";
   el.innerHTML = h;
 }
 
-function imgSrc(id) { return id ? API+'/img/'+id : ''; }
+function imgSrc(id) { return id ? API + "/img/" + id : ""; }
 
 function formatDate(ts) {
-  if(!ts) return '';
-  const d = new Date(parseInt(ts));
-  return d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+  if(!ts) return "";
+  var d = new Date(parseInt(ts));
+  return d.toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"});
 }
 
 function formatTime(ts) {
-  if(!ts) return '';
-  const d = new Date(parseInt(ts));
-  return d.toLocaleString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', timeZoneName:'short'});
+  if(!ts) return "";
+  var d = new Date(parseInt(ts));
+  return d.toLocaleString("en-US", {month:"short", day:"numeric", hour:"2-digit", minute:"2-digit", timeZoneName:"short"});
 }
 
-function escHtml(s) {
-  if(!s) return '';
-  const d = document.createElement('div'); d.textContent = s; return d.innerHTML;
+function esc(s) {
+  if(!s) return "";
+  var d = document.createElement("div"); d.textContent = s; return d.innerHTML;
 }
 
-// ==================== DARK MODE ====================
-function toggleDarkMode() {
-  document.body.classList.toggle('light-mode');
-  const isLight = document.body.classList.contains('light-mode');
-  document.getElementById('themeBtn').textContent = isLight ? 'Dark' : 'Light';
-  localStorage.setItem('cricket-theme', isLight ? 'light' : 'dark');
-}
-(function initTheme(){
-  if(localStorage.getItem('cricket-theme') === 'light') {
-    document.body.classList.add('light-mode');
-    document.getElementById('themeBtn').textContent = 'Dark';
+function imgErr(el) { el.style.display = "none"; }
+function imgErrPlaceholder(el) { el.src = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="#334155" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="#94a3b8" font-size="40">?</text></svg>'); }
+
+// Dark mode
+window.toggleDarkMode = function() {
+  document.body.classList.toggle("light-mode");
+  var isLight = document.body.classList.contains("light-mode");
+  document.getElementById("themeBtn").textContent = isLight ? "Dark" : "Light";
+  localStorage.setItem("cricket-theme", isLight ? "light" : "dark");
+};
+(function(){
+  if(localStorage.getItem("cricket-theme") === "light") {
+    document.body.classList.add("light-mode");
+    document.getElementById("themeBtn").textContent = "Dark";
   }
 })();
 
-// ==================== NAVIGATION ====================
-document.querySelectorAll('.nav-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    const sec = tab.dataset.section;
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.getElementById('sec-'+sec).classList.add('active');
-    document.getElementById('matchPage').classList.remove('active');
+// Navigation
+document.querySelectorAll(".nav-tab").forEach(function(tab) {
+  tab.addEventListener("click", function() {
+    document.querySelectorAll(".nav-tab").forEach(function(t) { t.classList.remove("active"); });
+    tab.classList.add("active");
+    var sec = tab.dataset.section;
+    document.querySelectorAll(".section").forEach(function(s) { s.classList.remove("active"); });
+    document.getElementById("sec-"+sec).classList.add("active");
+    document.getElementById("matchPage").classList.remove("active");
     location.hash = sec;
     loadSection(sec);
   });
 });
 
 function loadSection(sec) {
-  if(sec === 'matches') loadMatches(currentMatchType);
-  else if(sec === 'rankings') loadRankings();
-  else if(sec === 'teams') loadTeams();
-  else if(sec === 'news') loadNews();
-  else if(sec === 'photos') loadPhotos();
-  else if(sec === 'series') loadSeries();
+  if(sec === "matches") loadMatches(currentMatchType);
+  else if(sec === "rankings") loadRankings();
+  else if(sec === "teams") loadTeams();
+  else if(sec === "news") loadNews();
+  else if(sec === "photos") loadPhotos();
+  else if(sec === "series") loadSeries();
 }
 
-// Hash routing
-(function initHash(){
-  const h = location.hash.replace('#','');
-  if(h && ['matches','rankings','teams','news','photos','series'].includes(h)) {
-    document.querySelectorAll('.nav-tab').forEach(t => {
-      t.classList.toggle('active', t.dataset.section === h);
+(function(){
+  var h = location.hash.replace("#","");
+  if(h && ["matches","rankings","teams","news","photos","series"].indexOf(h) >= 0) {
+    document.querySelectorAll(".nav-tab").forEach(function(t) {
+      t.classList.toggle("active", t.dataset.section === h);
     });
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.getElementById('sec-'+h).classList.add('active');
+    document.querySelectorAll(".section").forEach(function(s) { s.classList.remove("active"); });
+    document.getElementById("sec-"+h).classList.add("active");
     loadSection(h);
   } else {
-    loadMatches('live');
+    loadMatches("live");
   }
 })();
 
 // ==================== MATCHES ====================
-document.querySelectorAll('#matchSubTabs .sub-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('#matchSubTabs .sub-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
+document.querySelectorAll("#matchSubTabs .sub-tab").forEach(function(tab) {
+  tab.addEventListener("click", function() {
+    document.querySelectorAll("#matchSubTabs .sub-tab").forEach(function(t) { t.classList.remove("active"); });
+    tab.classList.add("active");
     currentMatchType = tab.dataset.type;
     loadMatches(currentMatchType);
   });
 });
 
-async function loadMatches(type) {
-  const el = document.getElementById('matchesList');
+function loadMatches(type) {
+  var el = document.getElementById("matchesList");
   showSkeleton(el, 4);
-  
-  let url = API + '/matches/' + type;
-  // Use 'current' for 'live' if live returns empty
-  const data = await fetchAPI(url);
-  if(!data) { el.innerHTML = '<p style="color:var(--text3);text-align:center;padding:40px">No matches data available</p>'; return; }
-  
-  matchesData[type] = data;
-  
-  const matches = [];
-  const types = new Set();
-  types.add('All');
-  
-  if(data.typeMatches) {
-    data.typeMatches.forEach(tm => {
-      const matchType = tm.matchType || '';
-      if(matchType) types.add(matchType);
-      (tm.seriesMatches||[]).forEach(sm => {
-        const saw = sm.seriesAdWrapper || sm.seriesWrapper || sm;
-        (saw.matches||[]).forEach(m => {
-          m._matchType = matchType;
-          m._seriesName = saw.seriesName || (saw.seriesId ? '' : '');
-          matches.push(m);
+  fetchAPI(API + "/matches/" + type).then(function(data) {
+    if(!data) { el.innerHTML = "<p style=\"color:var(--text3);text-align:center;padding:40px\">No matches data available</p>"; return; }
+    matchesData[type] = data;
+    var matches = [];
+    var types = ["All"];
+    if(data.typeMatches) {
+      data.typeMatches.forEach(function(tm) {
+        var mt = tm.matchType || "";
+        if(mt && types.indexOf(mt) < 0) types.push(mt);
+        (tm.seriesMatches||[]).forEach(function(sm) {
+          var saw = sm.seriesAdWrapper || sm.seriesWrapper || sm;
+          (saw.matches||[]).forEach(function(m) {
+            m._matchType = mt;
+            m._seriesName = saw.seriesName || "";
+            matches.push(m);
+          });
         });
       });
+    }
+    var filterEl = document.getElementById("matchTypeFilters");
+    var fh = "";
+    types.forEach(function(t) {
+      var cnt = t === "All" ? matches.length : matches.filter(function(m){return m._matchType===t}).length;
+      fh += "<div class=\"type-filter" + (t==="All"?" active":"") + "\" data-filter=\""+t+"\">"+t+" ("+cnt+")</div>";
     });
-  }
-  
-  // Build type filters
-  const filterEl = document.getElementById('matchTypeFilters');
-  let filterHtml = '';
-  types.forEach(t => {
-    filterHtml += '<div class="type-filter'+(t==='All'?' active':'')+'" data-filter="'+t+'">'+t+' ('+(t==='All'?matches.length:matches.filter(m=>m._matchType===t).length)+')</div>';
-  });
-  filterEl.innerHTML = filterHtml;
-  filterEl.querySelectorAll('.type-filter').forEach(f => {
-    f.addEventListener('click', () => {
-      filterEl.querySelectorAll('.type-filter').forEach(ff => ff.classList.remove('active'));
-      f.classList.add('active');
-      renderMatches(matches, f.dataset.filter, type);
+    filterEl.innerHTML = fh;
+    filterEl.querySelectorAll(".type-filter").forEach(function(f) {
+      f.addEventListener("click", function() {
+        filterEl.querySelectorAll(".type-filter").forEach(function(ff) { ff.classList.remove("active"); });
+        f.classList.add("active");
+        renderMatches(matches, f.dataset.filter, type);
+      });
     });
+    renderMatches(matches, "All", type);
   });
-  
-  renderMatches(matches, 'All', type);
 }
 
 function renderMatches(matches, filter, type) {
-  const el = document.getElementById('matchesList');
-  const filtered = filter === 'All' ? matches : matches.filter(m => m._matchType === filter);
-  
+  var el = document.getElementById("matchesList");
+  var filtered = filter === "All" ? matches : matches.filter(function(m) { return m._matchType === filter; });
   if(!filtered.length) {
-    el.innerHTML = '<p style="color:var(--text3);text-align:center;padding:40px">No '+type+' matches</p>';
+    el.innerHTML = "<p style=\"color:var(--text3);text-align:center;padding:40px\">No " + type + " matches</p>";
     return;
   }
-  
-  let html = '';
-  
-  if(type === 'upcoming') {
-    filtered.forEach((m,i) => {
-      const mi = m.matchInfo || {};
-      const t1 = mi.team1 || {};
-      const t2 = mi.team2 || {};
-      const fmt = (mi.matchFormat||'').toUpperCase();
-      const badgeClass = fmt==='TEST'?'badge-test':fmt==='ODI'?'badge-odi':'badge-t20';
-      html += '<div class="upcoming-card fade-in" style="animation-delay:'+i*0.05+'s" onclick="openMatch('+mi.matchId+','+mi.seriesId+')">';
-      html += '<div class="upcoming-left"><span class="badge '+badgeClass+' upcoming-format">'+fmt+'</span>';
-      html += '<div><div class="upcoming-teams">'+(t1.teamSName||'TBA')+' vs '+(t2.teamSName||'TBA')+'</div>';
-      html += '<div class="upcoming-series">'+escHtml(mi.matchDesc||'')+' - '+escHtml(mi.seriesName||mi._seriesName||'')+'</div></div></div>';
-      html += '<div class="upcoming-time"><div class="date">'+formatDate(mi.startDate)+'</div>'+formatTime(mi.startDate)+'</div>';
-      html += '</div>';
+  var html = "";
+  if(type === "upcoming") {
+    filtered.forEach(function(m, i) {
+      var mi = m.matchInfo || {};
+      var t1 = mi.team1 || {};
+      var t2 = mi.team2 || {};
+      var fmt = (mi.matchFormat||"").toUpperCase();
+      var bc = fmt==="TEST"?"badge-test":fmt==="ODI"?"badge-odi":"badge-t20";
+      html += "<div class=\"upcoming-card fade-in\" style=\"animation-delay:"+i*0.05+"s\" onclick=\"openMatch("+mi.matchId+","+mi.seriesId+")\">";
+      html += "<div class=\"upcoming-left\"><span class=\"badge "+bc+" upcoming-format\">"+fmt+"</span>";
+      html += "<div><div class=\"upcoming-teams\">"+(t1.teamSName||"TBA")+" vs "+(t2.teamSName||"TBA")+"</div>";
+      html += "<div class=\"upcoming-series\">"+esc(mi.matchDesc||"")+" - "+esc(mi.seriesName||m._seriesName||"")+"</div></div></div>";
+      html += "<div class=\"upcoming-time\"><div class=\"date\">"+formatDate(mi.startDate)+"</div>"+formatTime(mi.startDate)+"</div></div>";
     });
   } else {
-    filtered.forEach((m,i) => {
-      const mi = m.matchInfo || {};
-      const ms = m.matchScore || {};
-      const t1 = mi.team1 || {};
-      const t2 = mi.team2 || {};
-      const t1s = ms.team1Score || {};
-      const t2s = ms.team2Score || {};
-      const fmt = (mi.matchFormat||'').toUpperCase();
-      const state = mi.state || '';
-      const isLive = state === 'In Progress' || state === 'Innings Break';
-      const isResult = state === 'Complete';
-      const badgeClass = fmt==='TEST'?'badge-test':fmt==='ODI'?'badge-odi':'badge-t20';
-      const stateClass = isLive?'badge-live':isResult?'badge-result':'badge-upcoming';
-      
-      html += '<div class="match-card'+(isLive?' live-match':'')+' fade-in" style="animation-delay:'+i*0.06+'s" onclick="openMatch('+mi.matchId+','+mi.seriesId+')">';
-      html += '<div class="match-header"><div class="match-format"><span class="badge '+badgeClass+'">'+fmt+'</span>';
-      html += '<span class="badge '+stateClass+'">'+(isResult?'RESULT':isLive?'LIVE':state)+'</span>';
-      html += '<span class="match-series">'+escHtml(mi.matchDesc||'')+' &middot; '+escHtml(mi.seriesName||mi._seriesName||'')+'</span></div>';
-      html += '<span class="match-type-tag">'+(mi._matchType||m._matchType||'')+'</span></div>';
-      
+    filtered.forEach(function(m, i) {
+      var mi = m.matchInfo || {};
+      var ms = m.matchScore || {};
+      var t1 = mi.team1 || {};
+      var t2 = mi.team2 || {};
+      var t1s = ms.team1Score || {};
+      var t2s = ms.team2Score || {};
+      var fmt = (mi.matchFormat||"").toUpperCase();
+      var state = mi.state || "";
+      var isLive = state === "In Progress" || state === "Innings Break";
+      var isResult = state === "Complete";
+      var bc = fmt==="TEST"?"badge-test":fmt==="ODI"?"badge-odi":"badge-t20";
+      var sc = isLive?"badge-live":isResult?"badge-result":"badge-upcoming";
+      html += "<div class=\"match-card"+(isLive?" live-match":"")+" fade-in\" style=\"animation-delay:"+i*0.06+"s\" onclick=\"openMatch("+mi.matchId+","+mi.seriesId+")\">";
+      html += "<div class=\"match-header\"><div class=\"match-format\"><span class=\"badge "+bc+"\">"+fmt+"</span>";
+      html += "<span class=\"badge "+sc+"\">"+(isResult?"RESULT":isLive?"LIVE":state)+"</span>";
+      html += "<span class=\"match-series\">"+esc(mi.matchDesc||"")+" &middot; "+esc(mi.seriesName||m._seriesName||"")+"</span></div>";
+      html += "<span class=\"match-type-tag\">"+(m._matchType||"")+"</span></div>";
       // Team 1
-      html += '<div class="team-row"><div class="team-info">';
-      html += '<img class="team-logo" src="'+imgSrc(t1.imageId)+'" alt="" onerror="this.style.display='none'">';
-      html += '<div class="team-name">'+escHtml(t1.teamName||t1.teamSName||'')+'<small> ('+escHtml(t1.teamSName||'')+')</small></div></div>';
-      html += '<div class="team-score">';
-      if(t1s.inngs1) html += t1s.inngs1.runs+'/'+t1s.inngs1.wickets+' <span class="overs">('+t1s.inngs1.overs+' ov)</span>';
-      if(t1s.inngs2) html += '<span class="innings2">'+t1s.inngs2.runs+'/'+t1s.inngs2.wickets+' ('+t1s.inngs2.overs+' ov)</span>';
-      html += '</div></div>';
-      
+      html += "<div class=\"team-row\"><div class=\"team-info\">";
+      if(t1.imageId) html += "<img class=\"team-logo\" src=\""+imgSrc(t1.imageId)+"\" alt=\"\" onerror=\"imgErr(this)\">";
+      html += "<div class=\"team-name\">"+esc(t1.teamName||t1.teamSName||"")+"<small> ("+esc(t1.teamSName||"")+")</small></div></div>";
+      html += "<div class=\"team-score\">";
+      if(t1s.inngs1) html += t1s.inngs1.runs+"/"+(t1s.inngs1.wickets!=null?t1s.inngs1.wickets:"-")+" <span class=\"overs\">("+t1s.inngs1.overs+" ov)</span>";
+      if(t1s.inngs2) html += "<span class=\"innings2\">"+t1s.inngs2.runs+"/"+(t1s.inngs2.wickets!=null?t1s.inngs2.wickets:"-")+" ("+t1s.inngs2.overs+" ov)</span>";
+      html += "</div></div>";
       // Team 2
-      html += '<div class="team-row"><div class="team-info">';
-      html += '<img class="team-logo" src="'+imgSrc(t2.imageId)+'" alt="" onerror="this.style.display='none'">';
-      html += '<div class="team-name">'+escHtml(t2.teamName||t2.teamSName||'')+'<small> ('+escHtml(t2.teamSName||'')+')</small></div></div>';
-      html += '<div class="team-score">';
-      if(t2s.inngs1) html += t2s.inngs1.runs+'/'+t2s.inngs1.wickets+' <span class="overs">('+t2s.inngs1.overs+' ov)</span>';
-      if(t2s.inngs2) html += '<span class="innings2">'+t2s.inngs2.runs+'/'+t2s.inngs2.wickets+' ('+t2s.inngs2.overs+' ov)</span>';
-      html += '</div></div>';
-      
-      html += '<div class="match-status"><span>'+escHtml(mi.status||'')+'</span><span class="match-venue">'+escHtml(mi.venueInfo?.ground||'')+', '+escHtml(mi.venueInfo?.city||'')+'</span></div>';
-      html += '</div>';
+      html += "<div class=\"team-row\"><div class=\"team-info\">";
+      if(t2.imageId) html += "<img class=\"team-logo\" src=\""+imgSrc(t2.imageId)+"\" alt=\"\" onerror=\"imgErr(this)\">";
+      html += "<div class=\"team-name\">"+esc(t2.teamName||t2.teamSName||"")+"<small> ("+esc(t2.teamSName||"")+")</small></div></div>";
+      html += "<div class=\"team-score\">";
+      if(t2s.inngs1) html += t2s.inngs1.runs+"/"+(t2s.inngs1.wickets!=null?t2s.inngs1.wickets:"-")+" <span class=\"overs\">("+t2s.inngs1.overs+" ov)</span>";
+      if(t2s.inngs2) html += "<span class=\"innings2\">"+t2s.inngs2.runs+"/"+(t2s.inngs2.wickets!=null?t2s.inngs2.wickets:"-")+" ("+t2s.inngs2.overs+" ov)</span>";
+      html += "</div></div>";
+      var vi = mi.venueInfo || {};
+      html += "<div class=\"match-status\"><span>"+esc(mi.status||"")+"</span><span class=\"match-venue\">"+esc(vi.ground||"")+", "+esc(vi.city||"")+"</span></div></div>";
     });
   }
-  
   el.innerHTML = html;
 }
 
 // ==================== MATCH PAGE ====================
-window.openMatch = async function(matchId, seriesId) {
+window.openMatch = function(matchId, seriesId) {
   currentMatchId = matchId;
   currentSeriesId = seriesId;
-  
-  // Hide matches section, show match page
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  const mp = document.getElementById('matchPage');
-  mp.classList.add('active');
-  
-  // Load match header from overs/leanback endpoint (has miniscore + matchheaders)
-  const headerEl = document.getElementById('matchPageHeader');
-  headerEl.innerHTML = '<div class="loading-overlay"><div class="spinner"></div><span>Loading match...</span></div>';
-  
-  // Fetch match info from multiple sources
-  const [oversData, scardData, commData] = await Promise.all([
-    fetchAPI(API+'/match/'+matchId+'/overs'),
-    fetchAPI(API+'/match/'+matchId+'/scorecard'),
-    fetchAPI(API+'/match/'+matchId+'/commentary')
-  ]);
-  
-  // Build match header
-  let mh = oversData?.matchheaders || oversData?.matchHeaders || {};
-  let ms = oversData?.miniscore || oversData?.miniScore || {};
-  let scard = scardData?.scorecard || scardData?.Scorecard || [];
-  
-  // If overs didn't give us matchheaders, try to extract from commentary
-  if(!mh.matchId && commData?.matchheaders) mh = commData.matchheaders;
-  if(!ms.batsmanstriker && commData?.miniscore) ms = commData.miniscore;
-  
-  // Try to reconstruct header from scorecard if needed
-  let t1Name = mh.team1?.name || mh.team1?.teamName || '';
-  let t2Name = mh.team2?.name || mh.team2?.teamName || '';
-  let t1Short = mh.team1?.shortName || mh.team1?.teamSName || t1Name;
-  let t2Short = mh.team2?.shortName || mh.team2?.teamSName || t2Name;
-  let t1ImgId = mh.team1?.imageId || '';
-  let t2ImgId = mh.team2?.imageId || '';
-  let matchDesc = mh.matchDescription || mh.matchDesc || '';
-  let seriesName = mh.seriesName || '';
-  let venue = (mh.venueInfo?.ground || mh.venue || '') + (mh.venueInfo?.city ? ', '+mh.venueInfo.city : '');
-  let status = mh.status || mh.matchStatus || oversData?.status || scardData?.status || '';
-  let matchFormat = (mh.matchFormat || '').toUpperCase();
-  let state = mh.state || '';
-  
-  // Build score display from scorecard
-  let t1Scores = [];
-  let t2Scores = [];
-  if(scard && scard.length) {
-    scard.forEach(inn => {
-      const sc = inn.scoredetails || inn.scoreDetails || {};
-      const inningsId = inn.inningsid || inn.inningsId;
-      const scoreStr = (sc.runs||0)+'/'+(sc.wickets||0)+' ('+(sc.overs||0)+' ov)';
-      // Innings 1,3 = team1 (batting first), 2,4 = team2
-      if(inningsId === 1 || inningsId === 3) t1Scores.push(scoreStr);
-      else t2Scores.push(scoreStr);
-    });
-  }
-  
-  let hHtml = '<div class="match-back" onclick="closeMatchPage()">&#8592; Back to Matches</div>';
-  hHtml += '<div class="match-title">'+escHtml(t1Name||t1Short)+' vs '+escHtml(t2Name||t2Short)+'</div>';
-  hHtml += '<div class="match-subtitle">'+escHtml(matchDesc)+' - '+escHtml(seriesName)+' - '+escHtml(venue)+'</div>';
-  
-  hHtml += '<div class="match-teams-summary">';
-  // Team 1
-  hHtml += '<div class="match-team-row"><div class="match-team-left">';
-  if(t1ImgId) hHtml += '<img class="match-team-logo" src="'+imgSrc(t1ImgId)+'" alt="">';
-  hHtml += '<span class="match-team-name">'+escHtml(t1Name||t1Short)+'</span></div>';
-  hHtml += '<div class="match-team-score">'+(t1Scores.join(' & ')||'-')+'</div></div>';
-  // Team 2
-  hHtml += '<div class="match-team-row"><div class="match-team-left">';
-  if(t2ImgId) hHtml += '<img class="match-team-logo" src="'+imgSrc(t2ImgId)+'" alt="">';
-  hHtml += '<span class="match-team-name">'+escHtml(t2Name||t2Short)+'</span></div>';
-  hHtml += '<div class="match-team-score">'+(t2Scores.join(' & ')||'-')+'</div></div>';
-  hHtml += '</div>';
-  
-  if(status) hHtml += '<div class="match-result-text">'+escHtml(status)+'</div>';
-  headerEl.innerHTML = hHtml;
-  
-  // Render scorecard
-  renderScorecard(scard);
-  
-  // Render commentary
-  renderCommentary(commData);
-  
-  // Load info tab
-  loadMatchInfo(matchId);
-  
-  // Load points table
-  if(seriesId) loadPointsTable(seriesId);
-  
-  // Load series details
-  if(seriesId) loadSeriesDetails(seriesId);
-  
-  // Reset tab to scorecard
-  document.querySelectorAll('#matchPageTabs .match-tab').forEach(t => t.classList.remove('active'));
-  document.querySelector('#matchPageTabs .match-tab[data-tab="mp-scorecard"]').classList.add('active');
-  document.querySelectorAll('.match-tab-content').forEach(c => c.classList.remove('active'));
-  document.getElementById('mp-scorecard').classList.add('active');
-  
-  // Scroll to top
-  window.scrollTo({top:0, behavior:'smooth'});
+  document.querySelectorAll(".section").forEach(function(s) { s.classList.remove("active"); });
+  var mp = document.getElementById("matchPage");
+  mp.classList.add("active");
+  var headerEl = document.getElementById("matchPageHeader");
+  showLoading(headerEl, "Loading match...");
+
+  Promise.all([
+    fetchAPI(API+"/match/"+matchId+"/info"),
+    fetchAPI(API+"/match/"+matchId+"/scorecard"),
+    fetchAPI(API+"/match/"+matchId+"/commentary")
+  ]).then(function(results) {
+    var infoData = results[0], scardData = results[1], commData = results[2];
+    var mh = (commData && commData.matchheaders) || {};
+    var scard = (scardData && scardData.scorecard) || [];
+    // Info endpoint returns flat lowercase data
+    var inf = infoData || {};
+    var t1Info = inf.team1 || {};
+    var t2Info = inf.team2 || {};
+    var t1Name = t1Info.teamname || t1Info.teamName || "";
+    var t2Name = t2Info.teamname || t2Info.teamName || "";
+    var t1Short = t1Info.teamsname || t1Info.teamSName || t1Name;
+    var t2Short = t2Info.teamsname || t2Info.teamSName || t2Name;
+    var t1ImgId = t1Info.imageid || t1Info.imageId || "";
+    var t2ImgId = t2Info.imageid || t2Info.imageId || "";
+    var matchDesc = inf.matchdesc || inf.matchDescription || "";
+    var seriesName = inf.seriesname || inf.seriesName || "";
+    var vi = inf.venueinfo || inf.venueInfo || {};
+    var venue = (vi.ground||"") + (vi.city ? ", "+vi.city : "");
+    var status = mh.status || inf.status || "";
+
+    // Get scores from scorecard - uses direct score/wickets/overs fields
+    var t1Scores = [], t2Scores = [];
+    if(scard && scard.length) {
+      scard.forEach(function(inn) {
+        var iid = inn.inningsid || inn.inningsId || 0;
+        var sc = inn.score || (inn.scoredetails && inn.scoredetails.runs) || 0;
+        var wk = inn.wickets || (inn.scoredetails && inn.scoredetails.wickets) || 0;
+        var ov = inn.overs || (inn.scoredetails && inn.scoredetails.overs) || 0;
+        var ss = sc+"/"+wk+" ("+ov+" ov)";
+        if(iid === 1 || iid === 3) t1Scores.push(ss); else t2Scores.push(ss);
+      });
+    }
+
+    var hh = "<div class=\"match-back\" onclick=\"closeMatchPage()\">&#8592; Back to Matches</div>";
+    hh += "<div class=\"match-title\">"+esc(t1Name||t1Short)+" vs "+esc(t2Name||t2Short)+"</div>";
+    hh += "<div class=\"match-subtitle\">"+esc(matchDesc)+" - "+esc(seriesName)+" - "+esc(venue)+"</div>";
+    hh += "<div class=\"match-teams-summary\">";
+    hh += "<div class=\"match-team-row\"><div class=\"match-team-left\">";
+    if(t1ImgId) hh += "<img class=\"match-team-logo\" src=\""+imgSrc(t1ImgId)+"\" alt=\"\">";
+    hh += "<span class=\"match-team-name\">"+esc(t1Name||t1Short)+"</span></div>";
+    hh += "<div class=\"match-team-score\">"+(t1Scores.join(" & ")||"-")+"</div></div>";
+    hh += "<div class=\"match-team-row\"><div class=\"match-team-left\">";
+    if(t2ImgId) hh += "<img class=\"match-team-logo\" src=\""+imgSrc(t2ImgId)+"\" alt=\"\">";
+    hh += "<span class=\"match-team-name\">"+esc(t2Name||t2Short)+"</span></div>";
+    hh += "<div class=\"match-team-score\">"+(t2Scores.join(" & ")||"-")+"</div></div></div>";
+    if(status) hh += "<div class=\"match-result-text\">"+esc(status)+"</div>";
+    headerEl.innerHTML = hh;
+
+    renderScorecard(scard);
+    renderCommentary(commData);
+    renderMatchInfo(inf);
+    if(seriesId) { loadPointsTable(seriesId); loadSeriesDetails(seriesId); }
+
+    // Reset tabs
+    document.querySelectorAll("#matchPageTabs .match-tab").forEach(function(t) { t.classList.remove("active"); });
+    document.querySelector("#matchPageTabs .match-tab[data-tab=\"mp-scorecard\"]").classList.add("active");
+    document.querySelectorAll(".match-tab-content").forEach(function(c) { c.classList.remove("active"); });
+    document.getElementById("mp-scorecard").classList.add("active");
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
 };
 
-function closeMatchPage() {
-  document.getElementById('matchPage').classList.remove('active');
-  document.getElementById('sec-matches').classList.add('active');
+window.closeMatchPage = function() {
+  document.getElementById("matchPage").classList.remove("active");
+  document.getElementById("sec-matches").classList.add("active");
   currentMatchId = null;
-}
+};
 
-// Match page tabs
-document.querySelectorAll('#matchPageTabs .match-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('#matchPageTabs .match-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    document.querySelectorAll('.match-tab-content').forEach(c => c.classList.remove('active'));
-    document.getElementById(tab.dataset.tab).classList.add('active');
+document.querySelectorAll("#matchPageTabs .match-tab").forEach(function(tab) {
+  tab.addEventListener("click", function() {
+    document.querySelectorAll("#matchPageTabs .match-tab").forEach(function(t) { t.classList.remove("active"); });
+    tab.classList.add("active");
+    document.querySelectorAll(".match-tab-content").forEach(function(c) { c.classList.remove("active"); });
+    document.getElementById(tab.dataset.tab).classList.add("active");
   });
 });
 
 function renderScorecard(scard) {
-  const el = document.getElementById('mp-scorecard');
-  if(!scard || !scard.length) { el.innerHTML = '<div class="loading-overlay"><span>No scorecard available</span></div>'; return; }
-  
-  let html = '';
-  scard.forEach((inn, idx) => {
-    const sd = inn.scoredetails || inn.scoreDetails || {};
-    const batsmen = inn.batsman || inn.batsmen || [];
-    const bowlers = inn.bowler || inn.bowlers || [];
-    const extras = sd.extras || 0;
-    const inningsId = inn.inningsid || inn.inningsId;
-    
-    html += '<div class="scorecard-section slide-up" style="animation-delay:'+idx*0.1+'s">';
-    html += '<div class="innings-title"><span>Innings '+(idx+1)+'</span><span class="innings-score">'+(sd.runs||0)+'/'+(sd.wickets||0)+' ('+(sd.overs||0)+' ov)</span></div>';
-    
-    // Batting table
-    html += '<table class="sc-table"><thead><tr><th>Batter</th><th>R</th><th>B</th><th>4s</th><th>6s</th><th>SR</th></tr></thead><tbody>';
-    batsmen.forEach(b => {
-      const name = b.name || b.fullName || '';
-      const dismissal = b.outdec || b.outDec || b.outDescription || '';
-      html += '<tr><td><span class="batsman-name" onclick="openPlayer('+b.id+')">'
-        +escHtml(name)+(b.iscaptain||b.isCaptain?' (c)':'')+(b.iskeeper||b.isKeeper?' (wk)':'')
-        +'</span><span class="dismissal">'+escHtml(dismissal)+'</span></td>';
-      html += '<td><strong>'+(b.runs||0)+'</strong></td><td>'+(b.balls||0)+'</td><td>'+(b.fours||0)+'</td><td>'+(b.sixes||0)+'</td>';
-      html += '<td>'+(b.strkrate||b.strikeRate||'-')+'</td></tr>';
+  var el = document.getElementById("mp-scorecard");
+  if(!scard || !scard.length) { el.innerHTML = "<div class=\"loading-overlay\"><span>No scorecard available</span></div>"; return; }
+  var html = "";
+  scard.forEach(function(inn, idx) {
+    var batsmen = inn.batsman || inn.batsmen || [];
+    var bowlers = inn.bowler || inn.bowlers || [];
+    var iScore = inn.score || 0, iWickets = inn.wickets || 0, iOvers = inn.overs || 0;
+    var teamName = inn.batteamname || "Innings "+(idx+1);
+    html += "<div class=\"scorecard-section slide-up\" style=\"animation-delay:"+idx*0.1+"s\">";
+    html += "<div class=\"innings-title\"><span>"+esc(teamName)+"</span><span class=\"innings-score\">"+iScore+"/"+iWickets+" ("+iOvers+" ov)</span></div>";
+    html += "<table class=\"sc-table\"><thead><tr><th>Batter</th><th>R</th><th>B</th><th>4s</th><th>6s</th><th>SR</th></tr></thead><tbody>";
+    batsmen.forEach(function(b) {
+      var nm = b.name || b.fullName || "";
+      var dis = b.outdec || b.outDec || "";
+      html += "<tr><td><span class=\"bat-name\" onclick=\"openPlayer("+b.id+")\">"
+        +esc(nm)+(b.iscaptain||b.isCaptain?" (c)":"")+(b.iskeeper||b.isKeeper?" (wk)":"")
+        +"</span><span class=\"dismissal\">"+esc(dis)+"</span></td>";
+      html += "<td><strong>"+(b.runs||0)+"</strong></td><td>"+(b.balls||0)+"</td><td>"+(b.fours||0)+"</td><td>"+(b.sixes||0)+"</td>";
+      html += "<td>"+(b.strkrate||b.strikeRate||"-")+"</td></tr>";
     });
-    // Extras
-    html += '<tr class="extras-row"><td>Extras</td><td colspan="5">'+extras+'</td></tr>';
-    // Total
-    html += '<tr class="total-row"><td><strong>Total</strong></td><td colspan="5"><strong>'+(sd.runs||0)+'/'+(sd.wickets||0)+' ('+(sd.overs||0)+' overs)</strong></td></tr>';
-    html += '</tbody></table>';
-    
-    // Bowling table
+    var extrasObj = inn.extras || {};
+    var extrasTotal = extrasObj.total || extrasObj.t || 0;
+    html += "<tr class=\"extras-row\"><td>Extras</td><td colspan=\"5\">"+extrasTotal+"</td></tr>";
+    html += "<tr class=\"total-row\"><td><strong>Total</strong></td><td colspan=\"5\"><strong>"+iScore+"/"+iWickets+" ("+iOvers+" overs)</strong></td></tr>";
+    html += "</tbody></table>";
     if(bowlers.length) {
-      html += '<div class="bowling-header"></div>';
-      html += '<table class="sc-table"><thead><tr><th>Bowler</th><th>O</th><th>M</th><th>R</th><th>W</th><th>Econ</th></tr></thead><tbody>';
-      bowlers.forEach(b => {
-        html += '<tr><td><span class="batsman-name" onclick="openPlayer('+b.id+')">'+escHtml(b.name||b.fullName||'')+'</span></td>';
-        html += '<td>'+(b.overs||0)+'</td><td>'+(b.maidens||0)+'</td><td>'+(b.runs||0)+'</td>';
-        html += '<td><strong>'+(b.wickets||0)+'</strong></td><td>'+(b.economy||b.econ||'-')+'</td></tr>';
+      html += "<table class=\"sc-table\" style=\"margin-top:12px\"><thead><tr><th>Bowler</th><th>O</th><th>M</th><th>R</th><th>W</th><th>Econ</th></tr></thead><tbody>";
+      bowlers.forEach(function(b) {
+        html += "<tr><td><span class=\"bat-name\" onclick=\"openPlayer("+b.id+")\">"+esc(b.name||"")+"</span></td>";
+        html += "<td>"+(b.overs||0)+"</td><td>"+(b.maidens||0)+"</td><td>"+(b.runs||0)+"</td>";
+        html += "<td><strong>"+(b.wickets||0)+"</strong></td><td>"+(b.economy||"-")+"</td></tr>";
       });
-      html += '</tbody></table>';
+      html += "</tbody></table>";
     }
-    
-    html += '</div>';
+    html += "</div>";
   });
-  
   el.innerHTML = html;
 }
 
 function renderCommentary(commData) {
-  const el = document.getElementById('mp-commentary');
-  if(!commData) { el.innerHTML = '<div class="loading-overlay"><span>No commentary available</span></div>'; return; }
-  
-  let comms = [];
-  const cw = commData.comwrapper || commData.commentaryList || [];
+  var el = document.getElementById("mp-commentary");
+  if(!commData) { el.innerHTML = "<div class=\"loading-overlay\"><span>No commentary available</span></div>"; return; }
+  var comms = [];
+  var cw = commData.comwrapper || commData.commentaryList || [];
   if(Array.isArray(cw)) {
-    cw.forEach(c => {
-      const comm = c.commentary || c;
-      if(comm.commtxt || comm.commentaryText) comms.push(comm);
+    cw.forEach(function(c) {
+      var comm = c.commentary || c;
+      // Filter out entries that are just placeholders like B0$, B1$
+      if(comm.commtxt && comm.commtxt.indexOf("B0$") < 0 && comm.commtxt.indexOf("B1$") < 0) comms.push(comm);
     });
   }
-  
-  if(!comms.length) { el.innerHTML = '<div class="loading-overlay"><span>No commentary available for this match</span></div>'; return; }
-  
-  let html = '<div class="commentary-list">';
-  let lastOver = -1;
-  comms.forEach((c, i) => {
-    const over = c.overnum || c.overNumber || 0;
-    const text = c.commtxt || c.commentaryText || '';
-    const event = (c.eventtype || c.eventType || '').toUpperCase();
-    
-    // Over separator
-    if(over > 0 && Math.floor(over) !== lastOver && Math.floor(over) > 0) {
-      lastOver = Math.floor(over);
-    }
-    
-    let ballClass = 'ball-dot';
-    let ballLabel = '';
-    if(event === 'WICKET' || text.toLowerCase().includes('out!') || text.toLowerCase().includes('wicket')) { ballClass = 'ball-wicket'; ballLabel = 'W'; }
-    else if(event === 'FOUR' || text.includes('FOUR')) { ballClass = 'ball-four'; ballLabel = '4'; }
-    else if(event === 'SIX' || text.includes('SIX')) { ballClass = 'ball-six'; ballLabel = '6'; }
-    else if(over > 0) { ballLabel = event || ''; ballClass = 'ball-run'; }
-    
-    html += '<div class="comm-item fade-in" style="animation-delay:'+Math.min(i*0.03, 1)+'s">';
-    html += '<div class="comm-over">';
-    if(over > 0) html += '<div class="over-num">'+over+'</div>';
-    if(ballLabel) html += '<div class="ball-type '+ballClass+'">'+ballLabel+'</div>';
-    html += '</div>';
-    html += '<div class="comm-text">'+escHtml(text)+'</div>';
-    html += '</div>';
+  if(!comms.length) { el.innerHTML = "<div class=\"loading-overlay\"><span>No commentary available for this match</span></div>"; return; }
+  var html = "<div class=\"commentary-list\">";
+  comms.forEach(function(c, i) {
+    var over = c.overnum || 0;
+    var text = c.commtxt || "";
+    var evt = (c.eventtype || "").toUpperCase();
+    var bc = "ball-dot", bl = "";
+    if(evt === "WICKET" || text.toLowerCase().indexOf("wicket") >= 0) { bc = "ball-wicket"; bl = "W"; }
+    else if(evt === "FOUR" || text.indexOf("FOUR") >= 0) { bc = "ball-four"; bl = "4"; }
+    else if(evt === "SIX" || text.indexOf("SIX") >= 0) { bc = "ball-six"; bl = "6"; }
+    else if(over > 0) { bl = evt || ""; bc = "ball-run"; }
+    html += "<div class=\"comm-item fade-in\" style=\"animation-delay:"+Math.min(i*0.03,1)+"s\">";
+    html += "<div class=\"comm-over\">";
+    if(over > 0) html += "<div class=\"over-num\">"+over+"</div>";
+    if(bl) html += "<div class=\"ball-type "+bc+"\">"+bl+"</div>";
+    html += "</div><div class=\"comm-text\">"+esc(text)+"</div></div>";
   });
-  html += '</div>';
-  
+  html += "</div>";
   el.innerHTML = html;
 }
 
-async function loadMatchInfo(matchId) {
-  const el = document.getElementById('mp-info');
-  showLoading(el, 'Loading match info...');
-  
-  const data = await fetchAPI(API+'/match/'+matchId+'/info');
-  if(!data) { el.innerHTML = '<div class="loading-overlay"><span>No info available</span></div>'; return; }
-  
-  const mi = data.matchInfo || data;
-  const vi = mi.venueInfo || mi.venue || {};
-  const t1 = mi.team1 || {};
-  const t2 = mi.team2 || {};
-  
-  let html = '<div class="info-grid">';
-  
-  // Match Details
-  html += '<div class="info-card"><h4>Match Details</h4>';
-  html += '<div class="info-row"><span class="info-label">Match</span><span class="info-value">'+escHtml(mi.matchDescription||mi.matchDesc||'')+'</span></div>';
-  html += '<div class="info-row"><span class="info-label">Series</span><span class="info-value">'+escHtml(mi.seriesName||'')+'</span></div>';
-  html += '<div class="info-row"><span class="info-label">Format</span><span class="info-value">'+escHtml(mi.matchFormat||'')+'</span></div>';
-  html += '<div class="info-row"><span class="info-label">Date</span><span class="info-value">'+formatDate(mi.startDate)+'</span></div>';
-  if(mi.tossResults) {
-    const tr = mi.tossResults;
-    html += '<div class="info-row"><span class="info-label">Toss</span><span class="info-value">'+escHtml(tr.tossWinnerName||'')+' chose to '+escHtml(tr.decision||'')+'</span></div>';
+function renderMatchInfo(inf) {
+  var el = document.getElementById("mp-info");
+  if(!inf) { el.innerHTML = "<div class=\"loading-overlay\"><span>No info available</span></div>"; return; }
+  var vi = inf.venueinfo || inf.venueInfo || {};
+  var t1 = inf.team1 || {};
+  var t2 = inf.team2 || {};
+  var html = "<div class=\"info-grid\">";
+  html += "<div class=\"info-card\"><h4>Match Details</h4>";
+  html += "<div class=\"info-row\"><span class=\"info-label\">Match</span><span class=\"info-value\">"+esc(inf.matchdesc||inf.matchDescription||"")+"</span></div>";
+  html += "<div class=\"info-row\"><span class=\"info-label\">Series</span><span class=\"info-value\">"+esc(inf.seriesname||inf.seriesName||"")+"</span></div>";
+  html += "<div class=\"info-row\"><span class=\"info-label\">Format</span><span class=\"info-value\">"+esc(inf.matchformat||inf.matchFormat||"")+"</span></div>";
+  html += "<div class=\"info-row\"><span class=\"info-label\">Date</span><span class=\"info-value\">"+formatDate(inf.startdate||inf.startDate)+"</span></div>";
+  if(inf.tossstatus) {
+    html += "<div class=\"info-row\"><span class=\"info-label\">Toss</span><span class=\"info-value\">"+esc(inf.tossstatus)+"</span></div>";
   }
-  html += '</div>';
-  
-  // Venue
-  html += '<div class="info-card"><h4>Venue</h4>';
-  html += '<div class="info-row"><span class="info-label">Ground</span><span class="info-value">'+escHtml(vi.ground||vi.name||'')+'</span></div>';
-  html += '<div class="info-row"><span class="info-label">City</span><span class="info-value">'+escHtml(vi.city||'')+'</span></div>';
-  html += '<div class="info-row"><span class="info-label">Country</span><span class="info-value">'+escHtml(vi.country||'')+'</span></div>';
-  if(vi.timezone) html += '<div class="info-row"><span class="info-label">Timezone</span><span class="info-value">'+escHtml(vi.timezone)+'</span></div>';
-  if(vi.capacity) html += '<div class="info-row"><span class="info-label">Capacity</span><span class="info-value">'+vi.capacity+'</span></div>';
-  html += '</div>';
-  
+  html += "</div>";
+  html += "<div class=\"info-card\"><h4>Venue</h4>";
+  html += "<div class=\"info-row\"><span class=\"info-label\">Ground</span><span class=\"info-value\">"+esc(vi.ground||"")+"</span></div>";
+  html += "<div class=\"info-row\"><span class=\"info-label\">City</span><span class=\"info-value\">"+esc(vi.city||"")+"</span></div>";
+  html += "<div class=\"info-row\"><span class=\"info-label\">Country</span><span class=\"info-value\">"+esc(vi.country||"")+"</span></div>";
+  if(vi.capacity) html += "<div class=\"info-row\"><span class=\"info-label\">Capacity</span><span class=\"info-value\">"+esc(vi.capacity)+"</span></div>";
+  html += "</div>";
   // Teams
-  html += '<div class="info-card"><h4>'+escHtml(t1.name||t1.teamName||'Team 1')+'</h4>';
-  if(t1.playerDetails) {
-    t1.playerDetails.forEach(p => {
-      html += '<div class="info-row"><span class="info-label batsman-name" onclick="openPlayer('+p.id+')">'+escHtml(p.fullName||p.name||'')+'</span>';
-      html += '<span class="info-value">'+(p.iscaptain||p.isCaptain?'(c) ':'')+(p.iskeeper||p.isKeeper?'(wk)':'')+'</span></div>';
+  if(t1.playerDetails || t1.playerdetails) {
+    var players = t1.playerDetails || t1.playerdetails || [];
+    html += "<div class=\"info-card\"><h4>"+esc(t1.teamname||t1.teamName||"Team 1")+"</h4>";
+    players.forEach(function(p) {
+      html += "<div class=\"info-row\"><span class=\"info-label bat-name\" onclick=\"openPlayer("+p.id+")\">"+esc(p.fullName||p.name||"")+"</span>";
+      html += "<span class=\"info-value\">"+(p.iscaptain||p.isCaptain?"(c) ":"")+(p.iskeeper||p.isKeeper?"(wk)":"")+"</span></div>";
     });
+    html += "</div>";
   }
-  html += '</div>';
-  
-  html += '<div class="info-card"><h4>'+escHtml(t2.name||t2.teamName||'Team 2')+'</h4>';
-  if(t2.playerDetails) {
-    t2.playerDetails.forEach(p => {
-      html += '<div class="info-row"><span class="info-label batsman-name" onclick="openPlayer('+p.id+')">'+escHtml(p.fullName||p.name||'')+'</span>';
-      html += '<span class="info-value">'+(p.iscaptain||p.isCaptain?'(c) ':'')+(p.iskeeper||p.isKeeper?'(wk)':'')+'</span></div>';
+  if(t2.playerDetails || t2.playerdetails) {
+    var players2 = t2.playerDetails || t2.playerdetails || [];
+    html += "<div class=\"info-card\"><h4>"+esc(t2.teamname||t2.teamName||"Team 2")+"</h4>";
+    players2.forEach(function(p) {
+      html += "<div class=\"info-row\"><span class=\"info-label bat-name\" onclick=\"openPlayer("+p.id+")\">"+esc(p.fullName||p.name||"")+"</span>";
+      html += "<span class=\"info-value\">"+(p.iscaptain||p.isCaptain?"(c) ":"")+(p.iskeeper||p.isKeeper?"(wk)":"")+"</span></div>";
     });
+    html += "</div>";
   }
-  html += '</div>';
-  
-  // Umpires
-  if(mi.umpire1 || mi.umpire2 || mi.umpire3) {
-    html += '<div class="info-card"><h4>Officials</h4>';
-    if(mi.umpire1) html += '<div class="info-row"><span class="info-label">Umpire 1</span><span class="info-value">'+escHtml(mi.umpire1.name||mi.umpire1)+'</span></div>';
-    if(mi.umpire2) html += '<div class="info-row"><span class="info-label">Umpire 2</span><span class="info-value">'+escHtml(mi.umpire2.name||mi.umpire2)+'</span></div>';
-    if(mi.umpire3) html += '<div class="info-row"><span class="info-label">TV Umpire</span><span class="info-value">'+escHtml(mi.umpire3.name||mi.umpire3)+'</span></div>';
-    if(mi.referee) html += '<div class="info-row"><span class="info-label">Referee</span><span class="info-value">'+escHtml(mi.referee.name||mi.referee)+'</span></div>';
-    html += '</div>';
+  var u1 = inf.umpire1, u2 = inf.umpire2, u3 = inf.umpire3, ref = inf.referee;
+  if(u1 || u2 || u3) {
+    html += "<div class=\"info-card\"><h4>Officials</h4>";
+    if(u1) html += "<div class=\"info-row\"><span class=\"info-label\">Umpire 1</span><span class=\"info-value\">"+esc(typeof u1==="object"?u1.name:u1)+"</span></div>";
+    if(u2) html += "<div class=\"info-row\"><span class=\"info-label\">Umpire 2</span><span class=\"info-value\">"+esc(typeof u2==="object"?u2.name:u2)+"</span></div>";
+    if(u3) html += "<div class=\"info-row\"><span class=\"info-label\">TV Umpire</span><span class=\"info-value\">"+esc(typeof u3==="object"?u3.name:u3)+"</span></div>";
+    if(ref) html += "<div class=\"info-row\"><span class=\"info-label\">Referee</span><span class=\"info-value\">"+esc(typeof ref==="object"?ref.name:ref)+"</span></div>";
+    html += "</div>";
   }
-  
-  html += '</div>';
+  html += "</div>";
   el.innerHTML = html;
 }
 
-async function loadPointsTable(seriesId) {
-  const el = document.getElementById('mp-points');
-  showLoading(el, 'Loading points table...');
-  
-  const data = await fetchAPI(API+'/series/'+seriesId+'/points-table');
-  if(!data || !data.pointsTable) { el.innerHTML = '<div class="loading-overlay"><span>No points table available for this series</span></div>'; return; }
-  
-  let html = '';
-  data.pointsTable.forEach(group => {
-    html += '<h3 style="margin-bottom:12px;font-size:16px">'+escHtml(group.groupName||'Points Table')+'</h3>';
-    html += '<div style="overflow-x:auto"><table class="points-table"><thead><tr>';
-    html += '<th>#</th><th>Team</th><th>P</th><th>W</th><th>L</th><th>Pts</th><th>NRR</th>';
-    html += '</tr></thead><tbody>';
-    
-    const teams = group.pointsTableInfo || [];
-    teams.forEach((t, i) => {
-      html += '<tr class="fade-in" style="animation-delay:'+i*0.05+'s">';
-      html += '<td><span class="points-rank'+(i<2?' top':'')+'">'+(i+1)+'</span></td>';
-      html += '<td><div class="points-team">'+escHtml(t.teamFullName||t.teamName||'')+'</div></td>';
-      html += '<td>'+(t.matchesPlayed||0)+'</td>';
-      html += '<td>'+(t.matchesWon||0)+'</td>';
-      html += '<td>'+(t.matchesLost||0)+'</td>';
-      html += '<td><strong>'+(t.points||0)+'</strong></td>';
-      html += '<td>'+(t.nrr||'0.000')+'</td>';
-      html += '</tr>';
+function loadPointsTable(seriesId) {
+  var el = document.getElementById("mp-points");
+  showLoading(el, "Loading points table...");
+  fetchAPI(API+"/series/"+seriesId+"/points-table").then(function(data) {
+    if(!data || !data.pointsTable) { el.innerHTML = "<div class=\"loading-overlay\"><span>No points table available</span></div>"; return; }
+    var html = "";
+    data.pointsTable.forEach(function(group) {
+      html += "<h3 style=\"margin-bottom:12px\">"+esc(group.groupName||"Points Table")+"</h3>";
+      html += "<div style=\"overflow-x:auto\"><table class=\"points-table\"><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>L</th><th>Pts</th><th>NRR</th></tr></thead><tbody>";
+      (group.pointsTableInfo||[]).forEach(function(t, i) {
+        html += "<tr class=\"fade-in\" style=\"animation-delay:"+i*0.05+"s\">";
+        html += "<td><span class=\"points-rank"+(i<2?" top":"")+"\">"+( i+1)+"</span></td>";
+        html += "<td><div class=\"points-team\">"+esc(t.teamFullName||t.teamName||"")+"</div></td>";
+        html += "<td>"+(t.matchesPlayed||0)+"</td><td>"+(t.matchesWon||0)+"</td><td>"+(t.matchesLost||0)+"</td>";
+        html += "<td><strong>"+(t.points||0)+"</strong></td><td>"+(t.nrr||"0.000")+"</td></tr>";
+      });
+      html += "</tbody></table></div>";
     });
-    
-    html += '</tbody></table></div>';
+    el.innerHTML = html || "<div class=\"loading-overlay\"><span>No points table data</span></div>";
   });
-  
-  el.innerHTML = html || '<div class="loading-overlay"><span>No points table data</span></div>';
 }
 
-async function loadSeriesDetails(seriesId) {
-  const el = document.getElementById('mp-series');
-  showLoading(el, 'Loading series details...');
-  
-  const [seriesData, venuesData, squadsData] = await Promise.all([
-    fetchAPI(API+'/series/'+seriesId),
-    fetchAPI(API+'/series/'+seriesId+'/venues'),
-    fetchAPI(API+'/series/'+seriesId+'/squads')
-  ]);
-  
-  let html = '';
-  
-  // Series Matches
-  if(seriesData?.matchDetails) {
-    html += '<div class="series-detail"><h3>Series Matches</h3><div class="series-matches-list">';
-    seriesData.matchDetails.forEach(md => {
-      const map = md.matchDetailsMap;
-      if(!map) return;
-      const key = map.key || '';
-      const matches = map.match || [];
-      if(matches.length) {
-        html += '<div style="font-size:12px;color:var(--text3);padding:6px 0;font-weight:600">'+escHtml(key)+'</div>';
-        matches.forEach(m => {
-          const mi = m.matchInfo || {};
-          const t1 = mi.team1 || {};
-          const t2 = mi.team2 || {};
-          html += '<div class="series-match-item" onclick="openMatch('+mi.matchId+','+mi.seriesId+')">';
-          html += '<div><strong>'+escHtml(t1.teamSName||'')+' vs '+escHtml(t2.teamSName||'')+'</strong>';
-          html += '<div style="font-size:11px;color:var(--text3)">'+escHtml(mi.matchDesc||'')+'</div></div>';
-          html += '<div style="text-align:right"><div style="font-size:12px;color:var(--accent)">'+escHtml(mi.status||mi.state||'')+'</div>';
-          html += '<div style="font-size:11px;color:var(--text3)">'+escHtml(mi.venueInfo?.ground||'')+'</div></div>';
-          html += '</div>';
-        });
-      }
-    });
-    html += '</div></div>';
-  }
-  
-  // Squads
-  if(squadsData?.squads) {
-    html += '<div class="series-detail"><h3>Squads</h3><div class="teams-grid">';
-    squadsData.squads.forEach(sq => {
-      if(sq.isHeader) return;
-      html += '<div class="team-card" onclick="loadSquadPlayers('+sq.squadId+','+seriesId+')">';
-      if(sq.imageId) html += '<img src="'+imgSrc(sq.imageId)+'" alt="">';
-      html += '<div class="name">'+escHtml(sq.squadType||'')+'</div></div>';
-    });
-    html += '</div></div>';
-  }
-  
-  // Venues
-  if(venuesData?.seriesVenue) {
-    html += '<div class="series-detail"><h3>Venues</h3><div class="info-grid">';
-    venuesData.seriesVenue.forEach(v => {
-      html += '<div class="info-card">';
-      if(v.imageId) html += '<img src="'+imgSrc(v.imageId)+'" style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px" alt="">';
-      html += '<h4 style="color:var(--text)">'+escHtml(v.ground||'')+'</h4>';
-      html += '<p style="font-size:13px;color:var(--text2)">'+escHtml(v.city||'')+', '+escHtml(v.country||'')+'</p>';
-      html += '</div>';
-    });
-    html += '</div></div>';
-  }
-  
-  el.innerHTML = html || '<div class="loading-overlay"><span>No series details available</span></div>';
+function loadSeriesDetails(seriesId) {
+  var el = document.getElementById("mp-series");
+  showLoading(el, "Loading series details...");
+  Promise.all([
+    fetchAPI(API+"/series/"+seriesId),
+    fetchAPI(API+"/series/"+seriesId+"/venues"),
+    fetchAPI(API+"/series/"+seriesId+"/squads")
+  ]).then(function(results) {
+    var seriesData = results[0], venuesData = results[1], squadsData = results[2];
+    var html = "";
+    if(seriesData && seriesData.matchDetails) {
+      html += "<div class=\"series-detail\"><h3>Series Matches</h3>";
+      seriesData.matchDetails.forEach(function(md) {
+        var map = md.matchDetailsMap;
+        if(!map) return;
+        var matches = map.match || [];
+        if(matches.length) {
+          html += "<div style=\"font-size:12px;color:var(--text3);padding:6px 0;font-weight:600\">"+esc(map.key||"")+"</div>";
+          matches.forEach(function(m) {
+            var mi = m.matchInfo || {};
+            var t1 = mi.team1 || {};
+            var t2 = mi.team2 || {};
+            html += "<div class=\"series-match-item\" onclick=\"openMatch("+mi.matchId+","+mi.seriesId+")\">";
+            html += "<div><strong>"+esc(t1.teamSName||"")+" vs "+esc(t2.teamSName||"")+"</strong>";
+            html += "<div style=\"font-size:11px;color:var(--text3)\">"+esc(mi.matchDesc||"")+"</div></div>";
+            html += "<div style=\"text-align:right\"><div style=\"font-size:12px;color:var(--accent)\">"+esc(mi.status||mi.state||"")+"</div>";
+            html += "<div style=\"font-size:11px;color:var(--text3)\">"+esc((mi.venueInfo&&mi.venueInfo.ground)||"")+"</div></div></div>";
+          });
+        }
+      });
+      html += "</div>";
+    }
+    if(squadsData && squadsData.squads) {
+      html += "<div class=\"series-detail\"><h3>Squads</h3><div class=\"teams-grid\">";
+      squadsData.squads.forEach(function(sq) {
+        if(sq.isHeader) return;
+        html += "<div class=\"team-card\">";
+        if(sq.imageId) html += "<img src=\""+imgSrc(sq.imageId)+"\" alt=\"\" onerror=\"imgErr(this)\">";
+        html += "<div class=\"name\">"+esc(sq.squadType||"")+"</div></div>";
+      });
+      html += "</div></div>";
+    }
+    if(venuesData && venuesData.seriesVenue) {
+      html += "<div class=\"series-detail\"><h3>Venues</h3><div class=\"info-grid\">";
+      venuesData.seriesVenue.forEach(function(v) {
+        html += "<div class=\"info-card\">";
+        if(v.imageId) html += "<img src=\""+imgSrc(v.imageId)+"\" style=\"width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px\" alt=\"\">";
+        html += "<h4 style=\"color:var(--text)\">"+esc(v.ground||"")+"</h4>";
+        html += "<p style=\"font-size:13px;color:var(--text2)\">"+esc(v.city||"")+", "+esc(v.country||"")+"</p></div>";
+      });
+      html += "</div></div>";
+    }
+    el.innerHTML = html || "<div class=\"loading-overlay\"><span>No series details available</span></div>";
+  });
 }
-
-window.loadSquadPlayers = async function(squadId, seriesId) {
-  // For now just show an alert - could expand to modal
-  const data = await fetchAPI(API+'/series/'+seriesId+'/squads');
-  if(data?.squads) {
-    // Find this squad's players - API returns squad list, individual squad players need different endpoint
-    alert('Squad details coming soon!');
-  }
-};
 
 // ==================== RANKINGS ====================
-document.querySelectorAll('#rankSubTabs .sub-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('#rankSubTabs .sub-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
+document.querySelectorAll("#rankSubTabs .sub-tab").forEach(function(tab) {
+  tab.addEventListener("click", function() {
+    document.querySelectorAll("#rankSubTabs .sub-tab").forEach(function(t) { t.classList.remove("active"); });
+    tab.classList.add("active");
     currentRankType = tab.dataset.type;
     loadRankings();
   });
 });
-
-document.querySelectorAll('#rankFormat .format-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('#rankFormat .format-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+document.querySelectorAll("#rankFormat .format-btn").forEach(function(btn) {
+  btn.addEventListener("click", function() {
+    document.querySelectorAll("#rankFormat .format-btn").forEach(function(b) { b.classList.remove("active"); });
+    btn.classList.add("active");
     currentFormat = btn.dataset.format;
     loadRankings();
   });
 });
 
-async function loadRankings() {
-  const el = document.getElementById('rankingsContent');
-  showSkeleton(el, 10, 'row');
-  
-  const data = await fetchAPI(API+'/rankings/'+currentRankType+'?formatType='+currentFormat);
-  if(!data) { el.innerHTML = '<p style="color:var(--text3);text-align:center;padding:40px">No rankings data</p>'; return; }
-  
-  if(currentRankType === 'teams') {
-    renderTeamRankings(el, data);
-  } else {
-    renderPlayerRankings(el, data);
-  }
+function loadRankings() {
+  var el = document.getElementById("rankingsContent");
+  showSkeleton(el, 10, "row");
+  fetchAPI(API+"/rankings/"+currentRankType+"?formatType="+currentFormat).then(function(data) {
+    if(!data) { el.innerHTML = "<p style=\"text-align:center;color:var(--text3);padding:40px\">No rankings data</p>"; return; }
+    if(currentRankType === "teams") renderTeamRankings(el, data); else renderPlayerRankings(el, data);
+  });
 }
 
 function renderPlayerRankings(el, data) {
-  const ranks = data.rank || [];
-  if(!ranks.length) { el.innerHTML = '<p style="color:var(--text3);text-align:center;padding:40px">No rankings data</p>'; return; }
-  
-  const maxRating = Math.max(...ranks.map(r => parseInt(r.rating||0)));
-  
-  let html = '<div style="overflow-x:auto"><table class="rankings-table"><thead><tr>';
-  html += '<th>#</th><th>Player</th><th>Rating</th><th></th>';
-  html += '</tr></thead><tbody>';
-  
-  ranks.forEach((r, i) => {
-    const rating = parseInt(r.rating||0);
-    const pct = maxRating > 0 ? (rating/maxRating*100) : 0;
-    html += '<tr class="fade-in" style="animation-delay:'+Math.min(i*0.03,0.5)+'s" onclick="openPlayer(''+r.id+'')">';
-    html += '<td class="rank-num">'+(r.rank||i+1)+'</td>';
-    html += '<td><div class="rank-player">';
-    html += '<img class="rank-avatar" src="'+imgSrc(r.faceImageId||r.imageId)+'" alt="" onerror="this.style.display='none'">';
-    html += '<div><div class="rank-name">'+escHtml(r.name||r.fullName||'')+'</div>';
-    html += '<div class="rank-country">'+escHtml(r.country||'')+'</div></div></div></td>';
-    html += '<td class="rank-rating">'+rating+'</td>';
-    html += '<td><div class="rank-bar"><div class="rank-bar-fill" style="width:'+pct+'%"></div></div></td>';
-    html += '</tr>';
+  var ranks = data.rank || [];
+  if(!ranks.length) { el.innerHTML = "<p style=\"text-align:center;color:var(--text3);padding:40px\">No rankings</p>"; return; }
+  var maxR = 0;
+  ranks.forEach(function(r) { var v = parseInt(r.rating||0); if(v > maxR) maxR = v; });
+  var html = "<div style=\"overflow-x:auto\"><table class=\"rankings-table\"><thead><tr><th>#</th><th>Player</th><th>Rating</th><th></th></tr></thead><tbody>";
+  ranks.forEach(function(r, i) {
+    var rating = parseInt(r.rating||0);
+    var pct = maxR > 0 ? (rating/maxR*100) : 0;
+    html += "<tr class=\"fade-in\" style=\"animation-delay:"+Math.min(i*0.03,0.5)+"s\" onclick=\"openPlayer("+r.id+")\">";
+    html += "<td class=\"rank-num\">"+(r.rank||i+1)+"</td>";
+    html += "<td><div class=\"rank-player\">";
+    html += "<img class=\"rank-avatar\" src=\""+imgSrc(r.faceImageId||r.imageId)+"\" alt=\"\" onerror=\"imgErr(this)\">";
+    html += "<div><div class=\"rank-name\">"+esc(r.name||"")+"</div>";
+    html += "<div class=\"rank-country\">"+esc(r.country||"")+"</div></div></div></td>";
+    html += "<td class=\"rank-rating\">"+rating+"</td>";
+    html += "<td><div class=\"rank-bar\"><div class=\"rank-bar-fill\" style=\"width:"+pct+"%\"></div></div></td></tr>";
   });
-  
-  html += '</tbody></table></div>';
+  html += "</tbody></table></div>";
   el.innerHTML = html;
 }
 
 function renderTeamRankings(el, data) {
-  const ranks = data.rank || [];
-  if(!ranks.length) { el.innerHTML = '<p style="color:var(--text3);text-align:center;padding:40px">No rankings data</p>'; return; }
-  
-  let html = '<div style="overflow-x:auto"><table class="rankings-table"><thead><tr>';
-  html += '<th>#</th><th>Team</th><th>Rating</th><th>Points</th>';
-  html += '</tr></thead><tbody>';
-  
-  ranks.forEach((r, i) => {
-    html += '<tr class="fade-in" style="animation-delay:'+Math.min(i*0.03,0.5)+'s">';
-    html += '<td class="rank-num">'+(r.rank||i+1)+'</td>';
-    html += '<td><div class="rank-player">';
-    html += '<img class="rank-avatar" src="'+imgSrc(r.imageId)+'" alt="" onerror="this.style.display='none'" style="border-radius:6px">';
-    html += '<div class="rank-name">'+escHtml(r.name||'')+'</div></div></td>';
-    html += '<td class="rank-rating">'+(r.rating||0)+'</td>';
-    html += '<td>'+(r.points||'-')+'</td>';
-    html += '</tr>';
+  var ranks = data.rank || [];
+  if(!ranks.length) { el.innerHTML = "<p style=\"text-align:center;color:var(--text3);padding:40px\">No rankings</p>"; return; }
+  var html = "<div style=\"overflow-x:auto\"><table class=\"rankings-table\"><thead><tr><th>#</th><th>Team</th><th>Rating</th><th>Points</th></tr></thead><tbody>";
+  ranks.forEach(function(r, i) {
+    html += "<tr class=\"fade-in\" style=\"animation-delay:"+Math.min(i*0.03,0.5)+"s\">";
+    html += "<td class=\"rank-num\">"+(r.rank||i+1)+"</td>";
+    html += "<td><div class=\"rank-player\">";
+    html += "<img class=\"rank-avatar\" src=\""+imgSrc(r.imageId)+"\" alt=\"\" onerror=\"imgErr(this)\" style=\"border-radius:6px\">";
+    html += "<div class=\"rank-name\">"+esc(r.name||"")+"</div></div></td>";
+    html += "<td class=\"rank-rating\">"+(r.rating||0)+"</td><td>"+(r.points||"-")+"</td></tr>";
   });
-  
-  html += '</tbody></table></div>';
+  html += "</tbody></table></div>";
   el.innerHTML = html;
 }
 
 // ==================== PLAYER PROFILE ====================
-window.openPlayer = async function(playerId) {
+window.openPlayer = function(playerId) {
   if(!playerId) return;
-  const modal = document.getElementById('playerModal');
-  const content = document.getElementById('playerModalContent');
-  modal.classList.add('active');
-  content.innerHTML = '<div class="loading-overlay"><div class="spinner"></div><span>Loading player profile...</span></div>';
-  
-  const data = await fetchAPI(API+'/player/'+playerId);
-  if(!data) { content.innerHTML = '<div class="player-close" onclick="closePlayer()">&times;</div><p>Player data not available</p>'; return; }
-  
-  let html = '<div class="player-close" onclick="closePlayer()">&times;</div>';
-  
-  // Header
-  html += '<div class="player-header">';
-  html += '<img class="player-photo" src="'+imgSrc(data.faceImageId||data.imageId||data.image)+'" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23334155%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22 font-size=%2240%22>?</text></svg>'">';
-  html += '<div class="player-info"><h2>'+escHtml(data.name||data.fullName||'')+'</h2>';
-  html += '<div class="country">'+escHtml(data.intlTeam||data.country||data.teamName||'')+'</div>';
-  
-  let meta = [];
-  if(data.DoB || data.dob) meta.push('Born: '+escHtml(data.DoB||data.dob));
-  if(data.bat) meta.push('Bat: '+escHtml(data.bat));
-  if(data.bowl) meta.push('Bowl: '+escHtml(data.bowl));
-  if(data.role) meta.push(escHtml(data.role));
-  html += '<div class="meta">'+meta.join(' &middot; ')+'</div>';
-  html += '</div></div>';
-  
-  // Rankings stats
-  const appIndex = data.appIndex || {};
-  const rankings = data.rankings || {};
-  if(rankings.bat || rankings.bowl || rankings.all) {
-    html += '<div class="player-stats-grid">';
-    if(rankings.bat) {
-      Object.keys(rankings.bat).forEach(fmt => {
-        const r = rankings.bat[fmt];
-        html += '<div class="player-stat"><div class="val">#'+(r.rank||'-')+'</div><div class="label">'+fmt.toUpperCase()+' Bat</div></div>';
+  var modal = document.getElementById("playerModal");
+  var content = document.getElementById("playerModalContent");
+  modal.classList.add("active");
+  showLoading(content, "Loading player profile...");
+  fetchAPI(API+"/player/"+playerId).then(function(data) {
+    if(!data) { content.innerHTML = "<div class=\"player-close\" onclick=\"closePlayer()\">&times;</div><p>Player data not available</p>"; return; }
+    var html = "<div class=\"player-close\" onclick=\"closePlayer()\">&times;</div>";
+    html += "<div class=\"player-header\">";
+    html += "<img class=\"player-photo\" src=\""+imgSrc(data.faceImageId||data.imageId)+"\" alt=\"\" onerror=\"imgErrPlaceholder(this)\">";
+    html += "<div class=\"player-info\"><h2>"+esc(data.name||data.fullName||"")+"</h2>";
+    html += "<div class=\"country\">"+esc(data.intlTeam||data.country||"")+"</div>";
+    var meta = [];
+    if(data.DoB||data.dob) meta.push("Born: "+esc(data.DoB||data.dob));
+    if(data.bat) meta.push("Bat: "+esc(data.bat));
+    if(data.bowl) meta.push("Bowl: "+esc(data.bowl));
+    if(data.role) meta.push(esc(data.role));
+    html += "<div class=\"meta\">"+meta.join(" &middot; ")+"</div></div></div>";
+    // Rankings
+    var rankings = data.rankings || {};
+    if(rankings.bat || rankings.bowl || rankings.all) {
+      html += "<div class=\"player-stats-grid\">";
+      ["bat","bowl","all"].forEach(function(k) {
+        if(!rankings[k]) return;
+        Object.keys(rankings[k]).forEach(function(fmt) {
+          var r = rankings[k][fmt];
+          var label = fmt.toUpperCase() + " " + (k==="bat"?"Bat":k==="bowl"?"Bowl":"AR");
+          html += "<div class=\"player-stat\"><div class=\"val\">#"+(r.rank||"-")+"</div><div class=\"lbl\">"+label+"</div></div>";
+        });
       });
+      html += "</div>";
     }
-    if(rankings.bowl) {
-      Object.keys(rankings.bowl).forEach(fmt => {
-        const r = rankings.bowl[fmt];
-        html += '<div class="player-stat"><div class="val">#'+(r.rank||'-')+'</div><div class="label">'+fmt.toUpperCase()+' Bowl</div></div>';
-      });
+    // Bio
+    if(data.bio) {
+      var bioText = typeof data.bio === "string" ? data.bio : (data.bio.content || "");
+      html += "<div style=\"margin-top:16px\"><h3 style=\"font-size:14px;font-weight:700;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)\">Biography</h3>";
+      html += "<div class=\"player-bio\">"+esc(bioText).replace(/\n/g,"<br>")+"</div></div>";
     }
-    if(rankings.all) {
-      Object.keys(rankings.all).forEach(fmt => {
-        const r = rankings.all[fmt];
-        html += '<div class="player-stat"><div class="val">#'+(r.rank||'-')+'</div><div class="label">'+fmt.toUpperCase()+' AR</div></div>';
-      });
-    }
-    html += '</div>';
-  }
-  
-  // Batting stats
-  const batStats = data.DomesticCareer || data.InternationalCareer || [];
-  // Check for bat/bowl career arrays
-  if(data.bat_career || data.bowl_career) {
-    // Some responses have this format
-  }
-  
-  // Recent performances from appIndex
-  if(appIndex.batMostRuns || appIndex.bowlMostWickets) {
-    html += '<div class="player-section"><h3>Career Highlights</h3>';
-    html += '<div class="player-stats-grid">';
-    if(appIndex.batMostRuns) html += '<div class="player-stat"><div class="val">'+appIndex.batMostRuns+'</div><div class="label">Most Runs</div></div>';
-    if(appIndex.bowlMostWickets) html += '<div class="player-stat"><div class="val">'+appIndex.bowlMostWickets+'</div><div class="label">Most Wickets</div></div>';
-    if(appIndex.seniority) html += '<div class="player-stat"><div class="val">'+appIndex.seniority+'</div><div class="label">Experience</div></div>';
-    html += '</div></div>';
-  }
-  
-  // Bio
-  if(data.bio) {
-    const bioText = typeof data.bio === 'string' ? data.bio : (data.bio.content || JSON.stringify(data.bio));
-    html += '<div class="player-section"><h3>Biography</h3>';
-    html += '<div class="player-bio">'+escHtml(bioText).replace(/\n/g,'<br>')+'</div></div>';
-  }
-  
-  content.innerHTML = html;
+    content.innerHTML = html;
+  });
 };
 
-window.closePlayer = function() {
-  document.getElementById('playerModal').classList.remove('active');
-};
+window.closePlayer = function() { document.getElementById("playerModal").classList.remove("active"); };
 
 // ==================== TEAMS ====================
-async function loadTeams() {
-  const el = document.getElementById('teamsContent');
+function loadTeams() {
+  var el = document.getElementById("teamsContent");
   showSkeleton(el, 6);
-  
-  const data = await fetchAPI(API+'/teams/international');
-  if(!data) { el.innerHTML = '<p style="color:var(--text3);text-align:center;padding:40px">No teams data</p>'; return; }
-  
-  let teams = [];
-  if(data.list) {
-    data.list.forEach(item => {
-      if(item.teamName) teams.push(item);
+  fetchAPI(API+"/teams/international").then(function(data) {
+    if(!data) { el.innerHTML = "<p style=\"text-align:center;color:var(--text3);padding:40px\">No teams data</p>"; return; }
+    var teams = [];
+    if(data.list) data.list.forEach(function(item) { if(item.teamName) teams.push(item); });
+    var html = "<div class=\"teams-grid\">";
+    teams.forEach(function(t, i) {
+      html += "<div class=\"team-card fade-in\" style=\"animation-delay:"+Math.min(i*0.04,0.8)+"s\" onclick=\"showTeamPlayers("+t.teamId+")\">";
+      if(t.imageId) html += "<img src=\""+imgSrc(t.imageId)+"\" alt=\"\" onerror=\"imgErr(this)\">";
+      html += "<div class=\"name\">"+esc(t.teamName||"")+"</div></div>";
     });
-  }
-  
-  let html = '<div class="teams-grid">';
-  teams.forEach((t, i) => {
-    html += '<div class="team-card fade-in" style="animation-delay:'+Math.min(i*0.04,0.8)+'s" onclick="showTeamPlayers('+t.teamId+')">';
-    html += '<img src="'+imgSrc(t.imageId)+'" alt="" onerror="this.style.display='none'">';
-    html += '<div class="name">'+escHtml(t.teamName||'')+'</div>';
-    html += '</div>';
+    html += "</div>";
+    el.innerHTML = html;
   });
-  html += '</div>';
-  el.innerHTML = html;
 }
 
-window.showTeamPlayers = async function(teamId) {
-  const el = document.getElementById('teamsContent');
-  const prevHtml = el.innerHTML;
-  showLoading(el, 'Loading squad...');
-  
-  const data = await fetchAPI(API+'/teams/'+teamId+'/players');
-  if(!data || !data.player) { el.innerHTML = prevHtml; return; }
-  
-  let html = '<div class="match-back" onclick="loadTeams()">&#8592; Back to Teams</div>';
-  html += '<h3 style="margin:12px 0;font-size:18px;font-family:Playfair Display,serif">Squad</h3>';
-  html += '<div class="teams-grid">';
-  
-  data.player.forEach((p, i) => {
-    if(p.name === 'header' || !p.id) return;
-    html += '<div class="team-card fade-in" style="animation-delay:'+Math.min(i*0.03,0.5)+'s" onclick="openPlayer('+p.id+')">';
-    html += '<img src="'+imgSrc(p.faceImageId||p.imageId)+'" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23334155%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22 font-size=%2240%22>?</text></svg>'">';
-    html += '<div class="name">'+escHtml(p.name||p.fullName||'')+'</div>';
-    if(p.role) html += '<div style="font-size:11px;color:var(--text3)">'+escHtml(p.role)+'</div>';
-    html += '</div>';
+window.showTeamPlayers = function(teamId) {
+  var el = document.getElementById("teamsContent");
+  showLoading(el, "Loading squad...");
+  fetchAPI(API+"/teams/"+teamId+"/players").then(function(data) {
+    if(!data || !data.player) { loadTeams(); return; }
+    var html = "<div class=\"match-back\" onclick=\"loadTeams()\">&#8592; Back to Teams</div>";
+    html += "<h3 style=\"margin:12px 0;font-size:18px;font-family:Playfair Display,serif\">Squad</h3>";
+    html += "<div class=\"teams-grid\">";
+    data.player.forEach(function(p, i) {
+      if(!p.id) return;
+      html += "<div class=\"team-card fade-in\" style=\"animation-delay:"+Math.min(i*0.03,0.5)+"s\" onclick=\"openPlayer("+p.id+")\">";
+      html += "<img src=\""+imgSrc(p.faceImageId||p.imageId)+"\" alt=\"\" onerror=\"imgErrPlaceholder(this)\">";
+      html += "<div class=\"name\">"+esc(p.name||"")+"</div>";
+      if(p.role) html += "<div style=\"font-size:11px;color:var(--text3)\">"+esc(p.role)+"</div>";
+      html += "</div>";
+    });
+    html += "</div>";
+    el.innerHTML = html;
   });
-  
-  html += '</div>';
-  el.innerHTML = html;
 };
 
 // ==================== NEWS ====================
-async function loadNews() {
-  const el = document.getElementById('newsContent');
+function loadNews() {
+  var el = document.getElementById("newsContent");
   showSkeleton(el, 4);
-  
-  const data = await fetchAPI(API+'/news');
-  if(!data) { el.innerHTML = '<p style="color:var(--text3);text-align:center;padding:40px">No news data</p>'; return; }
-  
-  let stories = [];
-  if(data.storyList) {
-    data.storyList.forEach(s => {
-      if(s.story) stories.push(s.story);
+  fetchAPI(API+"/news").then(function(data) {
+    if(!data) { el.innerHTML = "<p style=\"text-align:center;color:var(--text3);padding:40px\">No news</p>"; return; }
+    var stories = [];
+    if(data.storyList) data.storyList.forEach(function(s) { if(s.story) stories.push(s.story); });
+    var html = "<div class=\"news-grid\">";
+    stories.forEach(function(s, i) {
+      var imgId = s.imageId || (s.coverImage && s.coverImage.id) || "";
+      html += "<div class=\"news-card fade-in\" style=\"animation-delay:"+Math.min(i*0.05,0.5)+"s\">";
+      if(imgId) html += "<img class=\"news-img\" src=\""+imgSrc(imgId)+"\" alt=\"\" onerror=\"imgErr(this)\">";
+      html += "<div class=\"news-body\"><h3>"+esc(s.hline||s.headline||"")+"</h3>";
+      html += "<p>"+esc(s.intro||s.description||"")+"</p>";
+      html += "<div class=\"news-meta\"><span>"+esc(s.source||"CricBuzz")+"</span>";
+      if(s.pubTime) html += "<span>"+formatDate(s.pubTime)+"</span>";
+      html += "</div></div></div>";
     });
-  }
-  
-  let html = '<div class="news-grid">';
-  stories.forEach((s, i) => {
-    const imgId = s.imageId || s.coverImage?.id || '';
-    html += '<div class="news-card fade-in" style="animation-delay:'+Math.min(i*0.05,0.5)+'s">';
-    if(imgId) html += '<img class="news-img" src="'+imgSrc(imgId)+'" alt="" onerror="this.style.display='none'">';
-    html += '<div class="news-body">';
-    html += '<h3>'+escHtml(s.hline||s.headline||'')+'</h3>';
-    html += '<p>'+escHtml(s.intro||s.description||'')+'</p>';
-    html += '<div class="news-meta">';
-    html += '<span class="news-source">'+escHtml(s.source||'CricBuzz')+'</span>';
-    if(s.pubTime) html += '<span>'+formatDate(s.pubTime)+'</span>';
-    html += '</div></div></div>';
+    html += "</div>";
+    el.innerHTML = html;
   });
-  html += '</div>';
-  el.innerHTML = html;
 }
 
 // ==================== PHOTOS ====================
-async function loadPhotos() {
-  const el = document.getElementById('photosContent');
+function loadPhotos() {
+  var el = document.getElementById("photosContent");
   showSkeleton(el, 6);
-  
-  const data = await fetchAPI(API+'/photos');
-  if(!data) { el.innerHTML = '<p style="color:var(--text3);text-align:center;padding:40px">No photos data</p>'; return; }
-  
-  let galleries = [];
-  if(data.photoGalleryList) {
-    data.photoGalleryList.forEach(g => {
-      if(g.photoGallery) galleries.push(g.photoGallery);
+  fetchAPI(API+"/photos").then(function(data) {
+    if(!data) { el.innerHTML = "<p style=\"text-align:center;color:var(--text3);padding:40px\">No photos</p>"; return; }
+    var galleries = [];
+    if(data.photoGalleryInfoList) data.photoGalleryInfoList.forEach(function(g) { if(g.photoGalleryInfo) galleries.push(g.photoGalleryInfo); });
+    else if(data.photoGalleryList) data.photoGalleryList.forEach(function(g) { if(g.photoGallery) galleries.push(g.photoGallery); });
+    var html = "<div class=\"photos-grid\">";
+    galleries.forEach(function(g, i) {
+      var imgId = g.imageId || g.coverImageId || "";
+      var gId = g.galleryId || g.id || 0;
+      html += "<div class=\"photo-card fade-in\" style=\"animation-delay:"+Math.min(i*0.05,0.5)+"s\" onclick=\"openGallery("+gId+")\">";
+      if(imgId) html += "<img src=\""+imgSrc(imgId)+"\" alt=\"\" onerror=\"imgErr(this)\">";
+      html += "<div class=\"caption\">"+esc(g.headline||g.title||"")+"</div></div>";
     });
-  }
-  
-  let html = '<div class="photos-grid">';
-  galleries.forEach((g, i) => {
-    const imgId = g.imageId || g.coverImageId || '';
-    html += '<div class="photo-card fade-in" style="animation-delay:'+Math.min(i*0.05,0.5)+'s" onclick="openGallery('+g.id+')">';
-    html += '<img src="'+imgSrc(imgId)+'" alt="" onerror="this.style.display='none'">';
-    html += '<div class="caption">'+escHtml(g.headline||g.title||'')+'</div>';
-    html += '</div>';
+    html += "</div>";
+    el.innerHTML = html;
   });
-  html += '</div>';
-  el.innerHTML = html;
 }
 
-window.openGallery = async function(galleryId) {
-  const data = await fetchAPI(API+'/photos/'+galleryId);
-  if(!data) return;
-  
-  lightboxPhotos = [];
-  const images = data.images || data.imageList || [];
-  images.forEach(img => {
-    if(img.imageId || img.id) {
-      lightboxPhotos.push({
-        src: imgSrc(img.imageId||img.id),
-        caption: img.caption || img.headline || ''
-      });
+window.openGallery = function(galleryId) {
+  fetchAPI(API+"/photos/"+galleryId).then(function(data) {
+    if(!data) return;
+    lightboxPhotos = [];
+    var images = data.images || data.imageList || [];
+    images.forEach(function(img) {
+      if(img.imageId || img.id) lightboxPhotos.push({src: imgSrc(img.imageId||img.id), caption: img.caption || img.headline || ""});
+    });
+    if(lightboxPhotos.length) {
+      lightboxIndex = 0;
+      showLightboxPhoto();
+      document.getElementById("lightbox").classList.add("active");
     }
   });
-  
-  if(lightboxPhotos.length) {
-    lightboxIndex = 0;
-    showLightboxPhoto();
-    document.getElementById('lightbox').classList.add('active');
-  }
 };
 
 function showLightboxPhoto() {
   if(lightboxIndex < 0) lightboxIndex = lightboxPhotos.length - 1;
   if(lightboxIndex >= lightboxPhotos.length) lightboxIndex = 0;
-  const photo = lightboxPhotos[lightboxIndex];
-  document.getElementById('lightboxImg').src = photo.src;
-  document.getElementById('lightboxCaption').textContent = photo.caption + ' (' + (lightboxIndex+1) + '/' + lightboxPhotos.length + ')';
+  var p = lightboxPhotos[lightboxIndex];
+  document.getElementById("lightboxImg").src = p.src;
+  document.getElementById("lightboxCaption").textContent = p.caption + " (" + (lightboxIndex+1) + "/" + lightboxPhotos.length + ")";
 }
 
-window.closeLightbox = function() {
-  document.getElementById('lightbox').classList.remove('active');
-};
-
-window.navLightbox = function(dir) {
-  lightboxIndex += dir;
-  showLightboxPhoto();
-};
+window.closeLightbox = function() { document.getElementById("lightbox").classList.remove("active"); };
+window.navLightbox = function(dir) { lightboxIndex += dir; showLightboxPhoto(); };
 
 // ==================== SERIES ====================
-async function loadSeries() {
-  const el = document.getElementById('seriesContent');
+function loadSeries() {
+  var el = document.getElementById("seriesContent");
   showSkeleton(el, 6);
-  
-  const data = await fetchAPI(API+'/series/international');
-  if(!data) { el.innerHTML = '<p style="color:var(--text3);text-align:center;padding:40px">No series data</p>'; return; }
-  
-  let seriesList = [];
-  if(data.seriesMapProto) {
-    data.seriesMapProto.forEach(smp => {
-      (smp.series||[]).forEach(s => seriesList.push(s));
+  fetchAPI(API+"/series/international").then(function(data) {
+    if(!data) { el.innerHTML = "<p style=\"text-align:center;color:var(--text3);padding:40px\">No series</p>"; return; }
+    var list = [];
+    if(data.seriesMapProto) data.seriesMapProto.forEach(function(smp) { (smp.series||[]).forEach(function(s) { list.push(s); }); });
+    var html = "<div class=\"series-list\">";
+    list.forEach(function(s, i) {
+      html += "<div class=\"series-card fade-in\" style=\"animation-delay:"+Math.min(i*0.04,0.8)+"s\">";
+      html += "<h3>"+esc(s.name||s.seriesName||"")+"</h3>";
+      html += "<div class=\"dates\">"+formatDate(s.startDt)+" - "+formatDate(s.endDt)+"</div></div>";
     });
-  }
-  
-  let html = '<div class="series-list">';
-  seriesList.forEach((s, i) => {
-    html += '<div class="series-card fade-in" style="animation-delay:'+Math.min(i*0.04,0.8)+'s">';
-    html += '<h3>'+escHtml(s.name||s.seriesName||'')+'</h3>';
-    html += '<div class="dates">'+formatDate(s.startDt)+' - '+formatDate(s.endDt)+'</div>';
-    html += '</div>';
+    html += "</div>";
+    el.innerHTML = html;
   });
-  html += '</div>';
-  el.innerHTML = html;
 }
 
 // ==================== KEYBOARD SHORTCUTS ====================
-document.addEventListener('keydown', e => {
-  if(e.key === 'Escape') {
+document.addEventListener("keydown", function(e) {
+  if(e.key === "Escape") {
     closePlayer();
     closeLightbox();
     if(currentMatchId) closeMatchPage();
   }
-  if(document.getElementById('lightbox').classList.contains('active')) {
-    if(e.key === 'ArrowLeft') navLightbox(-1);
-    if(e.key === 'ArrowRight') navLightbox(1);
+  if(document.getElementById("lightbox").classList.contains("active")) {
+    if(e.key === "ArrowLeft") navLightbox(-1);
+    if(e.key === "ArrowRight") navLightbox(1);
   }
 });
 
-// Click outside modals to close
-document.getElementById('playerModal').addEventListener('click', e => {
-  if(e.target === document.getElementById('playerModal')) closePlayer();
+document.getElementById("playerModal").addEventListener("click", function(e) {
+  if(e.target === document.getElementById("playerModal")) closePlayer();
 });
 
-// Auto-refresh for live matches
-function startAutoRefresh() {
-  if(autoRefreshTimer) clearInterval(autoRefreshTimer);
-  autoRefreshTimer = setInterval(() => {
-    if(currentMatchType === 'live' && !currentMatchId) {
-      loadMatches('live');
-    }
+// Auto-refresh
+(function() {
+  setInterval(function() {
+    if(currentMatchType === "live" && !currentMatchId) loadMatches("live");
   }, 60000);
-}
-startAutoRefresh();
+})();
 
 })();
 </script>
