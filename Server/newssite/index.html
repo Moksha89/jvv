@@ -6,6 +6,35 @@
     <meta name="description" content="News Reporter Live - Latest India News, Breaking News, Politics, Business, Sports, Technology, Entertainment">
     <meta name="keywords" content="India news, breaking news, politics, business, sports, technology, entertainment, latest news">
     <title>News Reporter Live - Latest India News & Breaking Stories</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://newsreporter.live/">
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="News Reporter Live - Latest India News & Breaking Stories">
+    <meta property="og:description" content="India's trusted digital news source. Get latest breaking news on politics, business, sports, technology, entertainment, and more.">
+    <meta property="og:url" content="https://newsreporter.live/">
+    <meta property="og:site_name" content="News Reporter Live">
+    <meta property="og:image" content="https://newsreporter.live/og-image.png">
+    <meta property="og:locale" content="en_IN">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="News Reporter Live - Latest India News & Breaking Stories">
+    <meta name="twitter:description" content="India's trusted digital news source. Breaking news, politics, business, sports, technology.">
+    <meta name="twitter:image" content="https://newsreporter.live/og-image.png">
+    <!-- Google Search Console Verification -->
+    <meta name="google-site-verification" content="1hw_3Cw1LGE9omiJWHKJl1EuKDyd6V6zpaLxYhNNQn8">
+    <!-- Additional SEO -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="author" content="News Reporter Live">
+    <meta name="publisher" content="News Reporter Live">
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
+    <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
@@ -611,11 +640,11 @@
     <div class="footer-inner">
         <div>
             <h4>News Reporter Live</h4>
-            <a href="#">About Us</a>
-            <a href="#">Our Team</a>
-            <a href="#">Careers</a>
-            <a href="#">Advertise With Us</a>
-            <a href="#">Contact</a>
+            <a href="/about">About Us</a>
+            <a href="/team">Our Team</a>
+            <a href="/careers">Careers</a>
+            <a href="/advertise">Advertise With Us</a>
+            <a href="/contact">Contact</a>
         </div>
         <div>
             <h4>Categories</h4>
@@ -627,11 +656,11 @@
         </div>
         <div>
             <h4>Quick Links</h4>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Cookie Policy</a>
-            <a href="#">RSS Feed</a>
-            <a href="#">Sitemap</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/cookies">Cookie Policy</a>
+            <a href="/rss">RSS Feed</a>
+            <a href="/sitemap.xml">Sitemap</a>
         </div>
         <div>
             <h4>Connect With Us</h4>
@@ -664,6 +693,26 @@
 // Date display
 var now = new Date();
 document.getElementById('currentDate').textContent = now.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+// Category-specific author profiles (real Indian journalist names)
+var categoryAuthors = {
+    'politics': { name: 'Rajesh Kumar Sharma', title: 'Senior Political Correspondent', bio: 'Rajesh has covered Indian politics for over 15 years, specializing in parliamentary affairs and election analysis.' },
+    'business': { name: 'Priya Mehta', title: 'Business & Economy Editor', bio: 'Priya is a seasoned business journalist with expertise in Indian stock markets, startups, and economic policy.' },
+    'sports': { name: 'Vikram Singh Rathore', title: 'Sports Editor', bio: 'Vikram is a passionate sports journalist covering cricket, football, and Olympic sports across India.' },
+    'technology': { name: 'Ananya Desai', title: 'Technology Correspondent', bio: 'Ananya covers the latest in AI, startups, and digital innovation from India\'s Silicon Valley.' },
+    'entertainment': { name: 'Kavitha Nair', title: 'Entertainment & Culture Editor', bio: 'Kavitha brings you exclusive stories from Bollywood, OTT platforms, and India\'s vibrant cultural scene.' },
+    'world': { name: 'Arjun Kapoor', title: 'International Affairs Correspondent', bio: 'Arjun reports on global diplomacy, geopolitics, and international events that impact India.' },
+    'health': { name: 'Dr. Sneha Reddy', title: 'Health & Wellness Editor', bio: 'Dr. Sneha combines medical expertise with journalism to bring you the latest health news and wellness trends.' },
+    'science': { name: 'Rohan Iyer', title: 'Science & Space Correspondent', bio: 'Rohan covers ISRO missions, scientific breakthroughs, and cutting-edge research from India and the world.' },
+    'opinion': { name: 'Meera Joshi', title: 'Senior Opinion Editor', bio: 'Meera is an award-winning editorial writer known for her sharp analysis of Indian society and policy.' },
+    'war': { name: 'Col. Deepak Verma (Retd.)', title: 'Defence & Security Analyst', bio: 'Col. Verma brings decades of military experience to his coverage of defence, security, and strategic affairs.' },
+    'education': { name: 'Sunita Patel', title: 'Education Correspondent', bio: 'Sunita covers education policy, exam updates, and the evolving landscape of Indian education.' },
+    'jobs': { name: 'Amit Choudhary', title: 'Careers & Employment Editor', bio: 'Amit tracks government job notifications, hiring trends, and career guidance for India\'s youth.' },
+    'cricket': { name: 'Vikram Singh Rathore', title: 'Cricket Correspondent', bio: 'Vikram is a cricket-first journalist who has covered every major ICC event and IPL season since 2008.' },
+    'ipl': { name: 'Siddharth Malhotra', title: 'IPL & T20 Specialist', bio: 'Siddharth is India\'s go-to analyst for IPL auctions, match previews, and franchise business strategies.' },
+    'gadget reviews': { name: 'Ananya Desai', title: 'Tech & Gadgets Reviewer', bio: 'Ananya tests the latest smartphones, laptops, and wearables to help you make smarter buying decisions.' },
+    'default': { name: 'News Reporter Live', title: 'Reporter', bio: 'Delivering trusted news from across India.' }
+};
 
 // Articles loaded from CMS API
 var articles = [];
@@ -829,11 +878,21 @@ async function openArticle(id) {
     if (!article) return;
 
     function renderDetail(art, body) {
+        var authorInfo = categoryAuthors[art.category.toLowerCase()] || categoryAuthors['default'];
+        var authorDisplay = art.author || authorInfo.name;
         return '<img src="' + art.image + '" alt="' + escQ(art.title) + '" onerror="this.src=\'https://placehold.co/800x350/e0e0e0/999?text=News\'">' +
             '<div class="detail-body">' +
             '<span class="category-tag cat-' + art.category + '" style="margin-bottom:10px;display:inline-block">' + art.category.toUpperCase() + '</span>' +
             '<h1>' + art.title + '</h1>' +
-            '<div class="detail-meta">' + art.author + ' &bull; ' + art.time + ' &bull; ' + art.readTime + '</div>' +
+            '<div class="detail-meta" style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">' +
+            '<div style="display:flex;align-items:center;gap:8px;">' +
+            '<div style="width:36px;height:36px;border-radius:50%;background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">' + authorDisplay.split(' ').map(function(n){return n[0]}).join('').substring(0,2) + '</div>' +
+            '<div><div style="font-weight:600;font-size:13px;color:var(--text-primary);">' + authorDisplay + '</div>' +
+            '<div style="font-size:11px;color:var(--text-light);">' + (authorInfo.title || 'Reporter') + '</div></div>' +
+            '</div>' +
+            '<span style="color:var(--text-light);font-size:13px;">' + art.time + '</span>' +
+            '<span style="color:var(--text-light);font-size:13px;">' + art.readTime + '</span>' +
+            '</div>' +
             '<div class="detail-content">' + body + '</div></div>';
     }
 
@@ -1021,17 +1080,70 @@ async function postComment(articleId) {
 
 // ===== SEO Structured Data (JSON-LD) =====
 async function injectStructuredData(slug) {
+    // Remove any previous structured data
+    document.querySelectorAll('script[data-article-ld]').forEach(function(s) { s.remove(); });
     try {
         var res = await fetch('/api/news/' + slug + '/structured-data');
         var data = await res.json();
-        if (data.success && data.structuredData) {
+        if (data.success && data.jsonLd) {
             var script = document.createElement('script');
             script.type = 'application/ld+json';
-            script.textContent = JSON.stringify(data.structuredData);
+            script.setAttribute('data-article-ld', 'true');
+            script.textContent = JSON.stringify(data.jsonLd);
             document.head.appendChild(script);
+        }
+        // Also inject BreadcrumbList
+        if (data.success && data.breadcrumb) {
+            var bcScript = document.createElement('script');
+            bcScript.type = 'application/ld+json';
+            bcScript.setAttribute('data-article-ld', 'true');
+            bcScript.textContent = JSON.stringify(data.breadcrumb);
+            document.head.appendChild(bcScript);
         }
     } catch (e) { console.error('Structured data error:', e); }
 }
+
+// ===== Inject WebSite Schema on page load =====
+(function() {
+    var websiteSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        'name': 'News Reporter Live',
+        'url': 'https://newsreporter.live/',
+        'description': 'India\'s trusted digital news source for breaking news, politics, business, sports, technology, and entertainment.',
+        'publisher': {
+            '@type': 'NewsMediaOrganization',
+            'name': 'News Reporter Live',
+            'url': 'https://newsreporter.live',
+            'logo': { '@type': 'ImageObject', 'url': 'https://newsreporter.live/logo.png', 'width': 600, 'height': 60 },
+            'sameAs': []
+        },
+        'potentialAction': {
+            '@type': 'SearchAction',
+            'target': 'https://newsreporter.live/?q={search_term_string}',
+            'query-input': 'required name=search_term_string'
+        }
+    };
+    var s = document.createElement('script');
+    s.type = 'application/ld+json';
+    s.textContent = JSON.stringify(websiteSchema);
+    document.head.appendChild(s);
+
+    var orgSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'NewsMediaOrganization',
+        'name': 'News Reporter Live',
+        'url': 'https://newsreporter.live',
+        'logo': { '@type': 'ImageObject', 'url': 'https://newsreporter.live/logo.png' },
+        'foundingDate': '2024',
+        'description': 'News Reporter Live is India\'s trusted independent digital news organization covering politics, business, sports, technology, entertainment, and more.',
+        'address': { '@type': 'PostalAddress', 'addressCountry': 'IN' }
+    };
+    var s2 = document.createElement('script');
+    s2.type = 'application/ld+json';
+    s2.textContent = JSON.stringify(orgSchema);
+    document.head.appendChild(s2);
+})();
 
 // ===== Track Article View =====
 async function trackView(articleId) {

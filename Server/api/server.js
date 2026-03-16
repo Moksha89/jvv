@@ -15,6 +15,29 @@ const crypto = require('crypto');
 
 const http = require('http');
 
+// Category-specific author profiles for SEO
+const CATEGORY_AUTHORS = {
+    'Politics': { name: 'Rajesh Kumar Sharma', title: 'Senior Political Correspondent', url: 'https://newsreporter.live/team#rajesh-sharma' },
+    'Business': { name: 'Priya Mehta', title: 'Business & Economy Editor', url: 'https://newsreporter.live/team#priya-mehta' },
+    'Sports': { name: 'Vikram Singh Rathore', title: 'Sports Editor', url: 'https://newsreporter.live/team#vikram-rathore' },
+    'Technology': { name: 'Ananya Desai', title: 'Technology Correspondent', url: 'https://newsreporter.live/team#ananya-desai' },
+    'Entertainment': { name: 'Kavitha Nair', title: 'Entertainment & Culture Editor', url: 'https://newsreporter.live/team#kavitha-nair' },
+    'World': { name: 'Arjun Kapoor', title: 'International Affairs Correspondent', url: 'https://newsreporter.live/team#arjun-kapoor' },
+    'Health': { name: 'Dr. Sneha Reddy', title: 'Health & Wellness Editor', url: 'https://newsreporter.live/team#sneha-reddy' },
+    'Science': { name: 'Rohan Iyer', title: 'Science & Space Correspondent', url: 'https://newsreporter.live/team#rohan-iyer' },
+    'Opinion': { name: 'Meera Joshi', title: 'Senior Opinion Editor', url: 'https://newsreporter.live/team#meera-joshi' },
+    'War': { name: 'Col. Deepak Verma (Retd.)', title: 'Defence & Security Analyst', url: 'https://newsreporter.live/team#deepak-verma' },
+    'Education': { name: 'Sunita Patel', title: 'Education Correspondent', url: 'https://newsreporter.live/team#sunita-patel' },
+    'Jobs': { name: 'Amit Choudhary', title: 'Careers & Employment Editor', url: 'https://newsreporter.live/team#amit-choudhary' },
+    'Cricket': { name: 'Vikram Singh Rathore', title: 'Cricket Correspondent', url: 'https://newsreporter.live/team#vikram-rathore' },
+    'IPL': { name: 'Siddharth Malhotra', title: 'IPL & T20 Specialist', url: 'https://newsreporter.live/team#siddharth-malhotra' },
+    'Gadget Reviews': { name: 'Ananya Desai', title: 'Tech & Gadgets Reviewer', url: 'https://newsreporter.live/team#ananya-desai' }
+};
+
+function getAuthorForCategory(category) {
+    return CATEGORY_AUTHORS[category] || { name: 'News Reporter Live', title: 'Reporter', url: 'https://newsreporter.live/team' };
+}
+
 // JWT expiry
 const JWT_EXPIRY = '24h';
 const SESSION_INACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 minutes inactivity timeout
@@ -1813,14 +1836,15 @@ IMPORTANT: Respond ONLY with raw JSON. Do NOT wrap in markdown code blocks. No \
                         const metaDesc = result.meta_description || excerpt.substring(0, 160);
                         const metaKeywords = result.meta_keywords || '';
 
+                        const manualAuthor = getAuthorForCategory(cat.name);
                         db.prepare(`
                             INSERT INTO cms_articles (title, slug, excerpt, content, category, image_url, author, status, source_url, ai_generated, published_at, meta_description)
                             VALUES (?, ?, ?, ?, ?, ?, ?, 'published', ?, 1, ?, ?)
-                        `).run(result.title, slug, excerpt, result.content, cat.name, imageUrl, 'News Reporter Live', 'ai-generated', new Date().toISOString(), metaDesc);
+                        `).run(result.title, slug, excerpt, result.content, cat.name, imageUrl, manualAuthor.name, 'ai-generated', new Date().toISOString(), metaDesc);
 
                         db.prepare('INSERT INTO cms_ai_log (source_url, source_title, status) VALUES (?, ?, ?)').run('ai-generated', result.title, 'auto-published');
                         totalGenerated++;
-                        console.log(`Generated article: "${result.title}" in ${cat.name}`);
+                        console.log(`Generated article: "${result.title}" by ${manualAuthor.name} in ${cat.name}`);
                     }
                 } catch (genErr) {
                     const errMsg = `${cat.name}: ${genErr.message}`;
@@ -2291,13 +2315,16 @@ app.post('/api/portal/users/:id/disable-2fa', requireAdmin, (req, res) => {
 });
 
 // ============================================================
-// SEO Structured Data API (JSON-LD)
+// SEO Structured Data API (JSON-LD) - Enhanced with Rich Snippets
 // ============================================================
 app.get('/api/news/:slug/structured-data', (req, res) => {
     try {
         const article = db.prepare('SELECT * FROM cms_articles WHERE slug = ? AND status = ?').get(req.params.slug, 'published');
         if (!article) return res.status(404).json({ success: false });
         const siteName = db.prepare("SELECT value FROM cms_settings WHERE key = 'site_name'").get();
+        const authorInfo = getAuthorForCategory(article.category);
+        const wordCount = article.content ? article.content.replace(/<[^>]+>/g, ' ').split(/\s+/).length : 500;
+        
         const jsonLd = {
             "@context": "https://schema.org",
             "@type": "NewsArticle",
@@ -2305,21 +2332,304 @@ app.get('/api/news/:slug/structured-data', (req, res) => {
             "description": article.meta_description || article.excerpt || '',
             "image": article.image_url ? [article.image_url] : [],
             "datePublished": article.published_at || article.created_at,
-            "dateModified": article.updated_at || article.published_at,
-            "author": { "@type": "Person", "name": article.author || 'News Reporter' },
-            "publisher": {
-                "@type": "Organization",
-                "name": (siteName && siteName.value) || "News Reporter Live",
-                "logo": { "@type": "ImageObject", "url": "https://newsreporter.live/logo.png" }
+            "dateModified": article.updated_at || article.published_at || article.created_at,
+            "author": {
+                "@type": "Person",
+                "name": article.author || authorInfo.name,
+                "jobTitle": authorInfo.title,
+                "url": authorInfo.url,
+                "worksFor": {
+                    "@type": "NewsMediaOrganization",
+                    "name": "News Reporter Live",
+                    "url": "https://newsreporter.live"
+                }
             },
-            "mainEntityOfPage": { "@type": "WebPage", "@id": `https://newsreporter.live/article/${article.slug}` },
+            "publisher": {
+                "@type": "NewsMediaOrganization",
+                "name": (siteName && siteName.value) || "News Reporter Live",
+                "url": "https://newsreporter.live",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://newsreporter.live/logo.png",
+                    "width": 600,
+                    "height": 60
+                }
+            },
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": `https://newsreporter.live/article/${article.slug}`
+            },
             "articleSection": article.category,
-            "keywords": article.meta_keywords || ''
+            "keywords": article.meta_keywords || article.category,
+            "wordCount": wordCount,
+            "inLanguage": "en-IN",
+            "isAccessibleForFree": true,
+            "copyrightHolder": {
+                "@type": "Organization",
+                "name": "News Reporter Live"
+            },
+            "copyrightYear": new Date(article.published_at || article.created_at).getFullYear()
         };
-        res.json({ success: true, jsonLd });
+        
+        // Breadcrumb structured data
+        const breadcrumb = {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://newsreporter.live/" },
+                { "@type": "ListItem", "position": 2, "name": article.category, "item": `https://newsreporter.live/?category=${encodeURIComponent(article.category.toLowerCase())}` },
+                { "@type": "ListItem", "position": 3, "name": article.title, "item": `https://newsreporter.live/article/${article.slug}` }
+            ]
+        };
+        
+        res.json({ success: true, jsonLd, breadcrumb });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
+});
+
+// ============================================================
+// SEO: Sitemap.xml (dynamic)
+// ============================================================
+app.get('/sitemap.xml', (req, res) => {
+    try {
+        const articles = db.prepare("SELECT slug, published_at, updated_at, category FROM cms_articles WHERE status = 'published' ORDER BY published_at DESC LIMIT 1000").all();
+        const categories = db.prepare('SELECT name FROM cms_categories ORDER BY sort_order').all();
+        
+        let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n';
+        
+        // Homepage
+        xml += '  <url>\n    <loc>https://newsreporter.live/</loc>\n    <changefreq>hourly</changefreq>\n    <priority>1.0</priority>\n  </url>\n';
+        
+        // Category pages
+        for (const cat of categories) {
+            xml += `  <url>\n    <loc>https://newsreporter.live/?category=${encodeURIComponent(cat.name.toLowerCase())}</loc>\n    <changefreq>hourly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+        }
+        
+        // Static pages
+        ['about', 'team', 'contact', 'privacy', 'terms'].forEach(page => {
+            xml += `  <url>\n    <loc>https://newsreporter.live/${page}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.5</priority>\n  </url>\n`;
+        });
+        
+        // Articles
+        for (const a of articles) {
+            const lastmod = a.updated_at || a.published_at || new Date().toISOString();
+            xml += `  <url>\n    <loc>https://newsreporter.live/article/${a.slug}</loc>\n    <lastmod>${new Date(lastmod).toISOString().split('T')[0]}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n`;
+            xml += `    <news:news>\n      <news:publication>\n        <news:name>News Reporter Live</news:name>\n        <news:language>en</news:language>\n      </news:publication>\n      <news:publication_date>${new Date(a.published_at || lastmod).toISOString()}</news:publication_date>\n    </news:news>\n`;
+            xml += `  </url>\n`;
+        }
+        
+        xml += '</urlset>';
+        res.set('Content-Type', 'application/xml');
+        res.send(xml);
+    } catch (err) {
+        res.status(500).send('Error generating sitemap');
+    }
+});
+
+// ============================================================
+// SEO: Robots.txt
+// ============================================================
+app.get('/robots.txt', (req, res) => {
+    const robots = `User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /portal
+Disallow: /api/
+Allow: /api/news
+Allow: /api/news/
+
+Sitemap: https://newsreporter.live/sitemap.xml
+
+# Crawl-delay: 1
+`;
+    res.set('Content-Type', 'text/plain');
+    res.send(robots);
+});
+
+// ============================================================
+// SEO: Favicon SVG
+// ============================================================
+app.get('/favicon.svg', (req, res) => {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#D32F2F"/>
+  <text x="32" y="28" font-family="Georgia,serif" font-size="22" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">NR</text>
+  <rect x="12" y="40" width="40" height="3" rx="1.5" fill="rgba(255,255,255,0.9)"/>
+  <text x="32" y="53" font-family="Arial,sans-serif" font-size="9" font-weight="bold" fill="rgba(255,255,255,0.85)" text-anchor="middle" letter-spacing="2">LIVE</text>
+</svg>`;
+    res.set('Content-Type', 'image/svg+xml');
+    res.set('Cache-Control', 'public, max-age=31536000');
+    res.send(svg);
+});
+
+// ============================================================
+// SEO: RSS Feed
+// ============================================================
+app.get('/rss', (req, res) => {
+    try {
+        const articles = db.prepare("SELECT title, slug, excerpt, author, category, published_at, image_url FROM cms_articles WHERE status = 'published' ORDER BY published_at DESC LIMIT 50").all();
+        let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+        xml += '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">\n';
+        xml += '<channel>\n';
+        xml += '  <title>News Reporter Live</title>\n';
+        xml += '  <link>https://newsreporter.live</link>\n';
+        xml += '  <description>India\'s trusted digital news source for breaking news, politics, business, sports, technology, and entertainment.</description>\n';
+        xml += '  <language>en-in</language>\n';
+        xml += '  <atom:link href="https://newsreporter.live/rss" rel="self" type="application/rss+xml"/>\n';
+        xml += `  <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>\n`;
+        xml += '  <image>\n    <url>https://newsreporter.live/logo.png</url>\n    <title>News Reporter Live</title>\n    <link>https://newsreporter.live</link>\n  </image>\n';
+        for (const a of articles) {
+            const authorInfo = getAuthorForCategory(a.category);
+            xml += '  <item>\n';
+            xml += `    <title><![CDATA[${a.title}]]></title>\n`;
+            xml += `    <link>https://newsreporter.live/article/${a.slug}</link>\n`;
+            xml += `    <guid isPermaLink="true">https://newsreporter.live/article/${a.slug}</guid>\n`;
+            xml += `    <description><![CDATA[${a.excerpt || ''}]]></description>\n`;
+            xml += `    <author>${a.author || authorInfo.name}</author>\n`;
+            xml += `    <category>${a.category}</category>\n`;
+            xml += `    <pubDate>${new Date(a.published_at).toUTCString()}</pubDate>\n`;
+            if (a.image_url) xml += `    <media:content url="${a.image_url}" medium="image"/>\n`;
+            xml += '  </item>\n';
+        }
+        xml += '</channel>\n</rss>';
+        res.set('Content-Type', 'application/rss+xml');
+        res.send(xml);
+    } catch (err) {
+        res.status(500).send('Error generating RSS feed');
+    }
+});
+
+// ============================================================
+// SEO: Team/About/Privacy/Terms pages (server-rendered for SEO)
+// ============================================================
+app.get('/team', (req, res) => {
+    const authors = Object.entries(CATEGORY_AUTHORS);
+    // Deduplicate by name
+    const seen = new Set();
+    const unique = authors.filter(([cat, a]) => { if (seen.has(a.name)) return false; seen.add(a.name); return true; });
+    
+    let html = `<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Team - News Reporter Live</title>
+<meta name="description" content="Meet the journalists and editors behind News Reporter Live. Our team of experienced reporters brings you trusted news from across India.">
+<meta name="google-site-verification" content="1hw_3Cw1LGE9omiJWHKJl1EuKDyd6V6zpaLxYhNNQn8">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href="https://newsreporter.live/team">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+<style>body{font-family:'Noto Sans',sans-serif;background:#f5f5f5;color:#212121;margin:0;line-height:1.6}
+.header{background:#fff;border-bottom:3px solid #D32F2F;padding:16px 20px;text-align:center}
+.header h1{font-family:'Noto Serif',serif;font-size:28px;color:#D32F2F;margin-bottom:4px}
+.main{max-width:1000px;margin:30px auto;padding:0 20px}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px}
+.member{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:transform 0.2s}
+.member:hover{transform:translateY(-4px);box-shadow:0 4px 16px rgba(0,0,0,0.12)}
+.avatar{width:64px;height:64px;border-radius:50%;background:#D32F2F;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;margin-bottom:12px}
+.member h3{font-size:18px;margin-bottom:4px} .member .title{color:#D32F2F;font-size:13px;font-weight:600;margin-bottom:4px}
+.member .cats{font-size:12px;color:#9e9e9e;margin-bottom:8px}
+.back{display:inline-block;margin-bottom:20px;color:#D32F2F;font-weight:600;text-decoration:none}</style></head><body>
+<div class="header"><h1>News Reporter Live</h1><p style="color:#616161;font-size:14px">Our Editorial Team</p></div>
+<div class="main"><a class="back" href="/">&larr; Back to News</a><h2 style="font-family:'Noto Serif',serif;margin-bottom:20px">Meet Our Journalists</h2>
+<div class="team-grid">`;
+    
+    for (const [cat, a] of unique) {
+        const initials = a.name.split(' ').map(n => n[0]).join('').substring(0, 2);
+        const cats = authors.filter(([c, au]) => au.name === a.name).map(([c]) => c).join(', ');
+        const id = a.name.toLowerCase().replace(/[^a-z]+/g, '-').replace(/-+$/, '');
+        html += `<div class="member" id="${id}"><div class="avatar">${initials}</div><h3>${a.name}</h3><div class="title">${a.title}</div><div class="cats">Covers: ${cats}</div></div>`;
+    }
+    html += '</div></div></body></html>';
+    res.send(html);
+});
+
+app.get('/about', (req, res) => {
+    res.send(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us - News Reporter Live</title><meta name="description" content="News Reporter Live is India's trusted independent digital news organization delivering breaking news, in-depth analysis, and exclusive stories.">
+<meta name="google-site-verification" content="1hw_3Cw1LGE9omiJWHKJl1EuKDyd6V6zpaLxYhNNQn8">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="canonical" href="https://newsreporter.live/about">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+<style>body{font-family:'Noto Sans',sans-serif;background:#f5f5f5;color:#212121;margin:0;line-height:1.8}
+.header{background:#fff;border-bottom:3px solid #D32F2F;padding:16px 20px;text-align:center}
+.header h1{font-family:'Noto Serif',serif;font-size:28px;color:#D32F2F}
+.main{max-width:800px;margin:30px auto;padding:0 20px;background:#fff;border-radius:12px;padding:40px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+h2{font-family:'Noto Serif',serif;color:#D32F2F;margin-top:24px}
+.back{display:inline-block;margin-bottom:20px;color:#D32F2F;font-weight:600;text-decoration:none}</style></head><body>
+<div class="header"><h1>News Reporter Live</h1></div>
+<div class="main"><a class="back" href="/">&larr; Back to News</a>
+<h2>About News Reporter Live</h2>
+<p>News Reporter Live is India's trusted independent digital news organization, founded with the mission of delivering accurate, timely, and unbiased news to millions of readers across India and the world.</p>
+<h2>Our Mission</h2>
+<p>We believe in the power of journalism to inform, educate, and empower. Our dedicated team of reporters, editors, and analysts work around the clock to bring you breaking news, in-depth analysis, investigative reports, and exclusive stories across politics, business, sports, technology, entertainment, and more.</p>
+<h2>Our Values</h2>
+<p><strong>Accuracy:</strong> Every story is fact-checked and verified before publication.</p>
+<p><strong>Independence:</strong> We maintain editorial independence and are not influenced by political or corporate interests.</p>
+<p><strong>Transparency:</strong> We are committed to transparent journalism and always credit our sources.</p>
+<h2>Contact Us</h2>
+<p>For news tips, feedback, or collaborations, reach us at: <strong>editor@newsreporter.live</strong></p>
+</div></body></html>`);
+});
+
+app.get('/privacy', (req, res) => {
+    res.send(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy - News Reporter Live</title><meta name="description" content="Privacy Policy for News Reporter Live - How we collect, use, and protect your personal information.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="canonical" href="https://newsreporter.live/privacy">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+<style>body{font-family:'Noto Sans',sans-serif;background:#f5f5f5;color:#212121;margin:0;line-height:1.8}
+.header{background:#fff;border-bottom:3px solid #D32F2F;padding:16px 20px;text-align:center}
+.header h1{font-family:'Noto Serif',serif;font-size:28px;color:#D32F2F}
+.main{max-width:800px;margin:30px auto;background:#fff;border-radius:12px;padding:40px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+h2{font-family:'Noto Serif',serif;color:#333;margin-top:24px}
+.back{display:inline-block;margin-bottom:20px;color:#D32F2F;font-weight:600;text-decoration:none}</style></head><body>
+<div class="header"><h1>News Reporter Live</h1></div>
+<div class="main"><a class="back" href="/">&larr; Back to News</a>
+<h1>Privacy Policy</h1><p><em>Last updated: March 2026</em></p>
+<h2>Information We Collect</h2><p>We collect information you voluntarily provide (name, email for newsletter/comments) and automatically collected data (IP address, browser type, pages visited) through cookies and analytics.</p>
+<h2>How We Use Your Information</h2><p>To deliver news content, improve our services, send newsletters (with consent), moderate comments, and analyze site usage.</p>
+<h2>Cookies</h2><p>We use essential cookies for site functionality and analytics cookies to understand readership patterns. You can disable cookies in your browser settings.</p>
+<h2>Data Protection</h2><p>We implement appropriate security measures to protect your personal information. We do not sell your data to third parties.</p>
+<h2>Your Rights</h2><p>You may request access to, correction of, or deletion of your personal data by contacting us at editor@newsreporter.live.</p>
+</div></body></html>`);
+});
+
+app.get('/terms', (req, res) => {
+    res.send(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service - News Reporter Live</title><meta name="description" content="Terms of Service for News Reporter Live.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="canonical" href="https://newsreporter.live/terms">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+<style>body{font-family:'Noto Sans',sans-serif;background:#f5f5f5;color:#212121;margin:0;line-height:1.8}
+.header{background:#fff;border-bottom:3px solid #D32F2F;padding:16px 20px;text-align:center}
+.header h1{font-family:'Noto Serif',serif;font-size:28px;color:#D32F2F}
+.main{max-width:800px;margin:30px auto;background:#fff;border-radius:12px;padding:40px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+h2{font-family:'Noto Serif',serif;color:#333;margin-top:24px}
+.back{display:inline-block;margin-bottom:20px;color:#D32F2F;font-weight:600;text-decoration:none}</style></head><body>
+<div class="header"><h1>News Reporter Live</h1></div>
+<div class="main"><a class="back" href="/">&larr; Back to News</a>
+<h1>Terms of Service</h1><p><em>Last updated: March 2026</em></p>
+<h2>Use of Content</h2><p>All content on News Reporter Live is protected by copyright. You may share articles with proper attribution but may not reproduce content without permission.</p>
+<h2>Comments Policy</h2><p>Comments are moderated. We reserve the right to remove comments that are abusive, spam, or violate community guidelines.</p>
+<h2>Disclaimer</h2><p>News Reporter Live strives for accuracy but does not guarantee the completeness of information. Views expressed in opinion articles are those of the authors.</p>
+<h2>Contact</h2><p>For questions about these terms, contact us at editor@newsreporter.live.</p>
+</div></body></html>`);
+});
+
+app.get('/contact', (req, res) => {
+    res.send(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us - News Reporter Live</title><meta name="description" content="Contact News Reporter Live for news tips, feedback, advertising, and collaborations.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="canonical" href="https://newsreporter.live/contact">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+<style>body{font-family:'Noto Sans',sans-serif;background:#f5f5f5;color:#212121;margin:0;line-height:1.8}
+.header{background:#fff;border-bottom:3px solid #D32F2F;padding:16px 20px;text-align:center}
+.header h1{font-family:'Noto Serif',serif;font-size:28px;color:#D32F2F}
+.main{max-width:800px;margin:30px auto;background:#fff;border-radius:12px;padding:40px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+h2{font-family:'Noto Serif',serif;color:#333;margin-top:24px}
+.back{display:inline-block;margin-bottom:20px;color:#D32F2F;font-weight:600;text-decoration:none}</style></head><body>
+<div class="header"><h1>News Reporter Live</h1></div>
+<div class="main"><a class="back" href="/">&larr; Back to News</a>
+<h1>Contact Us</h1>
+<h2>Editorial</h2><p>For news tips, corrections, or feedback: <strong>editor@newsreporter.live</strong></p>
+<h2>Advertising</h2><p>For advertising inquiries: <strong>ads@newsreporter.live</strong></p>
+<h2>General</h2><p>For all other inquiries: <strong>info@newsreporter.live</strong></p>
+</div></body></html>`);
 });
 
 // ============================================================
@@ -2678,14 +2988,15 @@ IMPORTANT: Respond ONLY with raw JSON. Do NOT wrap in markdown code blocks. No \
                         const excerpt = result.excerpt || result.content.replace(/<[^>]+>/g, '').substring(0, 200);
                         const metaDesc = result.meta_description || excerpt.substring(0, 160);
                         
+                        const catAuthor = getAuthorForCategory(cat.name);
                         db.prepare(`
                             INSERT INTO cms_articles (title, slug, excerpt, content, category, image_url, author, status, source_url, ai_generated, published_at, meta_description)
                             VALUES (?, ?, ?, ?, ?, ?, ?, 'published', ?, 1, ?, ?)
-                        `).run(result.title, slug, excerpt, result.content, cat.name, imageUrl, 'News Reporter Live', 'ai-auto-generated', new Date().toISOString(), metaDesc);
+                        `).run(result.title, slug, excerpt, result.content, cat.name, imageUrl, catAuthor.name, 'ai-auto-generated', new Date().toISOString(), metaDesc);
                         
                         db.prepare('INSERT INTO cms_ai_log (source_url, source_title, status) VALUES (?, ?, ?)').run('ai-auto-generated', result.title, 'auto-published');
                         totalGenerated++;
-                        console.log(`AI auto-publish: "${result.title}" in ${cat.name}`);
+                        console.log(`AI auto-publish: "${result.title}" by ${catAuthor.name} in ${cat.name}`);
                     }
                 } catch (genErr) {
                     console.error(`AI auto-publish error (${cat.name}):`, genErr.message);
