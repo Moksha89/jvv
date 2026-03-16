@@ -3374,6 +3374,69 @@ app.get('/api/cricket/player/:playerId', async (req, res) => {
     }
 });
 
+// Player batting stats
+app.get('/api/cricket/player/:playerId/batting', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz(`/stats/v1/player/${req.params.playerId}/batting`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch player batting stats' });
+    }
+});
+
+// Player bowling stats
+app.get('/api/cricket/player/:playerId/bowling', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz(`/stats/v1/player/${req.params.playerId}/bowling`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch player bowling stats' });
+    }
+});
+
+// AI-enhanced commentary endpoint
+app.post('/api/cricket/ai-commentary', async (req, res) => {
+    try {
+        const { matchInfo, commentaryData } = req.body;
+        if (!matchInfo) return res.status(400).json({ success: false, message: 'matchInfo required' });
+        const prompt = `You are a professional cricket commentator. Based on this match info, provide detailed ball-by-ball commentary analysis.\nMatch: ${matchInfo.team1 || 'Team 1'} vs ${matchInfo.team2 || 'Team 2'}\nFormat: ${matchInfo.format || 'Unknown'}\nVenue: ${matchInfo.venue || 'Unknown'}\n\nExisting commentary entries: ${JSON.stringify((commentaryData || []).slice(0, 10))}\n\nProvide 15 additional detailed commentary entries in JSON array format. Each entry should have: overNum (number like 5.3), commText (detailed commentary text), event (one of: FOUR, SIX, WICKET, NONE, DOT). Make it realistic and engaging. Return ONLY a JSON array.`;
+        const aiResult = await callAI(prompt, 'openrouter');
+        let entries = [];
+        try {
+            const cleaned = aiResult.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '');
+            entries = JSON.parse(cleaned);
+        } catch(pe) { entries = []; }
+        res.json({ success: true, data: entries });
+    } catch (e) {
+        console.error('AI commentary error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to generate AI commentary' });
+    }
+});
+
+// Series squad detail (individual team squad)
+app.get('/api/cricket/series/:seriesId/squads/:teamId', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz(`/series/v1/${req.params.seriesId}/squads/${req.params.teamId}`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch squad details' });
+    }
+});
+
+// Series stats types
+app.get('/api/cricket/stats/series/:seriesId', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz(`/stats/v1/series/${req.params.seriesId}`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch series stats' });
+    }
+});
+
 // ============================================================
 // Teams API
 // ============================================================
@@ -3474,7 +3537,7 @@ app.get('/api/cricket/series/:seriesId', async (req, res) => {
     }
 });
 
-// Series squads
+// Series squads list
 app.get('/api/cricket/series/:seriesId/squads', async (req, res) => {
     try {
         const data = await fetchCricBuzz(`/series/v1/${req.params.seriesId}/squads`);
