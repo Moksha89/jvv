@@ -480,7 +480,9 @@ document.querySelectorAll('#seriesPageTabs .series-tab').forEach(tab => {
 });
 
 // Utility
-function imgUrl(id) { return id ? API + '/img/' + id : 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="80" height="80" fill="%23334155"/><text x="40" y="45" text-anchor="middle" fill="%2394a3b8" font-size="12">No Img</text></svg>'; }
+function imgUrl(id) { return id ? API + '/img/' + id : ''; }
+function defaultImg(size) { return 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="'+size+'" height="'+size+'"><rect width="'+size+'" height="'+size+'" fill="#334155" rx="'+(size/4)+'"/><text x="'+(size/2)+'" y="'+(size/2+4)+'" text-anchor="middle" fill="#94a3b8" font-size="'+(size/5)+'">&#9917;</text></svg>'); }
+function imgOrDefault(id, size) { var u = imgUrl(id); return u || defaultImg(size || 80); }
 function escHtml(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : ''; }
 function showLoader(el) { el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text3)"><div class="spinner" style="width:30px;height:30px;border:3px solid var(--border);border-top:3px solid var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px"></div>Loading...</div>'; }
 
@@ -583,16 +585,17 @@ async function openMatchPage(matchId) {
     fetchApi(API + '/match/' + matchId + '/commentary')
   ]);
 
-  // Match Header
+  // Match Header - data may be at top level or under matchheader
   const hdr = (infoData && infoData.matchheader) || (infoData && infoData.matchHeader) || {};
-  const t1 = hdr.team1 || {};
-  const t2 = hdr.team2 || {};
-  const t1n = t1.name || t1.teamName || 'Team 1';
-  const t2n = t2.name || t2.teamName || 'Team 2';
-  const status = hdr.status || hdr.state || '';
-  const matchDesc = hdr.matchDescription || hdr.matchdesc || hdr.matchDesc || '';
-  const seriesName = hdr.seriesName || hdr.seriesname || '';
-  const seriesId = hdr.seriesId || hdr.seriesid || '';
+  const root = infoData || {};
+  const t1 = hdr.team1 || root.team1 || {};
+  const t2 = hdr.team2 || root.team2 || {};
+  const t1n = t1.name || t1.teamName || t1.teamname || (typeof t1 === 'string' ? t1 : 'Team 1');
+  const t2n = t2.name || t2.teamName || t2.teamname || (typeof t2 === 'string' ? t2 : 'Team 2');
+  const status = hdr.status || root.status || hdr.state || root.state || '';
+  const matchDesc = hdr.matchDescription || hdr.matchdesc || root.matchdesc || root.matchDescription || '';
+  const seriesName = hdr.seriesName || hdr.seriesname || root.seriesname || root.seriesName || '';
+  const seriesId = hdr.seriesId || hdr.seriesid || root.seriesid || root.seriesId || '';
   const venue = (infoData && (infoData.venueinfo || infoData.venueInfo)) || {};
 
   document.getElementById('matchPageHeader').innerHTML =
@@ -698,21 +701,33 @@ function renderCommentary(data, matchInfo) {
     const comList = data.commentaryList || data.comwrapper || [];
     if (Array.isArray(comList)) {
       comList.forEach(c => {
-        if (c.commText || c.commtxt || c.commentary) {
-          entries.push({
-            overNum: c.overNumber || c.overNum || c.overnum || '',
-            text: c.commText || c.commtxt || c.commentary || '',
-            event: c.event || c.eventtype || c.eventType || 'NONE'
-          });
+        // Handle nested commentary object (comwrapper style)
+        if (c.commentary && typeof c.commentary === 'object' && !Array.isArray(c.commentary)) {
+          var cc = c.commentary;
+          if (cc.commtxt || cc.commText) {
+            entries.push({
+              overNum: cc.overNumber || cc.overNum || cc.overnum || '',
+              text: cc.commtxt || cc.commText || '',
+              event: cc.event || cc.eventtype || cc.eventType || 'NONE'
+            });
+          }
         }
         // Handle nested commentary array
-        if (c.commentary && Array.isArray(c.commentary)) {
-          c.commentary.forEach(cc => {
+        else if (c.commentary && Array.isArray(c.commentary)) {
+          c.commentary.forEach(function(cc) {
             entries.push({
               overNum: cc.overNumber || cc.overNum || cc.overnum || '',
               text: cc.commText || cc.commtxt || '',
               event: cc.event || cc.eventtype || 'NONE'
             });
+          });
+        }
+        // Handle flat commentary (commentaryList style)
+        else if (c.commText || c.commtxt) {
+          entries.push({
+            overNum: c.overNumber || c.overNum || c.overnum || '',
+            text: c.commText || c.commtxt || '',
+            event: c.event || c.eventtype || c.eventType || 'NONE'
           });
         }
       });
@@ -1164,7 +1179,7 @@ function renderSeriesSquads(data, seriesId) {
     const teamId = squad.squadId || squad.teamId || squad.id || '';
     const imgId = squad.imageId || squad.imageid || '';
     html += '<div class="squad-team-card" onclick="loadSquadPlayers(' + seriesId + ',' + teamId + ',this)">' +
-      '<img src="' + imgUrl(imgId) + '" onerror="this.style.display=\'none\'">' +
+      '<img src="' + imgOrDefault(imgId, 56) + '" onerror="this.style.display=\'none\'">' +
       '<div class="name">' + escHtml(teamName) + '</div>' +
     '</div>';
   });
@@ -1204,7 +1219,7 @@ async function loadSquadPlayers(seriesId, squadId, cardEl) {
       const isCaptain = p.captain || p.isCaptain;
       const isKeeper = p.keeper || p.isKeeper;
       html += '<div class="squad-player" onclick="openPlayerProfile(' + playerId + ')">' +
-        '<img src="' + imgUrl(faceImg) + '" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2236%22 height=%2236%22><rect width=%2236%22 height=%2236%22 fill=%22%23334155%22 rx=%2218%22/><text x=%2218%22 y=%2222%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22 font-size=%2214%22>' + escHtml(name.charAt(0)) + '</text></svg>\'">' +
+        '<img src="' + imgOrDefault(faceImg, 36) + '" style="width:36px;height:36px;border-radius:50%;object-fit:cover" onerror="this.style.display=\'none\'">' +
         '<div><div class="name">' + escHtml(name) + (isCaptain ? ' <span style="color:var(--orange);font-size:10px">(C)</span>' : '') + (isKeeper ? ' <span style="color:var(--blue);font-size:10px">(WK)</span>' : '') + '</div>' +
         '<div class="role">' + escHtml(role) + '</div></div>' +
       '</div>';
