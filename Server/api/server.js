@@ -3461,6 +3461,66 @@ app.get('/api/cricket/photos/:galleryId', async (req, res) => {
 });
 
 // ============================================================
+// Series Detail API (matches, squads, venues, points table)
+// ============================================================
+// Series matches/details
+app.get('/api/cricket/series/:seriesId', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz(`/series/v1/${req.params.seriesId}`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch series details' });
+    }
+});
+
+// Series squads
+app.get('/api/cricket/series/:seriesId/squads', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz(`/series/v1/${req.params.seriesId}/squads`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch series squads' });
+    }
+});
+
+// Series venues
+app.get('/api/cricket/series/:seriesId/venues', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz(`/series/v1/${req.params.seriesId}/venues`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch series venues' });
+    }
+});
+
+// Series points table
+app.get('/api/cricket/series/:seriesId/points-table', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz(`/stats/v1/series/${req.params.seriesId}/points-table`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch points table' });
+    }
+});
+
+// ============================================================
+// Match Center API (leanback for live mini scorecard)
+// ============================================================
+app.get('/api/cricket/match/:matchId/leanback', async (req, res) => {
+    try {
+        const data = await fetchCricBuzz(`/mcenter/v1/${req.params.matchId}/leanback`);
+        res.json({ success: true, data });
+    } catch (e) {
+        console.error('Cricket API error:', e.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch leanback data' });
+    }
+});
+
+// ============================================================
 // Image proxy (serves CricBuzz images through our server)
 // ============================================================
 app.get('/api/cricket/img/:imageId', (req, res) => {
