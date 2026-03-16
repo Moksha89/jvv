@@ -2572,6 +2572,144 @@ function startRSSFetchTimer() {
 }
 startRSSFetchTimer();
 
+// ============================================================
+// Auto AI Article Generation Timer
+// ============================================================
+let aiAutoPublishTimer = null;
+function startAIAutoPublishTimer() {
+    if (aiAutoPublishTimer) clearInterval(aiAutoPublishTimer);
+    const settings = {};
+    try {
+        db.prepare('SELECT * FROM cms_settings').all().forEach(r => settings[r.key] = r.value);
+    } catch(e) {}
+    
+    const autoPublish = settings.auto_publish === 'true' || settings.auto_publish === '1';
+    const intervalMinutes = parseInt(settings.auto_publish_interval) || 60;
+    
+    if (!autoPublish) {
+        console.log('AI auto-publish is disabled');
+        return;
+    }
+    
+    const apiKey = settings.ai_api_key || settings.openrouter_api_key;
+    if (!apiKey) {
+        console.log('AI auto-publish: No API key configured');
+        return;
+    }
+    
+    console.log(`AI auto-publish enabled: 1 article per category every ${intervalMinutes} minutes`);
+    
+    // Run immediately on startup, then every interval
+    async function autoGenerateArticles() {
+        try {
+            // Re-read settings each time in case they changed
+            const currentSettings = {};
+            db.prepare('SELECT * FROM cms_settings').all().forEach(r => currentSettings[r.key] = r.value);
+            
+            const isEnabled = currentSettings.auto_publish === 'true' || currentSettings.auto_publish === '1';
+            if (!isEnabled) { console.log('AI auto-publish: disabled, skipping'); return; }
+            
+            const key = currentSettings.ai_api_key || currentSettings.openrouter_api_key;
+            if (!key) { console.log('AI auto-publish: no API key, skipping'); return; }
+            
+            const provider = currentSettings.ai_provider || 'openrouter';
+            const model = currentSettings.ai_model || 'google/gemini-2.0-flash-001';
+            
+            const categories = db.prepare('SELECT * FROM cms_categories ORDER BY sort_order').all();
+            if (categories.length === 0) { console.log('AI auto-publish: no categories'); return; }
+            
+            const topicIdeas = {
+                'Politics': ['government policy reform', 'election campaign updates', 'parliament session highlights', 'state politics developments', 'political alliance shifts'],
+                'Business': ['stock market analysis', 'startup funding news', 'corporate earnings report', 'economic growth indicators', 'trade policy impact'],
+                'Sports': ['cricket match highlights', 'football league updates', 'Olympic athlete training', 'tennis tournament results', 'sports team transfer news'],
+                'Technology': ['AI innovation breakthrough', 'smartphone launch review', 'cybersecurity threat alert', 'space technology mission', 'electric vehicle advancement'],
+                'Entertainment': ['Bollywood movie release', 'OTT platform new series', 'music album launch', 'celebrity interview highlights', 'film festival awards'],
+                'World': ['international diplomacy summit', 'global climate change action', 'UN peacekeeping mission', 'world economy forecast', 'international trade agreement'],
+                'Health': ['public health initiative', 'medical research breakthrough', 'mental health awareness campaign', 'nutrition and wellness trends', 'hospital infrastructure development'],
+                'Science': ['space exploration discovery', 'quantum computing progress', 'genetic research milestone', 'environmental science study', 'archaeological finding revealed'],
+                'Opinion': ['editorial on education reform', 'opinion on digital privacy', 'analysis of foreign policy', 'commentary on social media impact', 'perspective on urban development'],
+                'War': ['India border security update', 'military defense technology upgrade', 'geopolitical conflict analysis', 'armed forces modernization', 'peacekeeping operations report'],
+                'Education': ['CBSE board exam reform', 'IIT JEE preparation tips', 'NEP 2020 implementation update', 'university ranking changes', 'scholarship and fellowship announcements'],
+                'Jobs': ['government job recruitment notification', 'IT sector hiring trends', 'startup job market analysis', 'UPSC exam preparation guide', 'skill development initiative launched'],
+                'Cricket': ['India vs Pakistan match analysis', 'Test cricket series highlights', 'women cricket team performance', 'domestic cricket tournament update', 'cricket player injury and fitness news'],
+                'IPL': ['IPL team auction strategy', 'IPL match day highlights and scores', 'IPL player performance review', 'IPL franchise business analysis', 'IPL emerging players to watch'],
+                'Gadget Reviews': ['latest smartphone review and comparison', 'laptop buying guide for students', 'smartwatch and wearable tech review', 'budget gadget recommendations India', 'upcoming gadget launches in India']
+            };
+            
+            const seoPrompt = `You are a senior investigative reporter at News Reporter Live, India's trusted digital news source. Write an ORIGINAL, exclusive news article about the given topic. 
+
+CRITICAL RULES:
+1. Write in first-person reporter style with natural, conversational Indian English
+2. Use the inverted pyramid structure: most important facts first
+3. Include realistic quotes from unnamed sources (e.g., "A senior official told News Reporter Live...")
+4. SEO OPTIMIZATION: Use the main keyword in the title, first paragraph, one subheading, and naturally 3-4 times throughout
+5. Include 2-3 subheadings using <h3> tags for SEO
+6. Write 500-800 words in multiple <p> paragraphs
+7. Include the exact word "reportersays" naturally ONCE in the middle of the article (e.g., "as reportersays from the ground...")
+8. Make it sound like a REAL reporter wrote this - use location details, time references, and specific details
+9. DO NOT use phrases like "In conclusion", "Furthermore", "It is worth noting" - these sound robotic
+10. Add a compelling, click-worthy headline that includes the main keyword
+
+IMPORTANT: Respond ONLY with raw JSON. Do NOT wrap in markdown code blocks. No \`\`\`json or \`\`\`. Just the raw JSON object starting with { and ending with }.`;
+
+            let totalGenerated = 0;
+            console.log(`AI auto-publish: generating 1 article per category (${categories.length} categories)...`);
+            
+            for (const cat of categories) {
+                try {
+                    const topics = topicIdeas[cat.name] || [`latest ${cat.name.toLowerCase()} news in India`, `breaking ${cat.name.toLowerCase()} update today`];
+                    const chosenTopic = topics[Math.floor(Math.random() * topics.length)];
+                    const dateContext = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                    
+                    const result = await callAI(provider, key, model, seoPrompt,
+                        `Write an original ${cat.name} news article about: ${chosenTopic}`,
+                        `Category: ${cat.name}\nTopic: ${chosenTopic}\nDate: ${dateContext}\nPublication: News Reporter Live\n\nWrite a fresh, original article about this topic as if reporting live from India today.`
+                    );
+                    
+                    if (result && result.title && result.content) {
+                        let imageUrl = '';
+                        try {
+                            imageUrl = await searchUnsplashImage(cat.name.toLowerCase() + ' ' + (result.image_query || chosenTopic));
+                        } catch (imgErr) {
+                            imageUrl = 'https://images.unsplash.com/photo-1504711434969-e33886168d6c?w=800&q=80';
+                        }
+                        
+                        const slug = generateSlug(result.title);
+                        const excerpt = result.excerpt || result.content.replace(/<[^>]+>/g, '').substring(0, 200);
+                        const metaDesc = result.meta_description || excerpt.substring(0, 160);
+                        
+                        db.prepare(`
+                            INSERT INTO cms_articles (title, slug, excerpt, content, category, image_url, author, status, source_url, ai_generated, published_at, meta_description)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, 'published', ?, 1, ?, ?)
+                        `).run(result.title, slug, excerpt, result.content, cat.name, imageUrl, 'News Reporter Live', 'ai-auto-generated', new Date().toISOString(), metaDesc);
+                        
+                        db.prepare('INSERT INTO cms_ai_log (source_url, source_title, status) VALUES (?, ?, ?)').run('ai-auto-generated', result.title, 'auto-published');
+                        totalGenerated++;
+                        console.log(`AI auto-publish: "${result.title}" in ${cat.name}`);
+                    }
+                } catch (genErr) {
+                    console.error(`AI auto-publish error (${cat.name}):`, genErr.message);
+                    db.prepare('INSERT INTO cms_ai_log (source_url, source_title, status, error_message) VALUES (?, ?, ?, ?)').run('ai-auto-generate', cat.name, 'error', genErr.message);
+                }
+                
+                // Delay between categories to avoid rate limiting
+                await new Promise(r => setTimeout(r, 3000));
+            }
+            
+            console.log(`AI auto-publish complete: ${totalGenerated} articles generated`);
+        } catch (err) {
+            console.error('AI auto-publish timer error:', err.message);
+        }
+    }
+    
+    // Run first batch 30 seconds after startup
+    setTimeout(autoGenerateArticles, 30000);
+    
+    // Then run every interval
+    aiAutoPublishTimer = setInterval(autoGenerateArticles, intervalMinutes * 60 * 1000);
+}
+startAIAutoPublishTimer();
+
 // Graceful shutdown
 process.on('SIGTERM', () => {
     console.log('Shutting down relay API server...');
