@@ -5,560 +5,191 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="News Reporter Live - Latest India News, Breaking News, Politics, Business, Sports, Technology, Entertainment">
     <meta name="keywords" content="India news, breaking news, politics, business, sports, technology, entertainment, latest news">
-    <title>News Reporter Live - Latest India News & Breaking Stories</title>
-    <!-- Favicon -->
+    <title>News Reporter Live - Latest India News &amp; Breaking Stories</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <!-- Canonical URL -->
     <link rel="canonical" href="https://newsreporter.live/">
-    <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="News Reporter Live - Latest India News & Breaking Stories">
+    <meta property="og:title" content="News Reporter Live - Latest India News &amp; Breaking Stories">
     <meta property="og:description" content="India's trusted digital news source. Get latest breaking news on politics, business, sports, technology, entertainment, and more.">
     <meta property="og:url" content="https://newsreporter.live/">
     <meta property="og:site_name" content="News Reporter Live">
     <meta property="og:image" content="https://newsreporter.live/og-image.png">
     <meta property="og:locale" content="en_IN">
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="News Reporter Live - Latest India News & Breaking Stories">
+    <meta name="twitter:title" content="News Reporter Live - Latest India News &amp; Breaking Stories">
     <meta name="twitter:description" content="India's trusted digital news source. Breaking news, politics, business, sports, technology.">
     <meta name="twitter:image" content="https://newsreporter.live/og-image.png">
-    <!-- Google Search Console Verification -->
     <meta name="google-site-verification" content="1hw_3Cw1LGE9omiJWHKJl1EuKDyd6V6zpaLxYhNNQn8">
-    <!-- Additional SEO -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="googlebot" content="index, follow">
     <meta name="language" content="English">
     <meta name="author" content="News Reporter Live">
     <meta name="publisher" content="News Reporter Live">
     <link rel="sitemap" type="application/xml" href="/sitemap.xml">
-    <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #D32F2F;
-            --primary-dark: #B71C1C;
-            --secondary: #1565C0;
-            --accent: #FF6F00;
-            --bg: #F5F5F5;
-            --bg-white: #FFFFFF;
-            --text-primary: #212121;
-            --text-secondary: #616161;
-            --text-light: #9E9E9E;
-            --border: #E0E0E0;
-            --shadow: 0 2px 8px rgba(0,0,0,0.08);
-            --shadow-hover: 0 4px 16px rgba(0,0,0,0.12);
-            --radius: 8px;
+            --primary: #E53935; --primary-dark: #C62828; --primary-light: #FFCDD2;
+            --accent: #1565C0; --accent-light: #42A5F5;
+            --bg: #F8F9FA; --bg-white: #FFFFFF;
+            --text-primary: #1A1A2E; --text-secondary: #4A4A68; --text-muted: #8E8EA0;
+            --border: #E8E8EF; --border-light: #F0F0F5;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow: 0 4px 12px rgba(0,0,0,0.06); --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+            --shadow-lg: 0 16px 48px rgba(0,0,0,0.1);
+            --radius: 12px; --radius-sm: 8px; --radius-xs: 6px;
+            --max-width: 1320px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        /* Dark Mode */
         body.dark-mode {
-            --bg: #121212;
-            --bg-white: #1E1E1E;
-            --text-primary: #E0E0E0;
-            --text-secondary: #B0B0B0;
-            --text-light: #757575;
-            --border: #333;
-            --shadow: 0 2px 8px rgba(0,0,0,0.3);
-            --shadow-hover: 0 4px 16px rgba(0,0,0,0.5);
+            --bg: #0F0F1A; --bg-white: #1A1A2E; --text-primary: #E8E8F0;
+            --text-secondary: #B0B0C8; --text-muted: #6B6B88; --border: #2A2A42; --border-light: #222238;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.2); --shadow: 0 4px 12px rgba(0,0,0,0.3);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.4); --shadow-lg: 0 16px 48px rgba(0,0,0,0.5);
         }
-        body.dark-mode .header { background: #1a1a1a; border-color: #333; }
-        body.dark-mode .nav { background: #1a1a1a; border-color: #333; }
-        body.dark-mode .footer { background: #0d0d0d; }
-        body.dark-mode .breaking-bar { background: #B71C1C; }
-        body.dark-mode .article-card { background: var(--bg-white); }
-        body.dark-mode .article-detail { background: var(--bg-white); }
-        body.dark-mode .portal-gate .gate-box { background: #1E1E1E; }
-        .dark-toggle { cursor:pointer;background:none;border:1px solid var(--border);border-radius:20px;padding:6px 12px;font-size:13px;color:var(--text-secondary);display:flex;align-items:center;gap:4px;transition:all .2s; }
-        .dark-toggle:hover { border-color:var(--primary);color:var(--primary); }
+        body.dark-mode .header { background: #12122A; border-color: #2A2A42; }
+        body.dark-mode .nav { background: #12122A; border-color: #2A2A42; }
+        body.dark-mode .breaking-bar { background: linear-gradient(135deg, #C62828, #E53935); }
+        body.dark-mode .footer { background: #0A0A18; }
+        body.dark-mode .search-box { background: #222238; }
+        body.dark-mode .search-box input { color: #E8E8F0; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Noto Sans', sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.6; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.6; -webkit-font-smoothing: antialiased; }
         a { text-decoration: none; color: inherit; }
-
-        /* Breaking News Ticker */
-        .breaking-bar {
-            background: var(--primary);
-            color: white;
-            padding: 8px 0;
-            font-size: 13px;
-            font-weight: 600;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .breaking-bar .label {
-            background: var(--primary-dark);
-            padding: 4px 12px;
-            margin-right: 16px;
-            display: inline-block;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 11px;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
-        .ticker-wrap { overflow: hidden; display: inline-block; width: calc(100% - 120px); vertical-align: middle; }
-        .ticker { display: inline-block; animation: ticker 30s linear infinite; }
-        .ticker span { padding: 0 40px; }
+        img { max-width: 100%; }
+        .breaking-bar { background: linear-gradient(135deg, #E53935 0%, #D32F2F 100%); color: white; padding: 10px 0; font-size: 13px; font-weight: 500; overflow: hidden; white-space: nowrap; }
+        .breaking-bar .label { background: rgba(0,0,0,0.25); padding: 5px 14px; margin: 0 20px; display: inline-block; text-transform: uppercase; letter-spacing: 1.5px; font-size: 10px; font-weight: 700; border-radius: 4px; animation: pulse 2s ease-in-out infinite; vertical-align: middle; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+        .ticker-wrap { overflow: hidden; display: inline-block; width: calc(100% - 160px); vertical-align: middle; }
+        .ticker { display: inline-block; animation: ticker 35s linear infinite; }
+        .ticker span { padding: 0 50px; }
         @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-        /* Header */
-        .header {
-            background: var(--bg-white);
-            border-bottom: 3px solid var(--primary);
-            padding: 0;
-        }
-        .header-top {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--primary);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            font-weight: 800;
-        }
-        .logo-text h1 {
-            font-family: 'Noto Serif', serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-primary);
-            line-height: 1;
-        }
-        .logo-text span {
-            font-size: 11px;
-            color: var(--text-light);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        .header-date {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        .search-box {
-            display: flex;
-            align-items: center;
-            background: var(--bg);
-            border-radius: 24px;
-            padding: 8px 16px;
-            gap: 8px;
-        }
-        .search-box input {
-            border: none;
-            background: transparent;
-            outline: none;
-            font-size: 14px;
-            width: 200px;
-        }
-        .search-box svg { color: var(--text-light); }
-
-        /* Navigation */
-        .nav {
-            background: var(--bg-white);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .nav-inner {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            overflow-x: auto;
-            gap: 0;
-            scrollbar-width: none;
-        }
+        .header { background: var(--bg-white); border-bottom: 1px solid var(--border); z-index: 101; position: relative; }
+        .header-top { max-width: var(--max-width); margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .logo { display: flex; align-items: center; gap: 14px; cursor: pointer; }
+        .logo:hover .logo-icon { transform: scale(1.05); }
+        .logo-icon { width: 52px; height: 52px; background: linear-gradient(135deg, #E53935, #C62828); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: 900; font-family: 'Playfair Display', serif; box-shadow: 0 4px 12px rgba(229,57,53,0.3); transition: var(--transition); }
+        .logo-text h1 { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 800; color: var(--text-primary); line-height: 1.1; }
+        .logo-text span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 3px; font-weight: 500; }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .header-date { font-size: 12px; color: var(--text-muted); font-weight: 500; white-space: nowrap; }
+        .dark-toggle { cursor: pointer; background: var(--bg); border: 1px solid var(--border); border-radius: 24px; padding: 8px 14px; font-size: 12px; font-weight: 500; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; transition: var(--transition); white-space: nowrap; }
+        .dark-toggle:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+        body.dark-mode .dark-toggle:hover { background: rgba(229,57,53,0.1); }
+        .search-box { display: flex; align-items: center; background: var(--bg); border: 1px solid var(--border); border-radius: 28px; padding: 9px 18px; gap: 10px; transition: var(--transition); }
+        .search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(21,101,192,0.1); }
+        .search-box input { border: none; background: transparent; outline: none; font-size: 13px; width: 220px; color: var(--text-primary); font-family: 'Inter', sans-serif; }
+        .search-box input::placeholder { color: var(--text-muted); }
+        .search-box svg { color: var(--text-muted); flex-shrink: 0; }
+        .hamburger { display: none; cursor: pointer; padding: 8px; font-size: 24px; color: var(--text-secondary); background: none; border: none; }
+        .nav { background: var(--bg-white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+        .nav-inner { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; display: flex; align-items: center; overflow-x: auto; gap: 0; scrollbar-width: none; }
         .nav-inner::-webkit-scrollbar { display: none; }
-        .nav-item {
-            padding: 14px 18px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-            border-bottom: 3px solid transparent;
-        }
-        .nav-item:hover, .nav-item.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-        .nav-item.home-tab { color: var(--primary); border-bottom-color: var(--primary); }
-        .hamburger { display: none; cursor: pointer; padding: 8px; font-size: 24px; }
-
-        /* Main Layout */
-        .main { max-width: 1280px; margin: 0 auto; padding: 24px 20px; }
-        .grid-2col { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
-
-        /* Hero / Featured */
-        .hero-card {
-            position: relative;
-            border-radius: var(--radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            transition: box-shadow 0.3s;
-        }
-        .hero-card:hover { box-shadow: var(--shadow-hover); }
-        .hero-card img {
-            width: 100%;
-            height: 420px;
-            object-fit: cover;
-            display: block;
-        }
-        .hero-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(transparent, rgba(0,0,0,0.85));
-            padding: 40px 24px 24px;
-            color: white;
-        }
-        .hero-overlay .category-tag {
-            background: var(--primary);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-        .hero-overlay h2 {
-            font-family: 'Noto Serif', serif;
-            font-size: 26px;
-            line-height: 1.3;
-            margin-bottom: 8px;
-        }
-        .hero-overlay .meta {
-            font-size: 12px;
-            opacity: 0.8;
-        }
-
-        /* Article Cards */
-        .article-card {
-            background: var(--bg-white);
-            border-radius: var(--radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        .article-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
-        .article-card img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            display: block;
-        }
-        .article-card .card-body { padding: 16px; }
-        .article-card .category-tag {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-            display: inline-block;
-        }
-        .cat-politics { color: var(--primary); }
-        .cat-business { color: #2E7D32; }
-        .cat-sports { color: var(--secondary); }
-        .cat-tech { color: #7B1FA2; }
-        .cat-entertainment { color: var(--accent); }
-        .cat-world { color: #00838F; }
-        .cat-health { color: #C62828; }
-        .cat-science { color: #4527A0; }
-        .article-card h3 {
-            font-family: 'Noto Serif', serif;
-            font-size: 17px;
-            line-height: 1.4;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-        }
-        .article-card .excerpt {
-            font-size: 13px;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            margin-bottom: 10px;
-        }
-        .article-card .meta {
-            font-size: 12px;
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* Article List (horizontal) */
-        .article-list-item {
-            display: flex;
-            gap: 14px;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--border);
-            cursor: pointer;
-        }
+        .nav-item { padding: 15px 20px; font-size: 13px; font-weight: 600; color: var(--text-secondary); cursor: pointer; white-space: nowrap; transition: var(--transition); border-bottom: 3px solid transparent; }
+        .nav-item:hover { color: var(--primary); }
+        .nav-item.active, .nav-item.home-tab { color: var(--primary); border-bottom-color: var(--primary); }
+        .main { max-width: var(--max-width); margin: 0 auto; padding: 28px 24px; }
+        .grid-2col { display: grid; grid-template-columns: 1fr 380px; gap: 28px; }
+        .hero-card { position: relative; border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: var(--transition); box-shadow: var(--shadow); }
+        .hero-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+        .hero-card img { width: 100%; height: 100%; min-height: 440px; object-fit: cover; display: block; transition: transform 0.5s ease; }
+        .hero-card:hover img { transform: scale(1.03); }
+        .hero-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(0deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.4) 60%, transparent 100%); padding: 60px 28px 28px; color: white; }
+        .category-pill { background: var(--primary); color: white; padding: 5px 14px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; display: inline-block; margin-bottom: 14px; }
+        .hero-overlay h2 { font-family: 'Playfair Display', serif; font-size: 28px; line-height: 1.3; margin-bottom: 12px; font-weight: 700; }
+        .hero-overlay .meta { font-size: 12px; opacity: 0.85; display: flex; align-items: center; gap: 16px; }
+        .hero-overlay .meta .dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,0.5); }
+        .article-card { background: var(--bg-white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition); cursor: pointer; border: 1px solid var(--border-light); display: flex; flex-direction: column; }
+        .article-card:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); border-color: transparent; }
+        .article-card .card-img { position: relative; overflow: hidden; }
+        .article-card img { width: 100%; height: 200px; object-fit: cover; display: block; transition: transform 0.4s ease; }
+        .article-card:hover img { transform: scale(1.06); }
+        .article-card .card-body { padding: 18px 20px 20px; flex: 1; display: flex; flex-direction: column; }
+        .article-card .category-pill { font-size: 9px; padding: 4px 10px; margin-bottom: 10px; align-self: flex-start; }
+        .cat-politics { background: #E53935; } .cat-business { background: #2E7D32; } .cat-sports { background: #1565C0; }
+        .cat-technology, .cat-tech { background: #7B1FA2; } .cat-entertainment { background: #E65100; }
+        .cat-world { background: #00838F; } .cat-health { background: #AD1457; } .cat-science { background: #4527A0; }
+        .cat-opinion { background: #37474F; } .cat-cricket, .cat-ipl { background: #1565C0; }
+        .cat-education { background: #00695C; } .cat-jobs { background: #4E342E; } .cat-war { background: #424242; }
+        .cat-gadget { background: #6A1B9A; }
+        .article-card h3 { font-family: 'Source Serif 4', 'Playfair Display', serif; font-size: 17px; line-height: 1.45; margin-bottom: 10px; color: var(--text-primary); font-weight: 700; flex: 1; }
+        .article-card .excerpt { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .article-card .meta { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 12px; padding-top: 14px; border-top: 1px solid var(--border-light); font-weight: 500; }
+        .article-card .meta .author-name { color: var(--text-secondary); font-weight: 600; }
+        .article-list-item { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: var(--transition); }
+        .article-list-item:hover { transform: translateX(4px); }
         .article-list-item:last-child { border-bottom: none; }
-        .article-list-item img {
-            width: 120px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 6px;
-            flex-shrink: 0;
-        }
-        .article-list-item h4 {
-            font-size: 14px;
-            line-height: 1.4;
-            margin-bottom: 4px;
-        }
-        .article-list-item .meta { font-size: 11px; color: var(--text-light); }
-
-        /* Section Headers */
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 18px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--primary);
-        }
-        .section-header h2 {
-            font-family: 'Noto Serif', serif;
-            font-size: 22px;
-            color: var(--text-primary);
-        }
-        .section-header .view-all {
-            font-size: 13px;
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        /* Grid layouts */
-        .articles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
-        .articles-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px; }
-
-        /* Sidebar */
-        .sidebar { }
-        .sidebar-widget {
-            background: var(--bg-white);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .sidebar-widget h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 14px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--primary);
-        }
-        .trending-item {
-            display: flex;
-            gap: 12px;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border);
-            cursor: pointer;
-        }
+        .article-list-item img { width: 100px; height: 70px; object-fit: cover; border-radius: var(--radius-sm); flex-shrink: 0; }
+        .article-list-item h4 { font-family: 'Source Serif 4', serif; font-size: 14px; line-height: 1.45; margin-bottom: 6px; font-weight: 600; }
+        .article-list-item .meta { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+        .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; padding-bottom: 14px; border-bottom: 3px solid var(--text-primary); position: relative; }
+        .section-header::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 80px; height: 3px; background: var(--primary); }
+        .section-header h2 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 800; }
+        .section-header .view-all { font-size: 13px; color: var(--primary); font-weight: 600; transition: var(--transition); display: flex; align-items: center; gap: 4px; }
+        .section-header .view-all:hover { gap: 8px; }
+        .articles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 48px; }
+        .articles-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 48px; }
+        .sidebar-widget { background: var(--bg-white); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 24px; margin-bottom: 24px; border: 1px solid var(--border-light); }
+        .sidebar-widget h3 { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 3px solid var(--text-primary); position: relative; }
+        .sidebar-widget h3::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 50px; height: 3px; background: var(--primary); }
+        .trending-item { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: var(--transition); align-items: flex-start; }
+        .trending-item:hover { transform: translateX(4px); }
         .trending-item:last-child { border-bottom: none; }
-        .trending-num {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--primary);
-            line-height: 1;
-            min-width: 30px;
-        }
-        .trending-item h4 { font-size: 13px; line-height: 1.4; }
-        .trending-item .meta { font-size: 11px; color: var(--text-light); margin-top: 4px; }
-
-        /* Footer */
-        .footer {
-            background: #1A1A2E;
-            color: #CCC;
-            padding: 40px 20px;
-            margin-top: 40px;
-        }
-        .footer-inner {
-            max-width: 1280px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 30px;
-        }
-        .footer h4 { color: white; font-size: 16px; margin-bottom: 14px; }
-        .footer a { color: #AAA; font-size: 13px; display: block; padding: 4px 0; transition: color 0.2s; }
-        .footer a:hover { color: var(--primary); }
-        .footer-bottom {
-            max-width: 1280px;
-            margin: 20px auto 0;
-            padding-top: 20px;
-            border-top: 1px solid #333;
-            text-align: center;
-            font-size: 12px;
-            color: #666;
-        }
-
-        /* Article Detail Modal */
-        .article-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.6);
-            z-index: 1000;
-            overflow-y: auto;
-        }
+        .trending-num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 900; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; min-width: 36px; }
+        .trending-item h4 { font-family: 'Source Serif 4', serif; font-size: 14px; line-height: 1.45; font-weight: 600; }
+        .trending-item .meta { font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
+        .footer { background: #0F0F1E; color: #B0B0C8; padding: 56px 24px 0; margin-top: 56px; }
+        .footer-inner { max-width: var(--max-width); margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; }
+        .footer-brand p { font-size: 13px; line-height: 1.7; margin-top: 12px; color: #8E8EA0; }
+        .footer h4 { color: white; font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; margin-bottom: 18px; position: relative; padding-bottom: 10px; }
+        .footer h4::after { content: ''; position: absolute; bottom: 0; left: 0; width: 30px; height: 2px; background: var(--primary); }
+        .footer a { color: #8E8EA0; font-size: 13px; display: block; padding: 5px 0; transition: var(--transition); }
+        .footer a:hover { color: var(--primary); transform: translateX(4px); }
+        .footer-newsletter { background: linear-gradient(135deg, #E53935, #C62828); padding: 32px; margin-top: 40px; border-radius: var(--radius); display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+        .footer-newsletter h3 { color: white; font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+        .footer-newsletter p { color: rgba(255,255,255,0.85); font-size: 13px; }
+        .footer-newsletter form { display: flex; gap: 10px; flex-shrink: 0; }
+        .footer-newsletter input[type="email"] { padding: 12px 18px; border: none; border-radius: var(--radius-sm); font-size: 14px; width: 280px; font-family: 'Inter', sans-serif; outline: none; }
+        .footer-newsletter button { padding: 12px 24px; background: rgba(0,0,0,0.3); color: white; border: 2px solid rgba(255,255,255,0.3); border-radius: var(--radius-sm); cursor: pointer; font-weight: 700; font-size: 13px; transition: var(--transition); white-space: nowrap; font-family: 'Inter', sans-serif; }
+        .footer-newsletter button:hover { background: rgba(0,0,0,0.5); border-color: white; }
+        .footer-bottom { max-width: var(--max-width); margin: 32px auto 0; padding: 20px 0; border-top: 1px solid #1E1E36; text-align: center; font-size: 12px; color: #5A5A78; }
+        .article-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); z-index: 1000; overflow-y: auto; }
         .article-modal.active { display: flex; justify-content: center; padding: 40px 20px; }
-        .article-detail {
-            background: var(--bg-white);
-            max-width: 800px;
-            width: 100%;
-            border-radius: 12px;
-            overflow: hidden;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-        }
-        .article-detail .close-btn {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: rgba(0,0,0,0.5);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            font-size: 20px;
-            cursor: pointer;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .article-detail img { width: 100%; height: 350px; object-fit: cover; }
-        .article-detail .detail-body { padding: 30px; }
-        .article-detail h1 { font-family: 'Noto Serif', serif; font-size: 28px; line-height: 1.3; margin-bottom: 12px; }
-        .article-detail .detail-meta { font-size: 13px; color: var(--text-light); margin-bottom: 20px; }
-        .article-detail .detail-content { font-size: 16px; line-height: 1.8; color: var(--text-secondary); }
-        .article-detail .detail-content p { margin-bottom: 16px; }
-
-        /* Hidden trigger styles - looks like normal text */
-        .rs-trigger {
-            cursor: text;
-            color: inherit;
-            font: inherit;
-            background: none;
-            border: none;
-            padding: 0;
-            display: inline;
-        }
-        .rs-trigger:hover { text-decoration: none; }
-
-        /* Portal overlay (hidden by default) */
-        .portal-gate {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
+        .article-detail { background: var(--bg-white); max-width: 840px; width: 100%; border-radius: 16px; overflow: hidden; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: var(--shadow-lg); }
+        .article-detail .close-btn { position: absolute; top: 18px; right: 18px; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 22px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+        .article-detail .close-btn:hover { background: rgba(0,0,0,0.8); transform: scale(1.1); }
+        .article-detail img.detail-hero { width: 100%; height: 380px; object-fit: cover; }
+        .article-detail .detail-body { padding: 36px; }
+        .article-detail h1 { font-family: 'Playfair Display', serif; font-size: 30px; line-height: 1.3; margin-bottom: 16px; font-weight: 800; }
+        .article-detail .detail-content { font-family: 'Source Serif 4', Georgia, serif; font-size: 17px; line-height: 1.85; color: var(--text-secondary); }
+        .article-detail .detail-content p { margin-bottom: 20px; }
+        .rs-trigger { cursor: text; color: inherit; font: inherit; background: none; border: none; padding: 0; display: inline; }
+        .portal-gate { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 2000; justify-content: center; align-items: center; }
         .portal-gate.active { display: flex; }
-        .portal-gate .gate-box {
-            background: #1a1a2e;
-            border-radius: 12px;
-            padding: 30px;
-            width: 340px;
-            text-align: center;
-            color: white;
-        }
-        .portal-gate .gate-box h3 { margin-bottom: 16px; font-size: 16px; }
-        .portal-gate .gate-box input {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid #444;
-            border-radius: 6px;
-            background: #2a2a4a;
-            color: white;
-            font-size: 14px;
-            margin-bottom: 12px;
-            outline: none;
-        }
-        .portal-gate .gate-box input:focus { border-color: var(--primary); }
-        .portal-gate .gate-box button {
-            width: 100%;
-            padding: 10px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .portal-gate .gate-box button:hover { background: var(--primary-dark); }
-        .portal-gate .gate-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .grid-2col { grid-template-columns: 1fr; }
-            .articles-grid { grid-template-columns: repeat(2, 1fr); }
-            .articles-grid-4 { grid-template-columns: repeat(2, 1fr); }
-            .footer-inner { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 768px) {
-            .header-top { flex-wrap: wrap; gap: 10px; }
-            .search-box { display: none; }
-            .header-date { display: none; }
-            .hamburger { display: block; }
-            .nav-inner { display: none; }
-            .nav-inner.open { display: flex; flex-direction: column; }
-            .nav-item { padding: 12px 20px; border-bottom: 1px solid var(--border); }
-            .hero-card img { height: 250px; }
-            .hero-overlay h2 { font-size: 20px; }
-            .articles-grid, .articles-grid-4 { grid-template-columns: 1fr; }
-            .footer-inner { grid-template-columns: 1fr; }
-            .article-detail h1 { font-size: 22px; }
-        }
+        .portal-gate .gate-box { background: #1A1A2E; border-radius: 16px; padding: 36px; width: 360px; text-align: center; color: white; box-shadow: var(--shadow-lg); border: 1px solid #2A2A42; }
+        .portal-gate .gate-box h3 { margin-bottom: 20px; font-size: 16px; font-weight: 600; }
+        .portal-gate .gate-box input { width: 100%; padding: 12px 16px; border: 1px solid #3A3A52; border-radius: var(--radius-sm); background: #222238; color: white; font-size: 14px; margin-bottom: 14px; outline: none; font-family: 'Inter', sans-serif; transition: var(--transition); }
+        .portal-gate .gate-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(229,57,53,0.2); }
+        .portal-gate .gate-box button { width: 100%; padding: 12px; background: linear-gradient(135deg, #E53935, #C62828); color: white; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 700; cursor: pointer; transition: var(--transition); }
+        .portal-gate .gate-box button:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(229,57,53,0.4); }
+        .portal-gate .gate-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: white; font-size: 28px; cursor: pointer; opacity: 0.6; transition: var(--transition); }
+        .portal-gate .gate-close:hover { opacity: 1; }
+        .category-section { margin-bottom: 12px; }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        .skeleton { background: linear-gradient(90deg, var(--border-light) 25%, var(--bg) 50%, var(--border-light) 75%); background-size: 200% 100%; animation: shimmer 1.5s ease-in-out infinite; border-radius: var(--radius-sm); }
+        @media (max-width: 1200px) { .grid-2col { grid-template-columns: 1fr 320px; } .articles-grid-4 { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 1024px) { .grid-2col { grid-template-columns: 1fr; } .articles-grid { grid-template-columns: repeat(2, 1fr); } .articles-grid-4 { grid-template-columns: repeat(2, 1fr); } .footer-inner { grid-template-columns: repeat(2, 1fr); } .footer-newsletter { flex-direction: column; text-align: center; } .footer-newsletter form { width: 100%; justify-content: center; } }
+        @media (max-width: 768px) { .header-top { padding: 14px 16px; } .logo-text h1 { font-size: 20px; } .logo-text span { font-size: 9px; letter-spacing: 2px; } .logo-icon { width: 42px; height: 42px; font-size: 16px; } .search-box { display: none; } .header-date { display: none; } .hamburger { display: block; } .nav-inner { display: none; padding: 0 16px; } .nav-inner.open { display: flex; flex-direction: column; } .nav-item { padding: 14px 20px; border-bottom: 1px solid var(--border-light); } .main { padding: 20px 16px; } .hero-card img { min-height: 280px; } .hero-overlay h2 { font-size: 20px; } .hero-overlay { padding: 40px 20px 20px; } .articles-grid, .articles-grid-4 { grid-template-columns: 1fr; gap: 16px; } .section-header h2 { font-size: 20px; } .footer-inner { grid-template-columns: 1fr; gap: 28px; } .footer-newsletter input[type="email"] { width: 200px; } .article-modal.active { padding: 16px; } .article-detail h1 { font-size: 22px; } .article-detail .detail-body { padding: 24px; } }
+        @media (max-width: 480px) { .hero-card img { min-height: 220px; } .hero-overlay h2 { font-size: 18px; } .article-card img { height: 180px; } .footer-newsletter form { flex-direction: column; } .footer-newsletter input[type="email"] { width: 100%; } }
     </style>
 </head>
 <body>
 
-<!-- Breaking News Ticker -->
 <div class="breaking-bar">
     <span class="label">BREAKING</span>
     <div class="ticker-wrap">
@@ -573,30 +204,30 @@
     </div>
 </div>
 
-<!-- Header -->
 <header class="header">
     <div class="header-top">
-        <div class="logo">
+        <div class="logo" onclick="showCategory('all')">
             <div class="logo-icon">NR</div>
             <div class="logo-text">
                 <h1>News Reporter</h1>
-                <span>Live &bull; Trusted &bull; Independent</span>
+                <span>Live &#8226; Trusted &#8226; Independent</span>
             </div>
         </div>
-        <div class="header-date" id="currentDate"></div>
-        <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
-            <span id="darkModeIcon">&#9790;</span>
-            <span id="darkModeText">Dark</span>
-        </button>
-        <div class="search-box">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input type="text" placeholder="Search news...">
+        <div class="header-right">
+            <div class="header-date" id="currentDate"></div>
+            <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+                <span id="darkModeIcon">&#9790;</span>
+                <span id="darkModeText">Dark</span>
+            </button>
+            <div class="search-box">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" placeholder="Search news..." id="searchInput" onkeyup="handleSearch(event)">
+            </div>
         </div>
-        <div class="hamburger" onclick="document.querySelector('.nav-inner').classList.toggle('open')">&#9776;</div>
+        <button class="hamburger" onclick="document.querySelector('.nav-inner').classList.toggle('open')">&#9776;</button>
     </div>
 </header>
 
-<!-- Navigation -->
 <nav class="nav">
     <div class="nav-inner">
         <div class="nav-item home-tab" onclick="showCategory('all', this)">Home</div>
@@ -609,15 +240,24 @@
         <div class="nav-item" onclick="showCategory('health', this)">Health</div>
         <div class="nav-item" onclick="showCategory('science', this)">Science</div>
         <div class="nav-item" onclick="showCategory('opinion', this)">Opinion</div>
+        <div class="nav-item" onclick="showCategory('cricket', this)">Cricket</div>
+        <div class="nav-item" onclick="showCategory('ipl', this)">IPL</div>
+        <div class="nav-item" onclick="showCategory('education', this)">Education</div>
     </div>
 </nav>
 
-<!-- Main Content -->
 <div class="main" id="mainContent">
-    <!-- Content populated by JS -->
+    <div style="display:grid;grid-template-columns:1fr 380px;gap:28px;">
+        <div class="skeleton" style="height:440px;border-radius:12px;"></div>
+        <div>
+            <div class="skeleton" style="height:32px;width:60%;margin-bottom:16px;"></div>
+            <div class="skeleton" style="height:70px;margin-bottom:12px;"></div>
+            <div class="skeleton" style="height:70px;margin-bottom:12px;"></div>
+            <div class="skeleton" style="height:70px;margin-bottom:12px;"></div>
+        </div>
+    </div>
 </div>
 
-<!-- Article Detail Modal -->
 <div class="article-modal" id="articleModal">
     <div class="article-detail" id="articleDetail">
         <button class="close-btn" onclick="closeArticle()">&times;</button>
@@ -625,7 +265,6 @@
     </div>
 </div>
 
-<!-- Portal Gate (hidden) -->
 <div class="portal-gate" id="portalGate">
     <button class="gate-close" onclick="closeGate()">&times;</button>
     <div class="gate-box">
@@ -635,16 +274,17 @@
     </div>
 </div>
 
-<!-- Footer -->
 <footer class="footer">
     <div class="footer-inner">
-        <div>
-            <h4>News Reporter Live</h4>
-            <a href="/about">About Us</a>
-            <a href="/team">Our Team</a>
-            <a href="/careers">Careers</a>
-            <a href="/advertise">Advertise With Us</a>
-            <a href="/contact">Contact</a>
+        <div class="footer-brand">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+                <div style="width:40px;height:40px;background:linear-gradient(135deg,#E53935,#C62828);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-size:16px;font-weight:900;font-family:'Playfair Display',serif;">NR</div>
+                <div>
+                    <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:white;">News Reporter</div>
+                    <div style="font-size:10px;color:#5A5A78;text-transform:uppercase;letter-spacing:2px;">Live</div>
+                </div>
+            </div>
+            <p>India's trusted independent digital news source, delivering accurate and timely news coverage across politics, business, sports, technology, and more.</p>
         </div>
         <div>
             <h4>Categories</h4>
@@ -661,7 +301,7 @@
             <a href="#" onclick="showCategory('ipl')">IPL</a>
             <a href="#" onclick="showCategory('education')">Education</a>
             <a href="#" onclick="showCategory('jobs')">Jobs</a>
-            <a href="#" onclick="showCategory('war')">War & Defence</a>
+            <a href="#" onclick="showCategory('war')">War &amp; Defence</a>
             <a href="#" onclick="showCategory('gadget reviews')">Gadget Reviews</a>
         </div>
         <div>
@@ -673,7 +313,7 @@
             <a href="/sitemap.xml">Sitemap</a>
         </div>
         <div>
-            <h4>Connect With Us</h4>
+            <h4>Connect</h4>
             <a href="#">Twitter / X</a>
             <a href="#">Facebook</a>
             <a href="#">Instagram</a>
@@ -681,77 +321,85 @@
             <a href="#">Telegram</a>
         </div>
     </div>
-    <!-- Newsletter Subscription -->
-    <div style="background:var(--primary);padding:20px 0;margin-top:20px;border-radius:8px;">
-        <div style="max-width:600px;margin:0 auto;text-align:center;color:white;padding:0 20px;">
-            <h3 style="margin-bottom:8px;">Subscribe to Our Newsletter</h3>
-            <p style="font-size:13px;opacity:0.9;margin-bottom:12px;">Get the latest news delivered to your inbox daily</p>
-            <form onsubmit="subscribeNewsletter(event)" style="display:flex;gap:8px;max-width:400px;margin:0 auto;">
-                <input type="email" id="newsletterEmail" placeholder="Your email address" required style="flex:1;padding:10px 14px;border:none;border-radius:6px;font-size:14px;">
-                <button type="submit" style="padding:10px 20px;background:var(--primary-dark);color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;white-space:nowrap;">Subscribe</button>
-            </form>
-            <div id="newsletterMsg" style="font-size:12px;margin-top:8px;"></div>
+    <div class="footer-newsletter" style="max-width:var(--max-width);margin:40px auto 0;">
+        <div>
+            <h3>Stay Informed</h3>
+            <p>Get breaking news and top stories delivered to your inbox every morning.</p>
         </div>
+        <form onsubmit="subscribeNewsletter(event)">
+            <input type="email" id="newsletterEmail" placeholder="Your email address" required>
+            <button type="submit">Subscribe</button>
+        </form>
+        <div id="newsletterMsg" style="font-size:12px;color:rgba(255,255,255,0.8);"></div>
     </div>
-    <div class="footer-bottom">
-        &copy; 2026 News Reporter Live. All rights reserved. | India's Trusted News Source
-    </div>
+    <div class="footer-bottom">&copy; 2026 News Reporter Live. All rights reserved. | India's Trusted Digital News Source</div>
 </footer>
 
-
 <script>
-// Date display
 var now = new Date();
 document.getElementById('currentDate').textContent = now.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-// Category-specific author profiles (real Indian journalist names)
 var categoryAuthors = {
-    'politics': { name: 'Rajesh Kumar Sharma', title: 'Senior Political Correspondent', bio: 'Rajesh has covered Indian politics for over 15 years, specializing in parliamentary affairs and election analysis.' },
-    'business': { name: 'Priya Mehta', title: 'Business & Economy Editor', bio: 'Priya is a seasoned business journalist with expertise in Indian stock markets, startups, and economic policy.' },
-    'sports': { name: 'Vikram Singh Rathore', title: 'Sports Editor', bio: 'Vikram is a passionate sports journalist covering cricket, football, and Olympic sports across India.' },
-    'technology': { name: 'Ananya Desai', title: 'Technology Correspondent', bio: 'Ananya covers the latest in AI, startups, and digital innovation from India\'s Silicon Valley.' },
-    'entertainment': { name: 'Kavitha Nair', title: 'Entertainment & Culture Editor', bio: 'Kavitha brings you exclusive stories from Bollywood, OTT platforms, and India\'s vibrant cultural scene.' },
-    'world': { name: 'Arjun Kapoor', title: 'International Affairs Correspondent', bio: 'Arjun reports on global diplomacy, geopolitics, and international events that impact India.' },
-    'health': { name: 'Dr. Sneha Reddy', title: 'Health & Wellness Editor', bio: 'Dr. Sneha combines medical expertise with journalism to bring you the latest health news and wellness trends.' },
-    'science': { name: 'Rohan Iyer', title: 'Science & Space Correspondent', bio: 'Rohan covers ISRO missions, scientific breakthroughs, and cutting-edge research from India and the world.' },
-    'opinion': { name: 'Meera Joshi', title: 'Senior Opinion Editor', bio: 'Meera is an award-winning editorial writer known for her sharp analysis of Indian society and policy.' },
-    'war': { name: 'Col. Deepak Verma (Retd.)', title: 'Defence & Security Analyst', bio: 'Col. Verma brings decades of military experience to his coverage of defence, security, and strategic affairs.' },
-    'education': { name: 'Sunita Patel', title: 'Education Correspondent', bio: 'Sunita covers education policy, exam updates, and the evolving landscape of Indian education.' },
-    'jobs': { name: 'Amit Choudhary', title: 'Careers & Employment Editor', bio: 'Amit tracks government job notifications, hiring trends, and career guidance for India\'s youth.' },
-    'cricket': { name: 'Vikram Singh Rathore', title: 'Cricket Correspondent', bio: 'Vikram is a cricket-first journalist who has covered every major ICC event and IPL season since 2008.' },
-    'ipl': { name: 'Siddharth Malhotra', title: 'IPL & T20 Specialist', bio: 'Siddharth is India\'s go-to analyst for IPL auctions, match previews, and franchise business strategies.' },
-    'gadget reviews': { name: 'Ananya Desai', title: 'Tech & Gadgets Reviewer', bio: 'Ananya tests the latest smartphones, laptops, and wearables to help you make smarter buying decisions.' },
-    'default': { name: 'News Reporter Live', title: 'Reporter', bio: 'Delivering trusted news from across India.' }
+    'politics': { name: 'Rajesh Kumar Sharma', title: 'Senior Political Correspondent' },
+    'business': { name: 'Priya Mehta', title: 'Business & Economy Editor' },
+    'sports': { name: 'Vikram Singh Rathore', title: 'Sports Editor' },
+    'technology': { name: 'Ananya Desai', title: 'Technology Correspondent' },
+    'entertainment': { name: 'Kavitha Nair', title: 'Entertainment & Culture Editor' },
+    'world': { name: 'Arjun Kapoor', title: 'International Affairs Correspondent' },
+    'health': { name: 'Dr. Sneha Reddy', title: 'Health & Wellness Editor' },
+    'science': { name: 'Rohan Iyer', title: 'Science & Space Correspondent' },
+    'opinion': { name: 'Meera Joshi', title: 'Senior Opinion Editor' },
+    'war': { name: 'Col. Deepak Verma (Retd.)', title: 'Defence & Security Analyst' },
+    'education': { name: 'Sunita Patel', title: 'Education Correspondent' },
+    'jobs': { name: 'Amit Choudhary', title: 'Careers & Employment Editor' },
+    'cricket': { name: 'Vikram Singh Rathore', title: 'Cricket Correspondent' },
+    'ipl': { name: 'Siddharth Malhotra', title: 'IPL & T20 Specialist' },
+    'gadget reviews': { name: 'Ananya Desai', title: 'Tech & Gadgets Reviewer' },
+    'default': { name: 'News Reporter Live', title: 'Reporter' }
 };
 
-// Articles loaded from CMS API
 var articles = [];
-
 function timeAgo(dateStr) {
     if (!dateStr) return '';
     var diff = Date.now() - new Date(dateStr).getTime();
     var hours = Math.floor(diff / 3600000);
     if (hours < 1) return 'Just now';
-    if (hours < 24) return hours + ' hour' + (hours > 1 ? 's' : '') + ' ago';
+    if (hours < 24) return hours + 'h ago';
     var days = Math.floor(hours / 24);
-    if (days < 7) return days + ' day' + (days > 1 ? 's' : '') + ' ago';
+    if (days < 7) return days + 'd ago';
     return new Date(dateStr).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' });
 }
-
 function estimateReadTime(content) {
     if (!content) return '3 min read';
     var words = content.replace(/<[^>]+>/g, ' ').split(/\s+/).length;
     return Math.max(2, Math.round(words / 200)) + ' min read';
 }
-
 function escQ(s) { return s ? s.replace(/"/g, '&quot;') : ''; }
-var placeholderImg = 'https://placehold.co/800x420/e0e0e0/999?text=News+Reporter+Live';
+var placeholderImg = 'https://placehold.co/800x420/e8e8ef/8e8ea0?text=News+Reporter+Live';
 var categoryDisplayNames = {
     'politics': 'Politics', 'business': 'Business', 'sports': 'Sports', 'technology': 'Technology',
     'entertainment': 'Entertainment', 'world': 'World', 'health': 'Health', 'science': 'Science',
     'opinion': 'Opinion', 'war': 'War & Defence', 'education': 'Education', 'jobs': 'Jobs',
     'cricket': 'Cricket', 'ipl': 'IPL', 'gadget reviews': 'Gadget Reviews'
 };
+var categoryColors = {
+    'politics': '#E53935', 'business': '#2E7D32', 'sports': '#1565C0', 'technology': '#7B1FA2',
+    'entertainment': '#E65100', 'world': '#00838F', 'health': '#AD1457', 'science': '#4527A0',
+    'opinion': '#37474F', 'cricket': '#1565C0', 'ipl': '#1565C0', 'education': '#00695C',
+    'jobs': '#4E342E', 'war': '#424242', 'gadget reviews': '#6A1B9A'
+};
+
+function handleSearch(e) {
+    if (e.key === 'Enter') {
+        var q = document.getElementById('searchInput').value.trim().toLowerCase();
+        if (!q) { renderHome(); return; }
+        var results = articles.filter(function(a) { return a.title.toLowerCase().includes(q) || a.excerpt.toLowerCase().includes(q) || a.category.includes(q); });
+        var html = '<div class="section-header"><h2>Search: "' + q + '"</h2><span style="font-size:13px;color:var(--text-muted)">' + results.length + ' found</span></div>';
+        if (results.length > 0) { html += '<div class="articles-grid">'; results.forEach(function(a) { html += renderArticleCard(a); }); html += '</div>'; }
+        else { html += '<div style="text-align:center;padding:60px;color:var(--text-muted)"><p>No articles found.</p></div>'; }
+        document.getElementById('mainContent').innerHTML = html;
+    }
+}
 
 async function loadArticles() {
     try {
@@ -759,19 +407,9 @@ async function loadArticles() {
         var data = await res.json();
         if (data.success && data.articles && data.articles.length > 0) {
             articles = data.articles.map(function(a) {
-                return {
-                    id: a.id,
-                    slug: a.slug,
-                    category: (a.category || 'general').toLowerCase(),
-                    featured: a.featured ? true : false,
-                    image: a.image_url || placeholderImg,
-                    title: a.title,
-                    excerpt: a.excerpt || '',
-                    content: null,
-                    author: a.author || 'News Reporter',
-                    time: timeAgo(a.published_at),
-                    readTime: estimateReadTime(a.excerpt)
-                };
+                return { id: a.id, slug: a.slug, category: (a.category || 'general').toLowerCase(), featured: a.featured ? true : false,
+                    image: a.image_url || placeholderImg, title: a.title, excerpt: a.excerpt || '', content: null,
+                    author: a.author || 'News Reporter', time: timeAgo(a.published_at), readTime: estimateReadTime(a.excerpt) };
             });
             if (!articles.some(function(a) { return a.featured; })) {
                 ['politics', 'business', 'sports', 'technology'].forEach(function(cat) {
@@ -780,64 +418,72 @@ async function loadArticles() {
                 });
             }
         }
-    } catch (e) {
-        console.error('Failed to load articles from API:', e);
-    }
+    } catch (e) { console.error('Failed to load articles:', e); }
     renderHome();
 }
 
 function renderHome() {
     if (articles.length === 0) {
-        document.getElementById('mainContent').innerHTML = '<div style="text-align:center;padding:60px 20px;color:#9E9E9E"><h2>No articles yet</h2><p>Check back shortly for the latest news.</p></div>';
+        document.getElementById('mainContent').innerHTML = '<div style="text-align:center;padding:80px 20px;"><h2 style="color:var(--text-secondary);font-family:Playfair Display,serif;">No articles yet</h2><p style="color:var(--text-muted)">Check back shortly.</p></div>';
         return;
     }
     var featured = articles.filter(function(a) { return a.featured; });
     var hero = featured.length > 0 ? featured[0] : articles[0];
     var latest = articles.filter(function(a) { return a.id !== hero.id; }).slice(0, 6);
-
     var html = '<div class="grid-2col"><div>';
     html += '<div class="hero-card" onclick="openArticle(' + hero.id + ')">';
     html += '<img src="' + hero.image + '" alt="' + escQ(hero.title) + '" onerror="this.src=\'' + placeholderImg + '\'">';
-    html += '<div class="hero-overlay"><span class="category-tag">' + hero.category + '</span>';
+    html += '<div class="hero-overlay"><span class="category-pill">' + (categoryDisplayNames[hero.category] || hero.category) + '</span>';
     html += '<h2>' + hero.title + '</h2>';
-    html += '<div class="meta">' + hero.author + ' &bull; ' + hero.time + ' &bull; ' + hero.readTime + '</div>';
-    html += '</div></div></div>';
+    html += '<div class="meta"><span>' + hero.author + '</span><span class="dot"></span><span>' + hero.time + '</span><span class="dot"></span><span>' + hero.readTime + '</span></div>';
+    html += '</div></div>';
+    if (featured.length > 1) {
+        html += '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:20px;">';
+        featured.slice(1, 3).forEach(function(a) {
+            html += '<div class="hero-card" style="height:200px;" onclick="openArticle(' + a.id + ')">';
+            html += '<img src="' + a.image + '" alt="' + escQ(a.title) + '" style="min-height:200px;" onerror="this.src=\'' + placeholderImg + '\'">';
+            html += '<div class="hero-overlay" style="padding:24px 18px 18px;"><span class="category-pill" style="font-size:8px;padding:3px 8px;">' + (categoryDisplayNames[a.category] || a.category) + '</span>';
+            html += '<h2 style="font-size:16px;line-height:1.35;">' + a.title + '</h2></div></div>';
+        });
+        html += '</div>';
+    }
+    html += '</div>';
     html += '<div class="sidebar"><div class="sidebar-widget"><h3>Trending Now</h3>';
-    articles.slice(0, 5).forEach(function(a, i) {
+    articles.slice(0, 6).forEach(function(a, i) {
         html += '<div class="trending-item" onclick="openArticle(' + a.id + ')">';
-        html += '<div class="trending-num">' + (i + 1) + '</div><div>';
+        html += '<div class="trending-num">' + String(i + 1).padStart(2, '0') + '</div><div>';
         html += '<h4>' + a.title + '</h4>';
-        html += '<div class="meta">' + a.time + '</div></div></div>';
+        html += '<div class="meta">' + (categoryDisplayNames[a.category] || a.category) + ' &middot; ' + a.time + '</div></div></div>';
     });
     html += '</div></div></div>';
-
-    html += '<div style="margin-top:30px"><div class="section-header"><h2>Latest News</h2>';
-    html += '<a class="view-all" href="#" onclick="showCategory(\'all\')">View All</a></div>';
+    html += '<div style="margin-top:40px"><div class="section-header"><h2>Latest News</h2>';
+    html += '<a class="view-all" href="#" onclick="showCategory(\'all\')">View All &rarr;</a></div>';
     html += '<div class="articles-grid">';
     latest.forEach(function(a) { html += renderArticleCard(a); });
     html += '</div></div>';
-
-    ['politics', 'business', 'sports', 'technology', 'entertainment', 'world', 'health', 'science', 'opinion', 'cricket', 'ipl', 'education', 'jobs', 'war', 'gadget reviews'].forEach(function(cat) {
+    ['politics','business','sports','technology','entertainment','world','health','science','opinion','cricket','ipl','education','jobs','war','gadget reviews'].forEach(function(cat) {
         var catArticles = articles.filter(function(a) { return a.category === cat; }).slice(0, 4);
         if (catArticles.length > 0) {
-            html += '<div><div class="section-header"><h2>' + (categoryDisplayNames[cat] || cat.charAt(0).toUpperCase() + cat.slice(1)) + '</h2>';
+            html += '<div class="category-section"><div class="section-header"><h2>' + (categoryDisplayNames[cat] || cat.charAt(0).toUpperCase() + cat.slice(1)) + '</h2>';
             html += '<a class="view-all" href="#" onclick="showCategory(\'' + cat + '\')">View All &rarr;</a></div>';
             html += '<div class="articles-grid-4">';
             catArticles.forEach(function(a) { html += renderArticleCard(a); });
             html += '</div></div>';
         }
     });
-
     document.getElementById('mainContent').innerHTML = html;
 }
 
 function renderArticleCard(a) {
+    var catClass = 'cat-' + a.category.split(' ')[0];
+    var catColor = categoryColors[a.category] || '#616161';
     var html = '<div class="article-card" onclick="openArticle(' + a.id + ')">';
-    html += '<img src="' + a.image + '" alt="' + escQ(a.title) + '" onerror="this.src=\'https://placehold.co/400x180/e0e0e0/999?text=News\'">';
-    html += '<div class="card-body"><span class="category-tag cat-' + a.category + '">' + a.category.toUpperCase() + '</span>';
+    html += '<div class="card-img"><img src="' + a.image + '" alt="' + escQ(a.title) + '" loading="lazy" onerror="this.src=\'https://placehold.co/400x200/e8e8ef/8e8ea0?text=News\'"></div>';
+    html += '<div class="card-body">';
+    html += '<span class="category-pill ' + catClass + '" style="background:' + catColor + '">' + (categoryDisplayNames[a.category] || a.category) + '</span>';
     html += '<h3>' + a.title + '</h3>';
-    html += '<p class="excerpt">' + a.excerpt + '</p>';
-    html += '<div class="meta"><span>' + a.author + '</span><span>' + a.time + '</span></div>';
+    if (a.excerpt) html += '<p class="excerpt">' + a.excerpt + '</p>';
+    html += '<div class="meta"><span class="author-name">' + a.author + '</span><span>' + a.time + '</span><span>' + a.readTime + '</span></div>';
     html += '</div></div>';
     return html;
 }
@@ -845,81 +491,68 @@ function renderArticleCard(a) {
 function renderCategoryPage(cat) {
     var catArticles = articles.filter(function(a) { return a.category === cat; });
     var catName = categoryDisplayNames[cat] || cat.charAt(0).toUpperCase() + cat.slice(1);
-    var html = '<div class="section-header"><h2>' + catName + '</h2>';
-    html += '<span style="font-size:13px;color:var(--text-light)">' + catArticles.length + ' articles</span></div>';
-
+    var catColor = categoryColors[cat] || '#616161';
+    var html = '<div class="section-header"><h2>' + catName + '</h2><span style="font-size:13px;color:var(--text-muted);font-weight:500;">' + catArticles.length + ' articles</span></div>';
     if (catArticles.length > 0) {
         var feat = catArticles[0];
-        html += '<div class="grid-2col" style="margin-bottom:30px"><div class="hero-card" onclick="openArticle(' + feat.id + ')">';
-        html += '<img src="' + feat.image + '" alt="' + escQ(feat.title) + '" onerror="this.src=\'https://placehold.co/800x420/e0e0e0/999?text=' + catName + '\'">';
-        html += '<div class="hero-overlay"><span class="category-tag">' + catName + '</span>';
+        html += '<div class="grid-2col" style="margin-bottom:36px"><div class="hero-card" onclick="openArticle(' + feat.id + ')">';
+        html += '<img src="' + feat.image + '" alt="' + escQ(feat.title) + '" onerror="this.src=\'' + placeholderImg + '\'">';
+        html += '<div class="hero-overlay"><span class="category-pill" style="background:' + catColor + '">' + catName + '</span>';
         html += '<h2>' + feat.title + '</h2>';
-        html += '<div class="meta">' + feat.author + ' &bull; ' + feat.time + ' &bull; ' + feat.readTime + '</div>';
+        html += '<div class="meta"><span>' + feat.author + '</span><span class="dot"></span><span>' + feat.time + '</span><span class="dot"></span><span>' + feat.readTime + '</span></div>';
         html += '</div></div>';
         html += '<div class="sidebar"><div class="sidebar-widget"><h3>More in ' + catName + '</h3>';
-        catArticles.slice(1).forEach(function(a) {
+        catArticles.slice(1, 8).forEach(function(a) {
             html += '<div class="article-list-item" onclick="openArticle(' + a.id + ')">';
-            html += '<img src="' + a.image + '" alt="' + escQ(a.title) + '" onerror="this.src=\'https://placehold.co/120x80/e0e0e0/999?text=News\'">';
-            html += '<div><h4>' + a.title + '</h4>';
-            html += '<div class="meta">' + a.author + ' &bull; ' + a.time + '</div></div></div>';
+            html += '<img src="' + a.image + '" alt="' + escQ(a.title) + '" loading="lazy" onerror="this.src=\'https://placehold.co/100x70/e8e8ef/8e8ea0?text=News\'">';
+            html += '<div><h4>' + a.title + '</h4><div class="meta">' + a.author + ' &middot; ' + a.time + '</div></div></div>';
         });
         html += '</div></div></div>';
     }
-
     if (catArticles.length > 1) {
+        html += '<div class="section-header"><h2>All ' + catName + ' Articles</h2></div>';
         html += '<div class="articles-grid">';
         catArticles.slice(1).forEach(function(a) { html += renderArticleCard(a); });
         html += '</div>';
     }
-
     document.getElementById('mainContent').innerHTML = html;
 }
 
 function showCategory(cat, el) {
     document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); n.classList.remove('home-tab'); });
     if (el) el.classList.add('active');
-    else {
-        document.querySelectorAll('.nav-item').forEach(function(n) {
-            if (n.textContent.toLowerCase() === cat || (cat === 'all' && n.textContent === 'Home')) n.classList.add('active');
-        });
-    }
+    else { document.querySelectorAll('.nav-item').forEach(function(n) { if (n.textContent.toLowerCase() === cat || (cat === 'all' && n.textContent === 'Home')) n.classList.add('active'); }); }
     document.querySelector('.nav-inner').classList.remove('open');
-    if (cat === 'all') renderHome();
-    else renderCategoryPage(cat);
+    if (cat === 'all') renderHome(); else renderCategoryPage(cat);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 async function openArticle(id) {
     var article = articles.find(function(a) { return a.id === id; });
     if (!article) return;
-
     function renderDetail(art, body) {
         var authorInfo = categoryAuthors[art.category.toLowerCase()] || categoryAuthors['default'];
         var authorDisplay = art.author || authorInfo.name;
-        return '<img src="' + art.image + '" alt="' + escQ(art.title) + '" onerror="this.src=\'https://placehold.co/800x350/e0e0e0/999?text=News\'">' +
+        var catColor = categoryColors[art.category] || '#616161';
+        var initials = authorDisplay.split(' ').map(function(n){return n[0]}).join('').substring(0,2);
+        return '<img class="detail-hero" src="' + art.image + '" alt="' + escQ(art.title) + '" onerror="this.src=\'' + placeholderImg + '\'">' +
             '<div class="detail-body">' +
-            '<span class="category-tag cat-' + art.category + '" style="margin-bottom:10px;display:inline-block">' + art.category.toUpperCase() + '</span>' +
+            '<span class="category-pill" style="background:' + catColor + ';margin-bottom:14px;display:inline-block;">' + (categoryDisplayNames[art.category] || art.category) + '</span>' +
             '<h1>' + art.title + '</h1>' +
-            '<div class="detail-meta" style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">' +
-            '<div style="display:flex;align-items:center;gap:8px;">' +
-            '<div style="width:36px;height:36px;border-radius:50%;background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">' + authorDisplay.split(' ').map(function(n){return n[0]}).join('').substring(0,2) + '</div>' +
-            '<div><div style="font-weight:600;font-size:13px;color:var(--text-primary);">' + authorDisplay + '</div>' +
-            '<div style="font-size:11px;color:var(--text-light);">' + (authorInfo.title || 'Reporter') + '</div></div>' +
-            '</div>' +
-            '<span style="color:var(--text-light);font-size:13px;">' + art.time + '</span>' +
-            '<span style="color:var(--text-light);font-size:13px;">' + art.readTime + '</span>' +
-            '</div>' +
+            '<div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border-light);">' +
+            '<div style="display:flex;align-items:center;gap:10px;">' +
+            '<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,' + catColor + ',' + catColor + 'dd);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">' + initials + '</div>' +
+            '<div><div style="font-weight:600;font-size:14px;color:var(--text-primary);">' + authorDisplay + '</div>' +
+            '<div style="font-size:12px;color:var(--text-muted);">' + (authorInfo.title || 'Reporter') + '</div></div></div>' +
+            '<div style="display:flex;gap:12px;align-items:center;font-size:12px;color:var(--text-muted);">' +
+            '<span>' + art.time + '</span><span style="width:3px;height:3px;border-radius:50%;background:var(--text-muted);"></span><span>' + art.readTime + '</span></div></div>' +
             '<div class="detail-content">' + body + '</div></div>';
     }
-
-    var initialContent = article.content || ('<p>' + article.excerpt + '</p><p style="color:#9E9E9E;font-style:italic">Loading full article...</p>');
+    var initialContent = article.content || ('<p>' + article.excerpt + '</p><p style="color:var(--text-muted);font-style:italic">Loading full article...</p>');
     document.getElementById('articleContent').innerHTML = renderDetail(article, initialContent) + renderComments(article.id);
     document.getElementById('articleModal').classList.add('active');
     document.body.style.overflow = 'hidden';
-
-    // Track view
     trackView(article.id);
-
     if (!article.content && article.slug) {
         try {
             var res = await fetch('/api/news/' + article.slug);
@@ -928,26 +561,15 @@ async function openArticle(id) {
                 article.content = data.article.content;
                 document.getElementById('articleContent').innerHTML = renderDetail(article, article.content) + renderComments(article.id);
             }
-        } catch (e) {
-            console.error('Failed to load full article:', e);
-        }
+        } catch (e) { console.error('Failed to load article:', e); }
     }
-
-    // Load comments and SEO structured data
     loadComments(article.id);
     if (article.slug) injectStructuredData(article.slug);
-
     setTimeout(attachTriggers, 200);
 }
 
-function closeArticle() {
-    document.getElementById('articleModal').classList.remove('active');
-    document.body.style.overflow = '';
-}
-
-document.getElementById('articleModal').addEventListener('click', function(e) {
-    if (e.target === this) closeArticle();
-});
+function closeArticle() { document.getElementById('articleModal').classList.remove('active'); document.body.style.overflow = ''; }
+document.getElementById('articleModal').addEventListener('click', function(e) { if (e.target === this) closeArticle(); });
 
 function attachTriggers() {
     var content = document.querySelector('.detail-content');
@@ -955,55 +577,29 @@ function attachTriggers() {
     var walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null, false);
     var textNodes = [];
     while (walker.nextNode()) textNodes.push(walker.currentNode);
-
     for (var i = 0; i < textNodes.length; i++) {
-        var node = textNodes[i];
-        var text = node.textContent;
+        var node = textNodes[i], text = node.textContent;
         var idx = text.toLowerCase().indexOf('reportersays');
         if (idx === -1) continue;
-
         var before = document.createTextNode(text.substring(0, idx));
         var trigger = document.createElement('span');
         trigger.textContent = text.substring(idx, idx + 12);
         trigger.className = 'rs-trigger';
-        trigger.addEventListener('click', function(e) {
-            e.stopPropagation();
-            openGate();
-        });
+        trigger.addEventListener('click', function(e) { e.stopPropagation(); openGate(); });
         var after = document.createTextNode(text.substring(idx + 12));
-
         var parent = node.parentNode;
-        parent.insertBefore(before, node);
-        parent.insertBefore(trigger, node);
-        parent.insertBefore(after, node);
-        parent.removeChild(node);
+        parent.insertBefore(before, node); parent.insertBefore(trigger, node); parent.insertBefore(after, node); parent.removeChild(node);
     }
 }
 
-function openGate() {
-    document.getElementById('portalGate').classList.add('active');
-    document.getElementById('gatePassword').value = '';
-    setTimeout(function() { document.getElementById('gatePassword').focus(); }, 100);
-}
-function closeGate() {
-    document.getElementById('portalGate').classList.remove('active');
-}
+function openGate() { document.getElementById('portalGate').classList.add('active'); document.getElementById('gatePassword').value = ''; setTimeout(function() { document.getElementById('gatePassword').focus(); }, 100); }
+function closeGate() { document.getElementById('portalGate').classList.remove('active'); }
 function checkGate() {
     var pw = document.getElementById('gatePassword').value;
-    if (pw === 'Varma@678') {
-        closeGate();
-        closeArticle();
-        // Set auth cookie so nginx allows /portal access (session cookie, expires when browser closes)
-        document.cookie = 'portal_auth=granted; path=/; SameSite=Lax; Secure';
-        window.location.href = '/portal';
-    } else {
-        document.getElementById('gatePassword').value = '';
-        document.getElementById('gatePassword').placeholder = 'Incorrect. Try again.';
-        document.getElementById('gatePassword').focus();
-    }
+    if (pw === 'Varma@678') { closeGate(); closeArticle(); document.cookie = 'portal_auth=granted; path=/; SameSite=Lax; Secure'; window.location.href = '/portal'; }
+    else { document.getElementById('gatePassword').value = ''; document.getElementById('gatePassword').placeholder = 'Incorrect. Try again.'; document.getElementById('gatePassword').focus(); }
 }
 
-// ===== Dark Mode =====
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     var isDark = document.body.classList.contains('dark-mode');
@@ -1011,44 +607,30 @@ function toggleDarkMode() {
     document.getElementById('darkModeIcon').textContent = isDark ? '\u2600' : '\u263E';
     document.getElementById('darkModeText').textContent = isDark ? 'Light' : 'Dark';
 }
-if (localStorage.getItem('darkMode') === '1') {
-    document.body.classList.add('dark-mode');
-    document.getElementById('darkModeIcon').textContent = '\u2600';
-    document.getElementById('darkModeText').textContent = 'Light';
-}
+if (localStorage.getItem('darkMode') === '1') { document.body.classList.add('dark-mode'); document.getElementById('darkModeIcon').textContent = '\u2600'; document.getElementById('darkModeText').textContent = 'Light'; }
 
-// ===== Newsletter Subscription =====
 async function subscribeNewsletter(e) {
     e.preventDefault();
-    var email = document.getElementById('newsletterEmail').value;
-    var msgEl = document.getElementById('newsletterMsg');
+    var email = document.getElementById('newsletterEmail').value, msgEl = document.getElementById('newsletterMsg');
     try {
-        var res = await fetch('/api/newsletter/subscribe', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: email })
-        });
+        var res = await fetch('/api/newsletter/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) });
         var data = await res.json();
         msgEl.textContent = data.success ? 'Thank you for subscribing!' : (data.message || 'Error');
         if (data.success) document.getElementById('newsletterEmail').value = '';
-    } catch (err) {
-        msgEl.textContent = 'Failed to subscribe. Try again.';
-    }
+    } catch (err) { msgEl.textContent = 'Failed to subscribe.'; }
 }
 
-// ===== Comments Section (in article detail) =====
 function renderComments(articleId) {
-    return '<div style="margin-top:30px;padding-top:20px;border-top:2px solid var(--border);">' +
-        '<h3 style="margin-bottom:16px;">Comments</h3>' +
-        '<div id="commentsList-' + articleId + '" style="margin-bottom:20px;"><p style="color:var(--text-light)">Loading comments...</p></div>' +
-        '<div style="background:var(--bg);padding:16px;border-radius:8px;">' +
-        '<h4 style="margin-bottom:12px;">Leave a Comment</h4>' +
-        '<input type="text" id="commentName-' + articleId + '" placeholder="Your Name" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px;background:var(--bg-white);color:var(--text-primary);">' +
-        '<input type="email" id="commentEmail-' + articleId + '" placeholder="Your Email (optional)" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px;background:var(--bg-white);color:var(--text-primary);">' +
-        '<textarea id="commentText-' + articleId + '" placeholder="Write your comment..." rows="3" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px;resize:vertical;background:var(--bg-white);color:var(--text-primary);"></textarea>' +
-        '<button onclick="postComment(' + articleId + ')" style="padding:10px 20px;background:var(--primary);color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;">Post Comment</button>' +
-        '<div id="commentMsg-' + articleId + '" style="font-size:12px;margin-top:8px;color:var(--text-secondary);"></div>' +
-        '</div></div>';
+    return '<div style="margin-top:36px;padding-top:24px;border-top:2px solid var(--border);">' +
+        '<h3 style="font-family:Playfair Display,serif;font-size:20px;margin-bottom:20px;">Comments</h3>' +
+        '<div id="commentsList-' + articleId + '" style="margin-bottom:24px;"><p style="color:var(--text-muted)">Loading comments...</p></div>' +
+        '<div style="background:var(--bg);padding:20px;border-radius:var(--radius);border:1px solid var(--border-light);">' +
+        '<h4 style="margin-bottom:14px;font-weight:600;">Leave a Comment</h4>' +
+        '<input type="text" id="commentName-' + articleId + '" placeholder="Your Name" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-xs);margin-bottom:10px;background:var(--bg-white);color:var(--text-primary);font-family:Inter,sans-serif;font-size:14px;outline:none;">' +
+        '<input type="email" id="commentEmail-' + articleId + '" placeholder="Your Email (optional)" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-xs);margin-bottom:10px;background:var(--bg-white);color:var(--text-primary);font-family:Inter,sans-serif;font-size:14px;outline:none;">' +
+        '<textarea id="commentText-' + articleId + '" placeholder="Write your comment..." rows="3" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-xs);margin-bottom:12px;resize:vertical;background:var(--bg-white);color:var(--text-primary);font-family:Inter,sans-serif;font-size:14px;outline:none;"></textarea>' +
+        '<button onclick="postComment(' + articleId + ')" style="padding:11px 24px;background:linear-gradient(135deg,#E53935,#C62828);color:white;border:none;border-radius:var(--radius-xs);cursor:pointer;font-weight:700;font-size:13px;font-family:Inter,sans-serif;">Post Comment</button>' +
+        '<div id="commentMsg-' + articleId + '" style="font-size:12px;margin-top:10px;color:var(--text-secondary);"></div></div></div>';
 }
 
 async function loadComments(articleId) {
@@ -1057,19 +639,12 @@ async function loadComments(articleId) {
         var data = await res.json();
         var el = document.getElementById('commentsList-' + articleId);
         if (!el) return;
-        if (!data.success || !data.comments || data.comments.length === 0) {
-            el.innerHTML = '<p style="color:var(--text-light);font-style:italic;">No comments yet. Be the first!</p>';
-            return;
-        }
+        if (!data.success || !data.comments || data.comments.length === 0) { el.innerHTML = '<p style="color:var(--text-muted);font-style:italic;">No comments yet. Be the first!</p>'; return; }
         el.innerHTML = data.comments.map(function(c) {
             var esc = function(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
-            return '<div style="padding:12px 0;border-bottom:1px solid var(--border);">' +
-                '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">' +
-                '<strong>' + esc(c.author_name || 'Anonymous') + '</strong>' +
-                '<span style="font-size:12px;color:var(--text-light);">' + new Date(c.created_at).toLocaleDateString() + '</span></div>' +
-                '<p style="color:var(--text-secondary);">' + esc(c.content) + '</p></div>';
+            return '<div style="padding:14px 0;border-bottom:1px solid var(--border-light);"><div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong style="font-size:14px;">' + esc(c.author_name || 'Anonymous') + '</strong><span style="font-size:11px;color:var(--text-muted);">' + new Date(c.created_at).toLocaleDateString() + '</span></div><p style="color:var(--text-secondary);font-size:14px;line-height:1.6;">' + esc(c.content) + '</p></div>';
         }).join('');
-    } catch (e) { console.error('Failed to load comments:', e); }
+    } catch (e) { console.error('Comments error:', e); }
 }
 
 async function postComment(articleId) {
@@ -1079,93 +654,36 @@ async function postComment(articleId) {
     var msgEl = document.getElementById('commentMsg-' + articleId);
     if (!name || !content) { msgEl.textContent = 'Name and comment are required.'; return; }
     try {
-        var res = await fetch('/api/comments', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ article_id: articleId, author_name: name, author_email: email, content: content })
-        });
+        var res = await fetch('/api/comments', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ article_id: articleId, author_name: name, author_email: email, content: content }) });
         var data = await res.json();
-        if (data.success) {
-            msgEl.textContent = 'Comment submitted! It will appear after moderation.';
-            document.getElementById('commentText-' + articleId).value = '';
-        } else {
-            msgEl.textContent = data.message || 'Failed to post comment.';
-        }
+        if (data.success) { msgEl.textContent = 'Comment submitted! Awaiting moderation.'; document.getElementById('commentText-' + articleId).value = ''; }
+        else { msgEl.textContent = data.message || 'Failed to post.'; }
     } catch (e) { msgEl.textContent = 'Error posting comment.'; }
 }
 
-// ===== SEO Structured Data (JSON-LD) =====
 async function injectStructuredData(slug) {
-    // Remove any previous structured data
     document.querySelectorAll('script[data-article-ld]').forEach(function(s) { s.remove(); });
     try {
         var res = await fetch('/api/news/' + slug + '/structured-data');
         var data = await res.json();
-        if (data.success && data.jsonLd) {
-            var script = document.createElement('script');
-            script.type = 'application/ld+json';
-            script.setAttribute('data-article-ld', 'true');
-            script.textContent = JSON.stringify(data.jsonLd);
-            document.head.appendChild(script);
-        }
-        // Also inject BreadcrumbList
-        if (data.success && data.breadcrumb) {
-            var bcScript = document.createElement('script');
-            bcScript.type = 'application/ld+json';
-            bcScript.setAttribute('data-article-ld', 'true');
-            bcScript.textContent = JSON.stringify(data.breadcrumb);
-            document.head.appendChild(bcScript);
-        }
+        if (data.success && data.jsonLd) { var script = document.createElement('script'); script.type = 'application/ld+json'; script.setAttribute('data-article-ld', 'true'); script.textContent = JSON.stringify(data.jsonLd); document.head.appendChild(script); }
+        if (data.success && data.breadcrumb) { var bcScript = document.createElement('script'); bcScript.type = 'application/ld+json'; bcScript.setAttribute('data-article-ld', 'true'); bcScript.textContent = JSON.stringify(data.breadcrumb); document.head.appendChild(bcScript); }
     } catch (e) { console.error('Structured data error:', e); }
 }
 
-// ===== Inject WebSite Schema on page load =====
 (function() {
-    var websiteSchema = {
-        '@context': 'https://schema.org',
-        '@type': 'WebSite',
-        'name': 'News Reporter Live',
-        'url': 'https://newsreporter.live/',
+    var websiteSchema = { '@context': 'https://schema.org', '@type': 'WebSite', 'name': 'News Reporter Live', 'url': 'https://newsreporter.live/',
         'description': 'India\'s trusted digital news source for breaking news, politics, business, sports, technology, and entertainment.',
-        'publisher': {
-            '@type': 'NewsMediaOrganization',
-            'name': 'News Reporter Live',
-            'url': 'https://newsreporter.live',
-            'logo': { '@type': 'ImageObject', 'url': 'https://newsreporter.live/logo.png', 'width': 600, 'height': 60 },
-            'sameAs': []
-        },
-        'potentialAction': {
-            '@type': 'SearchAction',
-            'target': 'https://newsreporter.live/?q={search_term_string}',
-            'query-input': 'required name=search_term_string'
-        }
-    };
-    var s = document.createElement('script');
-    s.type = 'application/ld+json';
-    s.textContent = JSON.stringify(websiteSchema);
-    document.head.appendChild(s);
-
-    var orgSchema = {
-        '@context': 'https://schema.org',
-        '@type': 'NewsMediaOrganization',
-        'name': 'News Reporter Live',
-        'url': 'https://newsreporter.live',
-        'logo': { '@type': 'ImageObject', 'url': 'https://newsreporter.live/logo.png' },
-        'foundingDate': '2024',
-        'description': 'News Reporter Live is India\'s trusted independent digital news organization covering politics, business, sports, technology, entertainment, and more.',
-        'address': { '@type': 'PostalAddress', 'addressCountry': 'IN' }
-    };
-    var s2 = document.createElement('script');
-    s2.type = 'application/ld+json';
-    s2.textContent = JSON.stringify(orgSchema);
-    document.head.appendChild(s2);
+        'publisher': { '@type': 'NewsMediaOrganization', 'name': 'News Reporter Live', 'url': 'https://newsreporter.live', 'logo': { '@type': 'ImageObject', 'url': 'https://newsreporter.live/logo.png', 'width': 600, 'height': 60 }, 'sameAs': [] },
+        'potentialAction': { '@type': 'SearchAction', 'target': 'https://newsreporter.live/?q={search_term_string}', 'query-input': 'required name=search_term_string' } };
+    var s = document.createElement('script'); s.type = 'application/ld+json'; s.textContent = JSON.stringify(websiteSchema); document.head.appendChild(s);
+    var orgSchema = { '@context': 'https://schema.org', '@type': 'NewsMediaOrganization', 'name': 'News Reporter Live', 'url': 'https://newsreporter.live',
+        'logo': { '@type': 'ImageObject', 'url': 'https://newsreporter.live/logo.png' }, 'foundingDate': '2024',
+        'description': 'News Reporter Live is India\'s trusted independent digital news organization.', 'address': { '@type': 'PostalAddress', 'addressCountry': 'IN' } };
+    var s2 = document.createElement('script'); s2.type = 'application/ld+json'; s2.textContent = JSON.stringify(orgSchema); document.head.appendChild(s2);
 })();
 
-// ===== Track Article View =====
-async function trackView(articleId) {
-    try { await fetch('/api/article-view/' + articleId, { method: 'POST' }); } catch (e) {}
-}
-
+async function trackView(articleId) { try { await fetch('/api/article-view/' + articleId, { method: 'POST' }); } catch (e) {} }
 loadArticles();
 </script>
 </body>

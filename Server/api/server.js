@@ -2750,54 +2750,201 @@ async function callAI(provider, apiKey, model, systemPrompt, title, content) {
     });
 }
 
-// Search for a relevant thumbnail image using Pixabay API (free, no auth needed for limited use)
+// Search for a relevant thumbnail image - uses diverse Unsplash images per category
 function searchUnsplashImage(query) {
     const https = require('https');
     const searchQuery = encodeURIComponent(query);
-    // Category-based curated image fallbacks
-    const categoryImages = {
-        'politics': 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=800&q=80',
-        'business': 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80',
-        'sports': 'https://images.unsplash.com/photo-1461896836934-bd45ba8fcf9b?w=800&q=80',
-        'technology': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80',
-        'entertainment': 'https://images.unsplash.com/photo-1603190287605-e6ade32fa852?w=800&q=80',
-        'world': 'https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?w=800&q=80',
-        'health': 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&q=80',
-        'science': 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=800&q=80',
-        'opinion': 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=800&q=80',
-        'war': 'https://images.unsplash.com/photo-1580752300992-559f8e0734e0?w=800&q=80',
-        'education': 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80',
-        'jobs': 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&q=80',
-        'cricket': 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=800&q=80',
-        'ipl': 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=800&q=80',
-        'gadget reviews': 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=800&q=80',
-        'gadget': 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=800&q=80'
+    // Multiple curated images per category for visual diversity
+    const categoryImagePool = {
+        'politics': [
+            'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=800&q=80',
+            'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=800&q=80',
+            'https://images.unsplash.com/photo-1555848962-6e79363ec58f?w=800&q=80',
+            'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&q=80',
+            'https://images.unsplash.com/photo-1577495508048-b635879837f1?w=800&q=80',
+            'https://images.unsplash.com/photo-1604580864964-0462f5d5b1a8?w=800&q=80',
+            'https://images.unsplash.com/photo-1523995462485-3d171b5c8fa9?w=800&q=80',
+            'https://images.unsplash.com/photo-1575320181282-9afab399332c?w=800&q=80'
+        ],
+        'business': [
+            'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80',
+            'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
+            'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=800&q=80',
+            'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80',
+            'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&q=80',
+            'https://images.unsplash.com/photo-1444653614773-995cb1ef9efa?w=800&q=80',
+            'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80',
+            'https://images.unsplash.com/photo-1559526324-593bc073d938?w=800&q=80'
+        ],
+        'sports': [
+            'https://images.unsplash.com/photo-1461896836934-bd45ba8fcf9b?w=800&q=80',
+            'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80',
+            'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=800&q=80',
+            'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=800&q=80',
+            'https://images.unsplash.com/photo-1471295253337-3ceaaedca402?w=800&q=80',
+            'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=800&q=80',
+            'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800&q=80',
+            'https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?w=800&q=80'
+        ],
+        'technology': [
+            'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80',
+            'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80',
+            'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80',
+            'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80',
+            'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80',
+            'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&q=80',
+            'https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800&q=80',
+            'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&q=80'
+        ],
+        'entertainment': [
+            'https://images.unsplash.com/photo-1603190287605-e6ade32fa852?w=800&q=80',
+            'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&q=80',
+            'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=80',
+            'https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=800&q=80',
+            'https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=800&q=80',
+            'https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=800&q=80',
+            'https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?w=800&q=80',
+            'https://images.unsplash.com/photo-1499364615650-ec38552f4f34?w=800&q=80'
+        ],
+        'world': [
+            'https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?w=800&q=80',
+            'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80',
+            'https://images.unsplash.com/photo-1521295121783-8a321d551ad2?w=800&q=80',
+            'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80',
+            'https://images.unsplash.com/photo-1503945438517-f65904a52ce6?w=800&q=80',
+            'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800&q=80',
+            'https://images.unsplash.com/photo-1589519160732-57fc498494f8?w=800&q=80',
+            'https://images.unsplash.com/photo-1478860409698-8707f313ee8b?w=800&q=80'
+        ],
+        'health': [
+            'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&q=80',
+            'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80',
+            'https://images.unsplash.com/photo-1584515933487-779824d29309?w=800&q=80',
+            'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=800&q=80',
+            'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=800&q=80',
+            'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80',
+            'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=800&q=80',
+            'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80'
+        ],
+        'science': [
+            'https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=800&q=80',
+            'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800&q=80',
+            'https://images.unsplash.com/photo-1614935151651-0bea6508db6b?w=800&q=80',
+            'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80',
+            'https://images.unsplash.com/photo-1564053489984-317bbd824340?w=800&q=80',
+            'https://images.unsplash.com/photo-1628595351029-c2bf17511435?w=800&q=80',
+            'https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=800&q=80',
+            'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=800&q=80'
+        ],
+        'opinion': [
+            'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=800&q=80',
+            'https://images.unsplash.com/photo-1504711434969-e33886168d6c?w=800&q=80',
+            'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80',
+            'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&q=80',
+            'https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?w=800&q=80',
+            'https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=800&q=80',
+            'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&q=80',
+            'https://images.unsplash.com/photo-1516414447565-b14be0adf13e?w=800&q=80'
+        ],
+        'war': [
+            'https://images.unsplash.com/photo-1580752300992-559f8e0734e0?w=800&q=80',
+            'https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&q=80',
+            'https://images.unsplash.com/photo-1510034696085-597d716bd162?w=800&q=80',
+            'https://images.unsplash.com/photo-1569242840510-9fe6f0112cee?w=800&q=80',
+            'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80',
+            'https://images.unsplash.com/photo-1579912437766-7896df6d3cd3?w=800&q=80',
+            'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=80',
+            'https://images.unsplash.com/photo-1580477667995-2b94f01c9516?w=800&q=80'
+        ],
+        'education': [
+            'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80',
+            'https://images.unsplash.com/photo-1523050854058-8df90110c8f1?w=800&q=80',
+            'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=800&q=80',
+            'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80',
+            'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&q=80',
+            'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800&q=80',
+            'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&q=80',
+            'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80'
+        ],
+        'jobs': [
+            'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&q=80',
+            'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80',
+            'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=80',
+            'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&q=80',
+            'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=80',
+            'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&q=80',
+            'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80',
+            'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&q=80'
+        ],
+        'cricket': [
+            'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=800&q=80',
+            'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=800&q=80',
+            'https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=800&q=80',
+            'https://images.unsplash.com/photo-1587385789097-0197a7fbd179?w=800&q=80',
+            'https://images.unsplash.com/photo-1580928684070-0a93f0de4c2b?w=800&q=80',
+            'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=800&q=80',
+            'https://images.unsplash.com/photo-1594470117722-de4b9a02ebed?w=800&q=80',
+            'https://images.unsplash.com/photo-1631194758628-71ec7c35137e?w=800&q=80'
+        ],
+        'ipl': [
+            'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=800&q=80',
+            'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=800&q=80',
+            'https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=800&q=80',
+            'https://images.unsplash.com/photo-1580928684070-0a93f0de4c2b?w=800&q=80',
+            'https://images.unsplash.com/photo-1587385789097-0197a7fbd179?w=800&q=80',
+            'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80',
+            'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=800&q=80',
+            'https://images.unsplash.com/photo-1594470117722-de4b9a02ebed?w=800&q=80'
+        ],
+        'gadget reviews': [
+            'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=800&q=80',
+            'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80',
+            'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&q=80',
+            'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=800&q=80',
+            'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80',
+            'https://images.unsplash.com/photo-1546054454-aa26e2b734c7?w=800&q=80',
+            'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=800&q=80',
+            'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800&q=80'
+        ],
+        'gadget': [
+            'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=800&q=80',
+            'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80',
+            'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&q=80',
+            'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=800&q=80'
+        ]
     };
-    // Try to match a category from the query
+    // Pick a random image from the category pool
     const lowerQuery = query.toLowerCase();
-    for (const [cat, url] of Object.entries(categoryImages)) {
-        if (lowerQuery.includes(cat)) return Promise.resolve(url);
+    for (const [cat, urls] of Object.entries(categoryImagePool)) {
+        if (lowerQuery.includes(cat)) {
+            return Promise.resolve(urls[Math.floor(Math.random() * urls.length)]);
+        }
     }
     return new Promise((resolve) => {
         // Use Pixabay API for image search (free tier, 100 req/min)
         const pixabayKey = '47491065-46b05a2fdb33adeb3e8d1728f';
-        https.get(`https://pixabay.com/api/?key=${pixabayKey}&q=${searchQuery}&image_type=photo&per_page=3&safesearch=true`, (response) => {
+        https.get(`https://pixabay.com/api/?key=${pixabayKey}&q=${searchQuery}&image_type=photo&per_page=8&safesearch=true`, (response) => {
             let data = '';
             response.on('data', chunk => data += chunk);
             response.on('end', () => {
                 try {
                     const result = JSON.parse(data);
                     if (result.hits && result.hits.length > 0) {
-                        resolve(result.hits[0].webformatURL);
+                        // Pick a random result from the top 8 for variety
+                        const randomIdx = Math.floor(Math.random() * result.hits.length);
+                        resolve(result.hits[randomIdx].webformatURL);
                     } else {
-                        resolve(categoryImages['world']);
+                        const worldImages = categoryImagePool['world'];
+                        resolve(worldImages[Math.floor(Math.random() * worldImages.length)]);
                     }
                 } catch {
-                    resolve(categoryImages['world']);
+                    const worldImages = categoryImagePool['world'];
+                    resolve(worldImages[Math.floor(Math.random() * worldImages.length)]);
                 }
             });
         }).on('error', () => {
-            resolve(categoryImages['world']);
+            const worldImages = categoryImagePool['world'];
+            resolve(worldImages[Math.floor(Math.random() * worldImages.length)]);
         });
     });
 }
