@@ -430,7 +430,7 @@
             try {
                 const [healthRes, devicesRes, frpRes] = await Promise.all([
                     fetch(API_BASE + '/api/health').catch(() => null),
-                    fetch(API_BASE + '/api/devices').catch(() => null),
+                    fetch(API_BASE + '/api/portal/devices').catch(() => null),
                     fetch(API_BASE + '/api/frp/proxies').catch(() => null)
                 ]);
                 const serverOnline = healthRes && healthRes.ok;
@@ -446,29 +446,24 @@
         function renderDevices() {
             const list = document.getElementById('deviceList');
             const allDevices = [];
-            for (const proxy of frpProxies) {
-                if (proxy.name && proxy.name.startsWith('vnc-')) continue;
-                const isOnline = proxy.status === 'online';
-                const devName = proxy.name.replace('rdp-', '');
-                const rdpPort = proxy.conf ? proxy.conf.remotePort : 33890;
-                const vncProxy = frpProxies.find(p => p.name && p.name.startsWith('vnc-') && p.name.replace('vnc-', '') === devName);
+            // Only show devices that are registered in the database
+            for (const dev of devices) {
+                const matchingProxy = frpProxies.find(p => p.name && !p.name.startsWith('vnc-') && (p.name.includes(dev.deviceId) || p.name.includes(dev.hostname)));
+                const isOnline = matchingProxy && matchingProxy.status === 'online';
+                const rdpPort = matchingProxy && matchingProxy.conf ? matchingProxy.conf.remotePort : (dev.remotePort || 33890);
+                const devName = matchingProxy ? matchingProxy.name.replace('rdp-', '') : dev.deviceId;
+                const vncProxy = frpProxies.find(p => p.name && p.name.startsWith('vnc-') && (p.name.includes(dev.deviceId) || p.name.includes(dev.hostname)));
                 const hasVnc = vncProxy && vncProxy.status === 'online';
                 const vncPort = vncProxy && vncProxy.conf ? vncProxy.conf.remotePort : (rdpPort + 25110);
-                const apiDev = devices.find(d => proxy.name.includes(d.deviceId));
                 allDevices.push({
                     name: devName,
-                    displayName: apiDev ? (apiDev.hostname || devName) : devName,
+                    displayName: dev.hostname || devName,
                     status: isOnline ? 'online' : 'offline',
                     rdpPort: rdpPort,
                     vncPort: vncPort,
-                    version: proxy.clientVersion || '',
+                    version: matchingProxy ? (matchingProxy.clientVersion || '') : '',
                     hasVnc: hasVnc
                 });
-            }
-            for (const dev of devices) {
-                if (!allDevices.some(d => d.name === dev.deviceId || dev.deviceId.includes(d.name) || d.name.includes(dev.deviceId))) {
-                    allDevices.push({ name: dev.deviceId, displayName: dev.hostname || dev.deviceId, status: 'offline', rdpPort: dev.remotePort || 33890, vncPort: (dev.remotePort || 33890) + 25110, version: '', hasVnc: false });
-                }
             }
             // Filter devices based on user role and assignments
             const isAdmin = currentUser && currentUser.role === 'admin';
@@ -502,20 +497,16 @@
 
         function getAllDevicesList() {
             const allDevices = [];
-            for (const proxy of frpProxies) {
-                if (proxy.name && proxy.name.startsWith('vnc-')) continue;
-                const devName = proxy.name.replace('rdp-', '').replace(/-+$/, '');
-                const rdpPort = proxy.conf ? proxy.conf.remotePort : 33890;
-                const vncProxy = frpProxies.find(p => p.name && p.name.startsWith('vnc-') && p.name.replace('vnc-', '').replace(/-+$/, '') === devName);
+            // Only show devices registered in the database
+            for (const dev of devices) {
+                const matchingProxy = frpProxies.find(p => p.name && !p.name.startsWith('vnc-') && (p.name.includes(dev.deviceId) || p.name.includes(dev.hostname)));
+                const isOnline = matchingProxy && matchingProxy.status === 'online';
+                const rdpPort = matchingProxy && matchingProxy.conf ? matchingProxy.conf.remotePort : (dev.remotePort || 33890);
+                const devName = matchingProxy ? matchingProxy.name.replace('rdp-', '').replace(/-+$/, '') : dev.deviceId;
+                const vncProxy = frpProxies.find(p => p.name && p.name.startsWith('vnc-') && (p.name.includes(dev.deviceId) || p.name.includes(dev.hostname)));
                 const hasVnc = vncProxy && vncProxy.status === 'online';
                 const vncPort = vncProxy && vncProxy.conf ? vncProxy.conf.remotePort : (rdpPort + 25110);
-                const apiDev = devices.find(d => proxy.name.includes(d.deviceId) || devName === d.hostname);
-                allDevices.push({ name: devName, displayName: apiDev ? (apiDev.hostname || devName) : devName, status: proxy.status === 'online' ? 'online' : 'offline', rdpPort, vncPort, version: proxy.clientVersion || '', hasVnc });
-            }
-            for (const dev of devices) {
-                if (!allDevices.some(d => d.name === dev.deviceId || dev.deviceId.includes(d.name) || d.name.includes(dev.deviceId))) {
-                    allDevices.push({ name: dev.deviceId, displayName: dev.hostname || dev.deviceId, status: 'offline', rdpPort: dev.remotePort || 33890, vncPort: (dev.remotePort || 33890) + 25110, version: '', hasVnc: false });
-                }
+                allDevices.push({ name: devName, displayName: dev.hostname || devName, status: isOnline ? 'online' : 'offline', rdpPort, vncPort, version: matchingProxy ? (matchingProxy.clientVersion || '') : '', hasVnc });
             }
             return allDevices;
         }

@@ -822,7 +822,28 @@ app.post('/api/devices/heartbeat', (req, res) => {
     }
 });
 
-// List all devices
+// List devices for portal (no admin JWT required, used by portal UI)
+app.get('/api/portal/devices', (req, res) => {
+    try {
+        const devices = stmts.getAllDevices.all();
+        res.json({
+            success: true,
+            count: devices.length,
+            devices: devices.map(d => ({
+                deviceId: d.device_id,
+                hostname: d.hostname,
+                remotePort: d.remote_port,
+                isOnline: d.is_online === 1,
+                lastHeartbeat: d.last_heartbeat
+            }))
+        });
+    } catch (err) {
+        console.error('Portal list devices error:', err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+// List all devices (admin - includes extra fields)
 app.get('/api/devices', requireAdmin, (req, res) => {
     try {
         const devices = stmts.getAllDevices.all();
