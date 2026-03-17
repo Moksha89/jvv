@@ -33,7 +33,8 @@ const CATEGORY_AUTHORS = {
     'Jobs': { name: 'Amit Choudhary', title: 'Careers & Employment Editor', url: 'https://newsreporter.live/team#amit-choudhary' },
     'Cricket': { name: 'Vikram Singh Rathore', title: 'Cricket Correspondent', url: 'https://newsreporter.live/team#vikram-rathore' },
     'IPL': { name: 'Siddharth Malhotra', title: 'IPL & T20 Specialist', url: 'https://newsreporter.live/team#siddharth-malhotra' },
-    'Gadget Reviews': { name: 'Ananya Desai', title: 'Tech & Gadgets Reviewer', url: 'https://newsreporter.live/team#ananya-desai' }
+    'Gadget Reviews': { name: 'Ananya Desai', title: 'Tech & Gadgets Reviewer', url: 'https://newsreporter.live/team#ananya-desai' },
+    'CBSE': { name: 'Sunita Patel', title: 'CBSE & Education Specialist', url: 'https://newsreporter.live/team#sunita-patel' }
 };
 
 function getAuthorForCategory(category) {
@@ -533,7 +534,8 @@ if (catCount.c === 0) {
         ['World', 'world', '#00838F', 6],
         ['Health', 'health', '#C62828', 7],
         ['Science', 'science', '#4527A0', 8],
-        ['Opinion', 'opinion', '#546E7A', 9]
+        ['Opinion', 'opinion', '#546E7A', 9],
+        ['CBSE', 'cbse', '#E65100', 10]
     ];
     for (const cat of defaultCats) insertCat.run(...cat);
 }
@@ -1783,7 +1785,8 @@ app.post('/api/cms/ai-generate', requireAdmin, async (req, res) => {
             'Jobs': ['government job recruitment notification', 'IT sector hiring trends', 'startup job market analysis', 'UPSC exam preparation guide', 'skill development initiative launched'],
             'Cricket': ['India vs Pakistan match analysis', 'Test cricket series highlights', 'women cricket team performance', 'domestic cricket tournament update', 'cricket player injury and fitness news'],
             'IPL': ['IPL team auction strategy', 'IPL match day highlights and scores', 'IPL player performance review', 'IPL franchise business analysis', 'IPL emerging players to watch'],
-            'Gadget Reviews': ['latest smartphone review and comparison', 'laptop buying guide for students', 'smartwatch and wearable tech review', 'budget gadget recommendations India', 'upcoming gadget launches in India']
+            'Gadget Reviews': ['latest smartphone review and comparison', 'laptop buying guide for students', 'smartwatch and wearable tech review', 'budget gadget recommendations India', 'upcoming gadget launches in India'],
+            'CBSE': ['CBSE board exam 2026 latest news and updates', 'CBSE syllabus 2025-26 changes and important topics', 'CBSE Class 10 preparation tips and study strategy', 'CBSE Class 12 board exam result analysis', 'NCERT textbook updates and new edition changes', 'CBSE sample paper analysis and marking scheme tips', 'NEP 2020 impact on CBSE curriculum and assessment', 'CBSE scholarship and fellowship opportunities for students']
         };
 
         // Filter categories based on mode
@@ -2913,6 +2916,16 @@ function searchUnsplashImage(query) {
             'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80',
             'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&q=80',
             'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=800&q=80'
+        ],
+        'cbse': [
+            'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80',
+            'https://images.unsplash.com/photo-1523050854058-8df90110c8f1?w=800&q=80',
+            'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=800&q=80',
+            'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80',
+            'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&q=80',
+            'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800&q=80',
+            'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&q=80',
+            'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80'
         ]
     };
     // Pick a random image from the category pool
@@ -3150,7 +3163,8 @@ function startAIAutoPublishTimer() {
                 'Jobs': ['government job recruitment notification', 'IT sector hiring trends', 'startup job market analysis', 'UPSC exam preparation guide', 'skill development initiative launched'],
                 'Cricket': ['India vs Pakistan match analysis', 'Test cricket series highlights', 'women cricket team performance', 'domestic cricket tournament update', 'cricket player injury and fitness news'],
                 'IPL': ['IPL team auction strategy', 'IPL match day highlights and scores', 'IPL player performance review', 'IPL franchise business analysis', 'IPL emerging players to watch'],
-                'Gadget Reviews': ['latest smartphone review and comparison', 'laptop buying guide for students', 'smartwatch and wearable tech review', 'budget gadget recommendations India', 'upcoming gadget launches in India']
+                'Gadget Reviews': ['latest smartphone review and comparison', 'laptop buying guide for students', 'smartwatch and wearable tech review', 'budget gadget recommendations India', 'upcoming gadget launches in India'],
+                'CBSE': ['CBSE board exam 2026 latest news and updates', 'CBSE syllabus 2025-26 changes and important topics', 'CBSE Class 10 preparation tips and study strategy', 'CBSE Class 12 board exam result analysis', 'NCERT textbook updates and new edition changes', 'CBSE sample paper analysis and marking scheme tips', 'NEP 2020 impact on CBSE curriculum and assessment', 'CBSE scholarship and fellowship opportunities for students']
             };
             
             const seoPrompt = `You are a senior investigative reporter at News Reporter Live, India's trusted digital news source. Write an ORIGINAL, exclusive news article about the given topic. 

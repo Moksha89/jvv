@@ -56,4 +56,12 @@
     <lastmod>2026-03-17</lastmod>
   </url>
 
+  <!-- Education - CBSE -->
+  <url>
+    <loc>https://newsreporter.live/cbse</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2026-03-17</lastmod>
+  </url>
+
 </urlset>
