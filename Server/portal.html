@@ -617,7 +617,7 @@
         async function getGuacToken() {
             if (guacToken) return guacToken;
             try {
-                const res = await fetch(GUAC_BASE + '/api/tokens', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'username=admin&password=' + encodeURIComponent(window._guacPass || 'admin') });
+                const res = await fetch(GUAC_BASE + '/api/tokens', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'username=admin&password=' + encodeURIComponent(window._guacPass || 'Sarkar@00') });
                 if (res.ok) { const data = await res.json(); guacToken = data.authToken; return guacToken; }
             } catch (e) { console.error('Guac auth error:', e); }
             return null;
