@@ -4196,6 +4196,87 @@ app.get('/api/cricket/img/:imageId', (req, res) => {
 // IFSC Code Lookup API
 // ============================================================
 
+// IFSC places API - get districts and branches via Razorpay
+// State name to ISO3166 code mapping
+const STATE_ISO_MAP = {
+    'ANDAMAN AND NICOBAR ISLANDS': 'IN-AN', 'ANDHRA PRADESH': 'IN-AP', 'ARUNACHAL PRADESH': 'IN-AR',
+    'ASSAM': 'IN-AS', 'BIHAR': 'IN-BR', 'CHANDIGARH': 'IN-CH', 'CHHATTISGARH': 'IN-CT',
+    'DADRA AND NAGAR HAVELI AND DAMAN AND DIU': 'IN-DD', 'DELHI': 'IN-DL', 'GOA': 'IN-GA',
+    'GUJARAT': 'IN-GJ', 'HARYANA': 'IN-HR', 'HIMACHAL PRADESH': 'IN-HP', 'JAMMU AND KASHMIR': 'IN-JK',
+    'JHARKHAND': 'IN-JH', 'KARNATAKA': 'IN-KA', 'KERALA': 'IN-KL', 'LADAKH': 'IN-LA',
+    'LAKSHADWEEP': 'IN-LD', 'MADHYA PRADESH': 'IN-MP', 'MAHARASHTRA': 'IN-MH', 'MANIPUR': 'IN-MN',
+    'MEGHALAYA': 'IN-ML', 'MIZORAM': 'IN-MZ', 'NAGALAND': 'IN-NL', 'ODISHA': 'IN-OR',
+    'PUDUCHERRY': 'IN-PY', 'PUNJAB': 'IN-PB', 'RAJASTHAN': 'IN-RJ', 'SIKKIM': 'IN-SK',
+    'TAMIL NADU': 'IN-TN', 'TELANGANA': 'IN-TG', 'TRIPURA': 'IN-TR', 'UTTAR PRADESH': 'IN-UP',
+    'UTTARAKHAND': 'IN-UT', 'WEST BENGAL': 'IN-WB'
+};
+
+app.get('/api/ifsc/places', async (req, res) => {
+    try {
+        const bankcode = (req.query.bankcode || '').toUpperCase().trim();
+        const stateName = (req.query.state || '').toUpperCase().trim();
+        const district = (req.query.district || '').trim();
+        if (!bankcode) return res.status(400).json({ success: false, message: 'bankcode is required' });
+        if (!stateName) return res.status(400).json({ success: false, message: 'state is required' });
+        const isoCode = STATE_ISO_MAP[stateName] || stateName;
+        const cacheKey = 'ifsc_places_' + bankcode + '_' + isoCode + '_' + district;
+        const cached = getCricketCache(cacheKey);
+        if (cached) return res.json(JSON.parse(cached));
+        let url = `https://ifsc.razorpay.com/places?bankcode=${encodeURIComponent(bankcode)}&state=${encodeURIComponent(isoCode)}`;
+        if (district) url += `&district=${encodeURIComponent(district)}`;
+        const result = await new Promise((resolve, reject) => {
+            https.get(url, (resp) => {
+                let data = '';
+                resp.on('data', chunk => data += chunk);
+                resp.on('end', () => {
+                    if (resp.statusCode === 200) {
+                        try { resolve(JSON.parse(data)); } catch(e) { reject(new Error('Parse error')); }
+                    } else { reject(new Error('Not found')); }
+                });
+            }).on('error', reject);
+        });
+        setCricketCache(cacheKey, JSON.stringify(result));
+        res.json(result);
+    } catch (e) {
+        res.json({ districts: [], branches: [] });
+    }
+});
+
+// IFSC search API - find branches matching filters via Razorpay
+app.get('/api/ifsc/search', async (req, res) => {
+    try {
+        const bankcode = (req.query.bankcode || '').toUpperCase().trim();
+        const stateName = (req.query.state || '').toUpperCase().trim();
+        const district = (req.query.district || '').trim();
+        const branch = (req.query.branch || '').trim();
+        if (!bankcode) return res.status(400).json({ success: false, message: 'bankcode is required' });
+        const isoCode = STATE_ISO_MAP[stateName] || stateName;
+        const cacheKey = 'ifsc_search_' + bankcode + '_' + isoCode + '_' + district + '_' + branch;
+        const cached = getCricketCache(cacheKey);
+        if (cached) return res.json({ success: true, data: JSON.parse(cached) });
+        let url = `https://ifsc.razorpay.com/search?bankcode=${encodeURIComponent(bankcode)}&limit=20`;
+        if (isoCode) url += `&state=${encodeURIComponent(isoCode)}`;
+        if (district) url += `&district=${encodeURIComponent(district)}`;
+        if (branch) url += `&branch=${encodeURIComponent(branch)}`;
+        const result = await new Promise((resolve, reject) => {
+            https.get(url, (resp) => {
+                let data = '';
+                resp.on('data', chunk => data += chunk);
+                resp.on('end', () => {
+                    if (resp.statusCode === 200) {
+                        try { resolve(JSON.parse(data)); } catch(e) { reject(new Error('Parse error')); }
+                    } else { reject(new Error('Not found')); }
+                });
+            }).on('error', reject);
+        });
+        const items = result.data || result || [];
+        setCricketCache(cacheKey, JSON.stringify(items));
+        res.json({ success: true, data: items });
+    } catch (e) {
+        res.json({ success: true, data: [] });
+    }
+});
+
 // IFSC code lookup via Razorpay API (free, public)
 app.get('/api/ifsc/:code', async (req, res) => {
     try {

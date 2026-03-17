@@ -1334,10 +1334,8 @@ var ALL_BANKS = [{name:"ABHYUDAYA COOPERATIVE BANK LIMITED",code:"ABHY",type:"co
 // Razorpay IFSC API base
 var IFSC_API = '/api/ifsc/';
 
-// Dark mode
-
-(function()
-})();
+// Init
+(function(){})();
 
 // Tab switching
 function switchFinderTab(tab) {
@@ -1380,8 +1378,7 @@ function selectBankFromCard(code) {
     onBankChange();
 }
 
-// Cascading dropdowns - use Razorpay IFSC dataset
-// We'll use a lightweight approach: fetch from our backend which proxies Razorpay
+// Cascading dropdowns - use Razorpay IFSC API via backend proxy
 
 function onBankChange() {
     var bank = document.getElementById('bankSelect').value;
@@ -1392,14 +1389,62 @@ function onBankChange() {
 }
 
 function onStateChange() {
-    document.getElementById('districtSelect').innerHTML = '<option value="">-- Select District --</option>';
-    document.getElementById('branchSelect').innerHTML = '<option value="">-- Select Branch --</option>';
+    var bank = document.getElementById('bankSelect').value;
+    var state = document.getElementById('stateSelect').value;
+    var distSel = document.getElementById('districtSelect');
+    var branchSel = document.getElementById('branchSelect');
+    distSel.innerHTML = '<option value="">-- Loading Districts... --</option>';
+    branchSel.innerHTML = '<option value="">-- Select Branch --</option>';
     hideResult();
+    if (!bank || !state) {
+        distSel.innerHTML = '<option value="">-- Select District --</option>';
+        return;
+    }
+    fetch('/api/ifsc/places?bankcode=' + encodeURIComponent(bank) + '&state=' + encodeURIComponent(state))
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var districts = data.districts || [];
+            districts.sort();
+            distSel.innerHTML = '<option value="">-- Select District (' + districts.length + ') --</option>';
+            districts.forEach(function(d) {
+                distSel.innerHTML += '<option value="' + d + '">' + d + '</option>';
+            });
+            if (districts.length === 0) {
+                distSel.innerHTML = '<option value="">-- No districts found --</option>';
+            }
+        })
+        .catch(function() {
+            distSel.innerHTML = '<option value="">-- Error loading districts --</option>';
+        });
 }
 
 function onDistrictChange() {
-    document.getElementById('branchSelect').innerHTML = '<option value="">-- Select Branch --</option>';
+    var bank = document.getElementById('bankSelect').value;
+    var state = document.getElementById('stateSelect').value;
+    var district = document.getElementById('districtSelect').value;
+    var branchSel = document.getElementById('branchSelect');
+    branchSel.innerHTML = '<option value="">-- Loading Branches... --</option>';
     hideResult();
+    if (!bank || !state || !district) {
+        branchSel.innerHTML = '<option value="">-- Select Branch --</option>';
+        return;
+    }
+    fetch('/api/ifsc/places?bankcode=' + encodeURIComponent(bank) + '&state=' + encodeURIComponent(state) + '&district=' + encodeURIComponent(district))
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var branches = data.branches || [];
+            branches.sort();
+            branchSel.innerHTML = '<option value="">-- Select Branch (' + branches.length + ') --</option>';
+            branches.forEach(function(b) {
+                branchSel.innerHTML += '<option value="' + b + '">' + b + '</option>';
+            });
+            if (branches.length === 0) {
+                branchSel.innerHTML = '<option value="">-- No branches found --</option>';
+            }
+        })
+        .catch(function() {
+            branchSel.innerHTML = '<option value="">-- Error loading branches --</option>';
+        });
 }
 
 // Main lookup by IFSC code
@@ -1425,7 +1470,6 @@ function lookupIFSC() {
         })
         .catch(function() {
             hideLoading();
-            // Fallback: try Razorpay directly
             fetch('https://ifsc.razorpay.com/' + code)
                 .then(function(r) {
                     if (r.ok) return r.json();
@@ -1436,66 +1480,44 @@ function lookupIFSC() {
         });
 }
 
-// Find IFSC from dropdowns
+// Find IFSC from dropdowns using search API
 function findIFSC() {
     var bank = document.getElementById('bankSelect').value;
     var state = document.getElementById('stateSelect').value;
-    if (!bank) {
-        showError('Please select a bank first');
-        return;
-    }
-    if (!state) {
-        showError('Please select a state');
-        return;
-    }
+    var district = document.getElementById('districtSelect').value;
+    var branch = document.getElementById('branchSelect').value;
+    if (!bank) { showError('Please select a bank first'); return; }
+    if (!state) { showError('Please select a state'); return; }
 
     hideError();
     hideResult();
     showLoading();
 
-    // Use the bank code + 0 + known branch patterns
-    // We'll look up a known branch code pattern for the selected bank
-    var sampleCode = bank + '0000001';
-    fetch(IFSC_API + sampleCode)
+    var url = '/api/ifsc/search?bankcode=' + encodeURIComponent(bank) + '&state=' + encodeURIComponent(state);
+    if (district) url += '&district=' + encodeURIComponent(district);
+    if (branch) url += '&branch=' + encodeURIComponent(branch);
+
+    fetch(url)
         .then(function(r) { return r.json(); })
         .then(function(resp) {
             hideLoading();
-            if (resp.success && resp.data) {
-                displayResult(resp.data);
-                showError('Showing main branch. For specific branch lookup, use the "Enter IFSC" tab with the exact code, or search your bank\'s website for branch-specific IFSC codes.');
-                document.getElementById('errorMsg').style.background = '#fffbeb';
-                document.getElementById('errorMsg').style.borderColor = '#fde68a';
-                document.getElementById('errorMsg').style.color = '#92400e';
+            if (resp.success && resp.data && resp.data.length > 0) {
+                if (resp.data.length === 1) {
+                    displayResult(resp.data[0]);
+                } else {
+                    displayResult(resp.data[0]);
+                    showError('Found ' + resp.data.length + ' branches. Showing first result. Select a specific district and branch for exact match.');
+                    document.getElementById('errorMsg').style.background = '#fffbeb';
+                    document.getElementById('errorMsg').style.borderColor = '#fde68a';
+                    document.getElementById('errorMsg').style.color = '#92400e';
+                }
             } else {
-                // Try with different branch patterns
-                tryBranchPatterns(bank, state, 0);
+                showError('No branches found for this selection. Try a different district or use the "Enter IFSC" tab.');
             }
         })
         .catch(function() {
             hideLoading();
             showError('Could not find IFSC for this selection. Try entering the IFSC code directly.');
-        });
-}
-
-function tryBranchPatterns(bankCode, state, attempt) {
-    var patterns = ['000001', '000002', '000100', '001000', '000000', '100000'];
-    if (attempt >= patterns.length) {
-        hideLoading();
-        showError('Could not find a matching branch. Please enter the IFSC code directly in the "Enter IFSC" tab.');
-        return;
-    }
-    var code = bankCode + '0' + patterns[attempt];
-    fetch('https://ifsc.razorpay.com/' + code)
-        .then(function(r) {
-            if (r.ok) return r.json();
-            throw new Error('nf');
-        })
-        .then(function(data) {
-            hideLoading();
-            displayResult(data);
-        })
-        .catch(function() {
-            tryBranchPatterns(bankCode, state, attempt + 1);
         });
 }
 
