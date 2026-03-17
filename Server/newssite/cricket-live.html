@@ -593,7 +593,7 @@ async function loadMatches() {
     }
     const status = i.status || i.state || '';
     const matchDesc = i.matchDesc || i.matchdesc || '';
-    const venue = (i.venueInfo || i.venueinfo ||);
+    const venue = (i.venueInfo || i.venueinfo || {});
     const venueName = venue.ground || venue.city || '';
     const seriesName = i.seriesName || i.seriesname || m.seriesName || '';
     const matchId = i.matchId || i.matchid || '';
@@ -822,7 +822,7 @@ async function generateAICommentary() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        matchInfo: window._currentMatchInfo ||,
+        matchInfo: window._currentMatchInfo || {},
         commentaryData: window._currentCommentary || []
       })
     });
@@ -1249,7 +1249,7 @@ async function loadSquadPlayers(seriesId, squadId, cardEl) {
   if (!players.length) { pl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3)">No players found</div>'; return; }
 
   // Group by role
-  const groups =;
+  const groups = {};
   players.forEach(p => {
     const role = p.role || p.playerRole || 'Other';
     if (!groups[role]) groups[role] = [];
