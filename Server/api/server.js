@@ -3659,6 +3659,86 @@ app.get('/api/ifsc/:code', async (req, res) => {
     }
 });
 
+// ============================================================
+// PIN Code Lookup API
+// ============================================================
+
+// PIN code search by post office name (must be before :code route)
+app.get('/api/pincode/search', async (req, res) => {
+    try {
+        const name = (req.query.name || '').trim();
+        const state = (req.query.state || '').trim();
+        if (name.length < 3) {
+            return res.status(400).json({ success: false, message: 'Please enter at least 3 characters to search.' });
+        }
+        const cacheKey = 'pincode_search_' + name + '_' + state;
+        const cached = getCricketCache(cacheKey);
+        if (cached) return res.json({ success: true, data: JSON.parse(cached) });
+
+        const url = `https://api.postalpincode.in/postoffice/${encodeURIComponent(name)}`;
+        const result = await new Promise((resolve, reject) => {
+            https.get(url, (resp) => {
+                let data = '';
+                resp.on('data', chunk => data += chunk);
+                resp.on('end', () => {
+                    if (resp.statusCode === 200) {
+                        try { resolve(JSON.parse(data)); } catch(e) { reject(new Error('Parse error')); }
+                    } else {
+                        reject(new Error('Not found'));
+                    }
+                });
+            }).on('error', reject);
+        });
+        if (result && result[0] && result[0].Status === 'Success' && result[0].PostOffice) {
+            let offices = result[0].PostOffice;
+            if (state) {
+                offices = offices.filter(o => o.State && o.State.toLowerCase() === state.toLowerCase());
+            }
+            setCricketCache(cacheKey, JSON.stringify(offices));
+            res.json({ success: true, data: offices });
+        } else {
+            res.status(404).json({ success: false, message: 'No post offices found matching your search.' });
+        }
+    } catch (e) {
+        res.status(404).json({ success: false, message: 'No post offices found matching your search.' });
+    }
+});
+
+// PIN code lookup via India Post API (free, public)
+app.get('/api/pincode/:code', async (req, res) => {
+    try {
+        const code = (req.params.code || '').trim();
+        if (!/^[0-9]{6}$/.test(code)) {
+            return res.status(400).json({ success: false, message: 'Invalid PIN code format. Must be exactly 6 digits.' });
+        }
+        const cached = getCricketCache('pincode_' + code);
+        if (cached) return res.json({ success: true, data: JSON.parse(cached) });
+
+        const url = `https://api.postalpincode.in/pincode/${code}`;
+        const result = await new Promise((resolve, reject) => {
+            https.get(url, (resp) => {
+                let data = '';
+                resp.on('data', chunk => data += chunk);
+                resp.on('end', () => {
+                    if (resp.statusCode === 200) {
+                        try { resolve(JSON.parse(data)); } catch(e) { reject(new Error('Parse error')); }
+                    } else {
+                        reject(new Error('Not found'));
+                    }
+                });
+            }).on('error', reject);
+        });
+        if (result && result[0] && result[0].Status === 'Success' && result[0].PostOffice) {
+            setCricketCache('pincode_' + code, JSON.stringify(result[0].PostOffice));
+            res.json({ success: true, data: result[0].PostOffice });
+        } else {
+            res.status(404).json({ success: false, message: 'PIN code not found or invalid' });
+        }
+    } catch (e) {
+        res.status(404).json({ success: false, message: 'PIN code not found or invalid' });
+    }
+});
+
 // Serve IFSC codes page
 app.get('/ifsc-codes', (req, res) => {
     const ifscPage = path.join(DASHBOARD_DIR, 'newssite', 'ifsc-codes.html');
