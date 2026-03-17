@@ -2993,13 +2993,71 @@ function parseRSSItems(xml) {
 // Background Tasks
 // ============================================================
 
-// Check for stale devices every 60 seconds
-setInterval(() => {
+// Helper: Check FRP tunnel status for online devices
+function checkFrpTunnelStatus() {
+    return new Promise((resolve) => {
+        const frpUser = 'admin';
+        const frpPass = process.env.FRP_DASHBOARD_PASS || 'bffb701e7702f15cd1dcdacb0b93ccb8';
+        const auth = Buffer.from(`${frpUser}:${frpPass}`).toString('base64');
+        const options = {
+            hostname: '127.0.0.1',
+            port: FRP_DASHBOARD_PORT,
+            path: '/api/proxy/tcp',
+            method: 'GET',
+            headers: { 'Authorization': `Basic ${auth}` },
+            timeout: 5000
+        };
+        const req = http.request(options, (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+                try {
+                    const parsed = JSON.parse(data);
+                    const onlineNames = new Set();
+                    if (parsed.proxies) {
+                        for (const p of parsed.proxies) {
+                            if (p.status === 'online' && p.name) {
+                                const match = p.name.match(/^(?:rdp|vnc)-(.+?)(?:-\d*)?$/i);
+                                if (match) onlineNames.add(match[1].toUpperCase());
+                            }
+                        }
+                    }
+                    resolve(onlineNames);
+                } catch { resolve(new Set()); }
+            });
+        });
+        req.on('error', () => resolve(new Set()));
+        req.on('timeout', () => { req.destroy(); resolve(new Set()); });
+        req.end();
+    });
+}
+
+// Check for stale devices every 60 seconds, but cross-check with FRP tunnel status
+setInterval(async () => {
     try {
+        const frpOnline = await checkFrpTunnelStatus();
         const staleDevices = stmts.getStaleDevices.all();
         for (const device of staleDevices) {
-            stmts.setOffline.run(device.device_id);
-            console.log(`Device marked offline (stale heartbeat): ${device.device_id}`);
+            const hostname = (device.hostname || '').toUpperCase();
+            if (frpOnline.has(hostname)) {
+                // FRP tunnel is active - refresh heartbeat instead of marking offline
+                db.prepare('UPDATE devices SET last_heartbeat = datetime(\'now\'), is_online = 1 WHERE device_id = ?').run(device.device_id);
+                console.log(`Device kept online (FRP tunnel active): ${device.device_id}`);
+            } else {
+                stmts.setOffline.run(device.device_id);
+                console.log(`Device marked offline (stale heartbeat + no FRP tunnel): ${device.device_id}`);
+            }
+        }
+        // Also mark devices online if FRP tunnel is active but device was offline
+        if (frpOnline.size > 0) {
+            const allDevices = stmts.getAllDevices.all();
+            for (const device of allDevices) {
+                const hostname = (device.hostname || '').toUpperCase();
+                if (frpOnline.has(hostname) && device.is_online === 0) {
+                    db.prepare('UPDATE devices SET last_heartbeat = datetime(\'now\'), is_online = 1 WHERE device_id = ?').run(device.device_id);
+                    console.log(`Device auto-recovered online (FRP tunnel detected): ${device.device_id}`);
+                }
+            }
         }
     } catch (err) {
         console.error('Stale device check error:', err);
