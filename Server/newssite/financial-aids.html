@@ -1696,6 +1696,73 @@ function filterType(type, btn) {
     document.querySelectorAll('.ttab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
 }
+
+// Load AI-discovered financial aid programs from API
+(async function loadAIPrograms() {
+    try {
+        const res = await fetch('/api/financial-aids');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data.success || !data.aids || data.aids.length === 0) return;
+
+        // Update the program count stat
+        const statEls = document.querySelectorAll('.stat b');
+        if (statEls[1]) {
+            const hardcoded = document.querySelectorAll('.aid-card').length;
+            statEls[1].textContent = (hardcoded + data.aids.length) + '+';
+        }
+
+        data.aids.forEach(aid => {
+            const section = document.getElementById(aid.country);
+            if (!section) return;
+            const grid = section.querySelector('.aid-grid');
+            if (!grid) return;
+
+            // Check if program already exists (by name)
+            const existingNames = Array.from(grid.querySelectorAll('.aid-name')).map(el => el.textContent.toLowerCase());
+            if (existingNames.some(n => n.includes(aid.name.toLowerCase().substring(0, 20)))) return;
+
+            const typeUpper = (aid.type || '').toUpperCase();
+            const typeLower = (aid.type || '').toLowerCase();
+            const eligList = (Array.isArray(aid.eligibility) ? aid.eligibility : []).map(e => '<li>' + e + '</li>').join('');
+            const infoObj = (typeof aid.info === 'object' && aid.info) ? aid.info : {};
+            const infoBoxes = Object.entries(infoObj).map(([k, v]) => '<div class="info-box"><label>' + k + '</label><span>' + v + '</span></div>').join('');
+
+            const card = document.createElement('div');
+            card.className = 'aid-card';
+            card.dataset.type = typeLower;
+            card.setAttribute('onclick', "this.classList.toggle('open')");
+            card.innerHTML = `
+                <div class="aid-head">
+                    <div class="aid-left">
+                        <span class="aid-type type-${typeLower}">${typeUpper}</span>
+                        <div class="aid-name">${aid.name}</div>
+                        <div class="aid-by">${aid.ministry || ''}</div>
+                    </div>
+                    <div class="aid-right">
+                        <span class="aid-amount">${aid.amount || ''}</span>
+                        <span class="aid-toggle">+</span>
+                    </div>
+                </div>
+                <div class="aid-body" onclick="event.stopPropagation()">
+                    <p style="font-size:14px;color:var(--text2);margin-top:12px;line-height:1.7">${aid.description || ''}</p>
+                    ${infoBoxes ? '<div class="aid-section"><h4>📋 Key Details</h4><div class="info-grid">' + infoBoxes + '</div></div>' : ''}
+                    ${eligList ? '<div class="aid-section"><h4>✅ Eligibility Criteria</h4><ul class="elig-list">' + eligList + '</ul></div>' : ''}
+                    ${aid.claim_url ? '<a href="' + aid.claim_url + '" target="_blank" rel="noopener" class="claim-btn">🔗 ' + (aid.claim_text || 'Visit Official Website') + '</a>' : ''}
+                    ${aid.source ? '<div class="source-link">Official source: <a href="' + aid.source + '" target="_blank" rel="noopener">' + aid.source + '</a></div>' : ''}
+                    <div style="margin-top:8px;font-size:11px;color:var(--text3)">🤖 AI-discovered program • Verify details on official website</div>
+                </div>`;
+            grid.appendChild(card);
+
+            // Apply current type filter
+            if (currentCountry === aid.country && currentType !== 'all' && typeLower !== currentType) {
+                card.style.display = 'none';
+            }
+        });
+    } catch (e) {
+        console.log('No AI-discovered programs available:', e.message);
+    }
+})();
 </script>
 
 </body>

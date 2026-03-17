@@ -457,6 +457,34 @@ db.exec(`
     CREATE INDEX IF NOT EXISTS idx_article_views_date ON article_views(viewed_at);
 `);
 
+// ============================================================
+// Financial Aids Table (AI auto-discovered programs)
+// ============================================================
+db.exec(`
+    CREATE TABLE IF NOT EXISTS financial_aids (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        country TEXT NOT NULL,
+        type TEXT NOT NULL,
+        ministry TEXT DEFAULT '',
+        amount TEXT DEFAULT '',
+        description TEXT NOT NULL,
+        eligibility TEXT DEFAULT '[]',
+        info TEXT DEFAULT '{}',
+        claim_url TEXT DEFAULT '',
+        claim_text TEXT DEFAULT '',
+        source TEXT DEFAULT '',
+        ai_generated INTEGER DEFAULT 1,
+        status TEXT DEFAULT 'published',
+        created_at TEXT DEFAULT (datetime('now')),
+        updated_at TEXT DEFAULT (datetime('now'))
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_financial_aids_country ON financial_aids(country);
+    CREATE INDEX IF NOT EXISTS idx_financial_aids_type ON financial_aids(type);
+    CREATE INDEX IF NOT EXISTS idx_financial_aids_status ON financial_aids(status);
+`);
+
 // Add scheduled_at column to articles if not exists
 try {
     db.exec("ALTER TABLE cms_articles ADD COLUMN scheduled_at TEXT");
@@ -3243,6 +3271,164 @@ IMPORTANT: Respond ONLY with raw JSON. Do NOT wrap in markdown code blocks. No \
 startAIAutoPublishTimer();
 
 // ============================================================
+// Financial Aids AI Auto-Discover Timer
+// ============================================================
+let financialAidsTimer = null;
+
+function startFinancialAidsTimer() {
+    if (financialAidsTimer) clearInterval(financialAidsTimer);
+    const settings = {};
+    try {
+        db.prepare('SELECT * FROM cms_settings').all().forEach(r => settings[r.key] = r.value);
+    } catch(e) {}
+    
+    const autoPublish = settings.auto_publish === 'true' || settings.auto_publish === '1';
+    if (!autoPublish) { console.log('Financial aids auto-discover: disabled (auto_publish is off)'); return; }
+    
+    const apiKey = settings.ai_api_key || settings.openrouter_api_key;
+    if (!apiKey) { console.log('Financial aids auto-discover: No API key configured'); return; }
+    
+    console.log('Financial aids auto-discover enabled: checking for new programs every 6 hours');
+    
+    async function discoverFinancialAids() {
+        try {
+            const currentSettings = {};
+            db.prepare('SELECT * FROM cms_settings').all().forEach(r => currentSettings[r.key] = r.value);
+            const isEnabled = currentSettings.auto_publish === 'true' || currentSettings.auto_publish === '1';
+            if (!isEnabled) return;
+            const key = currentSettings.ai_api_key || currentSettings.openrouter_api_key;
+            if (!key) return;
+            const provider = currentSettings.ai_provider || 'openrouter';
+            const model = currentSettings.ai_model || 'google/gemini-2.0-flash-001';
+            
+            // Get existing program names to avoid duplicates
+            const existing = db.prepare('SELECT name FROM financial_aids').all().map(r => r.name.toLowerCase());
+            
+            const countries = [
+                { code: 'india', label: 'India', prompt: 'Indian government financial aid schemes, scholarships, subsidies, or benefit programs announced or updated in 2025-2026. Focus on central government programs from ministries. Include programs like PM schemes, MGNREGA updates, new scholarship portals, DBT schemes, Ayushman Bharat expansions, housing subsidies, education loans, farmer benefits, women empowerment schemes, and similar. Currency: INR (₹).' },
+                { code: 'usa', label: 'USA', prompt: 'US federal government financial aid programs, grants, loans, or benefits announced or updated in 2025-2026. Include programs from Department of Education, HHS, USDA, SSA, IRS. Focus on student aid (Pell grants, FAFSA changes), SNAP updates, EITC, disability benefits, housing assistance, small business grants, veteran benefits, and similar. Currency: USD ($).' },
+                { code: 'uk', label: 'UK', prompt: 'UK government financial aid programs, benefits, grants, or loans announced or updated in 2025-2026. Include programs from DWP, Student Finance England, HMRC. Focus on Universal Credit changes, student finance updates, PIP, child benefit, pension credit, housing benefit, NHS bursaries, apprenticeship grants, and similar. Currency: GBP (£).' },
+                { code: 'canada', label: 'Canada', prompt: 'Canadian federal government financial aid programs, grants, loans, or benefits announced or updated in 2025-2026. Include programs from ESDC, CRA, IRCC. Focus on Canada Student Grants, OSAP, Canada Child Benefit, EI changes, CPP updates, disability benefits, housing benefits, immigration settlement funds, and similar. Currency: CAD ($).' },
+                { code: 'australia', label: 'Australia', prompt: 'Australian federal government financial aid programs, payments, or benefits announced or updated in 2025-2026. Include programs from Services Australia, Department of Education. Focus on Youth Allowance, HECS-HELP, JobSeeker, Family Tax Benefit, aged pension, disability support, bushfire relief, Indigenous scholarships, and similar. Currency: AUD ($).' }
+            ];
+            
+            const systemPrompt = `You are a government financial aid researcher. Your job is to find REAL, currently active government financial aid programs. You must ONLY include programs that actually exist with real official government websites.
+
+RESPOND ONLY with a JSON array of programs. Each program object must have:
+- "name": Official program name
+- "type": One of: scholarship, grant, loan, benefit, scheme, subsidy
+- "ministry": Government ministry/department that runs it
+- "amount": Benefit amount with currency symbol
+- "description": 2-3 sentence description of the program
+- "eligibility": Array of 3-5 eligibility criteria strings
+- "info": Object with 3-4 key detail pairs (e.g. {"Amount": "...", "Frequency": "...", "Beneficiaries": "..."})
+- "claim_url": Official government website URL to apply (must be a real .gov or official URL)
+- "claim_text": Short text for the apply button (e.g. "Apply at website.gov")
+- "source": Official source URL
+
+CRITICAL: Only include REAL programs with REAL official URLs. Do NOT make up programs or URLs. Respond with ONLY the JSON array, no markdown.`;
+            
+            let totalDiscovered = 0;
+            const country = countries[Math.floor(Math.random() * countries.length)];
+            
+            console.log(`Financial aids auto-discover: searching for new ${country.label} programs...`);
+            
+            try {
+                const existingForCountry = existing.filter(n => true); // check against all
+                const existingList = existingForCountry.slice(0, 30).join(', ');
+                
+                const userPrompt = `Find 2-3 REAL ${country.label} government financial aid programs that are currently active and accepting applications. ${country.prompt}
+
+DO NOT include any of these already-listed programs: ${existingList}
+
+Find NEW or recently updated programs only. Return a JSON array.`;
+                
+                const result = await callAI(provider, key, model, systemPrompt, `New ${country.label} financial aid programs`, userPrompt);
+                
+                // The result might be parsed differently - handle both array and object responses
+                let programs = [];
+                if (Array.isArray(result)) {
+                    programs = result;
+                } else if (result && result.content) {
+                    // Try to parse content as JSON array
+                    try {
+                        let cleanContent = result.content.replace(/<[^>]+>/g, '').trim();
+                        cleanContent = cleanContent.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim();
+                        const jsonStart = cleanContent.indexOf('[');
+                        const jsonEnd = cleanContent.lastIndexOf(']') + 1;
+                        if (jsonStart !== -1 && jsonEnd > jsonStart) {
+                            programs = JSON.parse(cleanContent.substring(jsonStart, jsonEnd));
+                        }
+                    } catch(e) {
+                        console.log('Financial aids: could not parse AI response as array, trying object fields');
+                        // If result has the fields directly (name, type, etc), treat it as a single program
+                        if (result.name && result.type) {
+                            programs = [result];
+                        }
+                    }
+                } else if (result && result.name && result.type) {
+                    programs = [result];
+                }
+                
+                for (const prog of programs) {
+                    if (!prog.name || !prog.type || !prog.description) continue;
+                    // Skip if already exists (fuzzy match)
+                    const nameLC = prog.name.toLowerCase();
+                    if (existing.some(e => e.includes(nameLC.substring(0, 20)) || nameLC.includes(e.substring(0, 20)))) {
+                        console.log(`Financial aids: skipping duplicate "${prog.name}"`);
+                        continue;
+                    }
+                    
+                    // Validate type
+                    const validTypes = ['scholarship', 'grant', 'loan', 'benefit', 'scheme', 'subsidy'];
+                    const progType = (prog.type || '').toLowerCase();
+                    if (!validTypes.includes(progType)) continue;
+                    
+                    // Validate claim_url has a reasonable domain
+                    if (!prog.claim_url || (!prog.claim_url.includes('.gov') && !prog.claim_url.includes('.gc.ca') && !prog.claim_url.includes('.edu') && !prog.claim_url.includes('services') && !prog.claim_url.includes('official'))) {
+                        console.log(`Financial aids: skipping "${prog.name}" - no valid official URL`);
+                        continue;
+                    }
+                    
+                    db.prepare(`
+                        INSERT INTO financial_aids (name, country, type, ministry, amount, description, eligibility, info, claim_url, claim_text, source, ai_generated)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+                    `).run(
+                        prog.name,
+                        country.code,
+                        progType,
+                        prog.ministry || '',
+                        prog.amount || '',
+                        prog.description || '',
+                        JSON.stringify(prog.eligibility || []),
+                        JSON.stringify(prog.info || {}),
+                        prog.claim_url || '',
+                        prog.claim_text || `Visit official website`,
+                        prog.source || prog.claim_url || '',
+                    );
+                    existing.push(nameLC);
+                    totalDiscovered++;
+                    console.log(`Financial aids: added "${prog.name}" (${country.label}, ${progType})`);
+                }
+            } catch (err) {
+                console.error(`Financial aids discover error (${country.label}):`, err.message);
+            }
+            
+            console.log(`Financial aids auto-discover complete: ${totalDiscovered} new programs added for ${country.label}`);
+        } catch (err) {
+            console.error('Financial aids timer error:', err.message);
+        }
+    }
+    
+    // Run first discovery 60 seconds after startup
+    setTimeout(discoverFinancialAids, 60000);
+    
+    // Then run every 6 hours
+    financialAidsTimer = setInterval(discoverFinancialAids, 6 * 60 * 60 * 1000);
+}
+startFinancialAidsTimer();
+
+// ============================================================
 // Cricket Live Score API (CricBuzz via RapidAPI)
 // ============================================================
 const CRICBUZZ_API_KEY = '20bb5c7d6emshe09a76fff2d42b3p187df4jsn96b12af13cf6';
@@ -3892,6 +4078,111 @@ app.get('/ifsc-codes', (req, res) => {
         res.sendFile(ifscPage);
     } else {
         res.status(404).send('IFSC Codes page not found');
+    }
+});
+
+// ============================================================
+// Financial Aids API Endpoints
+// ============================================================
+
+// Public: Get all published financial aids (for the frontend page)
+app.get('/api/financial-aids', (req, res) => {
+    try {
+        const { country, type } = req.query;
+        let query = 'SELECT * FROM financial_aids WHERE status = ?';
+        const params = ['published'];
+        if (country) { query += ' AND country = ?'; params.push(country); }
+        if (type) { query += ' AND type = ?'; params.push(type); }
+        query += ' ORDER BY created_at DESC';
+        const aids = db.prepare(query).all(...params);
+        // Parse JSON fields
+        const parsed = aids.map(a => ({
+            ...a,
+            eligibility: JSON.parse(a.eligibility || '[]'),
+            info: JSON.parse(a.info || '{}')
+        }));
+        res.json({ success: true, aids: parsed, total: parsed.length });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Admin: Manually trigger financial aids discovery
+app.post('/api/financial-aids/discover', requireAdmin, async (req, res) => {
+    try {
+        const settings = {};
+        db.prepare('SELECT * FROM cms_settings').all().forEach(r => settings[r.key] = r.value);
+        const key = settings.ai_api_key || settings.openrouter_api_key;
+        if (!key) return res.status(400).json({ success: false, message: 'No AI API key configured' });
+        const provider = settings.ai_provider || 'openrouter';
+        const model = settings.ai_model || 'google/gemini-2.0-flash-001';
+        const country = req.body.country || 'india';
+        
+        const countryLabels = { india: 'India', usa: 'USA', uk: 'UK', canada: 'Canada', australia: 'Australia' };
+        const label = countryLabels[country] || country;
+        
+        const existing = db.prepare('SELECT name FROM financial_aids WHERE country = ?').all(country).map(r => r.name);
+        
+        const systemPrompt = `You are a government financial aid researcher. Find REAL, currently active government financial aid programs. ONLY include programs that actually exist with real official government websites.
+
+RESPOND ONLY with a JSON array of programs. Each program must have: name, type (scholarship/grant/loan/benefit/scheme/subsidy), ministry, amount, description, eligibility (array), info (object with key details), claim_url (official .gov URL), claim_text, source.  
+
+CRITICAL: Only REAL programs with REAL URLs. No markdown wrapping.`;
+        
+        const result = await callAI(provider, key, model, systemPrompt, `New ${label} financial aid programs`, `Find 3-5 REAL ${label} government financial aid programs currently active. Do NOT include: ${existing.join(', ')}. Return JSON array only.`);
+        
+        let programs = [];
+        if (Array.isArray(result)) {
+            programs = result;
+        } else if (result && result.content) {
+            try {
+                let clean = result.content.replace(/<[^>]+>/g, '').trim().replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim();
+                const s = clean.indexOf('['), e = clean.lastIndexOf(']') + 1;
+                if (s !== -1 && e > s) programs = JSON.parse(clean.substring(s, e));
+            } catch(e) { if (result.name) programs = [result]; }
+        } else if (result && result.name) {
+            programs = [result];
+        }
+        
+        let added = 0;
+        for (const prog of programs) {
+            if (!prog.name || !prog.type || !prog.description) continue;
+            const validTypes = ['scholarship', 'grant', 'loan', 'benefit', 'scheme', 'subsidy'];
+            if (!validTypes.includes((prog.type || '').toLowerCase())) continue;
+            
+            const existCheck = db.prepare('SELECT id FROM financial_aids WHERE name = ? AND country = ?').get(prog.name, country);
+            if (existCheck) continue;
+            
+            db.prepare(`INSERT INTO financial_aids (name, country, type, ministry, amount, description, eligibility, info, claim_url, claim_text, source, ai_generated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`)
+                .run(prog.name, country, (prog.type || '').toLowerCase(), prog.ministry || '', prog.amount || '', prog.description, JSON.stringify(prog.eligibility || []), JSON.stringify(prog.info || {}), prog.claim_url || '', prog.claim_text || 'Visit official website', prog.source || prog.claim_url || '');
+            added++;
+        }
+        
+        res.json({ success: true, message: `Discovered ${added} new ${label} financial aid programs`, added });
+    } catch (err) {
+        console.error('Financial aids manual discover error:', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Admin: Delete a financial aid
+app.delete('/api/financial-aids/:id', requireAdmin, (req, res) => {
+    try {
+        db.prepare('DELETE FROM financial_aids WHERE id = ?').run(req.params.id);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Admin: Get all financial aids (including unpublished)
+app.get('/api/financial-aids/admin', requireAdmin, (req, res) => {
+    try {
+        const aids = db.prepare('SELECT * FROM financial_aids ORDER BY created_at DESC').all();
+        const parsed = aids.map(a => ({ ...a, eligibility: JSON.parse(a.eligibility || '[]'), info: JSON.parse(a.info || '{}') }));
+        res.json({ success: true, aids: parsed, total: parsed.length });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
     }
 });
 
