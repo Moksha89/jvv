@@ -19,8 +19,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#6366f1;--primary-light:#dbeafe;--accent:#7c3aed;--success:#059669;--warning:#d97706;--red:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--radius:12px}
-body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#818cf8;--primary-light:#1e3a5f;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
+:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#E53935;--primary-light:#dbeafe;--accent:#D32F2F;--success:#059669;--warning:#d97706;--red:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--radius:12px}
+body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#EF5350;--primary-light:#1e3a5f;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
 body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
 a{color:var(--primary);text-decoration:none}
 a:hover{text-decoration:underline}
@@ -29,7 +29,7 @@ a:hover{text-decoration:underline}
 .site-header{background:var(--card);border-bottom:1px solid var(--border);padding:0;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:all 0.3s;box-shadow:var(--shadow)}
 .header-top{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px 24px}
 .logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
-.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#6366f1,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#E53935,#D32F2F);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px}
 .logo h1{font-family:'Playfair Display',serif;font-size:22px;color:var(--text);line-height:1.1}
 .logo span{font-size:11px;color:var(--text3);letter-spacing:1px}
 .header-right{display:flex;align-items:center;gap:16px}
@@ -183,13 +183,13 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
     header {
         background: rgba(11,15,26,0.9) !important;
         backdrop-filter: blur(24px) saturate(180%) !important;
-        border-bottom: 1px solid rgba(99,102,241,0.1) !important;
+        border-bottom: 1px solid rgba(229,57,53,0.1) !important;
     }
     
     /* IFSC Finder card */
     .finder-card, .search-panel {
         border-radius: 20px !important;
-        border: 1px solid rgba(99,102,241,0.15) !important;
+        border: 1px solid rgba(229,57,53,0.15) !important;
         background: rgba(17,24,39,0.7) !important;
         backdrop-filter: blur(12px) !important;
         box-shadow: 0 10px 40px rgba(0,0,0,0.2) !important;
@@ -199,7 +199,7 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
     /* Select dropdowns */
     select {
         background: rgba(30,41,59,0.8) !important;
-        border: 1px solid rgba(99,102,241,0.15) !important;
+        border: 1px solid rgba(229,57,53,0.15) !important;
         border-radius: 10px !important;
         color: #f1f5f9 !important;
         padding: 12px 16px !important;
@@ -207,31 +207,31 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
         appearance: auto !important;
     }
     select:focus {
-        border-color: #6366f1 !important;
-        box-shadow: 0 0 0 4px rgba(99,102,241,0.15) !important;
+        border-color: #E53935 !important;
+        box-shadow: 0 0 0 4px rgba(229,57,53,0.15) !important;
     }
     
     /* Find button */
     .find-btn, button[onclick*="find"], button[onclick*="search"] {
-        background: linear-gradient(135deg, #f43f5e, #e11d48) !important;
+        background: linear-gradient(135deg, #1565C0, #e11d48) !important;
         border: none !important;
         border-radius: 12px !important;
         color: white !important;
         font-weight: 700 !important;
         padding: 14px !important;
-        box-shadow: 0 4px 15px rgba(244,63,94,0.3) !important;
+        box-shadow: 0 4px 15px rgba(21,101,192,0.3) !important;
         transition: all 0.25s ease !important;
         width: 100% !important;
     }
     .find-btn:hover, button[onclick*="find"]:hover {
         transform: translateY(-2px) !important;
-        box-shadow: 0 8px 25px rgba(244,63,94,0.4) !important;
+        box-shadow: 0 8px 25px rgba(21,101,192,0.4) !important;
     }
     
     /* Bank cards grid */
     .bank-card, .popular-bank {
         border-radius: 14px !important;
-        border: 1px solid rgba(99,102,241,0.08) !important;
+        border: 1px solid rgba(229,57,53,0.08) !important;
         background: rgba(17,24,39,0.5) !important;
         padding: 16px !important;
         transition: all 0.3s ease !important;
@@ -239,18 +239,18 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
     }
     .bank-card:hover, .popular-bank:hover {
         transform: translateY(-4px) !important;
-        border-color: rgba(99,102,241,0.2) !important;
+        border-color: rgba(229,57,53,0.2) !important;
         box-shadow: 0 12px 30px rgba(0,0,0,0.2) !important;
-        background: rgba(99,102,241,0.05) !important;
+        background: rgba(229,57,53,0.05) !important;
     }
     
     /* Bank initials circle */
     .bank-icon, .bank-initial {
-        background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+        background: linear-gradient(135deg, #E53935, #E53935) !important;
         color: white !important;
         border-radius: 12px !important;
         font-weight: 800 !important;
-        box-shadow: 0 4px 10px rgba(99,102,241,0.3) !important;
+        box-shadow: 0 4px 10px rgba(229,57,53,0.3) !important;
     }
     
     /* Result card */
@@ -266,25 +266,25 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
         transition: all 0.25s ease !important;
     }
     .tab-btn.active, .dir-tab.active {
-        background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+        background: linear-gradient(135deg, #E53935, #C62828) !important;
         color: white !important;
     }
     
     /* FAQ accordion */
     .faq-item, .accordion-item {
-        border: 1px solid rgba(99,102,241,0.1) !important;
+        border: 1px solid rgba(229,57,53,0.1) !important;
         border-radius: 12px !important;
         margin-bottom: 8px !important;
         overflow: hidden !important;
         transition: all 0.25s ease !important;
     }
     .faq-item:hover, .accordion-item:hover {
-        border-color: rgba(99,102,241,0.2) !important;
+        border-color: rgba(229,57,53,0.2) !important;
     }
     
     footer {
         background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
-        border-top: 1px solid rgba(99,102,241,0.1) !important;
+        border-top: 1px solid rgba(229,57,53,0.1) !important;
     }
     
     @media (max-width: 768px) {
@@ -641,37 +641,37 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <div class="pbc-icon" style="background:#2563eb">CB</div>
 <div class="pbc-info"><div class="pbc-name">CENTRAL BANK OF INDIA</div><div class="pbc-branches">4500+ Branches</div></div>
 </div><div class="popular-bank-card" onclick="selectBankFromCard('HDFC')">
-<div class="pbc-icon" style="background:#7c3aed">HD</div>
+<div class="pbc-icon" style="background:#D32F2F">HD</div>
 <div class="pbc-info"><div class="pbc-name">HDFC BANK</div><div class="pbc-branches">7500+ Branches</div></div>
 </div><div class="popular-bank-card" onclick="selectBankFromCard('ICIC')">
-<div class="pbc-icon" style="background:#7c3aed">IC</div>
+<div class="pbc-icon" style="background:#D32F2F">IC</div>
 <div class="pbc-info"><div class="pbc-name">ICICI BANK</div><div class="pbc-branches">5500+ Branches</div></div>
 </div><div class="popular-bank-card" onclick="selectBankFromCard('UTIB')">
-<div class="pbc-icon" style="background:#7c3aed">UT</div>
+<div class="pbc-icon" style="background:#D32F2F">UT</div>
 <div class="pbc-info"><div class="pbc-name">AXIS BANK</div><div class="pbc-branches">4500+ Branches</div></div>
 </div><div class="popular-bank-card" onclick="selectBankFromCard('KKBK')">
-<div class="pbc-icon" style="background:#7c3aed">KK</div>
+<div class="pbc-icon" style="background:#D32F2F">KK</div>
 <div class="pbc-info"><div class="pbc-name">KOTAK MAHINDRA BANK</div><div class="pbc-branches">1600+ Branches</div></div>
 </div><div class="popular-bank-card" onclick="selectBankFromCard('INDB')">
-<div class="pbc-icon" style="background:#7c3aed">IN</div>
+<div class="pbc-icon" style="background:#D32F2F">IN</div>
 <div class="pbc-info"><div class="pbc-name">INDUSIND BANK</div><div class="pbc-branches">2000+ Branches</div></div>
 </div><div class="popular-bank-card" onclick="selectBankFromCard('IDFB')">
-<div class="pbc-icon" style="background:#7c3aed">ID</div>
+<div class="pbc-icon" style="background:#D32F2F">ID</div>
 <div class="pbc-info"><div class="pbc-name">IDFC FIRST BANK LTD</div><div class="pbc-branches">600+ Branches</div></div>
 </div><div class="popular-bank-card" onclick="selectBankFromCard('YESB')">
-<div class="pbc-icon" style="background:#7c3aed">YE</div>
+<div class="pbc-icon" style="background:#D32F2F">YE</div>
 <div class="pbc-info"><div class="pbc-name">YES BANK</div><div class="pbc-branches">1100+ Branches</div></div>
 </div><div class="popular-bank-card" onclick="selectBankFromCard('FDRL')">
-<div class="pbc-icon" style="background:#7c3aed">FD</div>
+<div class="pbc-icon" style="background:#D32F2F">FD</div>
 <div class="pbc-info"><div class="pbc-name">FEDERAL BANK</div><div class="pbc-branches">1200+ Branches</div></div>
 </div><div class="popular-bank-card" onclick="selectBankFromCard('SIBL')">
-<div class="pbc-icon" style="background:#7c3aed">SI</div>
+<div class="pbc-icon" style="background:#D32F2F">SI</div>
 <div class="pbc-info"><div class="pbc-name">SOUTH INDIAN BANK</div><div class="pbc-branches">900+ Branches</div></div>
 </div><div class="popular-bank-card" onclick="selectBankFromCard('KVBL')">
-<div class="pbc-icon" style="background:#7c3aed">KV</div>
+<div class="pbc-icon" style="background:#D32F2F">KV</div>
 <div class="pbc-info"><div class="pbc-name">KARUR VYSYA BANK</div><div class="pbc-branches">800+ Branches</div></div>
 </div><div class="popular-bank-card" onclick="selectBankFromCard('KARB')">
-<div class="pbc-icon" style="background:#7c3aed">KA</div>
+<div class="pbc-icon" style="background:#D32F2F">KA</div>
 <div class="pbc-info"><div class="pbc-name">KARNATAKA BANK LIMITED</div><div class="pbc-branches">800+ Branches</div></div>
 </div><div class="popular-bank-card" onclick="selectBankFromCard('IOBA')">
 <div class="pbc-icon" style="background:#2563eb">IO</div>
@@ -758,17 +758,17 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">AUSTRALIA AND NEW ZEALAND BANKING GROUP LIMITED</span>
 <span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('UTIB')">
-<span class="bank-code" style="background:#7c3aed">UTIB</span>
+<span class="bank-code" style="background:#D32F2F">UTIB</span>
 <span class="bank-name-text">AXIS BANK</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('APSC')">
 <span class="bank-code" style="background:#d97706">APSC</span>
 <span class="bank-name-text">THE ANDHRA PRADESH STATE COOPERATIVE BANK LIMITED</span>
 <span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
 </div></div></div><div class="letter-group"><div class="letter-header">B</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('BDBL')">
-<span class="bank-code" style="background:#7c3aed">BDBL</span>
+<span class="bank-code" style="background:#D32F2F">BDBL</span>
 <span class="bank-name-text">BANDHAN BANK LIMITED</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('BOFA')">
 <span class="bank-code" style="background:#059669">BOFA</span>
 <span class="bank-name-text">BANK OF AMERICA</span>
@@ -826,9 +826,9 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">CITI BANK</span>
 <span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('CIUB')">
-<span class="bank-code" style="background:#7c3aed">CIUB</span>
+<span class="bank-code" style="background:#D32F2F">CIUB</span>
 <span class="bank-name-text">CITY UNION BANK LIMITED</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('CORP')">
 <span class="bank-code" style="background:#2563eb">CORP</span>
 <span class="bank-name-text">CORPORATION BANK</span>
@@ -842,9 +842,9 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">CREDIT SUISSE AG</span>
 <span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('CSBK')">
-<span class="bank-code" style="background:#7c3aed">CSBK</span>
+<span class="bank-code" style="background:#D32F2F">CSBK</span>
 <span class="bank-name-text">CSB BANK LIMITED</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('CTCB')">
 <span class="bank-code" style="background:#059669">CTCB</span>
 <span class="bank-name-text">CTBC BANK CO LTD</span>
@@ -858,9 +858,9 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">DBS BANK INDIA LIMITED</span>
 <span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('DCBL')">
-<span class="bank-code" style="background:#7c3aed">DCBL</span>
+<span class="bank-code" style="background:#D32F2F">DCBL</span>
 <span class="bank-name-text">DCB BANK LIMITED</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('BKDN')">
 <span class="bank-code" style="background:#2563eb">BKDN</span>
 <span class="bank-name-text">DENA BANK</span>
@@ -870,9 +870,9 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">DEUTSCHE BANK</span>
 <span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('DLXB')">
-<span class="bank-code" style="background:#7c3aed">DLXB</span>
+<span class="bank-code" style="background:#D32F2F">DLXB</span>
 <span class="bank-name-text">DHANALAKSHMI BANK</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('DHBK')">
 <span class="bank-code" style="background:#059669">DHBK</span>
 <span class="bank-name-text">DOHA BANK QSC</span>
@@ -898,9 +898,9 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">EXPORT IMPORT BANK OF INDIA</span>
 <span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
 </div></div></div><div class="letter-group"><div class="letter-header">F</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('FDRL')">
-<span class="bank-code" style="background:#7c3aed">FDRL</span>
+<span class="bank-code" style="background:#D32F2F">FDRL</span>
 <span class="bank-name-text">FEDERAL BANK</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('FSFB')">
 <span class="bank-code" style="background:#0891b2">FSFB</span>
 <span class="bank-name-text">FINCARE SMALL FINANCE BANK LTD</span>
@@ -926,25 +926,25 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">HARYANA STATE COOPERATIVE BANK</span>
 <span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('HDFC')">
-<span class="bank-code" style="background:#7c3aed">HDFC</span>
+<span class="bank-code" style="background:#D32F2F">HDFC</span>
 <span class="bank-name-text">HDFC BANK</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('HPSC')">
 <span class="bank-code" style="background:#d97706">HPSC</span>
 <span class="bank-name-text">HIMACHAL PRADESH STATE COOPERATIVE BANK LTD</span>
 <span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
 </div></div></div><div class="letter-group"><div class="letter-header">I</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('ICIC')">
-<span class="bank-code" style="background:#7c3aed">ICIC</span>
+<span class="bank-code" style="background:#D32F2F">ICIC</span>
 <span class="bank-name-text">ICICI BANK</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('IBKL')">
 <span class="bank-code" style="background:#2563eb">IBKL</span>
 <span class="bank-name-text">IDBI BANK</span>
 <span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('IDFB')">
-<span class="bank-code" style="background:#7c3aed">IDFB</span>
+<span class="bank-code" style="background:#D32F2F">IDFB</span>
 <span class="bank-name-text">IDFC FIRST BANK LTD</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('IPOS')">
 <span class="bank-code" style="background:#e11d48">IPOS</span>
 <span class="bank-name-text">INDIA POST PAYMENT BANK</span>
@@ -958,9 +958,9 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">INDIAN OVERSEAS BANK</span>
 <span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('INDB')">
-<span class="bank-code" style="background:#7c3aed">INDB</span>
+<span class="bank-code" style="background:#D32F2F">INDB</span>
 <span class="bank-name-text">INDUSIND BANK</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('ICBK')">
 <span class="bank-code" style="background:#059669">ICBK</span>
 <span class="bank-name-text">INDUSTRIAL AND COMMERCIAL BANK OF CHINA LIMITED</span>
@@ -970,9 +970,9 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">INDUSTRIAL BANK OF KOREA</span>
 <span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
 </div></div></div><div class="letter-group"><div class="letter-header">J</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('JAKA')">
-<span class="bank-code" style="background:#7c3aed">JAKA</span>
+<span class="bank-code" style="background:#D32F2F">JAKA</span>
 <span class="bank-name-text">JAMMU AND KASHMIR BANK LIMITED</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('JSFB')">
 <span class="bank-code" style="background:#0891b2">JSFB</span>
 <span class="bank-name-text">JANA SMALL FINANCE BANK LTD</span>
@@ -986,9 +986,9 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">JP MORGAN BANK</span>
 <span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
 </div></div></div><div class="letter-group"><div class="letter-header">K</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('KARB')">
-<span class="bank-code" style="background:#7c3aed">KARB</span>
+<span class="bank-code" style="background:#D32F2F">KARB</span>
 <span class="bank-name-text">KARNATAKA BANK LIMITED</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('PKGB')">
 <span class="bank-code" style="background:#16a34a">PKGB</span>
 <span class="bank-name-text">KARNATAKA GRAMIN BANK</span>
@@ -998,9 +998,9 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">KARNATAKA VIKAS GRAMEENA BANK</span>
 <span class="bank-type-badge" style="color:#16a34a;border-color:#16a34a">Gramin/Rural</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('KVBL')">
-<span class="bank-code" style="background:#7c3aed">KVBL</span>
+<span class="bank-code" style="background:#D32F2F">KVBL</span>
 <span class="bank-name-text">KARUR VYSYA BANK</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('KOEX')">
 <span class="bank-code" style="background:#059669">KOEX</span>
 <span class="bank-name-text">KEB HANA BANK</span>
@@ -1014,9 +1014,9 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">KOOKMIN BANK</span>
 <span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('KKBK')">
-<span class="bank-code" style="background:#7c3aed">KKBK</span>
+<span class="bank-code" style="background:#D32F2F">KKBK</span>
 <span class="bank-name-text">KOTAK MAHINDRA BANK</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('KRTH')">
 <span class="bank-code" style="background:#059669">KRTH</span>
 <span class="bank-name-text">KRUNG THAI BANK PCL</span>
@@ -1030,9 +1030,9 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">THE KERALA STATE COOPERATIVE BANK</span>
 <span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
 </div></div></div><div class="letter-group"><div class="letter-header">L</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('LAVB')">
-<span class="bank-code" style="background:#7c3aed">LAVB</span>
+<span class="bank-code" style="background:#D32F2F">LAVB</span>
 <span class="bank-name-text">LAXMI VILAS BANK</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div></div></div><div class="letter-group"><div class="letter-header">M</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('MAHG')">
 <span class="bank-code" style="background:#16a34a">MAHG</span>
 <span class="bank-name-text">MAHARASHTRA GRAMIN BANK</span>
@@ -1054,9 +1054,9 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">MUFG BANK LTD</span>
 <span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
 </div></div></div><div class="letter-group"><div class="letter-header">N</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('NTBL')">
-<span class="bank-code" style="background:#7c3aed">NTBL</span>
+<span class="bank-code" style="background:#D32F2F">NTBL</span>
 <span class="bank-name-text">NAINITAL BANK LIMITED</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('NKGS')">
 <span class="bank-code" style="background:#d97706">NKGS</span>
 <span class="bank-name-text">NKGSB COOPERATIVE BANK LIMITED</span>
@@ -1114,9 +1114,9 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">RAJASTHAN MARUDHARA GRAMIN BANK</span>
 <span class="bank-type-badge" style="color:#16a34a;border-color:#16a34a">Gramin/Rural</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('RATN')">
-<span class="bank-code" style="background:#7c3aed">RATN</span>
+<span class="bank-code" style="background:#D32F2F">RATN</span>
 <span class="bank-name-text">RBL BANK LIMITED</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('RBIS')">
 <span class="bank-code" style="background:#2563eb">RBIS</span>
 <span class="bank-name-text">RESERVE BANK OF INDIA</span>
@@ -1146,9 +1146,9 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">SOCIETE GENERALE</span>
 <span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('SIBL')">
-<span class="bank-code" style="background:#7c3aed">SIBL</span>
+<span class="bank-code" style="background:#D32F2F">SIBL</span>
 <span class="bank-name-text">SOUTH INDIAN BANK</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('SCBL')">
 <span class="bank-code" style="background:#059669">SCBL</span>
 <span class="bank-name-text">STANDARD CHARTERED BANK</span>
@@ -1174,9 +1174,9 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">THE SHAMRAO VITHAL COOPERATIVE BANK</span>
 <span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
 </div></div></div><div class="letter-group"><div class="letter-header">T</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('TMBL')">
-<span class="bank-code" style="background:#7c3aed">TMBL</span>
+<span class="bank-code" style="background:#D32F2F">TMBL</span>
 <span class="bank-name-text">TAMILNAD MERCANTILE BANK LIMITED</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div><div class="bank-list-item" onclick="selectBankFromCard('TSAB')">
 <span class="bank-code" style="background:#d97706">TSAB</span>
 <span class="bank-name-text">TELANGANA STATE COOP APEX BANK</span>
@@ -1230,9 +1230,9 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <span class="bank-name-text">WOORI BANK</span>
 <span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
 </div></div></div><div class="letter-group"><div class="letter-header">Y</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('YESB')">
-<span class="bank-code" style="background:#7c3aed">YESB</span>
+<span class="bank-code" style="background:#D32F2F">YESB</span>
 <span class="bank-name-text">YES BANK</span>
-<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+<span class="bank-type-badge" style="color:#D32F2F;border-color:#D32F2F">Private Sector</span>
 </div></div></div></div>
 </div>
 

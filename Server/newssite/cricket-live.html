@@ -22,7 +22,7 @@
   --bg: #0b0f1a; --bg2: #111827; --bg3: #1e293b; --bg4: #334155;
   --text: #e8edf5; --text2: #94a3b8; --text3: #64748b;
   --accent: #10b981; --accent2: #059669; --red: #ef4444; --orange: #f59e0b;
-  --blue: #3b82f6; --purple: #8b5cf6; --pink: #ec4899;
+  --blue: #3b82f6; --purple: #E53935; --pink: #ec4899;
   --border: rgba(255,255,255,0.08); --glass: rgba(17,24,39,0.85);
   --shadow: 0 4px 24px rgba(0,0,0,0.3);
   --radius: 12px; --radius2: 16px;
@@ -53,13 +53,13 @@ a { color:var(--accent); text-decoration:none; }
 .loading-overlay span { color:var(--text2); font-size:14px; }
 .header { background:rgba(17,24,39,0.85); border-bottom:1px solid var(--border); padding:12px 20px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); transition:all 0.3s; }
 .header-left { display:flex; align-items:center; gap:12px; }
-.logo { width:40px; height:40px; background:linear-gradient(135deg,#6366f1,#4f46e5); border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:14px; text-decoration:none; }
+.logo { width:40px; height:40px; background:linear-gradient(135deg,#E53935,#C62828); border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:14px; text-decoration:none; }
 .site-name { font-family:'Playfair Display',serif; font-size:20px; font-weight:800; }
 .site-name small { display:block; font-family:'Inter',sans-serif; font-size:10px; font-weight:500; color:var(--accent); letter-spacing:2px; text-transform:uppercase; }
 .header-right { display:flex; align-items:center; gap:10px; }
 .header-right a, .header-right button { padding:6px 14px; border-radius:8px; font-size:13px; cursor:pointer; border:1px solid var(--border); background:var(--bg3); color:var(--text2); transition:all 0.2s; font-family:'Inter',sans-serif; }
 .header-right a:hover, .header-right button:hover { background:var(--bg4); color:var(--text); }
-.hero { background:linear-gradient(135deg, #064e3b 0%, #0f172a 40%, #1e1b4b 80%, #312e81 100%); padding:32px 20px; text-align:center; position:relative; overflow:hidden; }
+.hero { background:linear-gradient(135deg, #064e3b 0%, #0f172a 40%, #1a0a0a 80%, #4a1212 100%); padding:32px 20px; text-align:center; position:relative; overflow:hidden; }
 .hero::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:radial-gradient(circle at 30% 50%, rgba(16,185,129,0.1) 0%, transparent 50%); }
 .hero h2 { font-family:'Playfair Display',serif; font-size:28px; font-weight:900; margin-bottom:6px; position:relative; }
 .hero p { color:var(--text2); font-size:14px; position:relative; }
@@ -276,20 +276,20 @@ a { color:var(--accent); text-decoration:none; }
     header {
         background: rgba(11,15,26,0.9) !important;
         backdrop-filter: blur(24px) saturate(180%) !important;
-        border-bottom: 1px solid rgba(99,102,241,0.1) !important;
+        border-bottom: 1px solid rgba(229,57,53,0.1) !important;
     }
     
     /* Match cards with live indicator */
     .match-card {
         border-radius: 16px !important;
-        border: 1px solid rgba(99,102,241,0.08) !important;
+        border: 1px solid rgba(229,57,53,0.08) !important;
         background: rgba(17,24,39,0.6) !important;
         backdrop-filter: blur(8px) !important;
         transition: all 0.35s cubic-bezier(0.33, 1, 0.68, 1) !important;
     }
     .match-card:hover {
         transform: translateY(-6px) !important;
-        border-color: rgba(99,102,241,0.2) !important;
+        border-color: rgba(229,57,53,0.2) !important;
         box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
     }
     
@@ -320,9 +320,9 @@ a { color:var(--accent); text-decoration:none; }
         font-weight: 600 !important;
     }
     .tab-nav button.active, .tab-btn.active, .nav-tab.active {
-        background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+        background: linear-gradient(135deg, #E53935, #C62828) !important;
         color: white !important;
-        box-shadow: 0 4px 15px rgba(99,102,241,0.3) !important;
+        box-shadow: 0 4px 15px rgba(229,57,53,0.3) !important;
     }
     
     /* Scorecard table */
@@ -332,17 +332,17 @@ a { color:var(--accent); text-decoration:none; }
     }
     th {
         background: linear-gradient(135deg, #1e293b, #334155) !important;
-        color: #818cf8 !important;
+        color: #EF5350 !important;
         font-weight: 700 !important;
     }
     tr:hover td {
-        background: rgba(99,102,241,0.05) !important;
+        background: rgba(229,57,53,0.05) !important;
     }
     
     /* Footer */
     footer {
         background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
-        border-top: 1px solid rgba(99,102,241,0.1) !important;
+        border-top: 1px solid rgba(229,57,53,0.1) !important;
     }
     
     @media (max-width: 768px) {
@@ -386,8 +386,8 @@ a { color:var(--accent); text-decoration:none; }
 .stats-table td:first-child{text-align:left;font-weight:600;color:var(--text)}.stats-table tr:hover{background:var(--bg3)}
 .milestone-card{background:var(--bg3);border-radius:10px;padding:12px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
 .milestone-card .label{font-size:13px;color:var(--text2)}.milestone-card .value{font-size:18px;font-weight:800;color:var(--accent)}
-.ai-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#8b5cf6,#ec4899);color:#fff;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
-.ai-generate-btn{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#8b5cf6,#3b82f6);color:#fff;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;margin:12px 0;transition:all 0.2s}
+.ai-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#E53935,#ec4899);color:#fff;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
+.ai-generate-btn{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#E53935,#3b82f6);color:#fff;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;margin:12px 0;transition:all 0.2s}
 .ai-generate-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(139,92,246,0.3)}
 .ai-generate-btn:disabled{opacity:0.6;cursor:not-allowed}
 .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:2000;justify-content:center;align-items:center;flex-direction:column}
@@ -419,16 +419,35 @@ a { color:var(--accent); text-decoration:none; }
 <link rel="stylesheet" href="/common.css">
 </head>
 <body>
-<header class="header">
-  <div class="header-left">
-    <a href="/" class="logo">NR</a>
-    <div class="site-name">News Reporter<small>Live Cricket Scores</small></div>
-  </div>
-  <div class="header-right">
-    <a href="/" style="color:var(--text2);text-decoration:none;font-size:13px">Back to News</a>
-    <button onclick="toggleDarkMode()" id="themeBtn" style="background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:12px">Light</button>
-  </div>
+<header class="header" style="background:var(--bg2);border-bottom:1px solid var(--border);padding:0;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);">
+    <div style="max-width:1320px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;">
+        <a href="/" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+            <div style="width:44px;height:44px;background:linear-gradient(135deg,#E53935,#C62828);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-size:16px;font-weight:900;font-family:'Playfair Display',serif;box-shadow:0 4px 12px rgba(229,57,53,0.3);">NR</div>
+            <div>
+                <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:800;color:var(--text1);line-height:1.1;">News Reporter</div>
+                <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:2px;font-weight:500;">Live &bull; Trusted &bull; Independent</div>
+            </div>
+        </a>
+        <div style="display:flex;align-items:center;gap:10px;">
+            <button onclick="document.body.classList.toggle('dark');document.body.classList.toggle('dark-mode');localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');" style="padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3,var(--bg));color:var(--text2,var(--text-secondary));">&#9790; Dark</button>
+            <a href="/" style="padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;background:#E53935;color:#fff;text-decoration:none;">&larr; Home</a>
+        </div>
+    </div>
 </header>
+<nav style="background:var(--bg2,var(--bg-white));border-bottom:1px solid var(--border);position:sticky;top:52px;z-index:99;overflow-x:auto;">
+    <div style="max-width:1320px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:0;white-space:nowrap;">
+        <a href="/" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">Home</a>
+        <a href="/movies" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#127916; Movies</a>
+        <a href="/cricket-live" style="padding:12px 16px;font-size:13px;font-weight:700;color:#E53935;border-bottom:2px solid #E53935;text-decoration:none;">&#127951; Live Scores</a>
+        <a href="/financial-aids" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#128176; Financial Aids</a>
+        <a href="/cbse" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#127891; CBSE</a>
+        <a href="/ifsc-codes" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#127975; IFSC Codes</a>
+        <a href="/pincode" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#128238; PIN Code</a>
+        <a href="/loan-calculator" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#128176; Loan Calc</a>
+        <a href="/investment-calculator" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#128200; SIP Calc</a>
+        <a href="/directory" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#127758; Directory</a>
+    </div>
+</nav>
 <div class="hero">
   <div class="live-badge">LIVE CRICKET</div>
   <h2 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:800;margin:8px 0">Live Cricket Scores</h2>

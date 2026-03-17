@@ -34,8 +34,8 @@
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#6366f1;--primary-light:#dbeafe;--accent:#7c3aed;--success:#059669;--warning:#d97706;--red:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--radius:12px}
-body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#818cf8;--primary-light:#1e3a5f;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
+:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#E53935;--primary-light:#dbeafe;--accent:#D32F2F;--success:#059669;--warning:#d97706;--red:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--radius:12px}
+body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#EF5350;--primary-light:#1e3a5f;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
 body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
 a{color:var(--primary);text-decoration:none}
 a:hover{text-decoration:underline}
@@ -43,7 +43,7 @@ a:hover{text-decoration:underline}
 .site-header{background:var(--card);border-bottom:1px solid var(--border);padding:0;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:all 0.3s;box-shadow:var(--shadow)}
 .header-top{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px 24px}
 .logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
-.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#6366f1,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#E53935,#D32F2F);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px}
 .logo h1{font-family:'Playfair Display',serif;font-size:22px;color:var(--text);line-height:1.1}
 .logo span{font-size:11px;color:var(--text3);letter-spacing:1px}
 .header-right{display:flex;align-items:center;gap:16px}
@@ -216,13 +216,13 @@ footer{background:var(--card);border-top:1px solid var(--border);margin-top:40px
     header {
         background: rgba(11,15,26,0.9) !important;
         backdrop-filter: blur(24px) saturate(180%) !important;
-        border-bottom: 1px solid rgba(99,102,241,0.1) !important;
+        border-bottom: 1px solid rgba(229,57,53,0.1) !important;
     }
     
     /* Calculator panels */
     .calc-panel, .calculator-section, .sip-panel {
         border-radius: 20px !important;
-        border: 1px solid rgba(99,102,241,0.1) !important;
+        border: 1px solid rgba(229,57,53,0.1) !important;
         background: rgba(17,24,39,0.6) !important;
         backdrop-filter: blur(10px) !important;
         box-shadow: 0 10px 40px rgba(0,0,0,0.15) !important;
@@ -237,7 +237,7 @@ footer{background:var(--card);border-top:1px solid var(--border);margin-top:40px
     }
     
     input[type="range"] {
-        accent-color: #6366f1 !important;
+        accent-color: #E53935 !important;
     }
     
     /* Tabs */
@@ -246,9 +246,9 @@ footer{background:var(--card);border-top:1px solid var(--border);margin-top:40px
         transition: all 0.25s ease !important;
     }
     .calc-tab.active, .mode-tab.active {
-        background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+        background: linear-gradient(135deg, #E53935, #C62828) !important;
         color: white !important;
-        box-shadow: 0 4px 15px rgba(99,102,241,0.3) !important;
+        box-shadow: 0 4px 15px rgba(229,57,53,0.3) !important;
     }
     
     /* Chart area */
@@ -259,13 +259,13 @@ footer{background:var(--card);border-top:1px solid var(--border);margin-top:40px
     /* Provider cards */
     .fund-card, .provider-card {
         border-radius: 16px !important;
-        border: 1px solid rgba(99,102,241,0.08) !important;
+        border: 1px solid rgba(229,57,53,0.08) !important;
         background: rgba(17,24,39,0.5) !important;
         transition: all 0.35s ease !important;
     }
     .fund-card:hover, .provider-card:hover {
         transform: translateY(-6px) !important;
-        border-color: rgba(99,102,241,0.2) !important;
+        border-color: rgba(229,57,53,0.2) !important;
         box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
     }
     
@@ -275,16 +275,16 @@ footer{background:var(--card);border-top:1px solid var(--border);margin-top:40px
     }
     th {
         background: linear-gradient(135deg, #1e293b, #334155) !important;
-        color: #818cf8 !important;
+        color: #EF5350 !important;
         font-weight: 700 !important;
     }
     tr:hover td {
-        background: rgba(99,102,241,0.03) !important;
+        background: rgba(229,57,53,0.03) !important;
     }
     
     footer {
         background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
-        border-top: 1px solid rgba(99,102,241,0.1) !important;
+        border-top: 1px solid rgba(229,57,53,0.1) !important;
     }
     
 </style>
@@ -389,7 +389,7 @@ footer{background:var(--card);border-top:1px solid var(--border);margin-top:40px
 <div class="donut-center"><div class="pct" id="sipDonutPct">52%</div><div class="pct-label">Invested</div></div>
 </div>
 <div class="chart-legend">
-<div class="legend-item"><div class="legend-dot" style="background:#818cf8"></div>Invested ( <span id="sipLegInv">52%</span> )</div>
+<div class="legend-item"><div class="legend-dot" style="background:#EF5350"></div>Invested ( <span id="sipLegInv">52%</span> )</div>
 <div class="legend-item"><div class="legend-dot" style="background:#34d399"></div>Returns ( <span id="sipLegRet">48%</span> )</div>
 </div>
 </div>
@@ -517,7 +517,7 @@ footer{background:var(--card);border-top:1px solid var(--border);margin-top:40px
 <div class="donut-center"><div class="pct" id="lsDonutPct">32%</div><div class="pct-label">Invested</div></div>
 </div>
 <div class="chart-legend">
-<div class="legend-item"><div class="legend-dot" style="background:#818cf8"></div>Invested ( <span id="lsLegInv">32%</span> )</div>
+<div class="legend-item"><div class="legend-dot" style="background:#EF5350"></div>Invested ( <span id="lsLegInv">32%</span> )</div>
 <div class="legend-item"><div class="legend-dot" style="background:#34d399"></div>Returns ( <span id="lsLegRet">68%</span> )</div>
 </div>
 </div>
@@ -768,7 +768,7 @@ var retPct=100-invPct;
 document.getElementById('sipDonutPct').textContent=invPct+'%';
 document.getElementById('sipLegInv').textContent=invPct+'%';
 document.getElementById('sipLegRet').textContent=retPct+'%';
-drawDonut('sipDonut',invPct,retPct,'#818cf8','#34d399');
+drawDonut('sipDonut',invPct,retPct,'#EF5350','#34d399');
 buildSipGrowth(P,parseFloat(document.getElementById('sipRateSlider').value)/100,parseInt(document.getElementById('sipYearsSlider').value));
 }
 
@@ -857,7 +857,7 @@ var invPct=Math.round(P/FV*100);var retPct=100-invPct;
 document.getElementById('lsDonutPct').textContent=invPct+'%';
 document.getElementById('lsLegInv').textContent=invPct+'%';
 document.getElementById('lsLegRet').textContent=retPct+'%';
-drawDonut('lsDonut',invPct,retPct,'#818cf8','#34d399');
+drawDonut('lsDonut',invPct,retPct,'#EF5350','#34d399');
 buildLsGrowth(P,r,t);
 }
 
@@ -978,15 +978,15 @@ body.innerHTML+='<tr><td style="font-weight:600;color:'+inv.color+'">'+inv.name+
 // ===== Mutual Fund Data =====
 var fundsData=[
 // Large Cap
-{name:'Mirae Asset Large Cap Fund',cat:'large-cap',catLabel:'Large Cap',aum:'38,450 Cr',expense:'0.53%',ret1y:18.2,ret3y:15.8,ret5y:16.4,rating:5,risk:'Moderate',color:'#6366f1',topPick:true},
-{name:'ICICI Pru Bluechip Fund',cat:'large-cap',catLabel:'Large Cap',aum:'52,800 Cr',expense:'0.89%',ret1y:17.5,ret3y:16.2,ret5y:15.9,rating:5,risk:'Moderate',color:'#6366f1'},
-{name:'Axis Bluechip Fund',cat:'large-cap',catLabel:'Large Cap',aum:'34,200 Cr',expense:'0.68%',ret1y:15.8,ret3y:13.4,ret5y:14.2,rating:4,risk:'Moderate',color:'#6366f1'},
-{name:'SBI Blue Chip Fund',cat:'large-cap',catLabel:'Large Cap',aum:'42,100 Cr',expense:'0.72%',ret1y:16.9,ret3y:15.1,ret5y:15.3,rating:4,risk:'Moderate',color:'#6366f1'},
+{name:'Mirae Asset Large Cap Fund',cat:'large-cap',catLabel:'Large Cap',aum:'38,450 Cr',expense:'0.53%',ret1y:18.2,ret3y:15.8,ret5y:16.4,rating:5,risk:'Moderate',color:'#E53935',topPick:true},
+{name:'ICICI Pru Bluechip Fund',cat:'large-cap',catLabel:'Large Cap',aum:'52,800 Cr',expense:'0.89%',ret1y:17.5,ret3y:16.2,ret5y:15.9,rating:5,risk:'Moderate',color:'#E53935'},
+{name:'Axis Bluechip Fund',cat:'large-cap',catLabel:'Large Cap',aum:'34,200 Cr',expense:'0.68%',ret1y:15.8,ret3y:13.4,ret5y:14.2,rating:4,risk:'Moderate',color:'#E53935'},
+{name:'SBI Blue Chip Fund',cat:'large-cap',catLabel:'Large Cap',aum:'42,100 Cr',expense:'0.72%',ret1y:16.9,ret3y:15.1,ret5y:15.3,rating:4,risk:'Moderate',color:'#E53935'},
 // Mid Cap
-{name:'Quant Mid Cap Fund',cat:'mid-cap',catLabel:'Mid Cap',aum:'8,200 Cr',expense:'0.57%',ret1y:28.4,ret3y:26.8,ret5y:28.2,rating:5,risk:'High',color:'#7c3aed',topPick:true},
-{name:'HDFC Mid-Cap Opportunities',cat:'mid-cap',catLabel:'Mid Cap',aum:'58,400 Cr',expense:'0.78%',ret1y:22.6,ret3y:24.1,ret5y:22.8,rating:5,risk:'High',color:'#7c3aed'},
-{name:'Kotak Emerging Equity Fund',cat:'mid-cap',catLabel:'Mid Cap',aum:'42,600 Cr',expense:'0.45%',ret1y:21.8,ret3y:22.5,ret5y:21.4,rating:4,risk:'High',color:'#7c3aed'},
-{name:'Motilal Oswal Midcap Fund',cat:'mid-cap',catLabel:'Mid Cap',aum:'18,900 Cr',expense:'0.62%',ret1y:25.1,ret3y:28.4,ret5y:24.6,rating:5,risk:'High',color:'#7c3aed'},
+{name:'Quant Mid Cap Fund',cat:'mid-cap',catLabel:'Mid Cap',aum:'8,200 Cr',expense:'0.57%',ret1y:28.4,ret3y:26.8,ret5y:28.2,rating:5,risk:'High',color:'#D32F2F',topPick:true},
+{name:'HDFC Mid-Cap Opportunities',cat:'mid-cap',catLabel:'Mid Cap',aum:'58,400 Cr',expense:'0.78%',ret1y:22.6,ret3y:24.1,ret5y:22.8,rating:5,risk:'High',color:'#D32F2F'},
+{name:'Kotak Emerging Equity Fund',cat:'mid-cap',catLabel:'Mid Cap',aum:'42,600 Cr',expense:'0.45%',ret1y:21.8,ret3y:22.5,ret5y:21.4,rating:4,risk:'High',color:'#D32F2F'},
+{name:'Motilal Oswal Midcap Fund',cat:'mid-cap',catLabel:'Mid Cap',aum:'18,900 Cr',expense:'0.62%',ret1y:25.1,ret3y:28.4,ret5y:24.6,rating:5,risk:'High',color:'#D32F2F'},
 // Small Cap
 {name:'Quant Small Cap Fund',cat:'small-cap',catLabel:'Small Cap',aum:'24,800 Cr',expense:'0.64%',ret1y:22.5,ret3y:30.2,ret5y:38.4,rating:5,risk:'Very High',color:'#dc2626',topPick:true},
 {name:'Nippon India Small Cap',cat:'small-cap',catLabel:'Small Cap',aum:'48,200 Cr',expense:'0.68%',ret1y:20.8,ret3y:28.6,ret5y:32.1,rating:5,risk:'Very High',color:'#dc2626'},

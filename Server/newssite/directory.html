@@ -31,8 +31,8 @@
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#6366f1;--primary-light:#dbeafe;--accent:#7c3aed;--success:#059669;--warning:#d97706;--red:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--radius:12px;--orange:#ea580c}
-body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#818cf8;--primary-light:#1e3a5f;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
+:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#E53935;--primary-light:#dbeafe;--accent:#D32F2F;--success:#059669;--warning:#d97706;--red:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--radius:12px;--orange:#ea580c}
+body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#EF5350;--primary-light:#1e3a5f;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
 body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
 a{color:var(--primary);text-decoration:none}
 a:hover{text-decoration:underline}
@@ -40,7 +40,7 @@ a:hover{text-decoration:underline}
 .site-header{background:var(--card);border-bottom:1px solid var(--border);padding:0;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:all 0.3s;box-shadow:var(--shadow)}
 .header-top{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px 24px}
 .logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
-.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#6366f1,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#E53935,#D32F2F);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px}
 .logo h1{font-family:'Playfair Display',serif;font-size:22px;color:var(--text);line-height:1.1}
 .logo span{font-size:11px;color:var(--text3);letter-spacing:1px}
 .header-right{display:flex;align-items:center;gap:16px}
@@ -91,7 +91,7 @@ a:hover{text-decoration:underline}
 .tag-green{background:#dcfce7;color:#16a34a}
 .tag-orange{background:#ffedd5;color:#ea580c}
 .tag-red{background:#fee2e2;color:#dc2626}
-.tag-purple{background:#f3e8ff;color:#7c3aed}
+.tag-purple{background:#f3e8ff;color:#D32F2F}
 body.dark .tag{background:var(--primary-light);color:#93c5fd}
 body.dark .tag-green{background:#14532d;color:#86efac}
 body.dark .tag-orange{background:#431407;color:#fdba74}
@@ -189,59 +189,59 @@ body.dark .tag-purple{background:#3b0764;color:#d8b4fe}
     header {
         background: rgba(11,15,26,0.9) !important;
         backdrop-filter: blur(24px) saturate(180%) !important;
-        border-bottom: 1px solid rgba(99,102,241,0.1) !important;
+        border-bottom: 1px solid rgba(229,57,53,0.1) !important;
     }
     
     /* State cards */
     .state-card, .district-card, .village-card {
         border-radius: 16px !important;
-        border: 1px solid rgba(99,102,241,0.08) !important;
+        border: 1px solid rgba(229,57,53,0.08) !important;
         background: rgba(17,24,39,0.5) !important;
         transition: all 0.35s cubic-bezier(0.33, 1, 0.68, 1) !important;
     }
     .state-card:hover, .district-card:hover, .village-card:hover {
         transform: translateY(-6px) !important;
-        border-color: rgba(99,102,241,0.2) !important;
+        border-color: rgba(229,57,53,0.2) !important;
         box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
     }
     
     /* Search input */
     .search-input, input[type="search"] {
         background: rgba(30,41,59,0.6) !important;
-        border: 2px solid rgba(99,102,241,0.15) !important;
+        border: 2px solid rgba(229,57,53,0.15) !important;
         border-radius: 14px !important;
         color: #f1f5f9 !important;
         transition: all 0.3s ease !important;
     }
     .search-input:focus, input[type="search"]:focus {
-        border-color: #6366f1 !important;
-        box-shadow: 0 0 0 4px rgba(99,102,241,0.15) !important;
+        border-color: #E53935 !important;
+        box-shadow: 0 0 0 4px rgba(229,57,53,0.15) !important;
     }
     
     /* Stats display */
     .stat-value {
         font-weight: 900 !important;
-        background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+        background: linear-gradient(135deg, #E53935, #E53935) !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
     }
     
     /* Breadcrumb nav buttons */
     .nav-btn, .back-btn {
-        background: rgba(99,102,241,0.1) !important;
-        border: 1px solid rgba(99,102,241,0.2) !important;
+        background: rgba(229,57,53,0.1) !important;
+        border: 1px solid rgba(229,57,53,0.2) !important;
         border-radius: 10px !important;
-        color: #818cf8 !important;
+        color: #EF5350 !important;
         transition: all 0.25s ease !important;
     }
     .nav-btn:hover, .back-btn:hover {
-        background: rgba(99,102,241,0.2) !important;
+        background: rgba(229,57,53,0.2) !important;
         transform: translateY(-2px) !important;
     }
     
     footer {
         background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
-        border-top: 1px solid rgba(99,102,241,0.1) !important;
+        border-top: 1px solid rgba(229,57,53,0.1) !important;
     }
     
 </style>
@@ -401,19 +401,19 @@ if(localStorage.getItem('darkMode')==='1'){document.body.classList.add('dark');d
 // ==================== DATA ====================
 const STATES_DATA = [
     {id:'andhra-pradesh',name:'Andhra Pradesh',capital:'Amaravati',emoji:'\ud83c\udf34',pop:'5.27 Cr',area:'1,60,205 km\u00b2',lang:'Telugu',famous:'Tirupati Temple, Araku Valley, Visakhapatnam Beaches',zones:'South',districts:26,color:'#059669'},
-    {id:'arunachal-pradesh',name:'Arunachal Pradesh',capital:'Itanagar',emoji:'\u26f0\ufe0f',pop:'16.4 L',area:'83,743 km\u00b2',lang:'English, Hindi',famous:'Tawang Monastery, Ziro Valley, Sela Pass',zones:'Northeast',districts:26,color:'#7c3aed'},
+    {id:'arunachal-pradesh',name:'Arunachal Pradesh',capital:'Itanagar',emoji:'\u26f0\ufe0f',pop:'16.4 L',area:'83,743 km\u00b2',lang:'English, Hindi',famous:'Tawang Monastery, Ziro Valley, Sela Pass',zones:'Northeast',districts:26,color:'#D32F2F'},
     {id:'assam',name:'Assam',capital:'Dispur',emoji:'\ud83c\udf75',pop:'3.55 Cr',area:'78,438 km\u00b2',lang:'Assamese',famous:'Kaziranga, Kamakhya Temple, Majuli Island',zones:'Northeast',districts:35,color:'#059669'},
     {id:'bihar',name:'Bihar',capital:'Patna',emoji:'\ud83c\udfdb\ufe0f',pop:'12.8 Cr',area:'94,163 km\u00b2',lang:'Hindi',famous:'Bodh Gaya, Nalanda, Mahabodhi Temple',zones:'East',districts:38,color:'#ea580c'},
     {id:'chhattisgarh',name:'Chhattisgarh',capital:'Raipur',emoji:'\ud83c\udf3f',pop:'2.95 Cr',area:'1,35,192 km\u00b2',lang:'Hindi, Chhattisgarhi',famous:'Chitrakote Falls, Barnawapara, Tirathgarh Falls',zones:'Central',districts:33,color:'#16a34a'},
     {id:'goa',name:'Goa',capital:'Panaji',emoji:'\ud83c\udfd6\ufe0f',pop:'15.9 L',area:'3,702 km\u00b2',lang:'Konkani',famous:'Baga Beach, Old Goa Churches, Dudhsagar Falls',zones:'West',districts:2,color:'#0891b2'},
     {id:'gujarat',name:'Gujarat',capital:'Gandhinagar',emoji:'\ud83e\udd81',pop:'7.07 Cr',area:'1,96,024 km\u00b2',lang:'Gujarati',famous:'Gir Forest, Somnath Temple, Rann of Kutch',zones:'West',districts:33,color:'#ea580c'},
-    {id:'haryana',name:'Haryana',capital:'Chandigarh',emoji:'\ud83c\udf3e',pop:'2.91 Cr',area:'44,212 km\u00b2',lang:'Hindi',famous:'Kurukshetra, Sultanpur Bird Sanctuary',zones:'North',districts:22,color:'#6366f1'},
-    {id:'himachal-pradesh',name:'Himachal Pradesh',capital:'Shimla',emoji:'\ud83c\udfd4\ufe0f',pop:'73.7 L',area:'55,673 km\u00b2',lang:'Hindi',famous:'Shimla, Manali, Dharamshala, Kullu Valley',zones:'North',districts:12,color:'#7c3aed'},
+    {id:'haryana',name:'Haryana',capital:'Chandigarh',emoji:'\ud83c\udf3e',pop:'2.91 Cr',area:'44,212 km\u00b2',lang:'Hindi',famous:'Kurukshetra, Sultanpur Bird Sanctuary',zones:'North',districts:22,color:'#E53935'},
+    {id:'himachal-pradesh',name:'Himachal Pradesh',capital:'Shimla',emoji:'\ud83c\udfd4\ufe0f',pop:'73.7 L',area:'55,673 km\u00b2',lang:'Hindi',famous:'Shimla, Manali, Dharamshala, Kullu Valley',zones:'North',districts:12,color:'#D32F2F'},
     {id:'jharkhand',name:'Jharkhand',capital:'Ranchi',emoji:'\u26cf\ufe0f',pop:'3.9 Cr',area:'79,714 km\u00b2',lang:'Hindi',famous:'Betla National Park, Hundru Falls, Deoghar',zones:'East',districts:24,color:'#b45309'},
     {id:'karnataka',name:'Karnataka',capital:'Bengaluru',emoji:'\ud83c\udf3a',pop:'6.79 Cr',area:'1,91,791 km\u00b2',lang:'Kannada',famous:'Hampi, Mysore Palace, Coorg, Jog Falls',zones:'South',districts:31,color:'#dc2626'},
     {id:'kerala',name:'Kerala',capital:'Thiruvananthapuram',emoji:'\ud83c\udf34',pop:'3.56 Cr',area:'38,863 km\u00b2',lang:'Malayalam',famous:'Backwaters, Munnar, Wayanad, Kovalam Beach',zones:'South',districts:14,color:'#059669'},
     {id:'madhya-pradesh',name:'Madhya Pradesh',capital:'Bhopal',emoji:'\ud83d\udc2f',pop:'8.46 Cr',area:'3,08,252 km\u00b2',lang:'Hindi',famous:'Khajuraho, Sanchi Stupa, Bandhavgarh, Kanha',zones:'Central',districts:55,color:'#ea580c'},
-    {id:'maharashtra',name:'Maharashtra',capital:'Mumbai',emoji:'\ud83c\udfd9\ufe0f',pop:'12.47 Cr',area:'3,07,713 km\u00b2',lang:'Marathi',famous:'Gateway of India, Ajanta-Ellora, Shirdi, Lonavala',zones:'West',districts:36,color:'#6366f1'},
+    {id:'maharashtra',name:'Maharashtra',capital:'Mumbai',emoji:'\ud83c\udfd9\ufe0f',pop:'12.47 Cr',area:'3,07,713 km\u00b2',lang:'Marathi',famous:'Gateway of India, Ajanta-Ellora, Shirdi, Lonavala',zones:'West',districts:36,color:'#E53935'},
     {id:'manipur',name:'Manipur',capital:'Imphal',emoji:'\ud83c\udf38',pop:'30.9 L',area:'22,327 km\u00b2',lang:'Meitei',famous:'Loktak Lake, Kangla Fort, Ima Keithel',zones:'Northeast',districts:16,color:'#db2777'},
     {id:'meghalaya',name:'Meghalaya',capital:'Shillong',emoji:'\ud83c\udf27\ufe0f',pop:'33.7 L',area:'22,429 km\u00b2',lang:'Khasi, English',famous:'Living Root Bridges, Cherrapunji, Mawsynram',zones:'Northeast',districts:12,color:'#0891b2'},
     {id:'mizoram',name:'Mizoram',capital:'Aizawl',emoji:'\ud83c\udfde\ufe0f',pop:'12.4 L',area:'21,081 km\u00b2',lang:'Mizo',famous:'Phawngpui Peak, Champhai, Tam Dil Lake',zones:'Northeast',districts:11,color:'#16a34a'},
@@ -421,15 +421,15 @@ const STATES_DATA = [
     {id:'odisha',name:'Odisha',capital:'Bhubaneswar',emoji:'\ud83d\uded5',pop:'4.68 Cr',area:'1,55,707 km\u00b2',lang:'Odia',famous:'Jagannath Temple, Konark Sun Temple, Chilika Lake',zones:'East',districts:30,color:'#dc2626'},
     {id:'punjab',name:'Punjab',capital:'Chandigarh',emoji:'\ud83c\udf3e',pop:'3.12 Cr',area:'50,362 km\u00b2',lang:'Punjabi',famous:'Golden Temple, Jallianwala Bagh, Wagah Border',zones:'North',districts:23,color:'#ea580c'},
     {id:'rajasthan',name:'Rajasthan',capital:'Jaipur',emoji:'\ud83c\udfdc\ufe0f',pop:'8.07 Cr',area:'3,42,239 km\u00b2',lang:'Hindi, Rajasthani',famous:'Jaipur, Udaipur, Jodhpur, Jaisalmer, Pushkar',zones:'West',districts:50,color:'#d97706'},
-    {id:'sikkim',name:'Sikkim',capital:'Gangtok',emoji:'\ud83c\udfd4\ufe0f',pop:'6.9 L',area:'7,096 km\u00b2',lang:'Nepali',famous:'Kanchenjunga, Nathula Pass, Tsomgo Lake',zones:'Northeast',districts:6,color:'#7c3aed'},
+    {id:'sikkim',name:'Sikkim',capital:'Gangtok',emoji:'\ud83c\udfd4\ufe0f',pop:'6.9 L',area:'7,096 km\u00b2',lang:'Nepali',famous:'Kanchenjunga, Nathula Pass, Tsomgo Lake',zones:'Northeast',districts:6,color:'#D32F2F'},
     {id:'tamil-nadu',name:'Tamil Nadu',capital:'Chennai',emoji:'\ud83d\uded5',pop:'7.71 Cr',area:'1,30,058 km\u00b2',lang:'Tamil',famous:'Meenakshi Temple, Marina Beach, Ooty, Kodaikanal',zones:'South',districts:38,color:'#dc2626'},
-    {id:'telangana',name:'Telangana',capital:'Hyderabad',emoji:'\ud83d\udc8e',pop:'3.94 Cr',area:'1,12,077 km\u00b2',lang:'Telugu, Urdu',famous:'Charminar, Golconda Fort, Ramoji Film City',zones:'South',districts:33,color:'#7c3aed'},
+    {id:'telangana',name:'Telangana',capital:'Hyderabad',emoji:'\ud83d\udc8e',pop:'3.94 Cr',area:'1,12,077 km\u00b2',lang:'Telugu, Urdu',famous:'Charminar, Golconda Fort, Ramoji Film City',zones:'South',districts:33,color:'#D32F2F'},
     {id:'tripura',name:'Tripura',capital:'Agartala',emoji:'\ud83c\udf3f',pop:'41.7 L',area:'10,486 km\u00b2',lang:'Bengali, Kokborok',famous:'Ujjayanta Palace, Neermahal, Unakoti',zones:'Northeast',districts:8,color:'#059669'},
-    {id:'uttar-pradesh',name:'Uttar Pradesh',capital:'Lucknow',emoji:'\ud83d\udd4c',pop:'23.15 Cr',area:'2,40,928 km\u00b2',lang:'Hindi, Urdu',famous:'Taj Mahal, Varanasi, Ayodhya, Mathura',zones:'North',districts:75,color:'#6366f1'},
+    {id:'uttar-pradesh',name:'Uttar Pradesh',capital:'Lucknow',emoji:'\ud83d\udd4c',pop:'23.15 Cr',area:'2,40,928 km\u00b2',lang:'Hindi, Urdu',famous:'Taj Mahal, Varanasi, Ayodhya, Mathura',zones:'North',districts:75,color:'#E53935'},
     {id:'uttarakhand',name:'Uttarakhand',capital:'Dehradun',emoji:'\ud83c\udfd4\ufe0f',pop:'1.14 Cr',area:'53,483 km\u00b2',lang:'Hindi',famous:'Haridwar, Rishikesh, Nainital, Mussoorie',zones:'North',districts:13,color:'#0891b2'},
     {id:'west-bengal',name:'West Bengal',capital:'Kolkata',emoji:'\ud83d\udc2f',pop:'10.09 Cr',area:'88,752 km\u00b2',lang:'Bengali',famous:'Victoria Memorial, Darjeeling, Sundarbans',zones:'East',districts:23,color:'#dc2626'},
     {id:'delhi',name:'Delhi (NCT)',capital:'New Delhi',emoji:'\ud83c\udfd9\ufe0f',pop:'1.9 Cr',area:'1,484 km\u00b2',lang:'Hindi, English',famous:'Red Fort, India Gate, Qutub Minar, Lotus Temple',zones:'UT',districts:11,color:'#ea580c'},
-    {id:'jammu-kashmir',name:'Jammu & Kashmir',capital:'Srinagar/Jammu',emoji:'\ud83c\udfd4\ufe0f',pop:'1.38 Cr',area:'42,241 km\u00b2',lang:'Kashmiri, Urdu, Dogri',famous:'Dal Lake, Gulmarg, Vaishno Devi, Sonamarg',zones:'UT',districts:20,color:'#7c3aed'},
+    {id:'jammu-kashmir',name:'Jammu & Kashmir',capital:'Srinagar/Jammu',emoji:'\ud83c\udfd4\ufe0f',pop:'1.38 Cr',area:'42,241 km\u00b2',lang:'Kashmiri, Urdu, Dogri',famous:'Dal Lake, Gulmarg, Vaishno Devi, Sonamarg',zones:'UT',districts:20,color:'#D32F2F'},
     {id:'ladakh',name:'Ladakh',capital:'Leh',emoji:'\ud83c\udfd4\ufe0f',pop:'2.9 L',area:'59,146 km\u00b2',lang:'Ladakhi, Hindi',famous:'Pangong Lake, Nubra Valley, Magnetic Hill',zones:'UT',districts:3,color:'#0891b2'},
     {id:'chandigarh',name:'Chandigarh',capital:'Chandigarh',emoji:'\ud83c\udfd7\ufe0f',pop:'11.6 L',area:'114 km\u00b2',lang:'Hindi, Punjabi',famous:'Rock Garden, Sukhna Lake, Rose Garden',zones:'UT',districts:1,color:'#059669'},
     {id:'puducherry',name:'Puducherry',capital:'Puducherry',emoji:'\ud83c\udfd6\ufe0f',pop:'16.5 L',area:'479 km\u00b2',lang:'Tamil, French',famous:'Auroville, Promenade Beach, French Quarter',zones:'UT',districts:4,color:'#d97706'},
@@ -504,7 +504,7 @@ function renderStateDetail(state){
     let html=`<a class="back-nav" onclick="showStates()">&#8592; Back to All States</a>`;
     html+=`<div class="detail-panel">
         <div class="detail-header">
-            <div class="detail-icon" style="background:${state.color||'#6366f1'}15;color:${state.color||'#6366f1'};font-size:36px">${state.emoji||'\ud83c\udfe0'}</div>
+            <div class="detail-icon" style="background:${state.color||'#E53935'}15;color:${state.color||'#E53935'};font-size:36px">${state.emoji||'\ud83c\udfe0'}</div>
             <div>
                 <div class="detail-title">${state.name}</div>
                 <div class="detail-subtitle">Capital: ${state.capital} &bull; ${state.zones||''} India</div>
@@ -665,7 +665,7 @@ function renderMandalDetail(mandal, stateId, districtId){
     let html=`<a class="back-nav" onclick="openDistrict('${stateId}','${districtId}')">&#8592; Back to ${mandal.districtName||'District'}</a>`;
     html+=`<div class="detail-panel">
         <div class="detail-header">
-            <div class="detail-icon" style="background:#7c3aed15;color:#7c3aed">\ud83c\udfe0</div>
+            <div class="detail-icon" style="background:#D32F2F15;color:#D32F2F">\ud83c\udfe0</div>
             <div>
                 <div class="detail-title">${mandal.name}</div>
                 <div class="detail-subtitle">${mandal.districtName||''}, ${mandal.stateName||''} &bull; Mandal/Tehsil</div>
@@ -782,7 +782,7 @@ function renderVillageDetail(village, stateId, districtId, mandalId){
 function renderOfficeCard(o, locationContext){
     const typeColors={
         'Police Station':'#dc2626','Hospital':'#059669','Fire Station':'#ea580c',
-        'Bank':'#6366f1','School':'#7c3aed','Post Office':'#d97706',
+        'Bank':'#E53935','School':'#D32F2F','Post Office':'#d97706',
         'Court':'#475569','Government Office':'#0891b2','College':'#9333ea',
         'Bus Stand':'#16a34a','Railway Station':'#b45309'
     };

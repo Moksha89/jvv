@@ -33,8 +33,8 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#6366f1;--pl:#eef2ff;--accent:#8b5cf6;--success:#059669;--warning:#d97706;--danger:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--r:16px}
-body.dark{--bg:#0b0f1a;--card:#111827;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#818cf8;--pl:#1e293b;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
+:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#E53935;--pl:#eef2ff;--accent:#E53935;--success:#059669;--warning:#d97706;--danger:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--r:16px}
+body.dark{--bg:#0b0f1a;--card:#111827;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#EF5350;--pl:#1e293b;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
 body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
 a{color:var(--primary);text-decoration:none}
 a:hover{text-decoration:underline}
@@ -42,7 +42,7 @@ a:hover{text-decoration:underline}
 header{background:var(--card);border-bottom:1px solid var(--border);padding:12px 24px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:all 0.3s}
 .hdr{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.logo-i{width:40px;height:40px;background:linear-gradient(135deg,#6366f1,#4f46e5);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px}
+.logo-i{width:40px;height:40px;background:linear-gradient(135deg,#E53935,#C62828);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px}
 .logo h1{font-family:'Playfair Display',serif;font-size:20px;color:var(--text)}
 .hdr-r{display:flex;gap:12px}
 .btn{border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px;color:var(--text2);background:var(--bg)}
@@ -54,11 +54,11 @@ header{background:var(--card);border-bottom:1px solid var(--border);padding:12px
 
 .hero{text-align:center;padding:32px 24px 16px;max-width:900px;margin:0 auto}
 .hero h2{font-family:'Playfair Display',serif;font-size:34px;margin-bottom:12px}
-.hero h2 em{background:linear-gradient(135deg,#6366f1,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-style:normal}
+.hero h2 em{background:linear-gradient(135deg,#E53935,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-style:normal}
 .hero p{color:var(--text2);font-size:15px;margin-bottom:20px}
 .stats{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
 .stat{background:var(--pl);border-radius:12px;padding:14px 24px;text-align:center}
-.stat b{display:block;font-size:26px;background:linear-gradient(135deg,#6366f1,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat b{display:block;font-size:26px;background:linear-gradient(135deg,#E53935,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .stat small{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
 
 .mx{max-width:1280px;margin:0 auto;padding:0 24px}
@@ -81,7 +81,7 @@ header{background:var(--card);border-bottom:1px solid var(--border);padding:12px
 /* Aid cards */
 .aid-grid{display:grid;gap:16px;margin-bottom:40px}
 .aid-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:all .2s}
-.aid-card:hover{border-color:rgba(99,102,241,0.3);box-shadow:0 10px 30px rgba(0,0,0,0.08)}
+.aid-card:hover{border-color:rgba(229,57,53,0.3);box-shadow:0 10px 30px rgba(0,0,0,0.08)}
 .aid-head{padding:16px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .aid-left{flex:1}
 .aid-left .aid-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:6px}
@@ -147,7 +147,7 @@ footer p{color:var(--text3);font-size:13px}
 .aid-grid .aid-card:nth-child(5){animation-delay:.24s}
 .ctab{transition:all 0.25s cubic-bezier(0.4,0,0.2,1)}
 .ctab:hover{transform:translateY(-2px)}
-.ctab.active{box-shadow:0 4px 12px rgba(99,102,241,0.3)}
+.ctab.active{box-shadow:0 4px 12px rgba(229,57,53,0.3)}
 
     /* === DEEP POLISH: Financial Aids Page Enhancements === */
     body { animation: pageEntrance 0.6s ease-out; }
@@ -156,13 +156,13 @@ footer p{color:var(--text3);font-size:13px}
     header {
         background: rgba(11,15,26,0.9) !important;
         backdrop-filter: blur(24px) saturate(180%) !important;
-        border-bottom: 1px solid rgba(99,102,241,0.1) !important;
+        border-bottom: 1px solid rgba(229,57,53,0.1) !important;
     }
     
     /* Scheme cards */
     .scheme-card, .aid-card {
         border-radius: 16px !important;
-        border: 1px solid rgba(99,102,241,0.08) !important;
+        border: 1px solid rgba(229,57,53,0.08) !important;
         background: rgba(17,24,39,0.5) !important;
         backdrop-filter: blur(8px) !important;
         transition: all 0.35s cubic-bezier(0.33, 1, 0.68, 1) !important;
@@ -170,13 +170,13 @@ footer p{color:var(--text3);font-size:13px}
     }
     .scheme-card:hover, .aid-card:hover {
         transform: translateY(-6px) !important;
-        border-color: rgba(99,102,241,0.2) !important;
+        border-color: rgba(229,57,53,0.2) !important;
         box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
     }
     
     /* Category tags */
     .category-tag {
-        background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+        background: linear-gradient(135deg, #E53935, #C62828) !important;
         color: white !important;
         border-radius: 8px !important;
         font-weight: 700 !important;
@@ -189,9 +189,9 @@ footer p{color:var(--text3);font-size:13px}
         transition: all 0.25s ease !important;
     }
     .filter-btn.active, .category-filter div.active {
-        background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+        background: linear-gradient(135deg, #E53935, #C62828) !important;
         color: white !important;
-        box-shadow: 0 4px 15px rgba(99,102,241,0.3) !important;
+        box-shadow: 0 4px 15px rgba(229,57,53,0.3) !important;
     }
     
     /* Apply button */
@@ -210,7 +210,7 @@ footer p{color:var(--text3);font-size:13px}
     
     footer {
         background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
-        border-top: 1px solid rgba(99,102,241,0.1) !important;
+        border-top: 1px solid rgba(229,57,53,0.1) !important;
     }
     
     @media (max-width: 768px) {
@@ -222,18 +222,35 @@ footer p{color:var(--text3);font-size:13px}
 </head>
 <body>
 
-<header>
-<div class="hdr">
-<a href="/" class="logo">
-<div class="logo-i">💰</div>
-<h1>Financial Aid Hub</h1>
-</a>
-<div class="hdr-r">
-<button class="btn" onclick="document.body.classList.toggle('dark');localStorage.setItem('d',document.body.classList.contains('dark'))">🌙 Dark</button>
-<a href="/" class="btn btn-p" style="text-decoration:none">← Home</a>
-</div>
-</div>
+<header class="header" style="background:var(--bg2);border-bottom:1px solid var(--border);padding:0;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);">
+    <div style="max-width:1320px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;">
+        <a href="/" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+            <div style="width:44px;height:44px;background:linear-gradient(135deg,#E53935,#C62828);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-size:16px;font-weight:900;font-family:'Playfair Display',serif;box-shadow:0 4px 12px rgba(229,57,53,0.3);">NR</div>
+            <div>
+                <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:800;color:var(--text1);line-height:1.1;">News Reporter</div>
+                <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:2px;font-weight:500;">Live &bull; Trusted &bull; Independent</div>
+            </div>
+        </a>
+        <div style="display:flex;align-items:center;gap:10px;">
+            <button onclick="document.body.classList.toggle('dark');document.body.classList.toggle('dark-mode');localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');" style="padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3,var(--bg));color:var(--text2,var(--text-secondary));">&#9790; Dark</button>
+            <a href="/" style="padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;background:#E53935;color:#fff;text-decoration:none;">&larr; Home</a>
+        </div>
+    </div>
 </header>
+<nav style="background:var(--bg2,var(--bg-white));border-bottom:1px solid var(--border);position:sticky;top:52px;z-index:99;overflow-x:auto;">
+    <div style="max-width:1320px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:0;white-space:nowrap;">
+        <a href="/" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">Home</a>
+        <a href="/movies" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#127916; Movies</a>
+        <a href="/cricket-live" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#127951; Live Scores</a>
+        <a href="/financial-aids" style="padding:12px 16px;font-size:13px;font-weight:700;color:#E53935;border-bottom:2px solid #E53935;text-decoration:none;">&#128176; Financial Aids</a>
+        <a href="/cbse" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#127891; CBSE</a>
+        <a href="/ifsc-codes" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#127975; IFSC Codes</a>
+        <a href="/pincode" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#128238; PIN Code</a>
+        <a href="/loan-calculator" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#128176; Loan Calc</a>
+        <a href="/investment-calculator" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#128200; SIP Calc</a>
+        <a href="/directory" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#127758; Directory</a>
+    </div>
+</nav>
 
 <div class="bc"><a href="/">Home</a> › <a href="/">Tools</a> › Financial Aid Directory</div>
 

@@ -26,7 +26,7 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#f97316;--pl:#fff3e0;--accent:#7c3aed;--success:#059669;--warning:#d97706;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--r:12px}
+:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#f97316;--pl:#fff3e0;--accent:#D32F2F;--success:#059669;--warning:#d97706;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--r:12px}
 body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#ff6f00;--pl:#1a1a2e;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
 body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
 a{color:var(--primary);text-decoration:none}
@@ -117,13 +117,13 @@ footer p{color:var(--text3);font-size:13px}
     header {
         background: rgba(11,15,26,0.9) !important;
         backdrop-filter: blur(24px) saturate(180%) !important;
-        border-bottom: 1px solid rgba(99,102,241,0.1) !important;
+        border-bottom: 1px solid rgba(229,57,53,0.1) !important;
     }
     
     /* Subject cards */
     .subject-card, .chapter-card, .resource-card {
         border-radius: 16px !important;
-        border: 1px solid rgba(99,102,241,0.08) !important;
+        border: 1px solid rgba(229,57,53,0.08) !important;
         background: rgba(17,24,39,0.5) !important;
         backdrop-filter: blur(8px) !important;
         transition: all 0.35s cubic-bezier(0.33, 1, 0.68, 1) !important;
@@ -131,7 +131,7 @@ footer p{color:var(--text3);font-size:13px}
     }
     .subject-card:hover, .chapter-card:hover, .resource-card:hover {
         transform: translateY(-6px) !important;
-        border-color: rgba(99,102,241,0.2) !important;
+        border-color: rgba(229,57,53,0.2) !important;
         box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
     }
     
@@ -141,9 +141,9 @@ footer p{color:var(--text3);font-size:13px}
         transition: all 0.25s ease !important;
     }
     .class-tab.active, .grade-btn.active {
-        background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+        background: linear-gradient(135deg, #E53935, #C62828) !important;
         color: white !important;
-        box-shadow: 0 4px 15px rgba(99,102,241,0.3) !important;
+        box-shadow: 0 4px 15px rgba(229,57,53,0.3) !important;
     }
     
     /* Download buttons */
@@ -161,14 +161,14 @@ footer p{color:var(--text3);font-size:13px}
     
     /* Subject icon badges */
     .subject-icon {
-        background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+        background: linear-gradient(135deg, #E53935, #E53935) !important;
         border-radius: 14px !important;
-        box-shadow: 0 4px 15px rgba(99,102,241,0.3) !important;
+        box-shadow: 0 4px 15px rgba(229,57,53,0.3) !important;
     }
     
     footer {
         background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
-        border-top: 1px solid rgba(99,102,241,0.1) !important;
+        border-top: 1px solid rgba(229,57,53,0.1) !important;
     }
     
 </style>
@@ -176,18 +176,35 @@ footer p{color:var(--text3);font-size:13px}
 </head>
 <body>
 
-<header>
-<div class="hdr">
-<a href="/" class="logo">
-<div class="logo-i">📚</div>
-<h1>CBSE Study Hub</h1>
-</a>
-<div class="hdr-r">
-<button class="btn" onclick="document.body.classList.toggle('dark');localStorage.setItem('d',document.body.classList.contains('dark'))">🌙 Dark</button>
-<a href="/" class="btn btn-p" style="text-decoration:none">← Home</a>
-</div>
-</div>
+<header class="header" style="background:var(--bg2);border-bottom:1px solid var(--border);padding:0;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);">
+    <div style="max-width:1320px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;">
+        <a href="/" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+            <div style="width:44px;height:44px;background:linear-gradient(135deg,#E53935,#C62828);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-size:16px;font-weight:900;font-family:'Playfair Display',serif;box-shadow:0 4px 12px rgba(229,57,53,0.3);">NR</div>
+            <div>
+                <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:800;color:var(--text1);line-height:1.1;">News Reporter</div>
+                <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:2px;font-weight:500;">Live &bull; Trusted &bull; Independent</div>
+            </div>
+        </a>
+        <div style="display:flex;align-items:center;gap:10px;">
+            <button onclick="document.body.classList.toggle('dark');document.body.classList.toggle('dark-mode');localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');" style="padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3,var(--bg));color:var(--text2,var(--text-secondary));">&#9790; Dark</button>
+            <a href="/" style="padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;background:#E53935;color:#fff;text-decoration:none;">&larr; Home</a>
+        </div>
+    </div>
 </header>
+<nav style="background:var(--bg2,var(--bg-white));border-bottom:1px solid var(--border);position:sticky;top:52px;z-index:99;overflow-x:auto;">
+    <div style="max-width:1320px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:0;white-space:nowrap;">
+        <a href="/" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">Home</a>
+        <a href="/movies" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#127916; Movies</a>
+        <a href="/cricket-live" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#127951; Live Scores</a>
+        <a href="/financial-aids" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#128176; Financial Aids</a>
+        <a href="/cbse" style="padding:12px 16px;font-size:13px;font-weight:700;color:#E53935;border-bottom:2px solid #E53935;text-decoration:none;">&#127891; CBSE</a>
+        <a href="/ifsc-codes" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#127975; IFSC Codes</a>
+        <a href="/pincode" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#128238; PIN Code</a>
+        <a href="/loan-calculator" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#128176; Loan Calc</a>
+        <a href="/investment-calculator" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#128200; SIP Calc</a>
+        <a href="/directory" style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text3);text-decoration:none;">&#127758; Directory</a>
+    </div>
+</nav>
 
 <div class="bc"><a href="/">Home</a> › <a href="/">Education</a> › CBSE Study Materials</div>
 

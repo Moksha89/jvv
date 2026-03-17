@@ -9,16 +9,16 @@
 /* ===== CSS Custom Properties ===== */
 :root {
     /* Primary Colors */
-    --c-primary: #6366f1;
-    --c-primary-dark: #4f46e5;
-    --c-primary-light: #818cf8;
-    --c-primary-glow: rgba(99,102,241,0.15);
-    --c-primary-subtle: rgba(99,102,241,0.08);
+    --c-primary: #E53935;
+    --c-primary-dark: #C62828;
+    --c-primary-light: #EF5350;
+    --c-primary-glow: rgba(229,57,53,0.15);
+    --c-primary-subtle: rgba(229,57,53,0.08);
     
     /* Accent Colors */
-    --c-accent: #f43f5e;
-    --c-accent-dark: #e11d48;
-    --c-accent-light: #fb7185;
+    --c-accent: #1565C0;
+    --c-accent-dark: #0D47A1;
+    --c-accent-light: #42A5F5;
     
     /* Semantic Colors */
     --c-success: #10b981;
@@ -52,7 +52,7 @@
     --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
     --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
     --shadow-2xl: 0 25px 50px -12px rgba(0,0,0,0.15);
-    --shadow-glow: 0 0 20px rgba(99,102,241,0.15);
+    --shadow-glow: 0 0 20px rgba(229,57,53,0.15);
     --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
     --shadow-card-hover: 0 20px 40px rgba(0,0,0,0.08), 0 8px 16px rgba(0,0,0,0.04);
     
@@ -250,7 +250,7 @@ input, select, textarea { font-family: inherit; }
     font-weight: 800;
     font-size: 14px;
     font-family: var(--font-display);
-    box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+    box-shadow: 0 4px 12px rgba(229,57,53,0.3);
     transition: transform var(--transition);
 }
 .nr-logo:hover .nr-logo-icon { transform: scale(1.08) rotate(-2deg); }
@@ -307,22 +307,22 @@ input, select, textarea { font-family: inherit; }
     background: linear-gradient(135deg, var(--c-primary), var(--c-primary-dark));
     color: white;
     border: none;
-    box-shadow: 0 2px 8px rgba(99,102,241,0.3);
+    box-shadow: 0 2px 8px rgba(229,57,53,0.3);
 }
 .nr-btn-primary:hover {
     background: linear-gradient(135deg, var(--c-primary-light), var(--c-primary));
     color: white;
-    box-shadow: 0 4px 16px rgba(99,102,241,0.4);
+    box-shadow: 0 4px 16px rgba(229,57,53,0.4);
     transform: translateY(-2px);
 }
 .nr-btn-accent {
     background: linear-gradient(135deg, var(--c-accent), var(--c-accent-dark));
     color: white;
     border: none;
-    box-shadow: 0 2px 8px rgba(244,63,94,0.3);
+    box-shadow: 0 2px 8px rgba(21,101,192,0.3);
 }
 .nr-btn-accent:hover {
-    box-shadow: 0 4px 16px rgba(244,63,94,0.4);
+    box-shadow: 0 4px 16px rgba(21,101,192,0.4);
     color: white;
     transform: translateY(-2px);
 }
@@ -415,7 +415,7 @@ input, select, textarea { font-family: inherit; }
 
 /* ===== Hero Section ===== */
 .nr-hero {
-    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #312e81 70%, #1e293b 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1a0a0a 40%, #4a1212 70%, #1e293b 100%);
     padding: 60px 24px 48px;
     text-align: center;
     position: relative;
@@ -425,8 +425,8 @@ input, select, textarea { font-family: inherit; }
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at 30% 50%, rgba(99,102,241,0.12) 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 80%, rgba(244,63,94,0.08) 0%, transparent 50%);
+    background: radial-gradient(ellipse at 30% 50%, rgba(229,57,53,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(21,101,192,0.08) 0%, transparent 50%);
     pointer-events: none;
 }
 .nr-hero::after {
@@ -436,7 +436,7 @@ input, select, textarea { font-family: inherit; }
     right: -20%;
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(229,57,53,0.06) 0%, transparent 70%);
     animation: nr-float 8s ease-in-out infinite;
     pointer-events: none;
 }
@@ -456,7 +456,7 @@ input, select, textarea { font-family: inherit; }
 }
 .nr-hero h1 em, .nr-hero h2 em {
     font-style: normal;
-    background: linear-gradient(135deg, #818cf8, #c084fc, #fb7185);
+    background: linear-gradient(135deg, #EF5350, #c084fc, #42A5F5);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -495,7 +495,7 @@ input, select, textarea { font-family: inherit; }
     display: block;
     font-size: 28px;
     font-weight: 800;
-    background: linear-gradient(135deg, #818cf8, #c084fc);
+    background: linear-gradient(135deg, #EF5350, #c084fc);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -570,7 +570,7 @@ input, select, textarea { font-family: inherit; }
     letter-spacing: 0.5px;
 }
 .nr-pill-primary { background: var(--c-primary-glow); color: var(--c-primary); }
-.nr-pill-accent { background: rgba(244,63,94,0.1); color: var(--c-accent); }
+.nr-pill-accent { background: rgba(21,101,192,0.1); color: var(--c-accent); }
 .nr-pill-success { background: rgba(16,185,129,0.1); color: var(--c-success); }
 .nr-pill-warning { background: rgba(245,158,11,0.1); color: var(--c-warning); }
 .nr-pill-danger { background: rgba(239,68,68,0.1); color: var(--c-danger); }
@@ -607,7 +607,7 @@ input, select, textarea { font-family: inherit; }
     background: linear-gradient(135deg, var(--c-primary), var(--c-primary-dark));
     color: white;
     border-color: transparent;
-    box-shadow: 0 2px 8px rgba(99,102,241,0.3);
+    box-shadow: 0 2px 8px rgba(229,57,53,0.3);
 }
 
 /* ===== Section Headings ===== */
@@ -684,10 +684,10 @@ input, select, textarea { font-family: inherit; }
     cursor: pointer;
     transition: all var(--transition-fast);
     white-space: nowrap;
-    box-shadow: 0 2px 8px rgba(99,102,241,0.3);
+    box-shadow: 0 2px 8px rgba(229,57,53,0.3);
 }
 .nr-search button:hover {
-    box-shadow: 0 4px 16px rgba(99,102,241,0.4);
+    box-shadow: 0 4px 16px rgba(229,57,53,0.4);
     transform: translateY(-2px);
 }
 
