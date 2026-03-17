@@ -31,16 +31,16 @@
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#1e40af;--primary-light:#dbeafe;--accent:#7c3aed;--success:#059669;--warning:#d97706;--red:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--radius:12px}
-body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#3b82f6;--primary-light:#1e3a5f;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
+:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#6366f1;--primary-light:#dbeafe;--accent:#7c3aed;--success:#059669;--warning:#d97706;--red:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--radius:12px}
+body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#818cf8;--primary-light:#1e3a5f;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
 body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
 a{color:var(--primary);text-decoration:none}
 a:hover{text-decoration:underline}
 
-.site-header{background:var(--card);border-bottom:1px solid var(--border);padding:0;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.site-header{background:var(--card);border-bottom:1px solid var(--border);padding:0;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:all 0.3s;box-shadow:var(--shadow)}
 .header-top{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px 24px}
 .logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
-.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#1e40af,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#6366f1,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px}
 .logo h1{font-family:'Playfair Display',serif;font-size:22px;color:var(--text);line-height:1.1}
 .logo span{font-size:11px;color:var(--text3);letter-spacing:1px}
 .header-right{display:flex;align-items:center;gap:16px}
@@ -235,7 +235,105 @@ body.dark .result-card{background:linear-gradient(135deg,#1e293b,#0f172a);border
 .section{padding:0 12px 24px}
 .footer-inner{grid-template-columns:1fr}
 }
+
+    /* === DEEP POLISH: Loan Calculator Enhancements === */
+    body { animation: pageEntrance 0.6s ease-out; }
+    @keyframes pageEntrance { from { opacity: 0; } to { opacity: 1; } }
+    
+    header {
+        background: rgba(11,15,26,0.9) !important;
+        backdrop-filter: blur(24px) saturate(180%) !important;
+        border-bottom: 1px solid rgba(99,102,241,0.1) !important;
+    }
+    
+    /* Calculator panels */
+    .calc-panel, .calculator-section {
+        border-radius: 20px !important;
+        border: 1px solid rgba(99,102,241,0.1) !important;
+        background: rgba(17,24,39,0.6) !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15) !important;
+    }
+    
+    /* EMI display */
+    .emi-amount, .result-value {
+        font-weight: 900 !important;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+    }
+    
+    /* Range slider track */
+    input[type="range"] {
+        accent-color: #6366f1 !important;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+        box-shadow: 0 0 0 4px rgba(99,102,241,0.2) !important;
+    }
+    
+    /* Loan type tabs */
+    .loan-type-tab, .loan-tab {
+        border-radius: 24px !important;
+        transition: all 0.25s ease !important;
+    }
+    .loan-type-tab.active, .loan-tab.active {
+        background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(99,102,241,0.3) !important;
+    }
+    
+    /* Provider cards */
+    .provider-card, .bank-provider {
+        border-radius: 16px !important;
+        border: 1px solid rgba(99,102,241,0.08) !important;
+        background: rgba(17,24,39,0.5) !important;
+        transition: all 0.35s ease !important;
+    }
+    .provider-card:hover, .bank-provider:hover {
+        transform: translateY(-6px) !important;
+        border-color: rgba(99,102,241,0.2) !important;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
+    }
+    
+    /* Comparison table */
+    table {
+        border-radius: 14px !important;
+        overflow: hidden !important;
+        border: 1px solid rgba(99,102,241,0.1) !important;
+    }
+    th {
+        background: linear-gradient(135deg, #1e293b, #334155) !important;
+        color: #818cf8 !important;
+        font-weight: 700 !important;
+        padding: 14px !important;
+    }
+    td {
+        padding: 12px !important;
+        border-bottom: 1px solid rgba(99,102,241,0.06) !important;
+    }
+    tr:hover td {
+        background: rgba(99,102,241,0.03) !important;
+    }
+    
+    /* Tips cards */
+    .tip-card {
+        border-radius: 14px !important;
+        border: 1px solid rgba(99,102,241,0.08) !important;
+        background: rgba(17,24,39,0.5) !important;
+        transition: all 0.3s ease !important;
+    }
+    .tip-card:hover {
+        transform: translateY(-4px) !important;
+        border-color: rgba(99,102,241,0.2) !important;
+    }
+    
+    footer {
+        background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
+        border-top: 1px solid rgba(99,102,241,0.1) !important;
+    }
+    
 </style>
+<link rel="stylesheet" href="/common.css">
 </head>
 <body>
 
@@ -363,7 +461,7 @@ body.dark .result-card{background:linear-gradient(135deg,#1e293b,#0f172a);border
 </div>
 </div>
 <div class="chart-legend">
-<div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div> Principal (<span id="lgPrinPct">48%</span>)</div>
+<div class="legend-item"><div class="legend-dot" style="background:#818cf8"></div> Principal (<span id="lgPrinPct">48%</span>)</div>
 <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div> Interest (<span id="lgIntPct">52%</span>)</div>
 </div>
 </div>
@@ -617,7 +715,7 @@ const LOAN_DEFAULTS = {
 
 const PROVIDERS = [
   // Home Loans
-  { name: 'State Bank of India', short: 'SBI', color: '#1e40af', type: 'public', category: 'home', rate: '8.50 - 9.85', minRate: 8.50, processing: '0.35% (min 2K, max 10K)', maxAmt: '5 Cr', tenure: '30 yrs', features: ['Lowest rates for women', 'No prepayment penalty', 'Balance transfer facility', 'Doorstep service'] },
+  { name: 'State Bank of India', short: 'SBI', color: '#6366f1', type: 'public', category: 'home', rate: '8.50 - 9.85', minRate: 8.50, processing: '0.35% (min 2K, max 10K)', maxAmt: '5 Cr', tenure: '30 yrs', features: ['Lowest rates for women', 'No prepayment penalty', 'Balance transfer facility', 'Doorstep service'] },
   { name: 'HDFC Bank', short: 'HDFC', color: '#0052cc', type: 'private', category: 'home', rate: '8.75 - 9.65', minRate: 8.75, processing: '0.50% or 3,000', maxAmt: '10 Cr', tenure: '30 yrs', features: ['Fast approval (48 hrs)', 'Flexi EMI option', 'Top-up loan available', 'Online tracking'] },
   { name: 'ICICI Bank', short: 'ICICI', color: '#f97316', type: 'private', category: 'home', rate: '8.75 - 9.85', minRate: 8.75, processing: '0.50% + GST', maxAmt: '5 Cr', tenure: '30 yrs', features: ['Instant approval', 'Part prepayment free', 'Insurance waiver option', 'EMI holiday'] },
   { name: 'Bank of Baroda', short: 'BOB', color: '#dc2626', type: 'public', category: 'home', rate: '8.40 - 10.65', minRate: 8.40, processing: '0.25% (max 25K)', maxAmt: '10 Cr', tenure: '30 yrs', features: ['Lowest processing fee', 'Special rate for women', 'Takeover facility', 'No hidden charges'] },
@@ -627,20 +725,20 @@ const PROVIDERS = [
   // Personal Loans
   { name: 'HDFC Bank', short: 'HDFC', color: '#0052cc', type: 'private', category: 'personal', rate: '10.50 - 21.00', minRate: 10.50, processing: 'Up to 2.50%', maxAmt: '40 L', tenure: '5 yrs', features: ['Instant approval', 'Minimal documentation', 'Flexible tenure', 'No collateral needed'] },
   { name: 'ICICI Bank', short: 'ICICI', color: '#f97316', type: 'private', category: 'personal', rate: '10.75 - 19.00', minRate: 10.75, processing: 'Up to 2.50%', maxAmt: '50 L', tenure: '6 yrs', features: ['Pre-approved offers', 'Instant disbursal', 'Balance transfer', 'Step-up option'] },
-  { name: 'SBI', short: 'SBI', color: '#1e40af', type: 'public', category: 'personal', rate: '11.15 - 14.50', minRate: 11.15, processing: '1.50% (min 1K)', maxAmt: '20 L', tenure: '6 yrs', features: ['Lower rates for existing customers', 'No guarantor needed', 'Online application', 'Doorstep service'] },
+  { name: 'SBI', short: 'SBI', color: '#6366f1', type: 'public', category: 'personal', rate: '11.15 - 14.50', minRate: 11.15, processing: '1.50% (min 1K)', maxAmt: '20 L', tenure: '6 yrs', features: ['Lower rates for existing customers', 'No guarantor needed', 'Online application', 'Doorstep service'] },
   { name: 'Bajaj Finserv', short: 'BFS', color: '#16a34a', type: 'nbfc', category: 'personal', rate: '11.00 - 26.00', minRate: 11.00, processing: 'Up to 3.54%', maxAmt: '40 L', tenure: '8 yrs', features: ['Flexi loan option', 'Same-day disbursal', 'Part prepayment free', 'No foreclosure charge after 12 EMIs'] },
   { name: 'Kotak Mahindra Bank', short: 'KOTAK', color: '#dc2626', type: 'private', category: 'personal', rate: '10.99 - 24.00', minRate: 10.99, processing: 'Up to 2.50%', maxAmt: '40 L', tenure: '5 yrs', features: ['Quick disbursal', 'Online process', 'Flexible repayment', 'Competitive rates'] },
   { name: 'Tata Capital', short: 'TATA', color: '#1e3a5f', type: 'nbfc', category: 'personal', rate: '10.99 - 29.00', minRate: 10.99, processing: 'Up to 2.75%', maxAmt: '35 L', tenure: '6 yrs', features: ['Easy documentation', 'Attractive rates for salaried', 'Balance transfer', 'No security needed'] },
 
   // Car Loans
-  { name: 'SBI', short: 'SBI', color: '#1e40af', type: 'public', category: 'car', rate: '8.65 - 9.80', minRate: 8.65, processing: 'Nil', maxAmt: '1 Cr', tenure: '7 yrs', features: ['Zero processing fee', '100% on-road funding', 'No prepayment penalty', 'Quick sanction'] },
+  { name: 'SBI', short: 'SBI', color: '#6366f1', type: 'public', category: 'car', rate: '8.65 - 9.80', minRate: 8.65, processing: 'Nil', maxAmt: '1 Cr', tenure: '7 yrs', features: ['Zero processing fee', '100% on-road funding', 'No prepayment penalty', 'Quick sanction'] },
   { name: 'HDFC Bank', short: 'HDFC', color: '#0052cc', type: 'private', category: 'car', rate: '8.75 - 12.50', minRate: 8.75, processing: 'Up to 0.50%', maxAmt: '1 Cr', tenure: '7 yrs', features: ['Up to 100% financing', 'Doorstep service', 'Used car loans available', 'EMI calculator'] },
   { name: 'ICICI Bank', short: 'ICICI', color: '#f97316', type: 'private', category: 'car', rate: '8.80 - 12.00', minRate: 8.80, processing: 'Up to 0.50%', maxAmt: '80 L', tenure: '7 yrs', features: ['Instant approval', 'Flexible EMI', 'Used car finance', 'Balance transfer'] },
   { name: 'Bank of Baroda', short: 'BOB', color: '#dc2626', type: 'public', category: 'car', rate: '8.70 - 10.60', minRate: 8.70, processing: '0.50% (max 5K)', maxAmt: '75 L', tenure: '7 yrs', features: ['Low processing fee', 'New & used cars', 'Flexible tenure', 'Easy documentation'] },
   { name: 'Mahindra Finance', short: 'MHF', color: '#7c3aed', type: 'nbfc', category: 'car', rate: '9.00 - 16.00', minRate: 9.00, processing: '1 - 2%', maxAmt: '50 L', tenure: '7 yrs', features: ['Rural reach', 'Used vehicle financing', 'Quick approval', 'Flexible documentation'] },
 
   // Education Loans
-  { name: 'SBI', short: 'SBI', color: '#1e40af', type: 'public', category: 'education', rate: '8.15 - 10.85', minRate: 8.15, processing: 'Nil', maxAmt: '1.5 Cr', tenure: '15 yrs', features: ['No processing fee', 'Moratorium period', '100% finance for IITs/IIMs', 'Interest subsidy under Vidyalakshmi'] },
+  { name: 'SBI', short: 'SBI', color: '#6366f1', type: 'public', category: 'education', rate: '8.15 - 10.85', minRate: 8.15, processing: 'Nil', maxAmt: '1.5 Cr', tenure: '15 yrs', features: ['No processing fee', 'Moratorium period', '100% finance for IITs/IIMs', 'Interest subsidy under Vidyalakshmi'] },
   { name: 'Bank of Baroda', short: 'BOB', color: '#dc2626', type: 'public', category: 'education', rate: '8.40 - 10.50', minRate: 8.40, processing: 'Nil', maxAmt: '1 Cr', tenure: '15 yrs', features: ['Zero processing fee', 'Simple interest during moratorium', 'Global education coverage', 'Tax benefit under 80E'] },
   { name: 'Axis Bank', short: 'AXIS', color: '#6d28d9', type: 'private', category: 'education', rate: '9.70 - 13.70', minRate: 9.70, processing: 'Up to 1%', maxAmt: '75 L', tenure: '15 yrs', features: ['Quick disbursal', 'Study abroad coverage', 'Part prepayment free', 'EMI starts after course'] },
   { name: 'HDFC Credila', short: 'CRED', color: '#0052cc', type: 'nbfc', category: 'education', rate: '9.50 - 13.50', minRate: 9.50, processing: '1 - 2%', maxAmt: '2 Cr', tenure: '15 yrs', features: ['Highest loan amount', 'No collateral up to 7.5L', 'Study abroad specialist', 'Counselling support'] },
@@ -648,7 +746,7 @@ const PROVIDERS = [
 
   // Business Loans
   { name: 'HDFC Bank', short: 'HDFC', color: '#0052cc', type: 'private', category: 'business', rate: '10.00 - 22.50', minRate: 10.00, processing: 'Up to 2%', maxAmt: '50 L', tenure: '4 yrs', features: ['Instant approval', 'Minimal documentation', 'No collateral up to 50L', 'Overdraft facility'] },
-  { name: 'SBI', short: 'SBI', color: '#1e40af', type: 'public', category: 'business', rate: '11.15 - 14.75', minRate: 11.15, processing: 'Up to 1%', maxAmt: '5 Cr', tenure: '5 yrs', features: ['Lowest rates for MSMEs', 'Mudra loan scheme', 'Working capital finance', 'Govt subsidy schemes'] },
+  { name: 'SBI', short: 'SBI', color: '#6366f1', type: 'public', category: 'business', rate: '11.15 - 14.75', minRate: 11.15, processing: 'Up to 1%', maxAmt: '5 Cr', tenure: '5 yrs', features: ['Lowest rates for MSMEs', 'Mudra loan scheme', 'Working capital finance', 'Govt subsidy schemes'] },
   { name: 'Bajaj Finserv', short: 'BFS', color: '#16a34a', type: 'nbfc', category: 'business', rate: '14.00 - 30.00', minRate: 14.00, processing: 'Up to 3%', maxAmt: '80 L', tenure: '8 yrs', features: ['Flexi loan option', 'Same-day disbursal', 'No collateral', 'Part-prepayment free'] },
   { name: 'ICICI Bank', short: 'ICICI', color: '#f97316', type: 'private', category: 'business', rate: '11.25 - 20.00', minRate: 11.25, processing: 'Up to 2%', maxAmt: '2 Cr', tenure: '5 yrs', features: ['Quick processing', 'InstaOD facility', 'Working capital loans', 'Trade finance'] },
   { name: 'Lendingkart', short: 'LNDK', color: '#d97706', type: 'nbfc', category: 'business', rate: '12.00 - 27.00', minRate: 12.00, processing: '2 - 3%', maxAmt: '2 Cr', tenure: '3 yrs', features: ['Fintech speed', 'Minimal docs', 'Online process', 'Quick disbursal'] },
@@ -656,7 +754,7 @@ const PROVIDERS = [
   // Gold Loans
   { name: 'Muthoot Finance', short: 'MUT', color: '#d97706', type: 'nbfc', category: 'gold', rate: '7.50 - 22.00', minRate: 7.50, processing: '0.25 - 1%', maxAmt: 'Up to gold value', tenure: '2 yrs', features: ['Instant disbursal', 'Lowest gold loan rate', 'Online payment', 'Gold stored in vault'] },
   { name: 'Manappuram Finance', short: 'MNPF', color: '#7c3aed', type: 'nbfc', category: 'gold', rate: '8.00 - 24.00', minRate: 8.00, processing: '0.50 - 1%', maxAmt: 'Up to gold value', tenure: '1 yr', features: ['Quick disbursal', 'Doorstep service', 'Part payment option', 'Safe gold storage'] },
-  { name: 'SBI', short: 'SBI', color: '#1e40af', type: 'public', category: 'gold', rate: '7.30 - 7.80', minRate: 7.30, processing: '0.50%', maxAmt: '50 L', tenure: '3 yrs', features: ['Lowest rates', 'Bank-level security', 'Online repayment', 'Transparent process'] },
+  { name: 'SBI', short: 'SBI', color: '#6366f1', type: 'public', category: 'gold', rate: '7.30 - 7.80', minRate: 7.30, processing: '0.50%', maxAmt: '50 L', tenure: '3 yrs', features: ['Lowest rates', 'Bank-level security', 'Online repayment', 'Transparent process'] },
   { name: 'HDFC Bank', short: 'HDFC', color: '#0052cc', type: 'private', category: 'gold', rate: '8.50 - 16.50', minRate: 8.50, processing: '1%', maxAmt: '1 Cr', tenure: '2 yrs', features: ['Quick approval', 'Secure storage', 'Flexible repayment', 'Online management'] },
   { name: 'IIFL Gold Loan', short: 'IIFL', color: '#dc2626', type: 'nbfc', category: 'gold', rate: '9.24 - 24.00', minRate: 9.24, processing: '0.50 - 2%', maxAmt: 'Up to gold value', tenure: '11 months', features: ['5-min disbursal', 'At-home service', 'Multiple schemes', 'Partial release option'] }
 ];
@@ -725,7 +823,7 @@ function drawDonut(prinPct, intPct) {
 
   ctx.beginPath();
   ctx.arc(cx, cy, r, start, start + prinAngle);
-  ctx.strokeStyle = '#3b82f6';
+  ctx.strokeStyle = '#818cf8';
   ctx.lineWidth = lw;
   ctx.lineCap = 'round';
   ctx.stroke();
@@ -908,7 +1006,7 @@ function filterProviders(cat) {
 
   sorted.forEach((p, i) => {
     const isBest = i === 0;
-    const typeColor = p.type === 'public' ? '#059669' : p.type === 'private' ? '#1e40af' : '#d97706';
+    const typeColor = p.type === 'public' ? '#059669' : p.type === 'private' ? '#6366f1' : '#d97706';
     const typeLabel = p.type === 'public' ? 'Public Sector' : p.type === 'private' ? 'Private Bank' : 'NBFC';
 
     grid.innerHTML += '<div class="provider-card' + (isBest ? ' best' : '') + '">' +
@@ -994,5 +1092,6 @@ document.addEventListener('DOMContentLoaded', function() {
   buildCompareTable();
 });
 </script>
+<script src="/common.js" defer></script>
 </body>
 </html>

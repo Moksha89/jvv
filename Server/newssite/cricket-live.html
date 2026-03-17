@@ -19,7 +19,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0a0f1a; --bg2: #111827; --bg3: #1a2236; --bg4: #243049;
+  --bg: #0b0f1a; --bg2: #111827; --bg3: #1e293b; --bg4: #334155;
   --text: #e8edf5; --text2: #94a3b8; --text3: #64748b;
   --accent: #10b981; --accent2: #059669; --red: #ef4444; --orange: #f59e0b;
   --blue: #3b82f6; --purple: #8b5cf6; --pink: #ec4899;
@@ -51,15 +51,15 @@ a { color:var(--accent); text-decoration:none; }
 .spinner { width:40px; height:40px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; margin:40px auto; }
 .loading-overlay { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:200px; gap:12px; }
 .loading-overlay span { color:var(--text2); font-size:14px; }
-.header { background:var(--bg2); border-bottom:1px solid var(--border); padding:12px 20px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; backdrop-filter:blur(20px); }
+.header { background:rgba(17,24,39,0.85); border-bottom:1px solid var(--border); padding:12px 20px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); transition:all 0.3s; }
 .header-left { display:flex; align-items:center; gap:12px; }
-.logo { width:40px; height:40px; background:linear-gradient(135deg,var(--red),#b91c1c); border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:14px; text-decoration:none; }
+.logo { width:40px; height:40px; background:linear-gradient(135deg,#6366f1,#4f46e5); border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:14px; text-decoration:none; }
 .site-name { font-family:'Playfair Display',serif; font-size:20px; font-weight:800; }
 .site-name small { display:block; font-family:'Inter',sans-serif; font-size:10px; font-weight:500; color:var(--accent); letter-spacing:2px; text-transform:uppercase; }
 .header-right { display:flex; align-items:center; gap:10px; }
 .header-right a, .header-right button { padding:6px 14px; border-radius:8px; font-size:13px; cursor:pointer; border:1px solid var(--border); background:var(--bg3); color:var(--text2); transition:all 0.2s; font-family:'Inter',sans-serif; }
 .header-right a:hover, .header-right button:hover { background:var(--bg4); color:var(--text); }
-.hero { background:linear-gradient(135deg, #064e3b 0%, #0a0f1a 50%, #1e1b4b 100%); padding:32px 20px; text-align:center; position:relative; overflow:hidden; }
+.hero { background:linear-gradient(135deg, #064e3b 0%, #0f172a 40%, #1e1b4b 80%, #312e81 100%); padding:32px 20px; text-align:center; position:relative; overflow:hidden; }
 .hero::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:radial-gradient(circle at 30% 50%, rgba(16,185,129,0.1) 0%, transparent 50%); }
 .hero h2 { font-family:'Playfair Display',serif; font-size:28px; font-weight:900; margin-bottom:6px; position:relative; }
 .hero p { color:var(--text2); font-size:14px; position:relative; }
@@ -86,7 +86,7 @@ a { color:var(--accent); text-decoration:none; }
 .type-filter.active { background:var(--accent); color:#fff; border-color:var(--accent); }
 .matches-grid { display:flex; flex-direction:column; gap:12px; }
 .match-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius2); padding:16px; cursor:pointer; transition:all 0.3s; position:relative; overflow:hidden; }
-.match-card:hover { border-color:var(--accent); transform:translateY(-2px); box-shadow:var(--shadow); }
+.match-card:hover { border-color:var(--accent); transform:translateY(-4px); box-shadow:0 16px 32px rgba(0,0,0,0.2); }
 .match-card.live-match { border-left:3px solid var(--red); }
 .match-card.live-match::after { content:'LIVE'; position:absolute; top:12px; right:12px; background:var(--red); color:#fff; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:700; animation:livePulse 2s infinite; }
 .match-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
@@ -259,6 +259,96 @@ a { color:var(--accent); text-decoration:none; }
   .sc-table { font-size:11px; }
   .sc-table th, .sc-table td { padding:6px 4px; }
 }
+
+.match-card { animation:matchCardIn 0.4s ease forwards; opacity:0; }
+@keyframes matchCardIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.matches-grid .match-card:nth-child(2){animation-delay:.06s}
+.matches-grid .match-card:nth-child(3){animation-delay:.12s}
+.matches-grid .match-card:nth-child(4){animation-delay:.18s}
+.nav-tab { transition:all 0.25s cubic-bezier(0.4,0,0.2,1); }
+.nav-tab:hover { transform:translateY(-1px); }
+
+    /* === DEEP POLISH: Cricket Live Page Enhancements === */
+    body { animation: pageEntrance 0.6s ease-out; }
+    @keyframes pageEntrance { from { opacity: 0; } to { opacity: 1; } }
+    
+    /* Header */
+    header {
+        background: rgba(11,15,26,0.9) !important;
+        backdrop-filter: blur(24px) saturate(180%) !important;
+        border-bottom: 1px solid rgba(99,102,241,0.1) !important;
+    }
+    
+    /* Match cards with live indicator */
+    .match-card {
+        border-radius: 16px !important;
+        border: 1px solid rgba(99,102,241,0.08) !important;
+        background: rgba(17,24,39,0.6) !important;
+        backdrop-filter: blur(8px) !important;
+        transition: all 0.35s cubic-bezier(0.33, 1, 0.68, 1) !important;
+    }
+    .match-card:hover {
+        transform: translateY(-6px) !important;
+        border-color: rgba(99,102,241,0.2) !important;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
+    }
+    
+    /* Live badge pulsing */
+    .live-badge, .status-live {
+        background: #ef4444 !important;
+        color: white !important;
+        border-radius: 6px !important;
+        font-weight: 800 !important;
+        animation: livePulse 2s ease-in-out infinite !important;
+    }
+    @keyframes livePulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+        50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
+    }
+    
+    /* Score display */
+    .score, .team-score {
+        font-weight: 800 !important;
+        font-size: 20px !important;
+        color: #f1f5f9 !important;
+    }
+    
+    /* Tab navigation */
+    .tab-nav button, .tab-btn, .nav-tab {
+        border-radius: 24px !important;
+        transition: all 0.25s ease !important;
+        font-weight: 600 !important;
+    }
+    .tab-nav button.active, .tab-btn.active, .nav-tab.active {
+        background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(99,102,241,0.3) !important;
+    }
+    
+    /* Scorecard table */
+    table {
+        border-radius: 12px !important;
+        overflow: hidden !important;
+    }
+    th {
+        background: linear-gradient(135deg, #1e293b, #334155) !important;
+        color: #818cf8 !important;
+        font-weight: 700 !important;
+    }
+    tr:hover td {
+        background: rgba(99,102,241,0.05) !important;
+    }
+    
+    /* Footer */
+    footer {
+        background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
+        border-top: 1px solid rgba(99,102,241,0.1) !important;
+    }
+    
+    @media (max-width: 768px) {
+        .match-card { border-radius: 12px !important; }
+    }
+    
 </style>
 <style>
 .series-page{display:none;animation:slideUp 0.4s ease}.series-page.active{display:block}
@@ -307,6 +397,14 @@ a { color:var(--accent); text-decoration:none; }
 .lightbox img{max-width:90%;max-height:80vh;object-fit:contain;border-radius:8px}
 .lightbox-caption{color:#fff;text-align:center;padding:12px;font-size:14px;max-width:80%}
 @media(max-width:768px){.series-page-title{font-size:20px}.player-tabs{flex-wrap:wrap}.player-modal{padding:16px;margin:10px}}
+
+.match-card { animation:matchCardIn 0.4s ease forwards; opacity:0; }
+@keyframes matchCardIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.matches-grid .match-card:nth-child(2){animation-delay:.06s}
+.matches-grid .match-card:nth-child(3){animation-delay:.12s}
+.matches-grid .match-card:nth-child(4){animation-delay:.18s}
+.nav-tab { transition:all 0.25s cubic-bezier(0.4,0,0.2,1); }
+.nav-tab:hover { transform:translateY(-1px); }
 </style>
 
 <script type="application/ld+json">
@@ -318,6 +416,7 @@ a { color:var(--accent); text-decoration:none; }
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "SportsEvent", "name": "Live Cricket Matches", "description": "Live cricket match scores and updates from international and domestic cricket tournaments", "url": "https://newsreporter.live/cricket-live", "sport": "Cricket", "location": {"@type": "Place", "name": "Various Cricket Grounds"}, "organizer": {"@type": "SportsOrganization", "name": "International Cricket Council (ICC)"}}
 </script>
+<link rel="stylesheet" href="/common.css">
 </head>
 <body>
 <header class="header">
@@ -1486,5 +1585,6 @@ document.addEventListener('keydown', e => {
 });
 
 </script>
+<script src="/common.js" defer></script>
 </body>
 </html>

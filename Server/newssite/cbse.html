@@ -26,16 +26,16 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#E65100;--pl:#fff3e0;--accent:#7c3aed;--success:#059669;--warning:#d97706;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--r:12px}
+:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#f97316;--pl:#fff3e0;--accent:#7c3aed;--success:#059669;--warning:#d97706;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--r:12px}
 body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#ff6f00;--pl:#1a1a2e;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
 body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
 a{color:var(--primary);text-decoration:none}
 a:hover{text-decoration:underline}
 
-header{background:var(--card);border-bottom:1px solid var(--border);padding:12px 24px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+header{background:var(--card);border-bottom:1px solid var(--border);padding:12px 24px;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:all 0.3s;box-shadow:var(--shadow)}
 .hdr{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.logo-i{width:40px;height:40px;background:linear-gradient(135deg,#E65100,#ff6f00);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px}
+.logo-i{width:40px;height:40px;background:linear-gradient(135deg,#f97316,#ff6f00);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px}
 .logo h1{font-family:'Playfair Display',serif;font-size:20px;color:var(--text)}
 .hdr-r{display:flex;gap:12px}
 .btn{border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px;color:var(--text2);background:var(--bg)}
@@ -109,7 +109,70 @@ footer p{color:var(--text3);font-size:13px}
 .ch-head{flex-direction:column;align-items:flex-start;gap:8px}
 .ch-right{width:100%;justify-content:space-between}
 }
+
+    /* === DEEP POLISH: CBSE Study Page Enhancements === */
+    body { animation: pageEntrance 0.6s ease-out; }
+    @keyframes pageEntrance { from { opacity: 0; } to { opacity: 1; } }
+    
+    header {
+        background: rgba(11,15,26,0.9) !important;
+        backdrop-filter: blur(24px) saturate(180%) !important;
+        border-bottom: 1px solid rgba(99,102,241,0.1) !important;
+    }
+    
+    /* Subject cards */
+    .subject-card, .chapter-card, .resource-card {
+        border-radius: 16px !important;
+        border: 1px solid rgba(99,102,241,0.08) !important;
+        background: rgba(17,24,39,0.5) !important;
+        backdrop-filter: blur(8px) !important;
+        transition: all 0.35s cubic-bezier(0.33, 1, 0.68, 1) !important;
+        overflow: hidden !important;
+    }
+    .subject-card:hover, .chapter-card:hover, .resource-card:hover {
+        transform: translateY(-6px) !important;
+        border-color: rgba(99,102,241,0.2) !important;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
+    }
+    
+    /* Class tabs */
+    .class-tab, .grade-btn {
+        border-radius: 24px !important;
+        transition: all 0.25s ease !important;
+    }
+    .class-tab.active, .grade-btn.active {
+        background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(99,102,241,0.3) !important;
+    }
+    
+    /* Download buttons */
+    .download-btn, a[download] {
+        background: linear-gradient(135deg, #10b981, #059669) !important;
+        color: white !important;
+        border-radius: 10px !important;
+        font-weight: 700 !important;
+        box-shadow: 0 4px 15px rgba(16,185,129,0.3) !important;
+    }
+    .download-btn:hover, a[download]:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 25px rgba(16,185,129,0.4) !important;
+    }
+    
+    /* Subject icon badges */
+    .subject-icon {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+        border-radius: 14px !important;
+        box-shadow: 0 4px 15px rgba(99,102,241,0.3) !important;
+    }
+    
+    footer {
+        background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
+        border-top: 1px solid rgba(99,102,241,0.1) !important;
+    }
+    
 </style>
+<link rel="stylesheet" href="/common.css">
 </head>
 <body>
 
@@ -949,5 +1012,6 @@ function filterChapters(gridId, unit, btn) {
 }
 </script>
 
+<script src="/common.js" defer></script>
 </body>
 </html>

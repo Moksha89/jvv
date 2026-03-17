@@ -28,16 +28,16 @@
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#1e40af;--primary-light:#dbeafe;--accent:#7c3aed;--success:#059669;--warning:#d97706;--red:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--radius:12px}
-body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#3b82f6;--primary-light:#1e3a5f;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
+:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#6366f1;--primary-light:#dbeafe;--accent:#7c3aed;--success:#059669;--warning:#d97706;--red:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--radius:12px}
+body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#818cf8;--primary-light:#1e3a5f;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
 body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
 a{color:var(--primary);text-decoration:none}
 a:hover{text-decoration:underline}
 
-.site-header{background:var(--card);border-bottom:1px solid var(--border);padding:0;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.site-header{background:var(--card);border-bottom:1px solid var(--border);padding:0;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:all 0.3s;box-shadow:var(--shadow)}
 .header-top{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px 24px}
 .logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
-.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#1e40af,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#6366f1,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px}
 .logo h1{font-family:'Playfair Display',serif;font-size:22px;color:var(--text);line-height:1.1}
 .logo span{font-size:11px;color:var(--text3);letter-spacing:1px}
 .header-right{display:flex;align-items:center;gap:16px}
@@ -167,7 +167,74 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 .footer-inner{grid-template-columns:1fr}
 .states-grid{grid-template-columns:1fr 1fr}
 }
+
+    /* === DEEP POLISH: PIN Code Page Enhancements === */
+    body { animation: pageEntrance 0.6s ease-out; }
+    @keyframes pageEntrance { from { opacity: 0; } to { opacity: 1; } }
+    
+    header {
+        background: rgba(11,15,26,0.9) !important;
+        backdrop-filter: blur(24px) saturate(180%) !important;
+        border-bottom: 1px solid rgba(99,102,241,0.1) !important;
+    }
+    
+    /* Search card */
+    .search-card, .finder-panel {
+        border-radius: 20px !important;
+        border: 1px solid rgba(99,102,241,0.15) !important;
+        background: rgba(17,24,39,0.7) !important;
+        backdrop-filter: blur(12px) !important;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2) !important;
+    }
+    
+    /* Input fields */
+    input[type="text"], input[type="number"], input[type="search"] {
+        background: rgba(30,41,59,0.8) !important;
+        border: 1px solid rgba(99,102,241,0.15) !important;
+        border-radius: 10px !important;
+        color: #f1f5f9 !important;
+        transition: all 0.25s ease !important;
+    }
+    input:focus {
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 0 4px rgba(99,102,241,0.15) !important;
+        outline: none !important;
+    }
+    
+    /* Search/Find buttons */
+    button {
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        transition: all 0.25s ease !important;
+    }
+    
+    /* Result cards */
+    .result-item, .pin-result {
+        border-radius: 14px !important;
+        border: 1px solid rgba(99,102,241,0.08) !important;
+        background: rgba(17,24,39,0.5) !important;
+        transition: all 0.3s ease !important;
+    }
+    .result-item:hover, .pin-result:hover {
+        transform: translateY(-4px) !important;
+        border-color: rgba(99,102,241,0.2) !important;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.2) !important;
+    }
+    
+    /* FAQ section */
+    .faq-item {
+        border: 1px solid rgba(99,102,241,0.1) !important;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+    }
+    
+    footer {
+        background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
+        border-top: 1px solid rgba(99,102,241,0.1) !important;
+    }
+    
 </style>
+<link rel="stylesheet" href="/common.css">
 </head>
 <body>
 
@@ -505,7 +572,7 @@ function renderPOCard(o){
   var region=o.Region||o.region||'';
   var circle=o.Circle||o.circle||'';
   var delivery=o.DeliveryStatus||o.deliveryStatus||'';
-  var typeColor=type.toLowerCase().indexOf('head')>=0?'#7c3aed':type.toLowerCase().indexOf('sub')>=0?'#059669':'#1e40af';
+  var typeColor=type.toLowerCase().indexOf('head')>=0?'#7c3aed':type.toLowerCase().indexOf('sub')>=0?'#059669':'#6366f1';
   return '<div class="po-card">'
     +'<div class="po-header"><div class="po-name">'+name+'</div>'
     +'<span class="po-type-badge" style="background:'+typeColor+'20;color:'+typeColor+'">'+type+'</span></div>'
@@ -535,7 +602,7 @@ function showError(msg){var e=document.getElementById('errorMsg');e.textContent=
 
 // Popular cities data
 var POPULAR = [
-  {name:'Connaught Place, Delhi',pin:'110001',color:'#1e40af'},
+  {name:'Connaught Place, Delhi',pin:'110001',color:'#6366f1'},
   {name:'Colaba, Mumbai',pin:'400001',color:'#7c3aed'},
   {name:'MG Road, Bangalore',pin:'560001',color:'#059669'},
   {name:'Anna Salai, Chennai',pin:'600002',color:'#dc2626'},
@@ -543,11 +610,11 @@ var POPULAR = [
   {name:'Banjara Hills, Hyderabad',pin:'500034',color:'#0891b2'},
   {name:'Civil Lines, Ahmedabad',pin:'380001',color:'#7c3aed'},
   {name:'Ashok Nagar, Jaipur',pin:'302001',color:'#059669'},
-  {name:'Hazratganj, Lucknow',pin:'226001',color:'#1e40af'},
+  {name:'Hazratganj, Lucknow',pin:'226001',color:'#6366f1'},
   {name:'Shivaji Nagar, Pune',pin:'411005',color:'#dc2626'},
   {name:'Sector 17, Chandigarh',pin:'160017',color:'#d97706'},
   {name:'Lal Darwaja, Surat',pin:'395003',color:'#0891b2'},
-  {name:'Varanasi GPO',pin:'221001',color:'#1e40af'},
+  {name:'Varanasi GPO',pin:'221001',color:'#6366f1'},
   {name:'Indore GPO',pin:'452001',color:'#7c3aed'},
   {name:'Bhopal GPO',pin:'462001',color:'#059669'},
   {name:'Patna GPO',pin:'800001',color:'#dc2626'}
@@ -609,5 +676,6 @@ function searchByState(state){
   document.querySelector('.finder-card').scrollIntoView({behavior:'smooth'});
 }
 </script>
+<script src="/common.js" defer></script>
 </body>
 </html>
