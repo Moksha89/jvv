@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Free SIP & SWP Calculator - Calculate mutual fund returns, plan systematic investments and withdrawals. Compare top mutual funds in India with NAV, returns, and ratings.">
+<meta name="keywords" content="SIP calculator, SWP calculator, mutual fund calculator, lumpsum calculator, investment calculator, best mutual funds India, SIP returns, systematic investment plan">
+<title>SIP & SWP Investment Calculator - Mutual Fund Returns | News Reporter Live</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href="https://newsreporter.live/investment-calculator">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SIP & SWP Investment Calculator - Mutual Fund Returns">
+<meta property="og:description" content="Calculate SIP, SWP, lumpsum returns and compare top mutual funds in India.">
+<meta property="og:url" content="https://newsreporter.live/investment-calculator">
+<meta property="og:site_name" content="News Reporter Live">
+<meta name="robots" content="index, follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"SIP & SWP Investment Calculator","description":"Calculate SIP, SWP, lumpsum returns and compare top mutual funds in India","url":"https://newsreporter.live/investment-calculator","publisher":{"@type":"Organization","name":"News Reporter Live","url":"https://newsreporter.live"}}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#1e40af;--primary-light:#dbeafe;--accent:#7c3aed;--success:#059669;--warning:#d97706;--red:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--radius:12px}
+body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#3b82f6;--primary-light:#1e3a5f;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.site-header{background:var(--card);border-bottom:1px solid var(--border);padding:0;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.header-top{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px 24px}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#1e40af,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px}
+.logo h1{font-family:'Playfair Display',serif;font-size:22px;color:var(--text);line-height:1.1}
+.logo span{font-size:11px;color:var(--text3);letter-spacing:1px}
+.header-right{display:flex;align-items:center;gap:16px}
+.dark-toggle{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px;color:var(--text2);display:flex;align-items:center;gap:6px}
+.back-btn{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:8px 18px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;text-decoration:none}
+.back-btn:hover{opacity:.9;text-decoration:none}
+
+.site-nav{background:var(--card);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1280px;margin:0 auto;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+.nav-inner::-webkit-scrollbar{display:none}
+.nav-item{padding:12px 18px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;text-decoration:none;display:block}
+.nav-item:hover{color:var(--primary);background:var(--primary-light);text-decoration:none}
+.nav-item.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+
+.breadcrumb{max-width:1280px;margin:0 auto;padding:16px 24px 0;font-size:13px;color:var(--text3)}
+.breadcrumb a{color:var(--text3)}
+.breadcrumb a:hover{color:var(--primary)}
+
+.section{max-width:1280px;margin:0 auto;padding:0 24px 32px}
+.section h2{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--primary)}
+
+.calc-hero{max-width:1280px;margin:0 auto;padding:24px}
+.calc-hero h2{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;margin-bottom:8px;color:var(--text)}
+.calc-hero p{color:var(--text2);font-size:15px;line-height:1.7;margin-bottom:24px}
+
+/* Calculator Type Tabs */
+.calc-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.calc-tab{padding:10px 20px;border-radius:24px;font-size:13px;font-weight:600;cursor:pointer;border:2px solid var(--border);background:var(--card);color:var(--text2);transition:all .2s;display:flex;align-items:center;gap:6px}
+.calc-tab:hover{border-color:var(--primary);color:var(--primary)}
+.calc-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.calc-tab .emoji{font-size:16px}
+
+/* Calculator Grid */
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px}
+@media(max-width:900px){.calc-grid{grid-template-columns:1fr}}
+
+.calc-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow)}
+.calc-card h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+
+/* Slider Input */
+.slider-group{margin-bottom:24px}
+.slider-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.slider-label span{font-size:13px;font-weight:600;color:var(--text2)}
+.slider-value{display:flex;align-items:center;gap:4px}
+.slider-value input{width:120px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-weight:700;color:var(--primary);text-align:right;background:var(--bg);font-family:inherit;outline:none}
+.slider-value input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(30,64,175,.1)}
+.slider-value .unit{font-size:12px;color:var(--text3);font-weight:600}
+input[type="range"]{width:100%;height:6px;-webkit-appearance:none;appearance:none;background:var(--border);border-radius:3px;outline:none;cursor:pointer}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--primary);cursor:pointer;box-shadow:0 2px 6px rgba(30,64,175,.3)}
+input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--primary);cursor:pointer;border:none}
+
+/* Results Card */
+.result-card{background:linear-gradient(135deg,#064e3b,#0f172a);border-radius:var(--radius);padding:28px;color:#fff;position:relative;overflow:hidden}
+body.dark .result-card{background:linear-gradient(135deg,#1e293b,#0f172a);border:1px solid var(--border)}
+.result-card::before{content:'';position:absolute;top:-50%;right:-50%;width:100%;height:100%;background:radial-gradient(circle,rgba(16,185,129,.15) 0%,transparent 70%);pointer-events:none}
+.result-card h3{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:24px;color:#fff}
+.big-amount{font-size:42px;font-weight:800;color:#34d399;margin-bottom:4px;font-family:'Inter',sans-serif}
+.big-label{font-size:13px;color:#94a3b8;margin-bottom:24px;font-weight:500}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.result-item{background:rgba(255,255,255,.08);border-radius:10px;padding:14px}
+.result-item .label{font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.result-item .value{font-size:18px;font-weight:700;color:#f1f5f9}
+.result-item .value.green{color:#34d399}
+.result-item .value.amber{color:#fbbf24}
+.result-item .value.blue{color:#60a5fa}
+
+/* Donut Chart */
+.chart-container{display:flex;align-items:center;justify-content:center;gap:20px;margin-top:20px}
+.donut-chart{position:relative;width:140px;height:140px}
+.donut-chart canvas{width:140px;height:140px}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.donut-center .pct{font-size:22px;font-weight:800;color:#34d399}
+.donut-center .pct-label{font-size:10px;color:#94a3b8}
+.chart-legend{display:flex;flex-direction:column;gap:10px}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12px;color:#cbd5e1}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* Year-by-year table */
+.growth-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600;color:var(--primary);margin-top:16px;border:none;background:none;font-family:inherit}
+.growth-toggle:hover{text-decoration:underline}
+.growth-table-wrap{display:none;margin-top:16px;max-height:400px;overflow-y:auto;border:1px solid var(--border);border-radius:10px}
+.growth-table-wrap.show{display:block}
+.growth-table{width:100%;border-collapse:collapse;font-size:12px}
+.growth-table th{background:var(--primary);color:#fff;padding:10px 12px;text-align:left;font-weight:600;position:sticky;top:0}
+.growth-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text2)}
+.growth-table tr:hover td{background:var(--primary-light)}
+
+/* Step-up SIP */
+.stepup-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:32px}
+.stepup-section h3{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:20px}
+
+/* Comparison */
+.compare-table-wrap{overflow-x:auto;margin-bottom:32px;border:1px solid var(--border);border-radius:var(--radius)}
+.compare-table{width:100%;border-collapse:collapse;font-size:13px;min-width:700px}
+.compare-table th{background:var(--primary);color:#fff;padding:12px 16px;text-align:left;font-weight:600;white-space:nowrap}
+.compare-table td{padding:10px 16px;border-bottom:1px solid var(--border);color:var(--text2)}
+.compare-table tr:hover td{background:var(--primary-light)}
+.compare-table .highlight{font-weight:700;color:var(--success)}
+
+/* Fund Cards */
+.funds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:32px}
+.fund-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:all .2s;position:relative;overflow:hidden}
+.fund-card:hover{border-color:var(--primary);box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.fund-card.top-pick{border-color:var(--success)}
+.fund-card.top-pick::before{content:'TOP PICK';position:absolute;top:12px;right:-28px;background:var(--success);color:#fff;font-size:10px;font-weight:700;padding:3px 36px;transform:rotate(45deg);letter-spacing:.5px}
+.fund-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.fund-logo{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0;color:#fff}
+.fund-info h4{font-size:14px;font-weight:700;color:var(--text);line-height:1.3}
+.fund-info .cat-badge{font-size:11px;padding:2px 8px;border-radius:4px;font-weight:600;display:inline-block;margin-top:2px}
+.fund-returns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.fr-item{text-align:center;padding:8px;background:var(--bg);border-radius:8px}
+.fr-item .fr-val{font-size:16px;font-weight:800;color:var(--success)}
+.fr-item .fr-val.neg{color:var(--red)}
+.fr-item .fr-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.3px}
+.fund-meta{display:flex;flex-wrap:wrap;gap:6px}
+.fm-tag{font-size:11px;padding:3px 8px;border-radius:4px;background:var(--primary-light);color:var(--primary);font-weight:500}
+
+/* Filter Pills */
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.filter-pill{padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--card);color:var(--text2);transition:all .2s}
+.filter-pill:hover{border-color:var(--primary);color:var(--primary)}
+.filter-pill.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* Tips */
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:32px}
+.tip-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:all .2s}
+.tip-card:hover{border-color:var(--primary);box-shadow:var(--shadow)}
+.tip-icon{font-size:28px;margin-bottom:10px}
+.tip-card h4{font-size:15px;font-weight:700;margin-bottom:8px;color:var(--text)}
+.tip-card p{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* FAQ */
+.faq-item{border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
+.faq-q{padding:16px 20px;font-size:14px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--card);color:var(--text);transition:all .2s}
+.faq-q:hover{background:var(--primary-light)}
+.faq-a{padding:0 20px;max-height:0;overflow:hidden;transition:all .3s;font-size:13px;color:var(--text2);line-height:1.7;background:var(--card)}
+.faq-a.show{padding:16px 20px;max-height:500px}
+
+/* Footer */
+footer{background:var(--card);border-top:1px solid var(--border);margin-top:40px;padding:40px 0 20px}
+.footer-inner{max-width:1280px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
+.footer-inner h4{font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text)}
+.footer-inner a{display:block;font-size:13px;color:var(--text2);margin-bottom:6px;text-decoration:none}
+.footer-inner a:hover{color:var(--primary)}
+.footer-inner p{font-size:12px;color:var(--text3);line-height:1.6}
+.footer-bottom{text-align:center;padding:20px 24px 0;font-size:12px;color:var(--text3);border-top:1px solid var(--border);margin-top:24px;max-width:1280px;margin-left:auto;margin-right:auto}
+
+@media(max-width:768px){
+.header-top{flex-wrap:wrap;gap:8px}
+.logo h1{font-size:18px}
+.calc-hero h2{font-size:24px}
+.big-amount{font-size:28px}
+.result-grid{grid-template-columns:1fr}
+.fund-returns{grid-template-columns:1fr}
+.footer-inner{grid-template-columns:1fr 1fr}
+.calc-tabs{gap:4px}
+.calc-tab{padding:8px 14px;font-size:12px}
+}
+@media(max-width:480px){
+.calc-hero{padding:12px}
+.calc-card{padding:16px}
+.section{padding:0 12px 24px}
+.footer-inner{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+<div class="header-top">
+<a href="/" class="logo">
+<div class="logo-icon">NR</div>
+<div><h1>News Reporter</h1><span>Live &#8226; Trusted &#8226; Independent</span></div>
+</a>
+<div class="header-right">
+<button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+<span id="darkIcon">&#9790;</span> <span id="darkText">Dark</span>
+</button>
+<a href="/" class="back-btn">&#8592; Back to News</a>
+</div>
+</div>
+</header>
+
+<nav class="site-nav">
+<div class="nav-inner">
+<a class="nav-item" href="/">Home</a>
+<a class="nav-item" href="/directory">&#127758; Directory</a>
+<a class="nav-item" href="/pincode">PIN Codes</a>
+<a class="nav-item" href="/ifsc-codes">IFSC Codes</a>
+<a class="nav-item" href="/loan-calculator">&#128176; Loan Calculator</a>
+<a class="nav-item active" href="/investment-calculator">&#128200; SIP Calculator</a>
+<a class="nav-item" href="/cricket-live">&#127951; Live Scores</a>
+</div>
+</nav>
+
+<div class="breadcrumb">
+<a href="/">Home</a> &#8250; <a href="/investment-calculator">Utilities</a> &#8250; SIP &amp; SWP Calculator
+</div>
+
+<!-- Hero Section -->
+<div class="calc-hero">
+<h2>&#128200; SIP &amp; SWP Investment Calculator</h2>
+<p>Plan your mutual fund investments with our comprehensive calculators. Calculate SIP returns, SWP withdrawals, lumpsum growth, and compare top-performing mutual funds in India. Make informed investment decisions with real-time calculations.</p>
+
+<!-- Calculator Type Tabs -->
+<div class="calc-tabs">
+<div class="calc-tab active" onclick="switchCalcType('sip')"><span class="emoji">&#128181;</span> SIP Calculator</div>
+<div class="calc-tab" onclick="switchCalcType('swp')"><span class="emoji">&#128184;</span> SWP Calculator</div>
+<div class="calc-tab" onclick="switchCalcType('lumpsum')"><span class="emoji">&#128176;</span> Lumpsum Calculator</div>
+<div class="calc-tab" onclick="switchCalcType('stepup')"><span class="emoji">&#128200;</span> Step-Up SIP</div>
+<div class="calc-tab" onclick="switchCalcType('goal')"><span class="emoji">&#127919;</span> Goal Planner</div>
+</div>
+
+<!-- SIP Calculator -->
+<div id="sipSection">
+<div class="calc-grid">
+<div class="calc-card">
+<h3>&#128181; SIP Calculator</h3>
+<div class="slider-group">
+<div class="slider-label">
+<span>Monthly Investment</span>
+<div class="slider-value"><span class="unit">&#8377;</span><input type="text" id="sipAmtInput" value="10,000" onchange="parseSipAmt(this.value)"></div>
+</div>
+<input type="range" id="sipAmtSlider" min="500" max="500000" step="500" value="10000" oninput="updateSipAmt(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>&#8377;500</span><span>&#8377;5L</span></div>
+</div>
+<div class="slider-group">
+<div class="slider-label">
+<span>Expected Return (p.a.)</span>
+<div class="slider-value"><input type="text" id="sipRateInput" value="12.00" onchange="parseSipRate(this.value)" style="width:70px"><span class="unit">%</span></div>
+</div>
+<input type="range" id="sipRateSlider" min="1" max="30" step="0.5" value="12" oninput="updateSipRate(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>1%</span><span>30%</span></div>
+</div>
+<div class="slider-group">
+<div class="slider-label">
+<span>Time Period</span>
+<div class="slider-value"><input type="text" id="sipYearsInput" value="10" onchange="parseSipYears(this.value)" style="width:60px"><span class="unit">Years</span></div>
+</div>
+<input type="range" id="sipYearsSlider" min="1" max="40" step="1" value="10" oninput="updateSipYears(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>1 Yr</span><span>40 Yrs</span></div>
+</div>
+<button class="growth-toggle" onclick="toggleGrowth('sip')">&#128203; View Year-by-Year Growth &#9660;</button>
+<div class="growth-table-wrap" id="sipGrowthWrap">
+<table class="growth-table">
+<thead><tr><th>Year</th><th>Invested</th><th>Returns</th><th>Total Value</th></tr></thead>
+<tbody id="sipGrowthBody"></tbody>
+</table>
+</div>
+</div>
+<div class="result-card" id="sipResults">
+<h3>&#128176; Your SIP Returns</h3>
+<div class="big-amount" id="sipTotal">&#8377;23,23,391</div>
+<div class="big-label">Total Value after 10 Years</div>
+<div class="result-grid">
+<div class="result-item"><div class="label">Total Invested</div><div class="value" id="sipInvested">&#8377;12,00,000</div></div>
+<div class="result-item"><div class="label">Wealth Gained</div><div class="value green" id="sipGain">&#8377;11,23,391</div></div>
+<div class="result-item"><div class="label">Absolute Returns</div><div class="value green" id="sipAbsReturn">93.6%</div></div>
+<div class="result-item"><div class="label">XIRR (Effective)</div><div class="value blue" id="sipXirr">12.0%</div></div>
+</div>
+<div class="chart-container">
+<div class="donut-chart"><canvas id="sipDonut" width="140" height="140"></canvas>
+<div class="donut-center"><div class="pct" id="sipDonutPct">52%</div><div class="pct-label">Invested</div></div>
+</div>
+<div class="chart-legend">
+<div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Invested ( <span id="sipLegInv">52%</span> )</div>
+<div class="legend-item"><div class="legend-dot" style="background:#34d399"></div>Returns ( <span id="sipLegRet">48%</span> )</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- SWP Calculator -->
+<div id="swpSection" style="display:none">
+<div class="calc-grid">
+<div class="calc-card">
+<h3>&#128184; SWP Calculator</h3>
+<div class="slider-group">
+<div class="slider-label">
+<span>Total Investment</span>
+<div class="slider-value"><span class="unit">&#8377;</span><input type="text" id="swpCorpusInput" value="50,00,000" onchange="parseSwpCorpus(this.value)"></div>
+</div>
+<input type="range" id="swpCorpusSlider" min="100000" max="100000000" step="100000" value="5000000" oninput="updateSwpCorpus(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>&#8377;1L</span><span>&#8377;10Cr</span></div>
+</div>
+<div class="slider-group">
+<div class="slider-label">
+<span>Monthly Withdrawal</span>
+<div class="slider-value"><span class="unit">&#8377;</span><input type="text" id="swpWithdrawInput" value="25,000" onchange="parseSwpWithdraw(this.value)" style="width:100px"></div>
+</div>
+<input type="range" id="swpWithdrawSlider" min="1000" max="500000" step="1000" value="25000" oninput="updateSwpWithdraw(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>&#8377;1K</span><span>&#8377;5L</span></div>
+</div>
+<div class="slider-group">
+<div class="slider-label">
+<span>Expected Return (p.a.)</span>
+<div class="slider-value"><input type="text" id="swpRateInput" value="8.00" onchange="parseSwpRate(this.value)" style="width:70px"><span class="unit">%</span></div>
+</div>
+<input type="range" id="swpRateSlider" min="1" max="20" step="0.5" value="8" oninput="updateSwpRate(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>1%</span><span>20%</span></div>
+</div>
+<div class="slider-group">
+<div class="slider-label">
+<span>Withdrawal Period</span>
+<div class="slider-value"><input type="text" id="swpYearsInput" value="20" onchange="parseSwpYears(this.value)" style="width:60px"><span class="unit">Years</span></div>
+</div>
+<input type="range" id="swpYearsSlider" min="1" max="40" step="1" value="20" oninput="updateSwpYears(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>1 Yr</span><span>40 Yrs</span></div>
+</div>
+<button class="growth-toggle" onclick="toggleGrowth('swp')">&#128203; View Year-by-Year Breakdown &#9660;</button>
+<div class="growth-table-wrap" id="swpGrowthWrap">
+<table class="growth-table">
+<thead><tr><th>Year</th><th>Withdrawn</th><th>Returns Earned</th><th>Remaining Balance</th></tr></thead>
+<tbody id="swpGrowthBody"></tbody>
+</table>
+</div>
+</div>
+<div class="result-card" id="swpResults">
+<h3>&#128184; Your SWP Summary</h3>
+<div class="big-amount" id="swpTotalWithdrawn">&#8377;60,00,000</div>
+<div class="big-label">Total Withdrawn over 20 Years</div>
+<div class="result-grid">
+<div class="result-item"><div class="label">Initial Investment</div><div class="value" id="swpInitial">&#8377;50,00,000</div></div>
+<div class="result-item"><div class="label">Remaining Balance</div><div class="value green" id="swpRemaining">&#8377;18,45,623</div></div>
+<div class="result-item"><div class="label">Total Returns Earned</div><div class="value green" id="swpReturns">&#8377;28,45,623</div></div>
+<div class="result-item"><div class="label">Corpus Lasts</div><div class="value blue" id="swpDuration">20+ Years</div></div>
+</div>
+<div class="chart-container">
+<div class="donut-chart"><canvas id="swpDonut" width="140" height="140"></canvas>
+<div class="donut-center"><div class="pct" id="swpDonutPct">68%</div><div class="pct-label">Withdrawn</div></div>
+</div>
+<div class="chart-legend">
+<div class="legend-item"><div class="legend-dot" style="background:#f87171"></div>Withdrawn ( <span id="swpLegWith">68%</span> )</div>
+<div class="legend-item"><div class="legend-dot" style="background:#34d399"></div>Remaining ( <span id="swpLegRem">32%</span> )</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Lumpsum Calculator -->
+<div id="lumpsumSection" style="display:none">
+<div class="calc-grid">
+<div class="calc-card">
+<h3>&#128176; Lumpsum Calculator</h3>
+<div class="slider-group">
+<div class="slider-label">
+<span>Investment Amount</span>
+<div class="slider-value"><span class="unit">&#8377;</span><input type="text" id="lsAmtInput" value="5,00,000" onchange="parseLsAmt(this.value)"></div>
+</div>
+<input type="range" id="lsAmtSlider" min="10000" max="100000000" step="10000" value="500000" oninput="updateLsAmt(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>&#8377;10K</span><span>&#8377;10Cr</span></div>
+</div>
+<div class="slider-group">
+<div class="slider-label">
+<span>Expected Return (p.a.)</span>
+<div class="slider-value"><input type="text" id="lsRateInput" value="12.00" onchange="parseLsRate(this.value)" style="width:70px"><span class="unit">%</span></div>
+</div>
+<input type="range" id="lsRateSlider" min="1" max="30" step="0.5" value="12" oninput="updateLsRate(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>1%</span><span>30%</span></div>
+</div>
+<div class="slider-group">
+<div class="slider-label">
+<span>Time Period</span>
+<div class="slider-value"><input type="text" id="lsYearsInput" value="10" onchange="parseLsYears(this.value)" style="width:60px"><span class="unit">Years</span></div>
+</div>
+<input type="range" id="lsYearsSlider" min="1" max="40" step="1" value="10" oninput="updateLsYears(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>1 Yr</span><span>40 Yrs</span></div>
+</div>
+<button class="growth-toggle" onclick="toggleGrowth('ls')">&#128203; View Year-by-Year Growth &#9660;</button>
+<div class="growth-table-wrap" id="lsGrowthWrap">
+<table class="growth-table">
+<thead><tr><th>Year</th><th>Opening Balance</th><th>Returns</th><th>Closing Balance</th></tr></thead>
+<tbody id="lsGrowthBody"></tbody>
+</table>
+</div>
+</div>
+<div class="result-card" id="lsResults">
+<h3>&#128176; Your Lumpsum Returns</h3>
+<div class="big-amount" id="lsTotal">&#8377;15,52,926</div>
+<div class="big-label">Total Value after 10 Years</div>
+<div class="result-grid">
+<div class="result-item"><div class="label">Amount Invested</div><div class="value" id="lsInvested">&#8377;5,00,000</div></div>
+<div class="result-item"><div class="label">Wealth Gained</div><div class="value green" id="lsGain">&#8377;10,52,926</div></div>
+<div class="result-item"><div class="label">Absolute Returns</div><div class="value green" id="lsAbsReturn">210.6%</div></div>
+<div class="result-item"><div class="label">CAGR</div><div class="value blue" id="lsCagr">12.0%</div></div>
+</div>
+<div class="chart-container">
+<div class="donut-chart"><canvas id="lsDonut" width="140" height="140"></canvas>
+<div class="donut-center"><div class="pct" id="lsDonutPct">32%</div><div class="pct-label">Invested</div></div>
+</div>
+<div class="chart-legend">
+<div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Invested ( <span id="lsLegInv">32%</span> )</div>
+<div class="legend-item"><div class="legend-dot" style="background:#34d399"></div>Returns ( <span id="lsLegRet">68%</span> )</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Step-Up SIP Calculator -->
+<div id="stepupSection" style="display:none">
+<div class="calc-grid">
+<div class="calc-card">
+<h3>&#128200; Step-Up SIP Calculator</h3>
+<div class="slider-group">
+<div class="slider-label">
+<span>Starting Monthly SIP</span>
+<div class="slider-value"><span class="unit">&#8377;</span><input type="text" id="suAmtInput" value="10,000" onchange="parseSuAmt(this.value)"></div>
+</div>
+<input type="range" id="suAmtSlider" min="500" max="500000" step="500" value="10000" oninput="updateSuAmt(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>&#8377;500</span><span>&#8377;5L</span></div>
+</div>
+<div class="slider-group">
+<div class="slider-label">
+<span>Annual Step-Up</span>
+<div class="slider-value"><input type="text" id="suStepInput" value="10" onchange="parseSuStep(this.value)" style="width:60px"><span class="unit">%</span></div>
+</div>
+<input type="range" id="suStepSlider" min="0" max="50" step="1" value="10" oninput="updateSuStep(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>0%</span><span>50%</span></div>
+</div>
+<div class="slider-group">
+<div class="slider-label">
+<span>Expected Return (p.a.)</span>
+<div class="slider-value"><input type="text" id="suRateInput" value="12.00" onchange="parseSuRate(this.value)" style="width:70px"><span class="unit">%</span></div>
+</div>
+<input type="range" id="suRateSlider" min="1" max="30" step="0.5" value="12" oninput="updateSuRate(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>1%</span><span>30%</span></div>
+</div>
+<div class="slider-group">
+<div class="slider-label">
+<span>Time Period</span>
+<div class="slider-value"><input type="text" id="suYearsInput" value="15" onchange="parseSuYears(this.value)" style="width:60px"><span class="unit">Years</span></div>
+</div>
+<input type="range" id="suYearsSlider" min="1" max="40" step="1" value="15" oninput="updateSuYears(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>1 Yr</span><span>40 Yrs</span></div>
+</div>
+<button class="growth-toggle" onclick="toggleGrowth('su')">&#128203; View Year-by-Year Growth &#9660;</button>
+<div class="growth-table-wrap" id="suGrowthWrap">
+<table class="growth-table">
+<thead><tr><th>Year</th><th>Monthly SIP</th><th>Year Invested</th><th>Total Value</th></tr></thead>
+<tbody id="suGrowthBody"></tbody>
+</table>
+</div>
+</div>
+<div class="result-card" id="suResults">
+<h3>&#128200; Step-Up SIP Returns</h3>
+<div class="big-amount" id="suTotal">&#8377;75,00,000</div>
+<div class="big-label">Total Value after 15 Years</div>
+<div class="result-grid">
+<div class="result-item"><div class="label">Total Invested</div><div class="value" id="suInvested">&#8377;38,12,700</div></div>
+<div class="result-item"><div class="label">Wealth Gained</div><div class="value green" id="suGain">&#8377;36,87,300</div></div>
+<div class="result-item"><div class="label">Without Step-Up</div><div class="value amber" id="suWithout">&#8377;50,45,760</div></div>
+<div class="result-item"><div class="label">Extra from Step-Up</div><div class="value green" id="suExtra">&#8377;24,54,240</div></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Goal Planner -->
+<div id="goalSection" style="display:none">
+<div class="calc-grid">
+<div class="calc-card">
+<h3>&#127919; Goal-Based SIP Planner</h3>
+<div class="slider-group">
+<div class="slider-label">
+<span>Target Amount</span>
+<div class="slider-value"><span class="unit">&#8377;</span><input type="text" id="goalAmtInput" value="1,00,00,000" onchange="parseGoalAmt(this.value)"></div>
+</div>
+<input type="range" id="goalAmtSlider" min="100000" max="500000000" step="100000" value="10000000" oninput="updateGoalAmt(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>&#8377;1L</span><span>&#8377;50Cr</span></div>
+</div>
+<div class="slider-group">
+<div class="slider-label">
+<span>Time to Achieve Goal</span>
+<div class="slider-value"><input type="text" id="goalYearsInput" value="15" onchange="parseGoalYears(this.value)" style="width:60px"><span class="unit">Years</span></div>
+</div>
+<input type="range" id="goalYearsSlider" min="1" max="40" step="1" value="15" oninput="updateGoalYears(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>1 Yr</span><span>40 Yrs</span></div>
+</div>
+<div class="slider-group">
+<div class="slider-label">
+<span>Expected Return (p.a.)</span>
+<div class="slider-value"><input type="text" id="goalRateInput" value="12.00" onchange="parseGoalRate(this.value)" style="width:70px"><span class="unit">%</span></div>
+</div>
+<input type="range" id="goalRateSlider" min="1" max="30" step="0.5" value="12" oninput="updateGoalRate(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>1%</span><span>30%</span></div>
+</div>
+<div class="slider-group">
+<div class="slider-label">
+<span>Inflation Rate</span>
+<div class="slider-value"><input type="text" id="goalInflInput" value="6.00" onchange="parseGoalInfl(this.value)" style="width:60px"><span class="unit">%</span></div>
+</div>
+<input type="range" id="goalInflSlider" min="0" max="15" step="0.5" value="6" oninput="updateGoalInfl(this.value)">
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px"><span>0%</span><span>15%</span></div>
+</div>
+</div>
+<div class="result-card" id="goalResults">
+<h3>&#127919; Your Goal Plan</h3>
+<div class="big-amount" id="goalSip">&#8377;20,000</div>
+<div class="big-label">Required Monthly SIP</div>
+<div class="result-grid">
+<div class="result-item"><div class="label">Target Amount</div><div class="value" id="goalTarget">&#8377;1,00,00,000</div></div>
+<div class="result-item"><div class="label">Inflation-Adjusted Target</div><div class="value amber" id="goalInflTarget">&#8377;2,39,65,582</div></div>
+<div class="result-item"><div class="label">Total You'll Invest</div><div class="value" id="goalTotalInv">&#8377;36,00,000</div></div>
+<div class="result-item"><div class="label">Wealth Created by Returns</div><div class="value green" id="goalWealth">&#8377;64,00,000</div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- SIP vs FD vs PPF Comparison -->
+<div class="section">
+<h2>&#128202; SIP vs FD vs PPF vs Gold &#8212; 10-Year Comparison</h2>
+<p style="color:var(--text2);font-size:13px;margin-bottom:16px">How &#8377;10,000/month grows across different investment options over 10 years (based on historical average returns):</p>
+<div class="compare-table-wrap">
+<table class="compare-table">
+<thead><tr><th>Investment</th><th>Monthly</th><th>Total Invested</th><th>Expected Return</th><th>Maturity Value</th><th>Wealth Gained</th></tr></thead>
+<tbody id="comparisonBody"></tbody>
+</table>
+</div>
+</div>
+
+<!-- Top Mutual Funds -->
+<div class="section">
+<h2>&#127942; Top Performing Mutual Funds in India (2025-26)</h2>
+<p style="color:var(--text2);font-size:13px;margin-bottom:16px">Compare returns, AUM, expense ratios, and ratings of top-performing mutual funds across categories. Past performance is not indicative of future results.</p>
+<div class="filter-row" id="fundFilters">
+<div class="filter-pill active" onclick="filterFunds('all')">All</div>
+<div class="filter-pill" onclick="filterFunds('large-cap')">&#128313; Large Cap</div>
+<div class="filter-pill" onclick="filterFunds('mid-cap')">&#128314; Mid Cap</div>
+<div class="filter-pill" onclick="filterFunds('small-cap')">&#128315; Small Cap</div>
+<div class="filter-pill" onclick="filterFunds('flexi-cap')">&#128256; Flexi Cap</div>
+<div class="filter-pill" onclick="filterFunds('elss')">&#128176; ELSS (Tax Saver)</div>
+<div class="filter-pill" onclick="filterFunds('index')">&#128200; Index Fund</div>
+<div class="filter-pill" onclick="filterFunds('debt')">&#128179; Debt Fund</div>
+</div>
+<div class="funds-grid" id="fundsGrid"></div>
+</div>
+
+<!-- SIP Return Comparison Table -->
+<div class="section">
+<h2>&#128202; SIP Return Comparison &#8212; &#8377;10,000/month</h2>
+<div class="compare-table-wrap">
+<table class="compare-table">
+<thead><tr><th>Fund Category</th><th>1 Year</th><th>3 Years</th><th>5 Years</th><th>10 Years</th><th>Risk Level</th></tr></thead>
+<tbody>
+<tr><td>Large Cap Equity</td><td>&#8377;1,28,400</td><td>&#8377;4,47,200</td><td>&#8377;8,81,700</td><td class="highlight">&#8377;23,23,391</td><td>Moderate</td></tr>
+<tr><td>Mid Cap Equity</td><td>&#8377;1,31,500</td><td>&#8377;4,78,600</td><td>&#8377;9,82,400</td><td class="highlight">&#8377;28,94,200</td><td>High</td></tr>
+<tr><td>Small Cap Equity</td><td>&#8377;1,34,000</td><td>&#8377;5,12,800</td><td>&#8377;10,89,600</td><td class="highlight">&#8377;35,94,700</td><td>Very High</td></tr>
+<tr><td>Flexi Cap</td><td>&#8377;1,29,800</td><td>&#8377;4,58,900</td><td>&#8377;9,24,100</td><td class="highlight">&#8377;25,67,800</td><td>Moderate-High</td></tr>
+<tr><td>ELSS (Tax Saver)</td><td>&#8377;1,29,200</td><td>&#8377;4,52,400</td><td>&#8377;9,08,600</td><td class="highlight">&#8377;24,78,500</td><td>Moderate-High</td></tr>
+<tr><td>Index Fund (Nifty 50)</td><td>&#8377;1,27,600</td><td>&#8377;4,38,200</td><td>&#8377;8,56,400</td><td class="highlight">&#8377;21,89,600</td><td>Moderate</td></tr>
+<tr><td>Balanced/Hybrid</td><td>&#8377;1,24,800</td><td>&#8377;4,18,600</td><td>&#8377;7,98,200</td><td class="highlight">&#8377;19,12,400</td><td>Low-Moderate</td></tr>
+<tr><td>Debt Fund</td><td>&#8377;1,21,200</td><td>&#8377;3,96,800</td><td>&#8377;7,38,400</td><td class="highlight">&#8377;16,38,800</td><td>Low</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- Smart Investment Tips -->
+<div class="section">
+<h2>&#128161; Smart Investment Tips</h2>
+<div class="tips-grid">
+<div class="tip-card"><div class="tip-icon">&#128200;</div><h4>Start Early, Stay Consistent</h4><p>Starting a &#8377;5,000 SIP at age 25 vs 35 (at 12% returns) gives you &#8377;1.76 Cr vs &#8377;50 L by age 55. Time in the market beats timing the market.</p></div>
+<div class="tip-card"><div class="tip-icon">&#128176;</div><h4>Use Step-Up SIP</h4><p>Increase your SIP by 10% every year with salary hikes. A &#8377;10,000 SIP with 10% annual step-up grows 2.5x more than a flat SIP over 20 years.</p></div>
+<div class="tip-card"><div class="tip-icon">&#127919;</div><h4>Goal-Based Investing</h4><p>Assign each SIP to a specific goal (retirement, child education, house). This keeps you disciplined and helps choose the right fund category and tenure.</p></div>
+<div class="tip-card"><div class="tip-icon">&#128179;</div><h4>SWP for Regular Income</h4><p>Instead of FD interest, use SWP from a debt or hybrid fund. You get tax-efficient regular income while your corpus continues to grow.</p></div>
+<div class="tip-card"><div class="tip-icon">&#128202;</div><h4>Diversify Across Categories</h4><p>Don't put all money in one fund. Split across large cap (stability), mid cap (growth), and debt (safety). A 60:30:10 split works for most investors.</p></div>
+<div class="tip-card"><div class="tip-icon">&#128176;</div><h4>Tax-Saving with ELSS</h4><p>ELSS funds offer tax deduction up to &#8377;1.5L under Section 80C with only 3-year lock-in. They've historically given 12-15% CAGR, beating PPF and FD.</p></div>
+</div>
+</div>
+
+<!-- FAQ Section -->
+<div class="section">
+<h2>&#10067; Frequently Asked Questions</h2>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is SIP and how does it work? &#9660;</div><div class="faq-a">SIP (Systematic Investment Plan) is a method of investing a fixed amount regularly (usually monthly) in mutual funds. It works on the principle of <strong>rupee cost averaging</strong> &#8212; when markets are low, you buy more units; when high, you buy fewer. Over time, this averages out your purchase cost. SIP also benefits from <strong>compounding</strong> &#8212; your returns earn returns. For example, a &#8377;10,000 monthly SIP at 12% for 10 years grows to &#8377;23.2 lakhs, while you only invested &#8377;12 lakhs.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is SWP and when should I use it? &#9660;</div><div class="faq-a">SWP (Systematic Withdrawal Plan) is the opposite of SIP. You invest a lump sum in a mutual fund and withdraw a fixed amount regularly. It's ideal for <strong>retirees</strong> who need regular income, or anyone who wants to create a monthly cash flow from their investments. The remaining corpus continues to earn returns. SWP from equity funds held for 1+ year gets <strong>long-term capital gains tax benefit</strong> (10% above &#8377;1.25L), making it more tax-efficient than FD interest.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">SIP vs Lumpsum &#8212; which is better? &#9660;</div><div class="faq-a">In a <strong>rising market</strong>, lumpsum gives better returns since your entire amount starts compounding immediately. In a <strong>volatile or falling market</strong>, SIP wins because of rupee cost averaging. Historically, for periods of 7+ years, both give similar returns. <strong>Practical advice:</strong> If you have a large sum, invest 50% as lumpsum and spread the rest over 6-12 months via STP (Systematic Transfer Plan). For regular income (salary), SIP is the natural choice.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How are mutual fund returns taxed in India? &#9660;</div><div class="faq-a"><strong>Equity Funds (held &gt;1 year):</strong> LTCG taxed at 12.5% above &#8377;1.25L exemption. <strong>Equity Funds (held &lt;1 year):</strong> STCG taxed at 20%. <strong>Debt Funds:</strong> All gains taxed at your income tax slab rate (no LTCG benefit since April 2023). <strong>ELSS:</strong> Same as equity funds, but with 3-year lock-in and &#8377;1.5L deduction under Section 80C. <strong>SWP Tax:</strong> Only the capital gains portion of each withdrawal is taxed, not the principal &#8212; making SWP more tax-efficient than FD interest.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the ideal SIP amount for beginners? &#9660;</div><div class="faq-a">You can start a SIP with as little as <strong>&#8377;500/month</strong>. However, for meaningful wealth creation, aim to invest <strong>20-30% of your monthly income</strong>. A good starting point: &#8377;5,000-10,000/month in a diversified equity fund. As your income grows, increase your SIP by 10-15% annually (step-up SIP). For a &#8377;1 Crore goal in 15 years at 12% returns, you need approximately &#8377;20,000/month SIP.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the difference between Direct and Regular mutual fund plans? &#9660;</div><div class="faq-a"><strong>Direct plans</strong> are bought directly from the AMC (fund house) without any distributor/agent. They have a <strong>lower expense ratio</strong> (0.3-1% less) which means higher returns over time. <strong>Regular plans</strong> are bought through distributors/agents who earn a commission, resulting in a higher expense ratio. Over 20 years, the 0.5-1% difference in expense ratio can result in <strong>15-25% more wealth</strong> in direct plans. Use platforms like Groww, Zerodha Coin, or AMC websites for direct plans.</div></div>
+</div>
+
+<footer>
+<div class="footer-inner">
+<div><h4>News Reporter Live</h4>
+<a href="/">Home</a><a href="/?cat=politics">Politics</a><a href="/?cat=business">Business</a><a href="/?cat=sports">Sports</a><a href="/?cat=technology">Technology</a></div>
+<div><h4>Financial Tools</h4>
+<a href="/loan-calculator">Loan EMI Calculator</a><a href="/investment-calculator">SIP &amp; SWP Calculator</a><a href="/ifsc-codes">IFSC Code Finder</a><a href="/pincode">PIN Code Finder</a></div>
+<div><h4>Investment Types</h4>
+<a href="javascript:void(0)">SIP Calculator</a><a href="javascript:void(0)">SWP Calculator</a><a href="javascript:void(0)">Lumpsum Calculator</a><a href="javascript:void(0)">Step-Up SIP</a></div>
+<div><h4>Disclaimer</h4><p>Mutual fund investments are subject to market risks. Read all scheme-related documents carefully. Past performance is not indicative of future results. The calculations are for illustrative purposes only.</p></div>
+</div>
+<div class="footer-bottom">&copy; 2024-2026 News Reporter Live. All rights reserved.</div>
+</footer>
+
+<script>
+// ===== Utility Functions =====
+function fmt(n){if(n>=10000000)return '&#8377;'+(n/10000000).toFixed(2)+' Cr';if(n>=100000)return '&#8377;'+(n/100000).toFixed(2)+' L';return '&#8377;'+n.toLocaleString('en-IN')}
+function fmtRs(n){return '&#8377;'+Math.round(n).toLocaleString('en-IN')}
+function parseNum(s){return parseInt(String(s).replace(/[^0-9.-]/g,''))||0}
+function parseFloat2(s){return parseFloat(String(s).replace(/[^0-9.-]/g,''))||0}
+function toIndian(n){var s=Math.round(n).toString();var afterPoint='';if(s.indexOf('.')>0){afterPoint=s.substring(s.indexOf('.'),s.length)}s=s.indexOf('.')>0?s.substring(0,s.indexOf('.')):s;var lastThree=s.substring(s.length-3);var otherNumbers=s.substring(0,s.length-3);if(otherNumbers!='')lastThree=','+lastThree;return otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g,',')+lastThree+afterPoint}
+
+// ===== Dark Mode =====
+function toggleDarkMode(){document.body.classList.toggle('dark');var d=document.body.classList.contains('dark');localStorage.setItem('darkMode',d?'true':'false');document.getElementById('darkIcon').innerHTML=d?'&#9788;':'&#9790;';document.getElementById('darkText').textContent=d?'Light':'Dark'}
+if(localStorage.getItem('darkMode')==='true'){document.body.classList.add('dark');document.getElementById('darkIcon').innerHTML='&#9788;';document.getElementById('darkText').textContent='Light'}
+
+// ===== Tab Switching =====
+function switchCalcType(type){
+var sections=['sip','swp','lumpsum','stepup','goal'];
+sections.forEach(function(s){document.getElementById(s+'Section').style.display=s===type?'block':'none'});
+document.querySelectorAll('.calc-tab').forEach(function(t,i){t.classList.toggle('active',sections[i]===type)});
+}
+
+// ===== SIP Calculator =====
+function updateSipAmt(v){v=parseInt(v);document.getElementById('sipAmtInput').value=toIndian(v);document.getElementById('sipAmtSlider').value=v;calcSip()}
+function parseSipAmt(v){var n=parseNum(v);n=Math.max(500,Math.min(500000,n));document.getElementById('sipAmtSlider').value=n;document.getElementById('sipAmtInput').value=toIndian(n);calcSip()}
+function updateSipRate(v){document.getElementById('sipRateInput').value=parseFloat(v).toFixed(2);document.getElementById('sipRateSlider').value=v;calcSip()}
+function parseSipRate(v){var n=parseFloat2(v);n=Math.max(1,Math.min(30,n));document.getElementById('sipRateSlider').value=n;document.getElementById('sipRateInput').value=n.toFixed(2);calcSip()}
+function updateSipYears(v){document.getElementById('sipYearsInput').value=v;document.getElementById('sipYearsSlider').value=v;calcSip()}
+function parseSipYears(v){var n=parseInt(v)||1;n=Math.max(1,Math.min(40,n));document.getElementById('sipYearsSlider').value=n;document.getElementById('sipYearsInput').value=n;calcSip()}
+
+function calcSip(){
+var P=parseInt(document.getElementById('sipAmtSlider').value);
+var r=parseFloat(document.getElementById('sipRateSlider').value)/100/12;
+var n=parseInt(document.getElementById('sipYearsSlider').value)*12;
+var FV=P*(((Math.pow(1+r,n)-1)/r)*(1+r));
+var invested=P*n;
+var gain=FV-invested;
+var absRet=(gain/invested*100);
+document.getElementById('sipTotal').innerHTML=fmtRs(FV);
+document.getElementById('sipInvested').innerHTML=fmtRs(invested);
+document.getElementById('sipGain').innerHTML=fmtRs(gain);
+document.getElementById('sipAbsReturn').innerHTML=absRet.toFixed(1)+'%';
+document.getElementById('sipXirr').innerHTML=(parseFloat(document.getElementById('sipRateSlider').value)).toFixed(1)+'%';
+var invPct=Math.round(invested/FV*100);
+var retPct=100-invPct;
+document.getElementById('sipDonutPct').textContent=invPct+'%';
+document.getElementById('sipLegInv').textContent=invPct+'%';
+document.getElementById('sipLegRet').textContent=retPct+'%';
+drawDonut('sipDonut',invPct,retPct,'#3b82f6','#34d399');
+buildSipGrowth(P,parseFloat(document.getElementById('sipRateSlider').value)/100,parseInt(document.getElementById('sipYearsSlider').value));
+}
+
+function buildSipGrowth(P,annualRate,years){
+var body=document.getElementById('sipGrowthBody');body.innerHTML='';
+var r=annualRate/12;var totalInv=0;var totalVal=0;
+for(var y=1;y<=years;y++){
+var months=y*12;totalInv=P*months;
+totalVal=P*(((Math.pow(1+r,months)-1)/r)*(1+r));
+var ret=totalVal-totalInv;
+body.innerHTML+='<tr><td>Year '+y+'</td><td>'+fmtRs(totalInv)+'</td><td style="color:var(--success)">'+fmtRs(ret)+'</td><td style="font-weight:700">'+fmtRs(totalVal)+'</td></tr>';
+}}
+
+// ===== SWP Calculator =====
+function updateSwpCorpus(v){v=parseInt(v);document.getElementById('swpCorpusInput').value=toIndian(v);document.getElementById('swpCorpusSlider').value=v;calcSwp()}
+function parseSwpCorpus(v){var n=parseNum(v);n=Math.max(100000,Math.min(100000000,n));document.getElementById('swpCorpusSlider').value=n;document.getElementById('swpCorpusInput').value=toIndian(n);calcSwp()}
+function updateSwpWithdraw(v){v=parseInt(v);document.getElementById('swpWithdrawInput').value=toIndian(v);document.getElementById('swpWithdrawSlider').value=v;calcSwp()}
+function parseSwpWithdraw(v){var n=parseNum(v);n=Math.max(1000,Math.min(500000,n));document.getElementById('swpWithdrawSlider').value=n;document.getElementById('swpWithdrawInput').value=toIndian(n);calcSwp()}
+function updateSwpRate(v){document.getElementById('swpRateInput').value=parseFloat(v).toFixed(2);document.getElementById('swpRateSlider').value=v;calcSwp()}
+function parseSwpRate(v){var n=parseFloat2(v);n=Math.max(1,Math.min(20,n));document.getElementById('swpRateSlider').value=n;document.getElementById('swpRateInput').value=n.toFixed(2);calcSwp()}
+function updateSwpYears(v){document.getElementById('swpYearsInput').value=v;document.getElementById('swpYearsSlider').value=v;calcSwp()}
+function parseSwpYears(v){var n=parseInt(v)||1;n=Math.max(1,Math.min(40,n));document.getElementById('swpYearsSlider').value=n;document.getElementById('swpYearsInput').value=n;calcSwp()}
+
+function calcSwp(){
+var corpus=parseInt(document.getElementById('swpCorpusSlider').value);
+var withdraw=parseInt(document.getElementById('swpWithdrawSlider').value);
+var rate=parseFloat(document.getElementById('swpRateSlider').value)/100/12;
+var years=parseInt(document.getElementById('swpYearsSlider').value);
+var months=years*12;
+var balance=corpus;var totalWithdrawn=0;var totalReturns=0;var exhaustedMonth=0;
+var body=document.getElementById('swpGrowthBody');body.innerHTML='';
+for(var y=1;y<=years;y++){
+var yrWithdrawn=0;var yrReturns=0;var yrStart=balance;
+for(var m=1;m<=12;m++){
+if(balance<=0){if(!exhaustedMonth)exhaustedMonth=(y-1)*12+m;break}
+var monthReturn=balance*rate;
+balance=balance+monthReturn-withdraw;
+yrReturns+=monthReturn;totalReturns+=monthReturn;
+yrWithdrawn+=withdraw;totalWithdrawn+=withdraw;
+if(balance<0){balance=0;if(!exhaustedMonth)exhaustedMonth=(y-1)*12+m}
+}
+body.innerHTML+='<tr><td>Year '+y+'</td><td>'+fmtRs(yrWithdrawn)+'</td><td style="color:var(--success)">'+fmtRs(yrReturns)+'</td><td style="font-weight:700">'+fmtRs(Math.max(0,balance))+'</td></tr>';
+if(balance<=0)break;
+}
+document.getElementById('swpTotalWithdrawn').innerHTML=fmtRs(totalWithdrawn);
+document.getElementById('swpInitial').innerHTML=fmtRs(corpus);
+document.getElementById('swpRemaining').innerHTML=fmtRs(Math.max(0,balance));
+document.getElementById('swpReturns').innerHTML=fmtRs(totalReturns);
+if(exhaustedMonth){
+var ey=Math.floor(exhaustedMonth/12);var em=exhaustedMonth%12;
+document.getElementById('swpDuration').innerHTML=ey+'Y '+em+'M';
+document.getElementById('swpDuration').className='value amber';
+}else{
+document.getElementById('swpDuration').innerHTML=years+'+ Years';
+document.getElementById('swpDuration').className='value blue';
+}
+var total=totalWithdrawn+Math.max(0,balance);
+var wPct=Math.round(totalWithdrawn/total*100)||50;
+var rPct=100-wPct;
+document.getElementById('swpDonutPct').textContent=wPct+'%';
+document.getElementById('swpLegWith').textContent=wPct+'%';
+document.getElementById('swpLegRem').textContent=rPct+'%';
+drawDonut('swpDonut',wPct,rPct,'#f87171','#34d399');
+}
+
+// ===== Lumpsum Calculator =====
+function updateLsAmt(v){v=parseInt(v);document.getElementById('lsAmtInput').value=toIndian(v);document.getElementById('lsAmtSlider').value=v;calcLs()}
+function parseLsAmt(v){var n=parseNum(v);n=Math.max(10000,Math.min(100000000,n));document.getElementById('lsAmtSlider').value=n;document.getElementById('lsAmtInput').value=toIndian(n);calcLs()}
+function updateLsRate(v){document.getElementById('lsRateInput').value=parseFloat(v).toFixed(2);document.getElementById('lsRateSlider').value=v;calcLs()}
+function parseLsRate(v){var n=parseFloat2(v);n=Math.max(1,Math.min(30,n));document.getElementById('lsRateSlider').value=n;document.getElementById('lsRateInput').value=n.toFixed(2);calcLs()}
+function updateLsYears(v){document.getElementById('lsYearsInput').value=v;document.getElementById('lsYearsSlider').value=v;calcLs()}
+function parseLsYears(v){var n=parseInt(v)||1;n=Math.max(1,Math.min(40,n));document.getElementById('lsYearsSlider').value=n;document.getElementById('lsYearsInput').value=n;calcLs()}
+
+function calcLs(){
+var P=parseInt(document.getElementById('lsAmtSlider').value);
+var r=parseFloat(document.getElementById('lsRateSlider').value)/100;
+var t=parseInt(document.getElementById('lsYearsSlider').value);
+var FV=P*Math.pow(1+r,t);
+var gain=FV-P;
+document.getElementById('lsTotal').innerHTML=fmtRs(FV);
+document.getElementById('lsInvested').innerHTML=fmtRs(P);
+document.getElementById('lsGain').innerHTML=fmtRs(gain);
+document.getElementById('lsAbsReturn').innerHTML=(gain/P*100).toFixed(1)+'%';
+document.getElementById('lsCagr').innerHTML=r*100 .toFixed?((r*100).toFixed(1))+'%':'12.0%';
+var invPct=Math.round(P/FV*100);var retPct=100-invPct;
+document.getElementById('lsDonutPct').textContent=invPct+'%';
+document.getElementById('lsLegInv').textContent=invPct+'%';
+document.getElementById('lsLegRet').textContent=retPct+'%';
+drawDonut('lsDonut',invPct,retPct,'#3b82f6','#34d399');
+buildLsGrowth(P,r,t);
+}
+
+function buildLsGrowth(P,r,years){
+var body=document.getElementById('lsGrowthBody');body.innerHTML='';
+for(var y=1;y<=years;y++){
+var opening=P*Math.pow(1+r,y-1);
+var closing=P*Math.pow(1+r,y);
+var ret=closing-opening;
+body.innerHTML+='<tr><td>Year '+y+'</td><td>'+fmtRs(opening)+'</td><td style="color:var(--success)">'+fmtRs(ret)+'</td><td style="font-weight:700">'+fmtRs(closing)+'</td></tr>';
+}}
+
+// ===== Step-Up SIP Calculator =====
+function updateSuAmt(v){v=parseInt(v);document.getElementById('suAmtInput').value=toIndian(v);document.getElementById('suAmtSlider').value=v;calcStepUp()}
+function parseSuAmt(v){var n=parseNum(v);n=Math.max(500,Math.min(500000,n));document.getElementById('suAmtSlider').value=n;document.getElementById('suAmtInput').value=toIndian(n);calcStepUp()}
+function updateSuStep(v){document.getElementById('suStepInput').value=v;document.getElementById('suStepSlider').value=v;calcStepUp()}
+function parseSuStep(v){var n=parseInt(v)||0;n=Math.max(0,Math.min(50,n));document.getElementById('suStepSlider').value=n;document.getElementById('suStepInput').value=n;calcStepUp()}
+function updateSuRate(v){document.getElementById('suRateInput').value=parseFloat(v).toFixed(2);document.getElementById('suRateSlider').value=v;calcStepUp()}
+function parseSuRate(v){var n=parseFloat2(v);n=Math.max(1,Math.min(30,n));document.getElementById('suRateSlider').value=n;document.getElementById('suRateInput').value=n.toFixed(2);calcStepUp()}
+function updateSuYears(v){document.getElementById('suYearsInput').value=v;document.getElementById('suYearsSlider').value=v;calcStepUp()}
+function parseSuYears(v){var n=parseInt(v)||1;n=Math.max(1,Math.min(40,n));document.getElementById('suYearsSlider').value=n;document.getElementById('suYearsInput').value=n;calcStepUp()}
+
+function calcStepUp(){
+var startSip=parseInt(document.getElementById('suAmtSlider').value);
+var stepPct=parseInt(document.getElementById('suStepSlider').value)/100;
+var annualRate=parseFloat(document.getElementById('suRateSlider').value)/100;
+var years=parseInt(document.getElementById('suYearsSlider').value);
+var r=annualRate/12;
+var totalVal=0;var totalInv=0;var currentSip=startSip;
+var body=document.getElementById('suGrowthBody');body.innerHTML='';
+for(var y=1;y<=years;y++){
+var yrInv=currentSip*12;totalInv+=yrInv;
+for(var m=1;m<=12;m++){
+totalVal=(totalVal+currentSip)*(1+r);
+}
+body.innerHTML+='<tr><td>Year '+y+'</td><td>'+fmtRs(currentSip)+'/mo</td><td>'+fmtRs(yrInv)+'</td><td style="font-weight:700">'+fmtRs(totalVal)+'</td></tr>';
+currentSip=Math.round(currentSip*(1+stepPct));
+}
+var gain=totalVal-totalInv;
+// Calculate without step-up for comparison
+var flatR=annualRate/12;var flatN=years*12;
+var flatFV=startSip*(((Math.pow(1+flatR,flatN)-1)/flatR)*(1+flatR));
+var extra=totalVal-flatFV;
+document.getElementById('suTotal').innerHTML=fmtRs(totalVal);
+document.getElementById('suInvested').innerHTML=fmtRs(totalInv);
+document.getElementById('suGain').innerHTML=fmtRs(gain);
+document.getElementById('suWithout').innerHTML=fmtRs(flatFV);
+document.getElementById('suExtra').innerHTML=fmtRs(Math.max(0,extra));
+}
+
+// ===== Goal Planner =====
+function updateGoalAmt(v){v=parseInt(v);document.getElementById('goalAmtInput').value=toIndian(v);document.getElementById('goalAmtSlider').value=v;calcGoal()}
+function parseGoalAmt(v){var n=parseNum(v);n=Math.max(100000,Math.min(500000000,n));document.getElementById('goalAmtSlider').value=n;document.getElementById('goalAmtInput').value=toIndian(n);calcGoal()}
+function updateGoalYears(v){document.getElementById('goalYearsInput').value=v;document.getElementById('goalYearsSlider').value=v;calcGoal()}
+function parseGoalYears(v){var n=parseInt(v)||1;n=Math.max(1,Math.min(40,n));document.getElementById('goalYearsSlider').value=n;document.getElementById('goalYearsInput').value=n;calcGoal()}
+function updateGoalRate(v){document.getElementById('goalRateInput').value=parseFloat(v).toFixed(2);document.getElementById('goalRateSlider').value=v;calcGoal()}
+function parseGoalRate(v){var n=parseFloat2(v);n=Math.max(1,Math.min(30,n));document.getElementById('goalRateSlider').value=n;document.getElementById('goalRateInput').value=n.toFixed(2);calcGoal()}
+function updateGoalInfl(v){document.getElementById('goalInflInput').value=parseFloat(v).toFixed(2);document.getElementById('goalInflSlider').value=v;calcGoal()}
+function parseGoalInfl(v){var n=parseFloat2(v);n=Math.max(0,Math.min(15,n));document.getElementById('goalInflSlider').value=n;document.getElementById('goalInflInput').value=n.toFixed(2);calcGoal()}
+
+function calcGoal(){
+var target=parseInt(document.getElementById('goalAmtSlider').value);
+var years=parseInt(document.getElementById('goalYearsSlider').value);
+var rate=parseFloat(document.getElementById('goalRateSlider').value)/100;
+var infl=parseFloat(document.getElementById('goalInflSlider').value)/100;
+var inflTarget=target*Math.pow(1+infl,years);
+var r=rate/12;var n=years*12;
+var sip=inflTarget/((((Math.pow(1+r,n)-1)/r)*(1+r)));
+var totalInv=sip*n;
+var wealth=inflTarget-totalInv;
+document.getElementById('goalSip').innerHTML=fmtRs(sip);
+document.getElementById('goalTarget').innerHTML=fmtRs(target);
+document.getElementById('goalInflTarget').innerHTML=fmtRs(inflTarget);
+document.getElementById('goalTotalInv').innerHTML=fmtRs(totalInv);
+document.getElementById('goalWealth').innerHTML=fmtRs(Math.max(0,wealth));
+}
+
+// ===== Donut Chart =====
+function drawDonut(canvasId,pct1,pct2,color1,color2){
+var canvas=document.getElementById(canvasId);if(!canvas)return;
+var ctx=canvas.getContext('2d');var w=140,h=140,cx=w/2,cy=h/2,R=60,r=40;
+ctx.clearRect(0,0,w,h);
+var a1=-Math.PI/2;var a2=a1+(pct1/100)*2*Math.PI;var a3=a2+(pct2/100)*2*Math.PI;
+ctx.beginPath();ctx.arc(cx,cy,R,a1,a2);ctx.arc(cx,cy,r,a2,a1,true);ctx.closePath();ctx.fillStyle=color1;ctx.fill();
+ctx.beginPath();ctx.arc(cx,cy,R,a2,a3);ctx.arc(cx,cy,r,a3,a2,true);ctx.closePath();ctx.fillStyle=color2;ctx.fill();
+}
+
+// ===== Growth Table Toggle =====
+function toggleGrowth(type){
+var wrap=document.getElementById(type+'GrowthWrap');
+if(wrap)wrap.classList.toggle('show');
+}
+
+// ===== FAQ Toggle =====
+function toggleFaq(el){el.nextElementSibling.classList.toggle('show')}
+
+// ===== Comparison Table =====
+function buildComparison(){
+var investments=[
+{name:'Equity Mutual Fund (SIP)',monthly:10000,rate:12,color:'var(--success)'},
+{name:'Nifty 50 Index Fund (SIP)',monthly:10000,rate:11,color:'var(--primary)'},
+{name:'PPF (Monthly)',monthly:10000,rate:7.1,color:'var(--warning)'},
+{name:'Fixed Deposit (Monthly)',monthly:10000,rate:7,color:'var(--text2)'},
+{name:'Gold (SIP)',monthly:10000,rate:10,color:'var(--warning)'},
+{name:'NPS (Equity - Tier 1)',monthly:10000,rate:10.5,color:'var(--accent)'},
+{name:'Recurring Deposit',monthly:10000,rate:6.5,color:'var(--text3)'},
+{name:'Savings Account',monthly:10000,rate:3.5,color:'var(--red)'}
+];
+var body=document.getElementById('comparisonBody');body.innerHTML='';
+investments.forEach(function(inv){
+var r=inv.rate/100/12;var n=120;
+var fv=inv.monthly*(((Math.pow(1+r,n)-1)/r)*(1+r));
+var totalInv=inv.monthly*n;var gain=fv-totalInv;
+body.innerHTML+='<tr><td style="font-weight:600;color:'+inv.color+'">'+inv.name+'</td><td>'+fmtRs(inv.monthly)+'</td><td>'+fmtRs(totalInv)+'</td><td>'+inv.rate+'% p.a.</td><td class="highlight">'+fmtRs(fv)+'</td><td style="color:var(--success)">'+fmtRs(gain)+'</td></tr>';
+});
+}
+
+// ===== Mutual Fund Data =====
+var fundsData=[
+// Large Cap
+{name:'Mirae Asset Large Cap Fund',cat:'large-cap',catLabel:'Large Cap',aum:'38,450 Cr',expense:'0.53%',ret1y:18.2,ret3y:15.8,ret5y:16.4,rating:5,risk:'Moderate',color:'#1e40af',topPick:true},
+{name:'ICICI Pru Bluechip Fund',cat:'large-cap',catLabel:'Large Cap',aum:'52,800 Cr',expense:'0.89%',ret1y:17.5,ret3y:16.2,ret5y:15.9,rating:5,risk:'Moderate',color:'#1e40af'},
+{name:'Axis Bluechip Fund',cat:'large-cap',catLabel:'Large Cap',aum:'34,200 Cr',expense:'0.68%',ret1y:15.8,ret3y:13.4,ret5y:14.2,rating:4,risk:'Moderate',color:'#1e40af'},
+{name:'SBI Blue Chip Fund',cat:'large-cap',catLabel:'Large Cap',aum:'42,100 Cr',expense:'0.72%',ret1y:16.9,ret3y:15.1,ret5y:15.3,rating:4,risk:'Moderate',color:'#1e40af'},
+// Mid Cap
+{name:'Quant Mid Cap Fund',cat:'mid-cap',catLabel:'Mid Cap',aum:'8,200 Cr',expense:'0.57%',ret1y:28.4,ret3y:26.8,ret5y:28.2,rating:5,risk:'High',color:'#7c3aed',topPick:true},
+{name:'HDFC Mid-Cap Opportunities',cat:'mid-cap',catLabel:'Mid Cap',aum:'58,400 Cr',expense:'0.78%',ret1y:22.6,ret3y:24.1,ret5y:22.8,rating:5,risk:'High',color:'#7c3aed'},
+{name:'Kotak Emerging Equity Fund',cat:'mid-cap',catLabel:'Mid Cap',aum:'42,600 Cr',expense:'0.45%',ret1y:21.8,ret3y:22.5,ret5y:21.4,rating:4,risk:'High',color:'#7c3aed'},
+{name:'Motilal Oswal Midcap Fund',cat:'mid-cap',catLabel:'Mid Cap',aum:'18,900 Cr',expense:'0.62%',ret1y:25.1,ret3y:28.4,ret5y:24.6,rating:5,risk:'High',color:'#7c3aed'},
+// Small Cap
+{name:'Quant Small Cap Fund',cat:'small-cap',catLabel:'Small Cap',aum:'24,800 Cr',expense:'0.64%',ret1y:22.5,ret3y:30.2,ret5y:38.4,rating:5,risk:'Very High',color:'#dc2626',topPick:true},
+{name:'Nippon India Small Cap',cat:'small-cap',catLabel:'Small Cap',aum:'48,200 Cr',expense:'0.68%',ret1y:20.8,ret3y:28.6,ret5y:32.1,rating:5,risk:'Very High',color:'#dc2626'},
+{name:'SBI Small Cap Fund',cat:'small-cap',catLabel:'Small Cap',aum:'26,400 Cr',expense:'0.62%',ret1y:18.4,ret3y:22.8,ret5y:26.4,rating:4,risk:'Very High',color:'#dc2626'},
+{name:'HDFC Small Cap Fund',cat:'small-cap',catLabel:'Small Cap',aum:'28,600 Cr',expense:'0.72%',ret1y:19.2,ret3y:25.4,ret5y:24.8,rating:4,risk:'Very High',color:'#dc2626'},
+// Flexi Cap
+{name:'Parag Parikh Flexi Cap Fund',cat:'flexi-cap',catLabel:'Flexi Cap',aum:'62,400 Cr',expense:'0.63%',ret1y:19.8,ret3y:18.6,ret5y:20.2,rating:5,risk:'Moderate-High',color:'#059669',topPick:true},
+{name:'HDFC Flexi Cap Fund',cat:'flexi-cap',catLabel:'Flexi Cap',aum:'54,800 Cr',expense:'0.77%',ret1y:18.4,ret3y:20.2,ret5y:18.6,rating:5,risk:'Moderate-High',color:'#059669'},
+{name:'Quant Flexi Cap Fund',cat:'flexi-cap',catLabel:'Flexi Cap',aum:'6,800 Cr',expense:'0.58%',ret1y:24.2,ret3y:22.8,ret5y:26.4,rating:5,risk:'Moderate-High',color:'#059669'},
+{name:'UTI Flexi Cap Fund',cat:'flexi-cap',catLabel:'Flexi Cap',aum:'26,200 Cr',expense:'0.92%',ret1y:16.8,ret3y:15.4,ret5y:16.2,rating:4,risk:'Moderate-High',color:'#059669'},
+// ELSS
+{name:'Quant ELSS Tax Saver Fund',cat:'elss',catLabel:'ELSS',aum:'10,200 Cr',expense:'0.51%',ret1y:24.8,ret3y:26.2,ret5y:28.6,rating:5,risk:'High',color:'#d97706',topPick:true},
+{name:'Mirae Asset ELSS Tax Saver',cat:'elss',catLabel:'ELSS',aum:'22,400 Cr',expense:'0.58%',ret1y:18.6,ret3y:16.8,ret5y:18.2,rating:5,risk:'High',color:'#d97706'},
+{name:'Canara Robeco ELSS Tax Saver',cat:'elss',catLabel:'ELSS',aum:'12,800 Cr',expense:'0.56%',ret1y:17.2,ret3y:16.4,ret5y:17.8,rating:4,risk:'High',color:'#d97706'},
+{name:'HDFC ELSS Tax Saver Fund',cat:'elss',catLabel:'ELSS',aum:'14,600 Cr',expense:'0.82%',ret1y:19.4,ret3y:20.8,ret5y:16.4,rating:4,risk:'High',color:'#d97706'},
+// Index
+{name:'UTI Nifty 50 Index Fund',cat:'index',catLabel:'Index Fund',aum:'18,400 Cr',expense:'0.18%',ret1y:15.2,ret3y:14.8,ret5y:14.6,rating:5,risk:'Moderate',color:'#0ea5e9',topPick:true},
+{name:'HDFC Index Fund - Nifty 50',cat:'index',catLabel:'Index Fund',aum:'14,200 Cr',expense:'0.20%',ret1y:15.1,ret3y:14.6,ret5y:14.4,rating:5,risk:'Moderate',color:'#0ea5e9'},
+{name:'Motilal Oswal Nifty Midcap 150',cat:'index',catLabel:'Index Fund',aum:'8,600 Cr',expense:'0.22%',ret1y:22.4,ret3y:24.2,ret5y:22.8,rating:4,risk:'High',color:'#0ea5e9'},
+{name:'Motilal Oswal Nasdaq 100 FOF',cat:'index',catLabel:'Index Fund',aum:'6,200 Cr',expense:'0.48%',ret1y:28.6,ret3y:12.4,ret5y:18.2,rating:4,risk:'High',color:'#0ea5e9'},
+// Debt
+{name:'HDFC Corporate Bond Fund',cat:'debt',catLabel:'Debt Fund',aum:'28,400 Cr',expense:'0.30%',ret1y:7.8,ret3y:6.4,ret5y:7.2,rating:5,risk:'Low',color:'#64748b',topPick:true},
+{name:'ICICI Pru All Seasons Bond',cat:'debt',catLabel:'Debt Fund',aum:'12,800 Cr',expense:'0.42%',ret1y:8.2,ret3y:7.1,ret5y:7.8,rating:4,risk:'Low-Moderate',color:'#64748b'},
+{name:'SBI Magnum Medium Duration',cat:'debt',catLabel:'Debt Fund',aum:'8,400 Cr',expense:'0.38%',ret1y:7.6,ret3y:6.8,ret5y:7.4,rating:4,risk:'Low-Moderate',color:'#64748b'},
+{name:'Axis Short Term Fund',cat:'debt',catLabel:'Debt Fund',aum:'10,200 Cr',expense:'0.28%',ret1y:7.4,ret3y:6.2,ret5y:6.8,rating:4,risk:'Low',color:'#64748b'}
+];
+
+function renderFunds(filter){
+var grid=document.getElementById('fundsGrid');grid.innerHTML='';
+var filtered=filter==='all'?fundsData:fundsData.filter(function(f){return f.cat===filter});
+filtered.forEach(function(f){
+var stars='';for(var i=0;i<f.rating;i++)stars+='&#11088;';
+var abbr=f.name.split(' ').map(function(w){return w[0]}).join('').substring(0,3).toUpperCase();
+grid.innerHTML+='<div class="fund-card'+(f.topPick?' top-pick':'')+'">'+
+'<div class="fund-top"><div class="fund-logo" style="background:'+f.color+'">'+abbr+'</div>'+
+'<div class="fund-info"><h4>'+f.name+'</h4><span class="cat-badge" style="background:var(--primary-light);color:var(--primary)">'+f.catLabel+'</span></div></div>'+
+'<div class="fund-returns">'+
+'<div class="fr-item"><div class="fr-val'+(f.ret1y<0?' neg':'')+'">'+f.ret1y.toFixed(1)+'%</div><div class="fr-lbl">1Y Return</div></div>'+
+'<div class="fr-item"><div class="fr-val'+(f.ret3y<0?' neg':'')+'">'+f.ret3y.toFixed(1)+'%</div><div class="fr-lbl">3Y Return</div></div>'+
+'<div class="fr-item"><div class="fr-val'+(f.ret5y<0?' neg':'')+'">'+f.ret5y.toFixed(1)+'%</div><div class="fr-lbl">5Y Return</div></div>'+
+'</div>'+
+'<div class="fund-meta">'+
+'<span class="fm-tag">AUM: '+f.aum+'</span>'+
+'<span class="fm-tag">Expense: '+f.expense+'</span>'+
+'<span class="fm-tag">Risk: '+f.risk+'</span>'+
+'<span class="fm-tag">'+stars+'</span>'+
+'</div></div>';
+});
+}
+
+function filterFunds(cat){
+document.querySelectorAll('#fundFilters .filter-pill').forEach(function(p){p.classList.remove('active')});
+event.target.classList.add('active');
+renderFunds(cat);
+}
+
+// ===== Initialize =====
+calcSip();calcSwp();calcLs();calcStepUp();calcGoal();buildComparison();renderFunds('all');
+</script>
+</body>
+</html>
