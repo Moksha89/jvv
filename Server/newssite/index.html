@@ -88,11 +88,21 @@
         .search-box svg { color: var(--text-muted); flex-shrink: 0; }
         .hamburger { display: none; cursor: pointer; padding: 8px; font-size: 24px; color: var(--text-secondary); background: none; border: none; }
         .nav { background: var(--bg-white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-        .nav-inner { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; display: flex; align-items: center; overflow-x: auto; gap: 0; scrollbar-width: none; }
+        .nav-inner { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 0; scrollbar-width: none; }
         .nav-inner::-webkit-scrollbar { display: none; }
-        .nav-item { padding: 15px 20px; font-size: 13px; font-weight: 600; color: var(--text-secondary); cursor: pointer; white-space: nowrap; transition: var(--transition); border-bottom: 3px solid transparent; }
-        .nav-item:hover { color: var(--primary); }
+        .nav-item { padding: 15px 20px; font-size: 13px; font-weight: 600; color: var(--text-secondary); cursor: pointer; white-space: nowrap; transition: var(--transition); border-bottom: 3px solid transparent; text-decoration: none; display: flex; align-items: center; gap: 5px; }
+        .nav-item:hover { color: var(--primary); text-decoration: none; }
         .nav-item.active, .nav-item.home-tab { color: var(--primary); border-bottom-color: var(--primary); }
+        .nav-item.tool-link { font-weight: 700; }
+        .nav-item.tool-link:hover { border-bottom-color: currentColor; }
+        .cat-dropdown { position: relative; }
+        .cat-dropdown .nav-item .arrow { font-size: 10px; transition: transform 0.2s; }
+        .cat-dropdown:hover .arrow { transform: rotate(180deg); }
+        .cat-dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background: var(--bg-white); border: 1px solid var(--border); border-radius: 0 0 var(--radius-sm) var(--radius-sm); box-shadow: var(--shadow-md); min-width: 200px; z-index: 200; padding: 6px 0; }
+        .cat-dropdown:hover .cat-dropdown-menu { display: block; }
+        .cat-dropdown-menu .cat-item { display: block; padding: 10px 20px; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: var(--transition); white-space: nowrap; }
+        .cat-dropdown-menu .cat-item:hover { background: var(--primary); color: white; }
+        body.dark-mode .cat-dropdown-menu { background: #1A1A2E; border-color: #2A2A42; }
         .main { max-width: var(--max-width); margin: 0 auto; padding: 28px 24px; }
         .grid-2col { display: grid; grid-template-columns: 1fr 380px; gap: 28px; }
         .hero-card { position: relative; border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: var(--transition); box-shadow: var(--shadow); }
@@ -271,22 +281,27 @@
 <nav class="nav">
     <div class="nav-inner">
         <div class="nav-item home-tab" onclick="showCategory('all', this)">Home</div>
-        <div class="nav-item" onclick="showCategory('politics', this)">Politics</div>
-        <div class="nav-item" onclick="showCategory('business', this)">Business</div>
-        <div class="nav-item" onclick="showCategory('sports', this)">Sports</div>
-        <div class="nav-item" onclick="showCategory('technology', this)">Technology</div>
-        <div class="nav-item" onclick="showCategory('entertainment', this)">Entertainment</div>
-        <div class="nav-item" onclick="showCategory('world', this)">World</div>
-        <div class="nav-item" onclick="showCategory('health', this)">Health</div>
-        <div class="nav-item" onclick="showCategory('science', this)">Science</div>
-        <div class="nav-item" onclick="showCategory('opinion', this)">Opinion</div>
-        <div class="nav-item" onclick="showCategory('cricket', this)">Cricket</div>
-        <div class="nav-item" onclick="showCategory('ipl', this)">IPL</div>
-        <div class="nav-item" onclick="showCategory('education', this)">Education</div>
-        <div class="nav-item" style="color:#ea580c;font-weight:700;" onclick="window.location.href='/directory'">&#127758; Directory</div>
-        <div class="nav-item" style="color:#1e40af;font-weight:700;" onclick="window.location.href='/ifsc-codes'">&#127975; IFSC Codes</div>
-        <div class="nav-item" style="color:#059669;font-weight:700;" onclick="window.location.href='/pincode'">&#128238; PIN Codes</div>
-        <div class="nav-item" style="color:#F44336;font-weight:700;" onclick="window.location.href='/cricket-live'">&#127951; Live Scores</div>
+        <div class="cat-dropdown">
+            <div class="nav-item" id="catDropdownBtn">Categories <span class="arrow">&#9660;</span></div>
+            <div class="cat-dropdown-menu" id="catDropdownMenu">
+                <div class="cat-item" onclick="showCategory('politics'); closeCatMenu()">Politics</div>
+                <div class="cat-item" onclick="showCategory('business'); closeCatMenu()">Business</div>
+                <div class="cat-item" onclick="showCategory('sports'); closeCatMenu()">Sports</div>
+                <div class="cat-item" onclick="showCategory('technology'); closeCatMenu()">Technology</div>
+                <div class="cat-item" onclick="showCategory('entertainment'); closeCatMenu()">Entertainment</div>
+                <div class="cat-item" onclick="showCategory('world'); closeCatMenu()">World</div>
+                <div class="cat-item" onclick="showCategory('health'); closeCatMenu()">Health</div>
+                <div class="cat-item" onclick="showCategory('science'); closeCatMenu()">Science</div>
+                <div class="cat-item" onclick="showCategory('opinion'); closeCatMenu()">Opinion</div>
+                <div class="cat-item" onclick="showCategory('cricket'); closeCatMenu()">Cricket</div>
+                <div class="cat-item" onclick="showCategory('ipl'); closeCatMenu()">IPL</div>
+                <div class="cat-item" onclick="showCategory('education'); closeCatMenu()">Education</div>
+            </div>
+        </div>
+        <a class="nav-item tool-link" href="/cricket-live" style="color:#F44336;">&#127951; Live Scores</a>
+        <a class="nav-item tool-link" href="/pincode" style="color:#059669;">&#128238; PIN Code Finder</a>
+        <a class="nav-item tool-link" href="/ifsc-codes" style="color:#1e40af;">&#127975; IFSC Code Finder</a>
+        <a class="nav-item tool-link" href="/directory" style="color:#ea580c;">&#127758; States &amp; Villages</a>
     </div>
 </nav>
 
@@ -387,6 +402,8 @@
 </footer>
 
 <script>
+function closeCatMenu() { /* no-op, CSS hover handles it */ }
+
 var now = new Date();
 document.getElementById('currentDate').textContent = now.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
