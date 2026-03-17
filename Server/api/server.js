@@ -3507,6 +3507,66 @@ Find NEW or recently updated programs only. Return a JSON array.`;
 startFinancialAidsTimer();
 
 // ============================================================
+// TMDb Poster & YouTube Trailer Auto-Lookup for Movies
+// ============================================================
+async function searchTMDbPoster(title) {
+    try {
+        const query = encodeURIComponent(title);
+        const url = `https://www.themoviedb.org/search/movie?query=${query}`;
+        const html = await fetchUrl(url);
+        const posterMatch = html.match(/\/t\/p\/w\d+[^"]*?(\/[a-zA-Z0-9]+\.jpg)/);
+        if (posterMatch && posterMatch[1]) {
+            return `https://image.tmdb.org/t/p/w500${posterMatch[1]}`;
+        }
+        // Try TV search
+        const tvUrl = `https://www.themoviedb.org/search/tv?query=${query}`;
+        const tvHtml = await fetchUrl(tvUrl);
+        const tvMatch = tvHtml.match(/\/t\/p\/w\d+[^"]*?(\/[a-zA-Z0-9]+\.jpg)/);
+        if (tvMatch && tvMatch[1]) {
+            return `https://image.tmdb.org/t/p/w500${tvMatch[1]}`;
+        }
+        return null;
+    } catch (e) {
+        return null;
+    }
+}
+
+async function searchYouTubeTrailer(title) {
+    try {
+        const query = encodeURIComponent(title + ' official trailer');
+        const url = `https://www.youtube.com/results?search_query=${query}`;
+        const html = await fetchUrl(url);
+        const videoIdMatch = html.match(/\/watch\?v=([a-zA-Z0-9_-]{11})/);
+        if (videoIdMatch && videoIdMatch[1]) {
+            return `https://www.youtube.com/embed/${videoIdMatch[1]}`;
+        }
+        return null;
+    } catch (e) {
+        return null;
+    }
+}
+
+async function enrichMoviePosterAndTrailer(movieTitle, currentPoster, currentTrailer) {
+    const needsPoster = !currentPoster || !currentPoster.startsWith('https://image.tmdb.org/');
+    const needsTrailer = !currentTrailer || !currentTrailer.startsWith('https://www.youtube.com/embed/');
+    
+    let poster = currentPoster || '';
+    let trailer = currentTrailer || '';
+    
+    if (needsPoster) {
+        const found = await searchTMDbPoster(movieTitle);
+        if (found) poster = found;
+    }
+    
+    if (needsTrailer) {
+        const found = await searchYouTubeTrailer(movieTitle);
+        if (found) trailer = found;
+    }
+    
+    return { poster, trailer };
+}
+
+// ============================================================
 // Movies & Reviews AI Auto-Discover Timer
 // ============================================================
 let moviesTimer = null;
@@ -3621,6 +3681,19 @@ CRITICAL: Only REAL movies. No made-up titles. No markdown wrapping. Return JSON
                 
                 const releaseYear = movie.release_date ? parseInt(movie.release_date.substring(0, 4)) || 0 : 0;
                 
+                // Auto-enrich poster and trailer from TMDb/YouTube if AI didn't provide valid ones
+                let posterUrl = movie.poster_url || '';
+                let trailerUrl = movie.trailer_url || '';
+                try {
+                    const enriched = await enrichMoviePosterAndTrailer(movie.title, posterUrl, trailerUrl);
+                    posterUrl = enriched.poster;
+                    trailerUrl = enriched.trailer;
+                    if (enriched.poster !== (movie.poster_url || '')) console.log(`Movies: enriched poster for "${movie.title}": ${enriched.poster}`);
+                    if (enriched.trailer !== (movie.trailer_url || '')) console.log(`Movies: enriched trailer for "${movie.title}": ${enriched.trailer}`);
+                } catch (enrichErr) {
+                    console.log(`Movies: enrichment failed for "${movie.title}": ${enrichErr.message}`);
+                }
+                
                 db.prepare(`INSERT INTO movies (title, original_title, industry, genre, release_date, release_year, rating, rating_source, director, cast, runtime, language, country, plot, review, verdict, poster_url, trailer_url, ott_platform, ott_release_date, box_office, budget, certification, tags, section, ai_generated)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`).run(
                     movie.title,
@@ -3639,8 +3712,8 @@ CRITICAL: Only REAL movies. No made-up titles. No markdown wrapping. Return JSON
                     movie.plot || '',
                     movie.review || '',
                     movie.verdict || '',
-                    movie.poster_url || '',
-                    movie.trailer_url || '',
+                    posterUrl,
+                    trailerUrl,
                     movie.ott_platform || '',
                     movie.ott_release_date || '',
                     movie.box_office || '',
@@ -3651,7 +3724,7 @@ CRITICAL: Only REAL movies. No made-up titles. No markdown wrapping. Return JSON
                 );
                 existing.push(titleLC);
                 added++;
-                console.log(`Movies: added "${movie.title}" (${industry.code}, ${section})`);
+                console.log(`Movies: added "${movie.title}" (${industry.code}, ${section}) poster=${posterUrl ? 'YES' : 'NO'} trailer=${trailerUrl ? 'YES' : 'NO'}`);
             }
             if (added > 0) console.log(`Movies auto-discover: added ${added} new ${industry.label} movies (${section})`);
         } catch (err) {
