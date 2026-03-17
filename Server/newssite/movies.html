@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Movies & Reviews - Latest movie reviews, ratings, release dates, OTT releases from Bollywood, Hollywood, Tollywood, Korean Cinema and more. AI-powered worldwide movie database.">
+<meta name="description" content="Movies & Reviews - Latest movie reviews, ratings, release dates, OTT releases from Bollywood, Hollywood, Tollywood, Korean Cinema and more. Worldwide movie database.">
 <meta name="keywords" content="movie reviews, movie ratings, OTT releases, Bollywood movies, Hollywood movies, Tollywood movies, Korean movies, upcoming movies, release dates, Netflix, Amazon Prime, Disney Hotstar">
 <title>Movies & Reviews - Worldwide Movie Ratings, Reviews & OTT Releases | News Reporter Live</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -221,7 +221,7 @@ footer a { color:var(--primary); }
 
 <section class="hero">
     <h1>Worldwide <em>Movies & Reviews</em></h1>
-    <p>Discover the latest movie reviews, ratings, release dates, and OTT availability from Bollywood, Hollywood, Tollywood, Korean Cinema, and more. AI-powered updates every 4 hours.</p>
+    <p>Discover the latest movie reviews, ratings, release dates, and OTT availability from Bollywood, Hollywood, Tollywood, Korean Cinema, and more. Updated regularly.</p>
     <div class="stats">
         <div class="stat"><b id="statTotal">0</b><small>Movies</small></div>
         <div class="stat"><b id="statIndustries">8</b><small>Industries</small></div>
@@ -267,7 +267,7 @@ footer a { color:var(--primary); }
     <div id="emptyState" class="empty-state" style="display:none;">
         <div class="icon">&#127916;</div>
         <h3>No movies found</h3>
-        <p>AI is discovering new movies. Check back soon! Movies are automatically added every 4 hours.</p>
+        <p>New movies are added regularly. Check back soon!</p>
     </div>
     <div class="movies-grid" id="moviesGrid"></div>
     <div class="load-more" id="loadMore" style="display:none;">
@@ -277,12 +277,12 @@ footer a { color:var(--primary); }
 
 <div class="disclaimer">
     <div class="disclaimer-box">
-        <strong>&#9888;&#65039; Disclaimer:</strong> Movie information, ratings, and reviews are AI-generated based on publicly available data and may not be 100% accurate. Ratings are approximate estimates. Release dates and OTT availability may change. Always verify details on official sources like IMDb, Rotten Tomatoes, or the respective OTT platform before making decisions. This page is for informational purposes only.
+        <strong>&#9888;&#65039; Disclaimer:</strong> Movie information, ratings, and reviews are sourced from publicly available data and may not be 100% accurate. Ratings are approximate estimates. Release dates and OTT availability may change. Always verify details on official sources like IMDb, Rotten Tomatoes, or the respective OTT platform before making decisions. This page is for informational purposes only.
     </div>
 </div>
 
 <footer>
-    <p>&copy; 2026 News Reporter Live. AI-powered movie database updated every 4 hours.</p>
+    <p>&copy; 2026 News Reporter Live. Worldwide movie database updated regularly.</p>
     <p>Covering: Bollywood, Hollywood, Tollywood, Kollywood, Korean, Malayalam, Kannada & Japanese Cinema</p>
 </footer>
 
@@ -395,7 +395,6 @@ function renderMovieCard(movie) {
             ottInfo +
             '<div class="card-footer">' +
                 (movie.certification ? '<span style="font-size:11px;font-weight:700;padding:3px 8px;border:1px solid var(--border);border-radius:4px;">' + movie.certification + '</span>' : '<span></span>') +
-                '<span class="ai-badge">&#129302; AI-discovered</span>' +
             '</div>' +
         '</div>' +
     '</div>';
@@ -460,7 +459,6 @@ function openMovie(id) {
             (movie.plot ? '<div class="modal-section"><h4>&#128214; Synopsis</h4><p>' + movie.plot + '</p></div>' : '') +
             (movie.review ? '<div class="modal-section"><h4>&#128221; Review</h4><p>' + movie.review + '</p></div>' : '') +
             castHTML +
-            '<div style="margin-top:16px;font-size:11px;color:var(--text3);">&#129302; AI-discovered movie &middot; Verify details on IMDb or official sources</div>' +
         '</div>';
     
     document.getElementById('modalContent').innerHTML = html;

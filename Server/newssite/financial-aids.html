@@ -1697,7 +1697,7 @@ function filterType(type, btn) {
     btn.classList.add('active');
 }
 
-// Load AI-discovered financial aid programs from API
+// Load additional financial aid programs from API
 (async function loadAIPrograms() {
     try {
         const res = await fetch('/api/financial-aids');
@@ -1750,7 +1750,7 @@ function filterType(type, btn) {
                     ${eligList ? '<div class="aid-section"><h4>✅ Eligibility Criteria</h4><ul class="elig-list">' + eligList + '</ul></div>' : ''}
                     ${aid.claim_url ? '<a href="' + aid.claim_url + '" target="_blank" rel="noopener" class="claim-btn">🔗 ' + (aid.claim_text || 'Visit Official Website') + '</a>' : ''}
                     ${aid.source ? '<div class="source-link">Official source: <a href="' + aid.source + '" target="_blank" rel="noopener">' + aid.source + '</a></div>' : ''}
-                    <div style="margin-top:8px;font-size:11px;color:var(--text3)">🤖 AI-discovered program • Verify details on official website</div>
+                    <div style="margin-top:8px;font-size:11px;color:var(--text3)">Verify details on official website before applying</div>
                 </div>`;
             grid.appendChild(card);
 
@@ -1760,7 +1760,7 @@ function filterType(type, btn) {
             }
         });
     } catch (e) {
-        console.log('No AI-discovered programs available:', e.message);
+        console.log('No additional programs available:', e.message);
     }
 })();
 </script>
