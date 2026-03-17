@@ -32,12 +32,7 @@
     --radius: 16px; --radius-sm: 12px; --radius-xs: 8px;
     --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
-body.dark {
-    --bg: #0b0f1a; --bg2: #111827; --bg3: #1e293b;
-    --text1: #E8E8F0; --text2: #B0B0C8; --text3: #6B6B88;
-    --border: #2A2A42; --border2: #222238;
-    --primary-light: rgba(229,57,53,0.15);
-}
+
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--text1); line-height:1.6; }
 a { text-decoration:none; color:inherit; }
@@ -129,7 +124,7 @@ header { background:var(--bg2); border-bottom:1px solid var(--border); padding:1
 .verdict-positive { background:#E8F5E9; color:#2E7D32; }
 .verdict-negative { background:#FFEBEE; color:#C62828; }
 .verdict-neutral { background:#FFF3E0; color:#E65100; }
-body.dark .verdict-positive { background:#1B3B1B; } body.dark .verdict-negative { background:#3B1B1B; } body.dark .verdict-neutral { background:#3B2B1B; }
+  
 .card-ott { margin-top:8px; font-size:11px; color:var(--primary); font-weight:600; }
 .card-footer { display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:12px; border-top:1px solid var(--border2); }
 .card-footer .ai-badge { font-size:10px; color:var(--text3); }
@@ -212,157 +207,7 @@ footer a { color:var(--primary); }
 .industry-tab:hover { transform:translateY(-2px); }
 .section-tab { transition:all 0.25s cubic-bezier(0.4,0,0.2,1); }
 
-    /* === DEEP POLISH: Movies Page Enhancements === */
-    body { animation: pageEntrance 0.6s ease-out; }
-    @keyframes pageEntrance { from { opacity: 0; } to { opacity: 1; } }
-    
-    /* Header glassmorphism */
-    header {
-        background: rgba(11,15,26,0.9) !important;
-        backdrop-filter: blur(24px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-        border-bottom: 1px solid rgba(229,57,53,0.1) !important;
-    }
-    
-    /* Hero section with animated gradient */
-    .hero, section:first-of-type {
-        background: linear-gradient(135deg, #0f172a 0%, #1a0a0a 30%, #4a1212 60%, #1e293b 100%) !important;
-        background-size: 400% 400% !important;
-        animation: heroGradient 12s ease infinite !important;
-        position: relative !important;
-    }
-    @keyframes heroGradient {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    
-    /* Movie cards with premium feel */
-    .movie-card {
-        border-radius: 16px !important;
-        border: 1px solid rgba(229,57,53,0.08) !important;
-        background: rgba(17,24,39,0.6) !important;
-        backdrop-filter: blur(8px) !important;
-        transition: all 0.4s cubic-bezier(0.33, 1, 0.68, 1) !important;
-        overflow: hidden !important;
-    }
-    .movie-card:hover {
-        transform: translateY(-8px) scale(1.02) !important;
-        border-color: rgba(229,57,53,0.25) !important;
-        box-shadow: 0 24px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(229,57,53,0.1) !important;
-    }
-    .movie-card img {
-        transition: transform 0.5s cubic-bezier(0.33, 1, 0.68, 1) !important;
-    }
-    .movie-card:hover img {
-        transform: scale(1.08) !important;
-    }
-    
-    /* Rating badges */
-    .rating, .star-badge, [class*="rating"] {
-        background: linear-gradient(135deg, #f59e0b, #d97706) !important;
-        color: white !important;
-        border-radius: 8px !important;
-        font-weight: 800 !important;
-        box-shadow: 0 2px 8px rgba(245,158,11,0.3) !important;
-    }
-    
-    /* Genre pills */
-    .genre-pill, .tag {
-        background: rgba(229,57,53,0.1) !important;
-        border: 1px solid rgba(229,57,53,0.2) !important;
-        color: #EF5350 !important;
-        border-radius: 20px !important;
-        padding: 3px 10px !important;
-        font-size: 11px !important;
-        font-weight: 600 !important;
-        transition: all 0.2s ease !important;
-    }
-    .genre-pill:hover, .tag:hover {
-        background: rgba(229,57,53,0.2) !important;
-    }
-    
-    /* Category tabs */
-    .industry-filter div, .tab, [class*="filter"] div {
-        border-radius: 24px !important;
-        transition: all 0.25s ease !important;
-    }
-    .industry-filter div.active, .tab.active {
-        background: linear-gradient(135deg, #E53935, #C62828) !important;
-        color: white !important;
-        box-shadow: 0 4px 15px rgba(229,57,53,0.3) !important;
-    }
-    
-    /* OTT availability badge */
-    .ott-badge, [class*="ott"] {
-        background: linear-gradient(135deg, #10b981, #059669) !important;
-        color: white !important;
-        border-radius: 6px !important;
-        font-weight: 700 !important;
-    }
-    
-    /* Load more button */
-    .load-more, button:last-of-type {
-        background: linear-gradient(135deg, #E53935, #C62828) !important;
-        border: none !important;
-        border-radius: 12px !important;
-        color: white !important;
-        font-weight: 700 !important;
-        padding: 14px 32px !important;
-        box-shadow: 0 4px 15px rgba(229,57,53,0.3) !important;
-        transition: all 0.25s ease !important;
-    }
-    .load-more:hover, button:last-of-type:hover {
-        transform: translateY(-3px) !important;
-        box-shadow: 0 8px 25px rgba(229,57,53,0.4) !important;
-    }
-    
-    /* Stat boxes in hero */
-    .stat-box, .stats-container > div {
-        background: rgba(255,255,255,0.06) !important;
-        border: 1px solid rgba(255,255,255,0.1) !important;
-        border-radius: 14px !important;
-        backdrop-filter: blur(10px) !important;
-        transition: all 0.3s ease !important;
-    }
-    .stat-box:hover, .stats-container > div:hover {
-        background: rgba(255,255,255,0.1) !important;
-        transform: translateY(-4px) !important;
-        border-color: rgba(255,255,255,0.2) !important;
-    }
-    
-    /* Search bar */
-    .search-container input {
-        background: rgba(30,41,59,0.6) !important;
-        border: 2px solid rgba(229,57,53,0.15) !important;
-        border-radius: 14px !important;
-        color: #f1f5f9 !important;
-        transition: all 0.3s ease !important;
-    }
-    .search-container input:focus {
-        border-color: #E53935 !important;
-        box-shadow: 0 0 0 4px rgba(229,57,53,0.15) !important;
-    }
-    .search-container button {
-        background: linear-gradient(135deg, #E53935, #C62828) !important;
-        border-radius: 14px !important;
-        box-shadow: 0 4px 15px rgba(229,57,53,0.3) !important;
-    }
-    
-    /* Footer */
-    footer {
-        background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
-        border-top: 1px solid rgba(229,57,53,0.1) !important;
-        border-radius: 0 !important;
-    }
-    
-    /* Mobile responsive */
-    @media (max-width: 768px) {
-        .movie-card { border-radius: 12px !important; }
-        .stat-box, .stats-container > div { border-radius: 10px !important; }
-    }
-    
-</style>
+    </style>
 <link rel="stylesheet" href="/common.css">
 </head>
 <body>
@@ -377,7 +222,7 @@ footer a { color:var(--primary); }
             </div>
         </a>
         <div style="display:flex;align-items:center;gap:10px;">
-            <button class="btn-dark" onclick="document.body.classList.toggle('dark');localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');" style="padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text2);">&#9790; Dark</button>
+            <button class="btn-dark" onclick="localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');" style="padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text2);">&#9790; Dark</button>
             <a href="/" style="padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;background:#E53935;color:#fff;text-decoration:none;">&larr; Home</a>
         </div>
     </div>
@@ -483,12 +328,10 @@ let allMovies = [];
 let totalMovies = 0;
 
 function toggleDark() {
-    document.body.classList.toggle('dark');
+    
     localStorage.setItem('movies_dark', document.body.classList.contains('dark') ? '1' : '0');
 }
-if (localStorage.getItem('movies_dark') === '1' || (!localStorage.getItem('movies_dark') && window.matchMedia('(prefers-color-scheme:dark)').matches)) {
-    document.body.classList.add('dark');
-}
+if (localStorage.getItem('movies_dark') === '1' || (!localStorage.getItem('movies_dark') && window.matchMedia('(prefers-color-scheme:dark)').matches))
 
 function setIndustry(ind, el) {
     currentIndustry = ind;
@@ -716,7 +559,7 @@ async function loadStats() {
             const indCount = data.industries ? data.industries.length : 0;
             document.getElementById('statIndustries').textContent = indCount || '8';
         }
-    } catch(e) {}
+    } catch(e)
 }
 
 // Initial load

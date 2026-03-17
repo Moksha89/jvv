@@ -32,7 +32,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#E53935;--primary-light:#dbeafe;--accent:#D32F2F;--success:#059669;--warning:#d97706;--red:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--radius:12px}
-body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#EF5350;--primary-light:#1e3a5f;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
+
 body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
 a{color:var(--primary);text-decoration:none}
 a:hover{text-decoration:underline}
@@ -44,7 +44,7 @@ a:hover{text-decoration:underline}
 .logo h1{font-family:'Playfair Display',serif;font-size:22px;color:var(--text);line-height:1.1}
 .logo span{font-size:11px;color:var(--text3);letter-spacing:1px}
 .header-right{display:flex;align-items:center;gap:16px}
-.dark-toggle{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px;color:var(--text2);display:flex;align-items:center;gap:6px}
+
 .back-btn{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:8px 18px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;text-decoration:none}
 .back-btn:hover{opacity:.9;text-decoration:none}
 
@@ -95,7 +95,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
 
 /* Results Card */
 .result-card{background:linear-gradient(135deg,#1e3a5f,#0f172a);border-radius:var(--radius);padding:28px;color:#fff;position:relative;overflow:hidden}
-body.dark .result-card{background:linear-gradient(135deg,#1e293b,#0f172a);border:1px solid var(--border)}
+
 .result-card::before{content:'';position:absolute;top:-50%;right:-50%;width:100%;height:100%;background:radial-gradient(circle,rgba(59,130,246,.15) 0%,transparent 70%);pointer-events:none}
 .result-card h3{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:24px;color:#fff}
 .emi-amount{font-size:42px;font-weight:800;color:#60a5fa;margin-bottom:4px;font-family:'Inter',sans-serif}
@@ -236,103 +236,7 @@ body.dark .result-card{background:linear-gradient(135deg,#1e293b,#0f172a);border
 .footer-inner{grid-template-columns:1fr}
 }
 
-    /* === DEEP POLISH: Loan Calculator Enhancements === */
-    body { animation: pageEntrance 0.6s ease-out; }
-    @keyframes pageEntrance { from { opacity: 0; } to { opacity: 1; } }
-    
-    header {
-        background: rgba(11,15,26,0.9) !important;
-        backdrop-filter: blur(24px) saturate(180%) !important;
-        border-bottom: 1px solid rgba(229,57,53,0.1) !important;
-    }
-    
-    /* Calculator panels */
-    .calc-panel, .calculator-section {
-        border-radius: 20px !important;
-        border: 1px solid rgba(229,57,53,0.1) !important;
-        background: rgba(17,24,39,0.6) !important;
-        backdrop-filter: blur(10px) !important;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.15) !important;
-    }
-    
-    /* EMI display */
-    .emi-amount, .result-value {
-        font-weight: 900 !important;
-        background: linear-gradient(135deg, #E53935, #E53935) !important;
-        -webkit-background-clip: text !important;
-        -webkit-text-fill-color: transparent !important;
-    }
-    
-    /* Range slider track */
-    input[type="range"] {
-        accent-color: #E53935 !important;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-        box-shadow: 0 0 0 4px rgba(229,57,53,0.2) !important;
-    }
-    
-    /* Loan type tabs */
-    .loan-type-tab, .loan-tab {
-        border-radius: 24px !important;
-        transition: all 0.25s ease !important;
-    }
-    .loan-type-tab.active, .loan-tab.active {
-        background: linear-gradient(135deg, #E53935, #C62828) !important;
-        color: white !important;
-        box-shadow: 0 4px 15px rgba(229,57,53,0.3) !important;
-    }
-    
-    /* Provider cards */
-    .provider-card, .bank-provider {
-        border-radius: 16px !important;
-        border: 1px solid rgba(229,57,53,0.08) !important;
-        background: rgba(17,24,39,0.5) !important;
-        transition: all 0.35s ease !important;
-    }
-    .provider-card:hover, .bank-provider:hover {
-        transform: translateY(-6px) !important;
-        border-color: rgba(229,57,53,0.2) !important;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
-    }
-    
-    /* Comparison table */
-    table {
-        border-radius: 14px !important;
-        overflow: hidden !important;
-        border: 1px solid rgba(229,57,53,0.1) !important;
-    }
-    th {
-        background: linear-gradient(135deg, #1e293b, #334155) !important;
-        color: #EF5350 !important;
-        font-weight: 700 !important;
-        padding: 14px !important;
-    }
-    td {
-        padding: 12px !important;
-        border-bottom: 1px solid rgba(229,57,53,0.06) !important;
-    }
-    tr:hover td {
-        background: rgba(229,57,53,0.03) !important;
-    }
-    
-    /* Tips cards */
-    .tip-card {
-        border-radius: 14px !important;
-        border: 1px solid rgba(229,57,53,0.08) !important;
-        background: rgba(17,24,39,0.5) !important;
-        transition: all 0.3s ease !important;
-    }
-    .tip-card:hover {
-        transform: translateY(-4px) !important;
-        border-color: rgba(229,57,53,0.2) !important;
-    }
-    
-    footer {
-        background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
-        border-top: 1px solid rgba(229,57,53,0.1) !important;
-    }
-    
-</style>
+    </style>
 <link rel="stylesheet" href="/common.css">
 </head>
 <body>
@@ -344,9 +248,6 @@ body.dark .result-card{background:linear-gradient(135deg,#1e293b,#0f172a);border
 <div><h1>News Reporter</h1><span>Live &#8226; Trusted &#8226; Independent</span></div>
 </a>
 <div class="header-right">
-<button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
-<span id="darkIcon">&#9790;</span> <span id="darkText">Dark</span>
-</button>
 <a href="/" class="back-btn">&#8592; Back to News</a>
 </div>
 </div>
@@ -355,12 +256,15 @@ body.dark .result-card{background:linear-gradient(135deg,#1e293b,#0f172a);border
 <nav class="site-nav">
 <div class="nav-inner">
 <a class="nav-item" href="/">Home</a>
-<a class="nav-item" href="/directory">&#127758; Directory</a>
-<a class="nav-item" href="/pincode">PIN Codes</a>
-<a class="nav-item" href="/ifsc-codes">IFSC Codes</a>
-<a class="nav-item active" href="/loan-calculator">&#128176; Loan Calculator</a>
-<a class="nav-item" href="/investment-calculator">&#128200; SIP Calculator</a>
+<a class="nav-item" href="/movies">&#127916; Movies</a>
 <a class="nav-item" href="/cricket-live">&#127951; Live Scores</a>
+<a class="nav-item" href="/financial-aids">&#128176; Financial Aids</a>
+<a class="nav-item" href="/cbse">&#127891; CBSE Study</a>
+<a class="nav-item" href="/ifsc-codes">&#127975; IFSC Codes</a>
+<a class="nav-item" href="/pincode">&#128238; PIN Codes</a>
+<a class="nav-item active" href="/loan-calculator">&#128176; Loan Calc</a>
+<a class="nav-item" href="/investment-calculator">&#128200; SIP Calc</a>
+<a class="nav-item" href="/directory">&#127758; Directory</a>
 </div>
 </nav>
 
@@ -1068,25 +972,9 @@ function toggleFaq(el) {
 }
 
 // ============== DARK MODE ==============
-function toggleDarkMode() {
-  document.body.classList.toggle('dark');
-  const isDark = document.body.classList.contains('dark');
-  localStorage.setItem('darkMode', isDark);
-  document.getElementById('darkIcon').textContent = isDark ? '\u2600' : '\u263E';
-  document.getElementById('darkText').textContent = isDark ? 'Light' : 'Dark';
-  drawDonut(
-    parseInt(document.getElementById('donutPct').textContent),
-    100 - parseInt(document.getElementById('donutPct').textContent)
-  );
-}
 
 // ============== INIT ==============
-document.addEventListener('DOMContentLoaded', function() {
-  if (localStorage.getItem('darkMode') === 'true') {
-    document.body.classList.add('dark');
-    document.getElementById('darkIcon').textContent = '\u2600';
-    document.getElementById('darkText').textContent = 'Light';
-  }
+document.addEventListener('DOMContentLoaded', function()
   calculateEMI();
   filterProviders('all');
   buildCompareTable();

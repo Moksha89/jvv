@@ -85,27 +85,20 @@ function animateCounters() {
     });
 }
 
-// Dark mode toggle (unified)
+
 function toggleDarkMode() {
-    document.body.classList.toggle('dark-mode');
-    document.body.classList.toggle('dark');
-    const isDark = document.body.classList.contains('dark-mode') || document.body.classList.contains('dark');
-    localStorage.setItem('nr-dark-mode', isDark ? '1' : '0');
+    
+    
+    const isDark = false;
+    
     
     // Update toggle button text
-    document.querySelectorAll('.nr-dark-toggle').forEach(btn => {
-        btn.textContent = isDark ? '☀ Light' : '☾ Dark';
-    });
+    
 }
 
-// Apply saved dark mode preference
+
 (function() {
-    const saved = localStorage.getItem('nr-dark-mode');
-    if (saved === '1') {
-        document.body.classList.add('dark-mode', 'dark');
-        document.querySelectorAll('.nr-dark-toggle').forEach(btn => {
-            btn.textContent = '☀ Light';
-        });
+    );
     }
 })();
 

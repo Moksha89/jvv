@@ -20,7 +20,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#E53935;--primary-light:#dbeafe;--accent:#D32F2F;--success:#059669;--warning:#d97706;--red:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--radius:12px}
-body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#EF5350;--primary-light:#1e3a5f;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
+
 body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
 a{color:var(--primary);text-decoration:none}
 a:hover{text-decoration:underline}
@@ -33,7 +33,7 @@ a:hover{text-decoration:underline}
 .logo h1{font-family:'Playfair Display',serif;font-size:22px;color:var(--text);line-height:1.1}
 .logo span{font-size:11px;color:var(--text3);letter-spacing:1px}
 .header-right{display:flex;align-items:center;gap:16px}
-.dark-toggle{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px;color:var(--text2);display:flex;align-items:center;gap:6px}
+
 .back-btn{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:8px 18px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
 .back-btn:hover{opacity:.9}
 
@@ -155,7 +155,6 @@ a:hover{text-decoration:underline}
 /* Error */
 .error-msg{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:12px 16px;border-radius:8px;font-size:13px;margin-top:12px;display:none}
 .error-msg.show{display:block}
-body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 
 /* Responsive */
 @media(max-width:768px){
@@ -176,123 +175,7 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 .footer-inner{grid-template-columns:1fr}
 }
 
-    /* === DEEP POLISH: IFSC Code Page Enhancements === */
-    body { animation: pageEntrance 0.6s ease-out; }
-    @keyframes pageEntrance { from { opacity: 0; } to { opacity: 1; } }
-    
-    header {
-        background: rgba(11,15,26,0.9) !important;
-        backdrop-filter: blur(24px) saturate(180%) !important;
-        border-bottom: 1px solid rgba(229,57,53,0.1) !important;
-    }
-    
-    /* IFSC Finder card */
-    .finder-card, .search-panel {
-        border-radius: 20px !important;
-        border: 1px solid rgba(229,57,53,0.15) !important;
-        background: rgba(17,24,39,0.7) !important;
-        backdrop-filter: blur(12px) !important;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.2) !important;
-        overflow: hidden !important;
-    }
-    
-    /* Select dropdowns */
-    select {
-        background: rgba(30,41,59,0.8) !important;
-        border: 1px solid rgba(229,57,53,0.15) !important;
-        border-radius: 10px !important;
-        color: #f1f5f9 !important;
-        padding: 12px 16px !important;
-        transition: all 0.25s ease !important;
-        appearance: auto !important;
-    }
-    select:focus {
-        border-color: #E53935 !important;
-        box-shadow: 0 0 0 4px rgba(229,57,53,0.15) !important;
-    }
-    
-    /* Find button */
-    .find-btn, button[onclick*="find"], button[onclick*="search"] {
-        background: linear-gradient(135deg, #1565C0, #e11d48) !important;
-        border: none !important;
-        border-radius: 12px !important;
-        color: white !important;
-        font-weight: 700 !important;
-        padding: 14px !important;
-        box-shadow: 0 4px 15px rgba(21,101,192,0.3) !important;
-        transition: all 0.25s ease !important;
-        width: 100% !important;
-    }
-    .find-btn:hover, button[onclick*="find"]:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 8px 25px rgba(21,101,192,0.4) !important;
-    }
-    
-    /* Bank cards grid */
-    .bank-card, .popular-bank {
-        border-radius: 14px !important;
-        border: 1px solid rgba(229,57,53,0.08) !important;
-        background: rgba(17,24,39,0.5) !important;
-        padding: 16px !important;
-        transition: all 0.3s ease !important;
-        cursor: pointer !important;
-    }
-    .bank-card:hover, .popular-bank:hover {
-        transform: translateY(-4px) !important;
-        border-color: rgba(229,57,53,0.2) !important;
-        box-shadow: 0 12px 30px rgba(0,0,0,0.2) !important;
-        background: rgba(229,57,53,0.05) !important;
-    }
-    
-    /* Bank initials circle */
-    .bank-icon, .bank-initial {
-        background: linear-gradient(135deg, #E53935, #E53935) !important;
-        color: white !important;
-        border-radius: 12px !important;
-        font-weight: 800 !important;
-        box-shadow: 0 4px 10px rgba(229,57,53,0.3) !important;
-    }
-    
-    /* Result card */
-    .result-card, .ifsc-result {
-        border-radius: 16px !important;
-        border: 2px solid rgba(16,185,129,0.2) !important;
-        background: rgba(16,185,129,0.05) !important;
-    }
-    
-    /* Tab buttons for bank directory */
-    .tab-btn, .dir-tab {
-        border-radius: 20px !important;
-        transition: all 0.25s ease !important;
-    }
-    .tab-btn.active, .dir-tab.active {
-        background: linear-gradient(135deg, #E53935, #C62828) !important;
-        color: white !important;
-    }
-    
-    /* FAQ accordion */
-    .faq-item, .accordion-item {
-        border: 1px solid rgba(229,57,53,0.1) !important;
-        border-radius: 12px !important;
-        margin-bottom: 8px !important;
-        overflow: hidden !important;
-        transition: all 0.25s ease !important;
-    }
-    .faq-item:hover, .accordion-item:hover {
-        border-color: rgba(229,57,53,0.2) !important;
-    }
-    
-    footer {
-        background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
-        border-top: 1px solid rgba(229,57,53,0.1) !important;
-    }
-    
-    @media (max-width: 768px) {
-        .finder-card, .search-panel { border-radius: 14px !important; }
-        .bank-card, .popular-bank { border-radius: 10px !important; }
-    }
-    
-</style>
+    </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is IFSC Code and where can I find it?","acceptedAnswer":{"@type":"Answer","text":"IFSC (Indian Financial System Code) is an 11-character code that identifies bank branches in India. You can find it on your cheque book (printed at the top), bank passbook, bank's website, or through our IFSC Code Finder tool."}},{"@type":"Question","name":"Is IFSC Code same for all branches of a bank?","acceptedAnswer":{"@type":"Answer","text":"No. Each branch of a bank has a unique IFSC code. While the first 4 characters identify the bank, the last 6 characters are unique to each branch. So two branches of the same bank will have different IFSC codes."}},{"@type":"Question","name":"What happens if I use wrong IFSC Code?","acceptedAnswer":{"@type":"Answer","text":"If you use an incorrect IFSC code, the transaction may fail and the amount will be returned to your account within a few working days. In some cases, it may get credited to a wrong branch. Always verify the IFSC code before initiating any transaction."}},{"@type":"Question","name":"Can IFSC Code change for a branch?","acceptedAnswer":{"@type":"Answer","text":"Yes, IFSC codes can change when banks merge or branches are relocated. For example, after the merger of several public sector banks in 2020, many branch IFSC codes were updated. Always verify the latest IFSC code before making transactions."}},{"@type":"Question","name":"What is the difference between IFSC and MICR code?","acceptedAnswer":{"@type":"Answer","text":"IFSC (11 characters) is used for electronic fund transfers (NEFT, RTGS, IMPS). MICR (9 digits) is a code printed on cheques using magnetic ink for cheque-based transactions. Both identify bank branches but serve different purposes."}},{"@type":"Question","name":"Is IFSC Code required for UPI transactions?","acceptedAnswer":{"@type":"Answer","text":"Generally, UPI transactions use VPA (Virtual Payment Address) so you don't need to manually enter IFSC code. However, the IFSC code is used internally by the system to route your transaction to the correct bank branch."}}]}
 </script>
@@ -314,9 +197,6 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <div><h1>News Reporter</h1><span>Live &#8226; Trusted &#8226; Independent</span></div>
 </a>
 <div class="header-right">
-<button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
-<span id="darkIcon">&#9790;</span> <span id="darkText">Dark</span>
-</button>
 <a href="/" class="back-btn">&#8592; Back to News</a>
 </div>
 </div>
@@ -326,12 +206,15 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <nav class="site-nav">
 <div class="nav-inner">
 <a class="nav-item" href="/">Home</a>
-<a class="nav-item" href="/?cat=politics">Politics</a>
-<a class="nav-item" href="/?cat=business">Business</a>
-<a class="nav-item" href="/?cat=sports">Sports</a>
-<a class="nav-item" href="/?cat=technology">Technology</a>
-<a class="nav-item active" href="/ifsc-codes">IFSC Codes</a>
+<a class="nav-item" href="/movies">&#127916; Movies</a>
 <a class="nav-item" href="/cricket-live">&#127951; Live Scores</a>
+<a class="nav-item" href="/financial-aids">&#128176; Financial Aids</a>
+<a class="nav-item" href="/cbse">&#127891; CBSE Study</a>
+<a class="nav-item active" href="/ifsc-codes">&#127975; IFSC Codes</a>
+<a class="nav-item" href="/pincode">&#128238; PIN Codes</a>
+<a class="nav-item" href="/loan-calculator">&#128176; Loan Calc</a>
+<a class="nav-item" href="/investment-calculator">&#128200; SIP Calc</a>
+<a class="nav-item" href="/directory">&#127758; Directory</a>
 </div>
 </nav>
 
@@ -1452,19 +1335,8 @@ var ALL_BANKS = [{name:"ABHYUDAYA COOPERATIVE BANK LIMITED",code:"ABHY",type:"co
 var IFSC_API = '/api/ifsc/';
 
 // Dark mode
-function toggleDarkMode() {
-    document.body.classList.toggle('dark');
-    var isDark = document.body.classList.contains('dark');
-    localStorage.setItem('darkMode', isDark);
-    document.getElementById('darkIcon').textContent = isDark ? '\u2600' : '\u263E';
-    document.getElementById('darkText').textContent = isDark ? 'Light' : 'Dark';
-}
-(function() {
-    if (localStorage.getItem('darkMode') === 'true') {
-        document.body.classList.add('dark');
-        document.getElementById('darkIcon').textContent = '\u2600';
-        document.getElementById('darkText').textContent = 'Light';
-    }
+
+(function()
 })();
 
 // Tab switching

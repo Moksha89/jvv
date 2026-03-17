@@ -27,7 +27,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#f97316;--pl:#fff3e0;--accent:#D32F2F;--success:#059669;--warning:#d97706;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--r:12px}
-body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#ff6f00;--pl:#1a1a2e;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
+
 body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
 a{color:var(--primary);text-decoration:none}
 a:hover{text-decoration:underline}
@@ -110,68 +110,7 @@ footer p{color:var(--text3);font-size:13px}
 .ch-right{width:100%;justify-content:space-between}
 }
 
-    /* === DEEP POLISH: CBSE Study Page Enhancements === */
-    body { animation: pageEntrance 0.6s ease-out; }
-    @keyframes pageEntrance { from { opacity: 0; } to { opacity: 1; } }
-    
-    header {
-        background: rgba(11,15,26,0.9) !important;
-        backdrop-filter: blur(24px) saturate(180%) !important;
-        border-bottom: 1px solid rgba(229,57,53,0.1) !important;
-    }
-    
-    /* Subject cards */
-    .subject-card, .chapter-card, .resource-card {
-        border-radius: 16px !important;
-        border: 1px solid rgba(229,57,53,0.08) !important;
-        background: rgba(17,24,39,0.5) !important;
-        backdrop-filter: blur(8px) !important;
-        transition: all 0.35s cubic-bezier(0.33, 1, 0.68, 1) !important;
-        overflow: hidden !important;
-    }
-    .subject-card:hover, .chapter-card:hover, .resource-card:hover {
-        transform: translateY(-6px) !important;
-        border-color: rgba(229,57,53,0.2) !important;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
-    }
-    
-    /* Class tabs */
-    .class-tab, .grade-btn {
-        border-radius: 24px !important;
-        transition: all 0.25s ease !important;
-    }
-    .class-tab.active, .grade-btn.active {
-        background: linear-gradient(135deg, #E53935, #C62828) !important;
-        color: white !important;
-        box-shadow: 0 4px 15px rgba(229,57,53,0.3) !important;
-    }
-    
-    /* Download buttons */
-    .download-btn, a[download] {
-        background: linear-gradient(135deg, #10b981, #059669) !important;
-        color: white !important;
-        border-radius: 10px !important;
-        font-weight: 700 !important;
-        box-shadow: 0 4px 15px rgba(16,185,129,0.3) !important;
-    }
-    .download-btn:hover, a[download]:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 8px 25px rgba(16,185,129,0.4) !important;
-    }
-    
-    /* Subject icon badges */
-    .subject-icon {
-        background: linear-gradient(135deg, #E53935, #E53935) !important;
-        border-radius: 14px !important;
-        box-shadow: 0 4px 15px rgba(229,57,53,0.3) !important;
-    }
-    
-    footer {
-        background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
-        border-top: 1px solid rgba(229,57,53,0.1) !important;
-    }
-    
-</style>
+    </style>
 <link rel="stylesheet" href="/common.css">
 </head>
 <body>
@@ -186,7 +125,7 @@ footer p{color:var(--text3);font-size:13px}
             </div>
         </a>
         <div style="display:flex;align-items:center;gap:10px;">
-            <button onclick="document.body.classList.toggle('dark');document.body.classList.toggle('dark-mode');localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');" style="padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3,var(--bg));color:var(--text2,var(--text-secondary));">&#9790; Dark</button>
+            <button onclick="document.body.classList.toggle('dark-mode');localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');" style="padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3,var(--bg));color:var(--text2,var(--text-secondary));">&#9790; Dark</button>
             <a href="/" style="padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;background:#E53935;color:#fff;text-decoration:none;">&larr; Home</a>
         </div>
     </div>
@@ -1011,7 +950,7 @@ footer p{color:var(--text3);font-size:13px}
 </footer>
 
 <script>
-if(localStorage.getItem('d')==='true') document.body.classList.add('dark');
+if(localStorage.getItem('d')==='true') 
 
 function filterChapters(gridId, unit, btn) {
     const grid = document.getElementById(gridId);

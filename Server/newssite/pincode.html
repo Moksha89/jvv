@@ -29,7 +29,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#E53935;--primary-light:#dbeafe;--accent:#D32F2F;--success:#059669;--warning:#d97706;--red:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--radius:12px}
-body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#EF5350;--primary-light:#1e3a5f;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
+
 body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
 a{color:var(--primary);text-decoration:none}
 a:hover{text-decoration:underline}
@@ -41,7 +41,7 @@ a:hover{text-decoration:underline}
 .logo h1{font-family:'Playfair Display',serif;font-size:22px;color:var(--text);line-height:1.1}
 .logo span{font-size:11px;color:var(--text3);letter-spacing:1px}
 .header-right{display:flex;align-items:center;gap:16px}
-.dark-toggle{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px;color:var(--text2);display:flex;align-items:center;gap:6px}
+
 .back-btn{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:8px 18px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;text-decoration:none}
 .back-btn:hover{opacity:.9;text-decoration:none}
 
@@ -105,7 +105,6 @@ a:hover{text-decoration:underline}
 
 .error-msg{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:12px 16px;border-radius:8px;font-size:13px;margin-top:12px;display:none}
 .error-msg.show{display:block}
-body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 
 .section{max-width:1280px;margin:0 auto;padding:0 24px 32px}
 .section h2{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--primary)}
@@ -168,72 +167,7 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 .states-grid{grid-template-columns:1fr 1fr}
 }
 
-    /* === DEEP POLISH: PIN Code Page Enhancements === */
-    body { animation: pageEntrance 0.6s ease-out; }
-    @keyframes pageEntrance { from { opacity: 0; } to { opacity: 1; } }
-    
-    header {
-        background: rgba(11,15,26,0.9) !important;
-        backdrop-filter: blur(24px) saturate(180%) !important;
-        border-bottom: 1px solid rgba(229,57,53,0.1) !important;
-    }
-    
-    /* Search card */
-    .search-card, .finder-panel {
-        border-radius: 20px !important;
-        border: 1px solid rgba(229,57,53,0.15) !important;
-        background: rgba(17,24,39,0.7) !important;
-        backdrop-filter: blur(12px) !important;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.2) !important;
-    }
-    
-    /* Input fields */
-    input[type="text"], input[type="number"], input[type="search"] {
-        background: rgba(30,41,59,0.8) !important;
-        border: 1px solid rgba(229,57,53,0.15) !important;
-        border-radius: 10px !important;
-        color: #f1f5f9 !important;
-        transition: all 0.25s ease !important;
-    }
-    input:focus {
-        border-color: #E53935 !important;
-        box-shadow: 0 0 0 4px rgba(229,57,53,0.15) !important;
-        outline: none !important;
-    }
-    
-    /* Search/Find buttons */
-    button {
-        border-radius: 10px !important;
-        font-weight: 600 !important;
-        transition: all 0.25s ease !important;
-    }
-    
-    /* Result cards */
-    .result-item, .pin-result {
-        border-radius: 14px !important;
-        border: 1px solid rgba(229,57,53,0.08) !important;
-        background: rgba(17,24,39,0.5) !important;
-        transition: all 0.3s ease !important;
-    }
-    .result-item:hover, .pin-result:hover {
-        transform: translateY(-4px) !important;
-        border-color: rgba(229,57,53,0.2) !important;
-        box-shadow: 0 12px 30px rgba(0,0,0,0.2) !important;
-    }
-    
-    /* FAQ section */
-    .faq-item {
-        border: 1px solid rgba(229,57,53,0.1) !important;
-        border-radius: 12px !important;
-        overflow: hidden !important;
-    }
-    
-    footer {
-        background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
-        border-top: 1px solid rgba(229,57,53,0.1) !important;
-    }
-    
-</style>
+    </style>
 <link rel="stylesheet" href="/common.css">
 </head>
 <body>
@@ -245,9 +179,6 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <div><h1>News Reporter</h1><span>Live &#8226; Trusted &#8226; Independent</span></div>
 </a>
 <div class="header-right">
-<button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
-<span id="darkIcon">&#9790;</span> <span id="darkText">Dark</span>
-</button>
 <a href="/" class="back-btn">&#8592; Back to News</a>
 </div>
 </div>
@@ -256,13 +187,15 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 <nav class="site-nav">
 <div class="nav-inner">
 <a class="nav-item" href="/">Home</a>
-<a class="nav-item" href="/?cat=politics">Politics</a>
-<a class="nav-item" href="/?cat=business">Business</a>
-<a class="nav-item" href="/?cat=sports">Sports</a>
-<a class="nav-item" href="/?cat=technology">Technology</a>
-<a class="nav-item active" href="/pincode">PIN Codes</a>
-<a class="nav-item" href="/ifsc-codes">IFSC Codes</a>
+<a class="nav-item" href="/movies">&#127916; Movies</a>
 <a class="nav-item" href="/cricket-live">&#127951; Live Scores</a>
+<a class="nav-item" href="/financial-aids">&#128176; Financial Aids</a>
+<a class="nav-item" href="/cbse">&#127891; CBSE Study</a>
+<a class="nav-item" href="/ifsc-codes">&#127975; IFSC Codes</a>
+<a class="nav-item active" href="/pincode">&#128238; PIN Codes</a>
+<a class="nav-item" href="/loan-calculator">&#128176; Loan Calc</a>
+<a class="nav-item" href="/investment-calculator">&#128200; SIP Calc</a>
+<a class="nav-item" href="/directory">&#127758; Directory</a>
 </div>
 </nav>
 
@@ -464,19 +397,11 @@ body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
 (function(){
   var d=localStorage.getItem('darkMode');
   if(d==='true'){
-    document.body.classList.add('dark');
-    document.getElementById('darkIcon').textContent='\u2600';
-    document.getElementById('darkText').textContent='Light';
+    
+    
+    
   }
 })();
-function toggleDarkMode(){
-  var b=document.body;
-  b.classList.toggle('dark');
-  var on=b.classList.contains('dark');
-  localStorage.setItem('darkMode',on);
-  document.getElementById('darkIcon').textContent=on?'\u2600':'\u263E';
-  document.getElementById('darkText').textContent=on?'Light':'Dark';
-}
 
 // Tab switching
 function switchTab(tab){

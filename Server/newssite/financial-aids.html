@@ -34,7 +34,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#E53935;--pl:#eef2ff;--accent:#E53935;--success:#059669;--warning:#d97706;--danger:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--r:16px}
-body.dark{--bg:#0b0f1a;--card:#111827;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#EF5350;--pl:#1e293b;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
+
 body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
 a{color:var(--primary);text-decoration:none}
 a:hover{text-decoration:underline}
@@ -122,7 +122,6 @@ header{background:var(--card);border-bottom:1px solid var(--border);padding:12px
 .source-link a{color:var(--primary);font-size:12px}
 
 .disclaimer{background:#fef3c7;border:1px solid #fbbf24;border-radius:var(--r);padding:16px 20px;margin:32px 0;font-size:13px;color:#92400e}
-body.dark .disclaimer{background:#1a1a2e;border-color:#fbbf24;color:#fbbf24}
 
 footer{background:var(--card);border-top:1px solid var(--border);padding:32px 24px;margin-top:60px;text-align:center}
 footer p{color:var(--text3);font-size:13px}
@@ -149,75 +148,7 @@ footer p{color:var(--text3);font-size:13px}
 .ctab:hover{transform:translateY(-2px)}
 .ctab.active{box-shadow:0 4px 12px rgba(229,57,53,0.3)}
 
-    /* === DEEP POLISH: Financial Aids Page Enhancements === */
-    body { animation: pageEntrance 0.6s ease-out; }
-    @keyframes pageEntrance { from { opacity: 0; } to { opacity: 1; } }
-    
-    header {
-        background: rgba(11,15,26,0.9) !important;
-        backdrop-filter: blur(24px) saturate(180%) !important;
-        border-bottom: 1px solid rgba(229,57,53,0.1) !important;
-    }
-    
-    /* Scheme cards */
-    .scheme-card, .aid-card {
-        border-radius: 16px !important;
-        border: 1px solid rgba(229,57,53,0.08) !important;
-        background: rgba(17,24,39,0.5) !important;
-        backdrop-filter: blur(8px) !important;
-        transition: all 0.35s cubic-bezier(0.33, 1, 0.68, 1) !important;
-        overflow: hidden !important;
-    }
-    .scheme-card:hover, .aid-card:hover {
-        transform: translateY(-6px) !important;
-        border-color: rgba(229,57,53,0.2) !important;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
-    }
-    
-    /* Category tags */
-    .category-tag {
-        background: linear-gradient(135deg, #E53935, #C62828) !important;
-        color: white !important;
-        border-radius: 8px !important;
-        font-weight: 700 !important;
-        padding: 4px 12px !important;
-    }
-    
-    /* Tab filters */
-    .filter-btn, .category-filter div {
-        border-radius: 24px !important;
-        transition: all 0.25s ease !important;
-    }
-    .filter-btn.active, .category-filter div.active {
-        background: linear-gradient(135deg, #E53935, #C62828) !important;
-        color: white !important;
-        box-shadow: 0 4px 15px rgba(229,57,53,0.3) !important;
-    }
-    
-    /* Apply button */
-    .apply-btn, a[href*="apply"] {
-        background: linear-gradient(135deg, #10b981, #059669) !important;
-        color: white !important;
-        border-radius: 10px !important;
-        font-weight: 700 !important;
-        box-shadow: 0 4px 15px rgba(16,185,129,0.3) !important;
-        transition: all 0.25s ease !important;
-    }
-    .apply-btn:hover, a[href*="apply"]:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 8px 25px rgba(16,185,129,0.4) !important;
-    }
-    
-    footer {
-        background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
-        border-top: 1px solid rgba(229,57,53,0.1) !important;
-    }
-    
-    @media (max-width: 768px) {
-        .scheme-card, .aid-card { border-radius: 12px !important; }
-    }
-    
-</style>
+    </style>
 <link rel="stylesheet" href="/common.css">
 </head>
 <body>
@@ -232,7 +163,7 @@ footer p{color:var(--text3);font-size:13px}
             </div>
         </a>
         <div style="display:flex;align-items:center;gap:10px;">
-            <button onclick="document.body.classList.toggle('dark');document.body.classList.toggle('dark-mode');localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');" style="padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3,var(--bg));color:var(--text2,var(--text-secondary));">&#9790; Dark</button>
+            <button onclick="document.body.classList.toggle('dark-mode');localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');" style="padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3,var(--bg));color:var(--text2,var(--text-secondary));">&#9790; Dark</button>
             <a href="/" style="padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;background:#E53935;color:#fff;text-decoration:none;">&larr; Home</a>
         </div>
     </div>
@@ -1760,7 +1691,7 @@ footer p{color:var(--text3);font-size:13px}
 </footer>
 
 <script>
-if(localStorage.getItem('d')==='true') document.body.classList.add('dark');
+if(localStorage.getItem('d')==='true') 
 
 let currentCountry = 'india';
 let currentType = 'all';
@@ -1822,7 +1753,7 @@ function filterType(type, btn) {
             const typeUpper = (aid.type || '').toUpperCase();
             const typeLower = (aid.type || '').toLowerCase();
             const eligList = (Array.isArray(aid.eligibility) ? aid.eligibility : []).map(e => '<li>' + e + '</li>').join('');
-            const infoObj = (typeof aid.info === 'object' && aid.info) ? aid.info : {};
+            const infoObj = (typeof aid.info === 'object' && aid.info) ?;
             const infoBoxes = Object.entries(infoObj).map(([k, v]) => '<div class="info-box"><label>' + k + '</label><span>' + v + '</span></div>').join('');
 
             const card = document.createElement('div');

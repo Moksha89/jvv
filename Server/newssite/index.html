@@ -45,18 +45,6 @@
             --max-width: 1320px;
             --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        body.dark-mode {
-            --bg: #0b0f1a; --bg-white: #111827; --text-primary: #E8E8F0;
-            --text-secondary: #B0B0C8; --text-muted: #6B6B88; --border: #2A2A42; --border-light: #222238;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.2); --shadow: 0 4px 12px rgba(0,0,0,0.3);
-            --shadow-md: 0 8px 24px rgba(0,0,0,0.4); --shadow-lg: 0 16px 48px rgba(0,0,0,0.5);
-        }
-        body.dark-mode .header { background: rgba(18,18,42,0.85); border-color: #2A2A42; backdrop-filter: blur(20px); }
-        body.dark-mode .nav { background: rgba(18,18,42,0.9); border-color: #2A2A42; }
-        body.dark-mode .breaking-bar { background: linear-gradient(135deg, #C62828, #E53935); }
-        body.dark-mode .footer { background: #0A0A18; }
-        body.dark-mode .search-box { background: #222238; }
-        body.dark-mode .search-box input { color: #E8E8F0; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.6; -webkit-font-smoothing: antialiased; }
@@ -78,9 +66,7 @@
         .logo-text span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 3px; font-weight: 500; }
         .header-right { display: flex; align-items: center; gap: 12px; }
         .header-date { font-size: 12px; color: var(--text-muted); font-weight: 500; white-space: nowrap; }
-        .dark-toggle { cursor: pointer; background: var(--bg); border: 1px solid var(--border); border-radius: 24px; padding: 8px 14px; font-size: 12px; font-weight: 500; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; transition: var(--transition); white-space: nowrap; }
-        .dark-toggle:hover { border-color: var(--primary); color: var(--primary); background: rgba(229,57,53,0.08); }
-        body.dark-mode .dark-toggle:hover { background: rgba(229,57,53,0.1); }
+        
         .search-box { display: flex; align-items: center; background: var(--bg); border: 1px solid var(--border); border-radius: 28px; padding: 9px 18px; gap: 10px; transition: var(--transition); }
         .search-box:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(229,57,53,0.15); }
         .search-box input { border: none; background: transparent; outline: none; font-size: 13px; width: 220px; color: var(--text-primary); font-family: 'Inter', sans-serif; }
@@ -102,7 +88,6 @@
         .cat-dropdown:hover .cat-dropdown-menu { display: block; }
         .cat-dropdown-menu .cat-item { display: block; padding: 10px 20px; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: var(--transition); white-space: nowrap; }
         .cat-dropdown-menu .cat-item:hover { background: linear-gradient(135deg, #E53935, #C62828); color: white; }
-        body.dark-mode .cat-dropdown-menu { background: #1A1A2E; border-color: #2A2A42; }
         .main { max-width: var(--max-width); margin: 0 auto; padding: 28px 24px; }
         .grid-2col { display: grid; grid-template-columns: 1fr 380px; gap: 28px; }
         .hero-card { position: relative; border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: var(--transition); box-shadow: var(--shadow); }
@@ -249,273 +234,7 @@
         .articles-grid .article-card:nth-child(6) { animation-delay: 0.25s; }
     
     
-    /* === DEEP POLISH: Award-Winning Homepage Enhancements === */
-    
-    /* Smooth page entrance */
-    body { animation: pageEntrance 0.6s ease-out; }
-    @keyframes pageEntrance { from { opacity: 0; } to { opacity: 1; } }
-    
-    /* Breaking news bar enhancement */
-    .breaking-bar {
-        background: linear-gradient(90deg, #C62828, #E53935, #D32F2F) !important;
-        box-shadow: 0 2px 12px rgba(229,57,53,0.3);
-    }
-    .breaking-label {
-        background: #1565C0 !important;
-        font-weight: 800 !important;
-        letter-spacing: 2px !important;
-        padding: 4px 16px !important;
-        border-radius: 4px !important;
-        text-transform: uppercase !important;
-        font-size: 10px !important;
-        animation: breakingPulse 2s ease-in-out infinite;
-    }
-    @keyframes breakingPulse {
-        0%, 100% { box-shadow: 0 0 0 0 rgba(21,101,192,0.4); }
-        50% { box-shadow: 0 0 0 6px rgba(21,101,192,0); }
-    }
-    
-    /* Header glassmorphism enhancement */
-    header {
-        background: rgba(11,15,26,0.85) !important;
-        backdrop-filter: blur(24px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-        border-bottom: 1px solid rgba(229,57,53,0.1) !important;
-        transition: all 0.3s cubic-bezier(0.33, 1, 0.68, 1) !important;
-    }
-    header.scrolled {
-        box-shadow: 0 4px 30px rgba(0,0,0,0.3), 0 0 40px rgba(229,57,53,0.05) !important;
-    }
-    
-    /* Logo micro-interaction */
-    .logo-icon {
-        background: linear-gradient(135deg, #E53935, #C62828) !important;
-        background-size: 200% 200% !important;
-        animation: logoGradient 4s ease infinite !important;
-        box-shadow: 0 4px 15px rgba(229,57,53,0.4) !important;
-        border-radius: 12px !important;
-        transition: all 0.3s ease !important;
-    }
-    .logo-icon:hover { transform: scale(1.1) rotate(-3deg) !important; }
-    @keyframes logoGradient {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    
-    /* Navigation enhancement */
-    nav {
-        background: rgba(17,24,39,0.95) !important;
-        backdrop-filter: blur(16px) !important;
-        border-bottom: 1px solid rgba(229,57,53,0.08) !important;
-    }
-    nav a, nav div[onclick] {
-        position: relative !important;
-        transition: all 0.25s ease !important;
-    }
-    nav a:hover, nav div[onclick]:hover {
-        color: #EF5350 !important;
-    }
-    nav a.active, nav div.active {
-        color: #E53935 !important;
-    }
-    
-    /* Hero section - featured article cards */
-    .featured-main {
-        border-radius: 20px !important;
-        overflow: hidden !important;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.4) !important;
-        transition: all 0.4s cubic-bezier(0.33, 1, 0.68, 1) !important;
-    }
-    .featured-main:hover {
-        transform: translateY(-6px) !important;
-        box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 40px rgba(229,57,53,0.1) !important;
-    }
-    .featured-main img {
-        transition: transform 0.6s cubic-bezier(0.33, 1, 0.68, 1) !important;
-    }
-    .featured-main:hover img {
-        transform: scale(1.05) !important;
-    }
-    
-    /* Category pill enhancement */
-    .category-pill, [class*="pill"] {
-        backdrop-filter: blur(8px) !important;
-        border: 1px solid rgba(255,255,255,0.1) !important;
-        transition: all 0.25s ease !important;
-    }
-    .category-pill:hover, [class*="pill"]:hover {
-        transform: translateY(-2px) scale(1.05) !important;
-    }
-    
-    /* Sidebar cards - Live Cricket & Trending */
-    .sidebar-section, .live-cricket-widget, .trending-section {
-        border-radius: 16px !important;
-        border: 1px solid rgba(229,57,53,0.1) !important;
-        background: rgba(17,24,39,0.6) !important;
-        backdrop-filter: blur(10px) !important;
-        overflow: hidden !important;
-        transition: all 0.3s ease !important;
-    }
-    .sidebar-section:hover, .live-cricket-widget:hover, .trending-section:hover {
-        border-color: rgba(229,57,53,0.2) !important;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.2) !important;
-    }
-    
-    /* Live Cricket header with gradient */
-    .live-cricket-widget h3, .sidebar-section h3:first-child {
-        background: linear-gradient(135deg, #059669, #10b981) !important;
-        color: white !important;
-        padding: 14px 20px !important;
-        margin: -1px -1px 0 -1px !important;
-        border-radius: 16px 16px 0 0 !important;
-        font-size: 16px !important;
-    }
-    
-    /* Trending numbers - gradient effect */
-    .trending-number, .trend-num {
-        background: linear-gradient(135deg, #E53935, #1565C0) !important;
-        -webkit-background-clip: text !important;
-        -webkit-text-fill-color: transparent !important;
-        font-weight: 900 !important;
-        font-size: 24px !important;
-    }
-    
-    /* News cards in Latest section */
-    .news-card, .article-card, [class*="card"] {
-        border-radius: 16px !important;
-        border: 1px solid rgba(229,57,53,0.08) !important;
-        background: rgba(17,24,39,0.5) !important;
-        transition: all 0.35s cubic-bezier(0.33, 1, 0.68, 1) !important;
-        overflow: hidden !important;
-    }
-    .news-card:hover, .article-card:hover {
-        transform: translateY(-6px) !important;
-        border-color: rgba(229,57,53,0.2) !important;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(229,57,53,0.1) !important;
-    }
-    .news-card img, .article-card img {
-        transition: transform 0.5s ease !important;
-    }
-    .news-card:hover img, .article-card:hover img {
-        transform: scale(1.06) !important;
-    }
-    
-    /* Section headings with accent line */
-    h2 {
-        position: relative !important;
-    }
-    
-    /* Button enhancements */
-    .btn-primary, button[type="submit"], .subscribe-btn {
-        background: linear-gradient(135deg, #E53935, #C62828) !important;
-        border: none !important;
-        border-radius: 10px !important;
-        box-shadow: 0 4px 15px rgba(229,57,53,0.3) !important;
-        transition: all 0.25s ease !important;
-        font-weight: 700 !important;
-    }
-    .btn-primary:hover, button[type="submit"]:hover, .subscribe-btn:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 8px 25px rgba(229,57,53,0.4) !important;
-        background: linear-gradient(135deg, #EF5350, #E53935) !important;
-    }
-    
-    /* Footer enhancement */
-    footer {
-        background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
-        border-top: 1px solid rgba(229,57,53,0.1) !important;
-    }
-    footer h3, footer h4 {
-        background: linear-gradient(135deg, #EF5350, #EF5350) !important;
-        -webkit-background-clip: text !important;
-        -webkit-text-fill-color: transparent !important;
-    }
-    footer a:hover {
-        color: #EF5350 !important;
-        padding-left: 8px !important;
-    }
-    
-    /* Newsletter input */
-    footer input[type="email"] {
-        background: rgba(30,41,59,0.8) !important;
-        border: 1px solid rgba(229,57,53,0.2) !important;
-        border-radius: 10px !important;
-        color: #f1f5f9 !important;
-        transition: all 0.25s ease !important;
-    }
-    footer input[type="email"]:focus {
-        border-color: #E53935 !important;
-        box-shadow: 0 0 0 4px rgba(229,57,53,0.15) !important;
-        outline: none !important;
-    }
-    
-    /* Search input enhancement */
-    .search-box input, input[type="text"][placeholder*="Search"] {
-        background: rgba(30,41,59,0.6) !important;
-        border: 1px solid rgba(229,57,53,0.15) !important;
-        border-radius: 10px !important;
-        transition: all 0.25s ease !important;
-    }
-    .search-box input:focus, input[type="text"][placeholder*="Search"]:focus {
-        border-color: #E53935 !important;
-        box-shadow: 0 0 0 4px rgba(229,57,53,0.15) !important;
-        outline: none !important;
-    }
-    
-    /* Dark mode toggle button */
-    .dark-toggle, button[title*="Dark"], button[onclick*="dark"] {
-        background: rgba(229,57,53,0.1) !important;
-        border: 1px solid rgba(229,57,53,0.2) !important;
-        border-radius: 8px !important;
-        color: #EF5350 !important;
-        padding: 6px 14px !important;
-        font-size: 12px !important;
-        font-weight: 600 !important;
-        transition: all 0.25s ease !important;
-    }
-    .dark-toggle:hover, button[title*="Dark"]:hover {
-        background: rgba(229,57,53,0.2) !important;
-        transform: translateY(-1px) !important;
-    }
-    
-    /* Cricket score ticker */
-    .cricket-ticker, .score-ticker {
-        background: rgba(17,24,39,0.95) !important;
-        border-bottom: 1px solid rgba(229,57,53,0.1) !important;
-    }
-    .ticker-card, .score-card {
-        background: rgba(30,41,59,0.6) !important;
-        border: 1px solid rgba(229,57,53,0.1) !important;
-        border-radius: 10px !important;
-        transition: all 0.25s ease !important;
-    }
-    .ticker-card:hover, .score-card:hover {
-        border-color: rgba(229,57,53,0.3) !important;
-        background: rgba(30,41,59,0.8) !important;
-    }
-    
-    /* Smooth scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(229,57,53,0.3); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(229,57,53,0.5); }
-    
-    /* Mobile responsive enhancements */
-    @media (max-width: 768px) {
-        .featured-main { border-radius: 14px !important; }
-        .sidebar-section, .live-cricket-widget, .trending-section { border-radius: 12px !important; }
-        nav { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; }
-        nav::-webkit-scrollbar { display: none !important; }
-        footer { padding: 32px 16px !important; }
-    }
-    @media (max-width: 480px) {
-        header { padding: 0 12px !important; }
-        .logo-text h1 { font-size: 16px !important; }
-        .featured-main { border-radius: 10px !important; }
-    }
-    
-</style>
+    </style>
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "SiteNavigationElement", "name": "Main Navigation", "url": "https://newsreporter.live", "hasPart": [{"@type": "WebPage", "name": "CBSE Study Materials", "url": "https://newsreporter.live/cbse"}, {"@type": "WebPage", "name": "Live Cricket Scores", "url": "https://newsreporter.live/cricket-live"}, {"@type": "WebPage", "name": "PIN Code Finder", "url": "https://newsreporter.live/pincode"}, {"@type": "WebPage", "name": "IFSC Code Finder", "url": "https://newsreporter.live/ifsc-codes"}, {"@type": "WebPage", "name": "India Directory", "url": "https://newsreporter.live/directory"}, {"@type": "WebPage", "name": "Loan EMI Calculator", "url": "https://newsreporter.live/loan-calculator"}, {"@type": "WebPage", "name": "SIP Calculator", "url": "https://newsreporter.live/investment-calculator"}]}
 </script>
@@ -551,10 +270,6 @@
         </div>
         <div class="header-right">
             <div class="header-date" id="currentDate"></div>
-            <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
-                <span id="darkModeIcon">&#9790;</span>
-                <span id="darkModeText">Dark</span>
-            </button>
             <div class="search-box">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 <input type="text" placeholder="Search news..." id="searchInput" onkeyup="handleSearch(event)">
@@ -958,14 +673,6 @@ function checkGate() {
     else { document.getElementById('gatePassword').value = ''; document.getElementById('gatePassword').placeholder = 'Incorrect. Try again.'; document.getElementById('gatePassword').focus(); }
 }
 
-function toggleDarkMode() {
-    document.body.classList.toggle('dark-mode');
-    var isDark = document.body.classList.contains('dark-mode');
-    localStorage.setItem('darkMode', isDark ? '1' : '0');
-    document.getElementById('darkModeIcon').textContent = isDark ? '\u2600' : '\u263E';
-    document.getElementById('darkModeText').textContent = isDark ? 'Light' : 'Dark';
-}
-if (localStorage.getItem('darkMode') === '1') { document.body.classList.add('dark-mode'); document.getElementById('darkModeIcon').textContent = '\u2600'; document.getElementById('darkModeText').textContent = 'Light'; }
 
 async function subscribeNewsletter(e) {
     e.preventDefault();
@@ -1041,7 +748,7 @@ async function injectStructuredData(slug) {
     var s2 = document.createElement('script'); s2.type = 'application/ld+json'; s2.textContent = JSON.stringify(orgSchema); document.head.appendChild(s2);
 })();
 
-async function trackView(articleId) { try { await fetch('/api/article-view/' + articleId, { method: 'POST' }); } catch (e) {} }
+async function trackView(articleId) { try { await fetch('/api/article-view/' + articleId, { method: 'POST' }); } catch (e) }
 
 // ============================================================
 // Cricket Live Score Functions

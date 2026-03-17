@@ -268,88 +268,7 @@ a { color:var(--accent); text-decoration:none; }
 .nav-tab { transition:all 0.25s cubic-bezier(0.4,0,0.2,1); }
 .nav-tab:hover { transform:translateY(-1px); }
 
-    /* === DEEP POLISH: Cricket Live Page Enhancements === */
-    body { animation: pageEntrance 0.6s ease-out; }
-    @keyframes pageEntrance { from { opacity: 0; } to { opacity: 1; } }
-    
-    /* Header */
-    header {
-        background: rgba(11,15,26,0.9) !important;
-        backdrop-filter: blur(24px) saturate(180%) !important;
-        border-bottom: 1px solid rgba(229,57,53,0.1) !important;
-    }
-    
-    /* Match cards with live indicator */
-    .match-card {
-        border-radius: 16px !important;
-        border: 1px solid rgba(229,57,53,0.08) !important;
-        background: rgba(17,24,39,0.6) !important;
-        backdrop-filter: blur(8px) !important;
-        transition: all 0.35s cubic-bezier(0.33, 1, 0.68, 1) !important;
-    }
-    .match-card:hover {
-        transform: translateY(-6px) !important;
-        border-color: rgba(229,57,53,0.2) !important;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
-    }
-    
-    /* Live badge pulsing */
-    .live-badge, .status-live {
-        background: #ef4444 !important;
-        color: white !important;
-        border-radius: 6px !important;
-        font-weight: 800 !important;
-        animation: livePulse 2s ease-in-out infinite !important;
-    }
-    @keyframes livePulse {
-        0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
-        50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
-    }
-    
-    /* Score display */
-    .score, .team-score {
-        font-weight: 800 !important;
-        font-size: 20px !important;
-        color: #f1f5f9 !important;
-    }
-    
-    /* Tab navigation */
-    .tab-nav button, .tab-btn, .nav-tab {
-        border-radius: 24px !important;
-        transition: all 0.25s ease !important;
-        font-weight: 600 !important;
-    }
-    .tab-nav button.active, .tab-btn.active, .nav-tab.active {
-        background: linear-gradient(135deg, #E53935, #C62828) !important;
-        color: white !important;
-        box-shadow: 0 4px 15px rgba(229,57,53,0.3) !important;
-    }
-    
-    /* Scorecard table */
-    table {
-        border-radius: 12px !important;
-        overflow: hidden !important;
-    }
-    th {
-        background: linear-gradient(135deg, #1e293b, #334155) !important;
-        color: #EF5350 !important;
-        font-weight: 700 !important;
-    }
-    tr:hover td {
-        background: rgba(229,57,53,0.05) !important;
-    }
-    
-    /* Footer */
-    footer {
-        background: linear-gradient(180deg, #0b0f1a 0%, #070a12 100%) !important;
-        border-top: 1px solid rgba(229,57,53,0.1) !important;
-    }
-    
-    @media (max-width: 768px) {
-        .match-card { border-radius: 12px !important; }
-    }
-    
-</style>
+    </style>
 <style>
 .series-page{display:none;animation:slideUp 0.4s ease}.series-page.active{display:block}
 .series-page-header{background:linear-gradient(135deg,var(--bg2),var(--bg3));border-radius:var(--radius2);padding:20px;margin-bottom:16px;border:1px solid var(--border)}
@@ -429,7 +348,7 @@ a { color:var(--accent); text-decoration:none; }
             </div>
         </a>
         <div style="display:flex;align-items:center;gap:10px;">
-            <button onclick="document.body.classList.toggle('dark');document.body.classList.toggle('dark-mode');localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');" style="padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3,var(--bg));color:var(--text2,var(--text-secondary));">&#9790; Dark</button>
+            <button onclick="document.body.classList.toggle('dark-mode');localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');" style="padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3,var(--bg));color:var(--text2,var(--text-secondary));">&#9790; Dark</button>
             <a href="/" style="padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;background:#E53935;color:#fff;text-decoration:none;">&larr; Home</a>
         </div>
     </div>
@@ -545,11 +464,7 @@ let lightboxImages = [];
 let lightboxIdx = 0;
 
 // Dark mode
-function toggleDarkMode() {
-  document.body.classList.toggle('light-mode');
-  document.getElementById('themeBtn').textContent = document.body.classList.contains('light-mode') ? 'Dark' : 'Light';
-  localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
-}
+
 if (localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = 'Dark'; }
 
 // Navigation
@@ -632,7 +547,6 @@ async function fetchApi(url) {
   } catch(e) { console.error('API Error:', e); return null; }
 }
 
-
 // ===== LOAD MATCHES =====
 async function loadMatches() {
   const el = document.getElementById('matchesList');
@@ -649,7 +563,7 @@ async function loadMatches() {
         const mList = sAd.matches || [];
         mList.forEach(m => {
           const mi = m.matchInfo || m;
-          const ms = m.matchScore || {};
+          const ms = m.matchScore ||;
           matches.push({ info: mi, score: ms, seriesId: mi.seriesId || sAd.seriesId, seriesName: mi.seriesName || sAd.seriesName || '' });
         });
       });
@@ -659,28 +573,28 @@ async function loadMatches() {
   el.innerHTML = matches.map(m => {
     const i = m.info;
     const s = m.score;
-    const t1 = i.team1 || {};
-    const t2 = i.team2 || {};
+    const t1 = i.team1 ||;
+    const t2 = i.team2 ||;
     const t1n = t1.teamName || t1.teamSName || 'TBA';
     const t2n = t2.teamName || t2.teamSName || 'TBA';
     const t1img = t1.imageId || t1.imageid || '';
     const t2img = t2.imageId || t2.imageid || '';
     let scoreHtml = '';
-    const t1s = s.team1Score || s.team1score || {};
-    const t2s = s.team2Score || s.team2score || {};
+    const t1s = s.team1Score || s.team1score ||;
+    const t2s = s.team2Score || s.team2score ||;
     if (t1s.inngs1 || t1s.inngs2) {
-      const i1 = t1s.inngs1 || {};
+      const i1 = t1s.inngs1 ||;
       const i2 = t1s.inngs2;
       scoreHtml += '<div class="match-score-line"><span>' + escHtml(t1n) + '</span> <span>' + (i1.runs != null ? i1.runs + '/' + (i1.wickets != null ? i1.wickets : '-') + (i1.overs ? ' (' + i1.overs + ' ov)' : '') : '') + (i2 ? ' & ' + (i2.runs != null ? i2.runs + '/' + (i2.wickets != null ? i2.wickets : '-') + (i2.overs ? ' (' + i2.overs + ' ov)' : '') : '') : '') + '</span></div>';
     }
     if (t2s.inngs1 || t2s.inngs2) {
-      const i1 = t2s.inngs1 || {};
+      const i1 = t2s.inngs1 ||;
       const i2 = t2s.inngs2;
       scoreHtml += '<div class="match-score-line"><span>' + escHtml(t2n) + '</span> <span>' + (i1.runs != null ? i1.runs + '/' + (i1.wickets != null ? i1.wickets : '-') + (i1.overs ? ' (' + i1.overs + ' ov)' : '') : '') + (i2 ? ' & ' + (i2.runs != null ? i2.runs + '/' + (i2.wickets != null ? i2.wickets : '-') + (i2.overs ? ' (' + i2.overs + ' ov)' : '') : '') : '') + '</span></div>';
     }
     const status = i.status || i.state || '';
     const matchDesc = i.matchDesc || i.matchdesc || '';
-    const venue = (i.venueInfo || i.venueinfo || {});
+    const venue = (i.venueInfo || i.venueinfo ||);
     const venueName = venue.ground || venue.city || '';
     const seriesName = i.seriesName || i.seriesname || m.seriesName || '';
     const matchId = i.matchId || i.matchid || '';
@@ -698,7 +612,6 @@ async function loadMatches() {
     '</div>';
   }).join('');
 }
-
 
 // ===== OPEN MATCH PAGE =====
 async function openMatchPage(matchId) {
@@ -724,17 +637,17 @@ async function openMatchPage(matchId) {
   ]);
 
   // Match Header - data may be at top level or under matchheader
-  const hdr = (infoData && infoData.matchheader) || (infoData && infoData.matchHeader) || {};
-  const root = infoData || {};
-  const t1 = hdr.team1 || root.team1 || {};
-  const t2 = hdr.team2 || root.team2 || {};
+  const hdr = (infoData && infoData.matchheader) || (infoData && infoData.matchHeader) ||;
+  const root = infoData ||;
+  const t1 = hdr.team1 || root.team1 ||;
+  const t2 = hdr.team2 || root.team2 ||;
   const t1n = t1.name || t1.teamName || t1.teamname || (typeof t1 === 'string' ? t1 : 'Team 1');
   const t2n = t2.name || t2.teamName || t2.teamname || (typeof t2 === 'string' ? t2 : 'Team 2');
   const status = hdr.status || root.status || hdr.state || root.state || '';
   const matchDesc = hdr.matchDescription || hdr.matchdesc || root.matchdesc || root.matchDescription || '';
   const seriesName = hdr.seriesName || hdr.seriesname || root.seriesname || root.seriesName || '';
   const seriesId = hdr.seriesId || hdr.seriesid || root.seriesid || root.seriesId || '';
-  const venue = (infoData && (infoData.venueinfo || infoData.venueInfo)) || {};
+  const venue = (infoData && (infoData.venueinfo || infoData.venueInfo)) ||;
 
   document.getElementById('matchPageHeader').innerHTML =
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
@@ -783,7 +696,7 @@ function renderScorecard(data) {
   if (!innings.length) { el.innerHTML = '<div style="padding:20px;color:var(--text3);text-align:center">Scorecard not available yet</div>'; return; }
   let html = '';
   innings.forEach((inn, idx) => {
-    const batTeam = inn.batTeamDetails || inn.batteamname || inn.batTeamName || {};
+    const batTeam = inn.batTeamDetails || inn.batteamname || inn.batTeamName ||;
     const teamName = (typeof batTeam === 'string') ? batTeam : (batTeam.batTeamName || batTeam.batteamname || batTeam.teamName || 'Innings ' + (idx+1));
     const score = inn.scoreDetails || inn;
     const runs = score.runs || score.score || 0;
@@ -829,7 +742,6 @@ function renderScorecard(data) {
   });
   el.innerHTML = html;
 }
-
 
 // ===== COMMENTARY =====
 function renderCommentary(data, matchInfo) {
@@ -911,7 +823,7 @@ async function generateAICommentary() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        matchInfo: window._currentMatchInfo || {},
+        matchInfo: window._currentMatchInfo ||,
         commentaryData: window._currentCommentary || []
       })
     });
@@ -946,9 +858,9 @@ async function generateAICommentary() {
 function renderMatchInfo(data) {
   const el = document.getElementById('mp-info');
   if (!data) { el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3)">Info not available</div>'; return; }
-  const hdr = data.matchheader || data.matchHeader || {};
-  const venue = data.venueinfo || data.venueInfo || {};
-  const toss = hdr.tossResults || hdr.tossresults || {};
+  const hdr = data.matchheader || data.matchHeader ||;
+  const venue = data.venueinfo || data.venueInfo ||;
+  const toss = hdr.tossResults || hdr.tossresults ||;
   let html = '<div style="padding:12px">';
 
   // Venue
@@ -971,10 +883,10 @@ function renderMatchInfo(data) {
   }
 
   // Umpires
-  const ump1 = hdr.umpire1 || data.umpire1 || {};
-  const ump2 = hdr.umpire2 || data.umpire2 || {};
-  const ump3 = hdr.umpire3 || data.umpire3 || {};
-  const ref = hdr.referee || data.referee || {};
+  const ump1 = hdr.umpire1 || data.umpire1 ||;
+  const ump2 = hdr.umpire2 || data.umpire2 ||;
+  const ump3 = hdr.umpire3 || data.umpire3 ||;
+  const ref = hdr.referee || data.referee ||;
   if (ump1.name || ump2.name || ref.name) {
     html += '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px">';
     html += '<div style="font-weight:700;font-size:14px;margin-bottom:8px;color:var(--accent)">Officials</div>';
@@ -1019,7 +931,6 @@ function renderPointsTable(data, targetId) {
   });
   el.innerHTML = html || '<div style="padding:20px;text-align:center;color:var(--text3)">Points table not available</div>';
 }
-
 
 // ===== RANKINGS (FRESH - NO CACHE) =====
 async function loadRankings() {
@@ -1154,7 +1065,6 @@ function showLightboxImage() {
 function navLightbox(dir) { lightboxIdx = (lightboxIdx + dir + lightboxImages.length) % lightboxImages.length; showLightboxImage(); }
 function closeLightbox() { document.getElementById('lightbox').style.display = 'none'; }
 
-
 // ===== SERIES LIST =====
 async function loadSeries() {
   const el = document.getElementById('seriesContent');
@@ -1210,7 +1120,7 @@ async function openSeriesPage(seriesId) {
   let matchCount = 0;
   const matchDetails = data.matchDetails || [];
   matchDetails.forEach(md => {
-    const mdm = md.matchDetailsMap || {};
+    const mdm = md.matchDetailsMap ||;
     const key = mdm.key || '';
     const matches = mdm.match || [];
     matches.forEach(m => {
@@ -1260,27 +1170,27 @@ function renderSeriesFixtures(matchDetails, seriesId) {
   if (!matchDetails || !matchDetails.length) { el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3)">No fixtures available</div>'; return; }
   let html = '';
   matchDetails.forEach(md => {
-    const mdm = md.matchDetailsMap || {};
+    const mdm = md.matchDetailsMap ||;
     const key = mdm.key || '';
     const matches = mdm.match || [];
     if (!matches.length) return;
     if (key) html += '<div style="font-weight:700;font-size:13px;color:var(--accent);margin:12px 0 6px;text-transform:uppercase;letter-spacing:0.5px">' + escHtml(key) + '</div>';
     matches.forEach(m => {
       const mi = m.matchInfo || m;
-      const ms = m.matchScore || {};
-      const t1 = mi.team1 || {};
-      const t2 = mi.team2 || {};
+      const ms = m.matchScore ||;
+      const t1 = mi.team1 ||;
+      const t2 = mi.team2 ||;
       const t1n = t1.teamName || t1.teamSName || 'TBA';
       const t2n = t2.teamName || t2.teamSName || 'TBA';
       const matchId = mi.matchId || mi.matchid || '';
       const matchDesc = mi.matchDesc || mi.matchdesc || '';
-      const venue = mi.venueInfo || mi.venueinfo || {};
+      const venue = mi.venueInfo || mi.venueinfo ||;
       const status = mi.status || mi.state || '';
       const isLive = (mi.state === 'In Progress' || mi.state === 'Innings Break');
 
       let scoreStr = '';
-      const t1s = ms.team1Score || ms.team1score || {};
-      const t2s = ms.team2Score || ms.team2score || {};
+      const t1s = ms.team1Score || ms.team1score ||;
+      const t2s = ms.team2Score || ms.team2score ||;
       if (t1s.inngs1) {
         const i1 = t1s.inngs1;
         scoreStr += t1n + ': ' + (i1.runs || 0) + '/' + (i1.wickets != null ? i1.wickets : '-') + (i1.overs ? ' (' + i1.overs + ' ov)' : '');
@@ -1340,7 +1250,7 @@ async function loadSquadPlayers(seriesId, squadId, cardEl) {
   if (!players.length) { pl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3)">No players found</div>'; return; }
 
   // Group by role
-  const groups = {};
+  const groups =;
   players.forEach(p => {
     const role = p.role || p.playerRole || 'Other';
     if (!groups[role]) groups[role] = [];
@@ -1365,7 +1275,6 @@ async function loadSquadPlayers(seriesId, squadId, cardEl) {
   });
   pl.innerHTML = html;
 }
-
 
 // ===== SERIES STATS, NEWS, VENUES =====
 function renderSeriesStats(data) {
@@ -1414,14 +1323,14 @@ function renderSeriesNews(data) {
 
 function renderSeriesVenues(matchDetails) {
   const el = document.getElementById('sp-venues');
-  const venues = {};
+  const venues =;
   if (matchDetails) {
     matchDetails.forEach(md => {
-      const mdm = md.matchDetailsMap || {};
+      const mdm = md.matchDetailsMap ||;
       const matches = mdm.match || [];
       matches.forEach(m => {
         const mi = m.matchInfo || m;
-        const v = mi.venueInfo || mi.venueinfo || {};
+        const v = mi.venueInfo || mi.venueinfo ||;
         const key = v.ground || v.id || '';
         if (key && !venues[key]) {
           venues[key] = { ground: v.ground || '', city: v.city || '', country: v.country || '', capacity: v.capacity || '', timezone: v.timezone || '' };
@@ -1582,7 +1491,6 @@ function closePlayerModal() {
 document.getElementById('playerModal').addEventListener('click', function(e) {
   if (e.target === this) closePlayerModal();
 });
-
 
 // ===== INITIALIZATION =====
 // Load matches on page load
