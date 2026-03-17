@@ -3759,6 +3759,7 @@ app.get('/api/directory/state/:stateId', (req, res) => {
     const state = INDIA_DIRECTORY[req.params.stateId];
     if (!state) return res.status(404).json({ success: false, message: 'State not found' });
     res.json({ success: true, data: {
+        id: req.params.stateId,
         ...state,
         districtCount: state.districts ? state.districts.length : 0
     }});
