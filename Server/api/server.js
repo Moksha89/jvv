@@ -15,6 +15,7 @@ const crypto = require('crypto');
 
 const http = require('http');
 const https = require('https');
+const { INDIA_DIRECTORY, generateDistrictDetail, generateMandalDetail, generateVillageDetail } = require('./directory_data');
 
 // Category-specific author profiles for SEO
 const CATEGORY_AUTHORS = {
@@ -3736,6 +3737,78 @@ app.get('/api/pincode/:code', async (req, res) => {
         }
     } catch (e) {
         res.status(404).json({ success: false, message: 'PIN code not found or invalid' });
+    }
+});
+
+// ============================================================
+// India Directory API
+// ============================================================
+
+// Get all states
+app.get('/api/directory/states', (req, res) => {
+    const states = Object.entries(INDIA_DIRECTORY).map(([id, s]) => ({
+        id, name: s.name, capital: s.capital, emoji: s.emoji, pop: s.pop, area: s.area,
+        lang: s.lang, famous: (s.famousPlaces||[]).map(f=>f.name).join(', '),
+        zones: s.zones, districts: s.districts ? s.districts.length : 0, color: s.color
+    }));
+    res.json({ success: true, data: states });
+});
+
+// Get state detail with districts
+app.get('/api/directory/state/:stateId', (req, res) => {
+    const state = INDIA_DIRECTORY[req.params.stateId];
+    if (!state) return res.status(404).json({ success: false, message: 'State not found' });
+    res.json({ success: true, data: {
+        ...state,
+        districtCount: state.districts ? state.districts.length : 0
+    }});
+});
+
+// Get district detail with mandals
+app.get('/api/directory/district/:stateId/:districtId', (req, res) => {
+    const detail = generateDistrictDetail(req.params.stateId, req.params.districtId);
+    if (!detail) return res.status(404).json({ success: false, message: 'District not found' });
+    res.json({ success: true, data: detail });
+});
+
+// Get mandal detail with villages
+app.get('/api/directory/mandal/:stateId/:districtId/:mandalId', (req, res) => {
+    const detail = generateMandalDetail(req.params.stateId, req.params.districtId, req.params.mandalId);
+    if (!detail) return res.status(404).json({ success: false, message: 'Mandal not found' });
+    res.json({ success: true, data: detail });
+});
+
+// Get village detail
+app.get('/api/directory/village/:stateId/:districtId/:mandalId/:villageId', (req, res) => {
+    const detail = generateVillageDetail(req.params.stateId, req.params.districtId, req.params.mandalId, req.params.villageId);
+    if (!detail) return res.status(404).json({ success: false, message: 'Village not found' });
+    res.json({ success: true, data: detail });
+});
+
+// Search directory
+app.get('/api/directory/search', (req, res) => {
+    const q = (req.query.q || '').toLowerCase().trim();
+    if (q.length < 2) return res.json({ success: true, data: [] });
+    const results = [];
+    for (const [stateId, state] of Object.entries(INDIA_DIRECTORY)) {
+        if (state.districts) {
+            state.districts.forEach(d => {
+                if (d.name.toLowerCase().includes(q) || (d.famous && d.famous.toLowerCase().includes(q)) || (d.hq && d.hq.toLowerCase().includes(q))) {
+                    results.push({ id: d.id, name: d.name, stateId, stateName: state.name, type: 'District' });
+                }
+            });
+        }
+    }
+    res.json({ success: true, data: results.slice(0, 50) });
+});
+
+// Serve directory page
+app.get('/directory', (req, res) => {
+    const dirPage = path.join(DASHBOARD_DIR, 'newssite', 'directory.html');
+    if (fs.existsSync(dirPage)) {
+        res.sendFile(dirPage);
+    } else {
+        res.status(404).send('Directory page not found');
     }
 });
 
