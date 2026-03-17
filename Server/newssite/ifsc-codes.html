@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Find IFSC codes for all banks in India. Search by bank name, state, district, or branch. Instant IFSC code lookup for NEFT, RTGS, IMPS transactions.">
+<meta name="keywords" content="IFSC code, bank IFSC, NEFT, RTGS, IMPS, Indian banks, bank branch, IFSC finder, bank codes India">
+<title>IFSC Code Finder - All Indian Bank IFSC Codes | News Reporter Live</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href="https://newsreporter.live/ifsc-codes">
+<meta property="og:type" content="website">
+<meta property="og:title" content="IFSC Code Finder - All Indian Bank IFSC Codes">
+<meta property="og:description" content="Find IFSC codes for all banks in India. Search by bank name, state, district, or branch.">
+<meta property="og:url" content="https://newsreporter.live/ifsc-codes">
+<meta property="og:site_name" content="News Reporter Live">
+<meta name="robots" content="index, follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#1e40af;--primary-light:#dbeafe;--accent:#7c3aed;--success:#059669;--warning:#d97706;--red:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--radius:12px}
+body.dark{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--border:#334155;--primary:#3b82f6;--primary-light:#1e3a5f;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 10px 30px rgba(0,0,0,.4)}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Header */
+.site-header{background:var(--card);border-bottom:1px solid var(--border);padding:0;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.header-top{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px 24px}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#1e40af,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px}
+.logo h1{font-family:'Playfair Display',serif;font-size:22px;color:var(--text);line-height:1.1}
+.logo span{font-size:11px;color:var(--text3);letter-spacing:1px}
+.header-right{display:flex;align-items:center;gap:16px}
+.dark-toggle{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px;color:var(--text2);display:flex;align-items:center;gap:6px}
+.back-btn{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:8px 18px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+.back-btn:hover{opacity:.9}
+
+/* Nav */
+.site-nav{background:var(--card);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1280px;margin:0 auto;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+.nav-inner::-webkit-scrollbar{display:none}
+.nav-item{padding:12px 18px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s}
+.nav-item:hover{color:var(--primary);background:var(--primary-light)}
+.nav-item.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+.nav-item.highlight{color:#dc2626;font-weight:700}
+
+/* Breadcrumb */
+.breadcrumb{max-width:1280px;margin:0 auto;padding:16px 24px 0;font-size:13px;color:var(--text3)}
+.breadcrumb a{color:var(--text3)}
+.breadcrumb a:hover{color:var(--primary)}
+
+/* Hero */
+.hero{max-width:1280px;margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 400px;gap:32px;align-items:start}
+@media(max-width:900px){.hero{grid-template-columns:1fr;padding:16px}}
+.hero-left h2{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;margin-bottom:12px;color:var(--text)}
+.hero-left p{color:var(--text2);font-size:15px;line-height:1.7;margin-bottom:20px}
+.info-box{background:var(--primary-light);border:1px solid var(--primary);border-radius:var(--radius);padding:16px 20px;margin-bottom:20px}
+.info-box h3{font-size:15px;font-weight:600;color:var(--primary);margin-bottom:8px}
+.info-box p{font-size:13px;color:var(--text2);line-height:1.6}
+.show-more-btn{color:var(--primary);font-size:13px;cursor:pointer;font-weight:500;border:none;background:none;padding:0}
+
+/* IFSC Finder Card */
+.finder-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-lg)}
+.finder-card h3{font-size:20px;font-weight:700;text-align:center;margin-bottom:20px;font-family:'Playfair Display',serif}
+.finder-tabs{display:flex;gap:0;margin-bottom:20px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.finder-tab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--text2);border:none;transition:all .2s}
+.finder-tab.active{background:var(--primary);color:#fff}
+.finder-panel{display:none}
+.finder-panel.active{display:block}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.form-group select,.form-group input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--bg);color:var(--text);font-family:inherit;outline:none;transition:border .2s}
+.form-group select:focus,.form-group input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(30,64,175,.1)}
+.find-btn{width:100%;padding:12px;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;transition:transform .2s,box-shadow .2s;text-transform:uppercase;letter-spacing:1px}
+.find-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(220,38,38,.3)}
+.or-divider{text-align:center;padding:12px 0;color:var(--text3);font-size:13px;font-weight:600;position:relative}
+.or-divider::before,.or-divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border)}
+.or-divider::before{left:0}
+.or-divider::after{right:0}
+
+/* Result */
+.result-panel{display:none;margin-top:16px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.result-panel.show{display:block}
+.result-header{background:linear-gradient(135deg,#059669,#047857);color:#fff;padding:16px 20px}
+.result-header h4{font-size:16px;font-weight:700;margin-bottom:4px}
+.result-header p{font-size:12px;opacity:.85}
+.result-body{padding:0}
+.result-row{display:flex;border-bottom:1px solid var(--border);font-size:14px}
+.result-row:last-child{border-bottom:none}
+.result-label{width:140px;padding:12px 16px;background:var(--bg);font-weight:600;color:var(--text2);flex-shrink:0}
+.result-value{padding:12px 16px;flex:1;color:var(--text);word-break:break-all}
+.result-value.ifsc-code{font-size:18px;font-weight:800;color:var(--primary);letter-spacing:2px;font-family:'JetBrains Mono',monospace}
+.copy-btn{display:inline-flex;align-items:center;gap:4px;background:var(--primary);color:#fff;border:none;border-radius:6px;padding:4px 12px;font-size:12px;cursor:pointer;margin-left:8px;font-weight:600}
+.copy-btn:hover{opacity:.9}
+
+/* Popular Banks Section */
+.section{max-width:1280px;margin:0 auto;padding:0 24px 32px}
+.section h2{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--primary)}
+.popular-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.popular-bank-card{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s}
+.popular-bank-card:hover{border-color:var(--primary);box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.pbc-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;flex-shrink:0}
+.pbc-info{overflow:hidden}
+.pbc-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pbc-branches{font-size:11px;color:var(--text3)}
+
+/* Bank Filter */
+.bank-filter{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.filter-btn{padding:6px 16px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;background:var(--card);color:var(--text2);transition:all .2s}
+.filter-btn.active,.filter-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.bank-search{width:100%;max-width:400px;padding:10px 16px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--bg);color:var(--text);margin-bottom:16px;font-family:inherit}
+.bank-search:focus{border-color:var(--primary);outline:none}
+
+/* Letter groups */
+.letter-group{margin-bottom:24px}
+.letter-header{font-size:20px;font-weight:800;color:var(--primary);padding:8px 0;border-bottom:2px solid var(--primary);margin-bottom:12px;font-family:'Playfair Display',serif}
+.letter-banks{display:flex;flex-direction:column;gap:4px}
+.bank-list-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:8px;cursor:pointer;transition:background .15s}
+.bank-list-item:hover{background:var(--primary-light)}
+.bank-code{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:700;color:#fff;min-width:48px;text-align:center;font-family:monospace}
+.bank-name-text{font-size:14px;font-weight:500;color:var(--text);flex:1}
+.bank-type-badge{font-size:10px;font-weight:600;padding:2px 8px;border:1px solid;border-radius:12px;white-space:nowrap}
+
+/* About IFSC Section */
+.about-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:32px}
+.about-section h3{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:12px}
+.about-section p{color:var(--text2);font-size:14px;line-height:1.7;margin-bottom:12px}
+.about-section ul{padding-left:20px;color:var(--text2);font-size:14px;line-height:1.8}
+
+/* FAQ */
+.faq-item{border:1px solid var(--border);border-radius:10px;margin-bottom:8px;overflow:hidden}
+.faq-q{padding:14px 18px;font-weight:600;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--card);color:var(--text)}
+.faq-q:hover{background:var(--bg)}
+.faq-a{padding:0 18px;max-height:0;overflow:hidden;transition:all .3s;color:var(--text2);font-size:13px;line-height:1.7}
+.faq-item.open .faq-a{padding:0 18px 14px;max-height:500px}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-arrow{transition:transform .3s;color:var(--text3)}
+
+/* Footer */
+.site-footer{background:var(--card);border-top:1px solid var(--border);padding:32px 24px;margin-top:40px}
+.footer-inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px}
+.footer-col h4{font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text)}
+.footer-col a{display:block;font-size:13px;color:var(--text2);padding:3px 0}
+.footer-col a:hover{color:var(--primary);text-decoration:none}
+.footer-bottom{max-width:1280px;margin:16px auto 0;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--text3);text-align:center}
+
+/* Loading */
+.loading{display:none;text-align:center;padding:20px}
+.loading.show{display:block}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Error */
+.error-msg{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:12px 16px;border-radius:8px;font-size:13px;margin-top:12px;display:none}
+.error-msg.show{display:block}
+body.dark .error-msg{background:#450a0a;border-color:#7f1d1d}
+
+/* Responsive */
+@media(max-width:768px){
+.header-top{flex-wrap:wrap;gap:8px}
+.logo h1{font-size:18px}
+.hero-left h2{font-size:24px}
+.popular-grid{grid-template-columns:1fr}
+.result-row{flex-direction:column}
+.result-label{width:100%}
+.bank-list-item{flex-wrap:wrap}
+.bank-type-badge{margin-left:60px}
+.footer-inner{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){
+.hero{padding:12px}
+.finder-card{padding:16px}
+.section{padding:0 12px 24px}
+.footer-inner{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-top">
+<a href="/" class="logo">
+<div class="logo-icon">NR</div>
+<div><h1>News Reporter</h1><span>Live &#8226; Trusted &#8226; Independent</span></div>
+</a>
+<div class="header-right">
+<button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+<span id="darkIcon">&#9790;</span> <span id="darkText">Dark</span>
+</button>
+<a href="/" class="back-btn">&#8592; Back to News</a>
+</div>
+</div>
+</header>
+
+<!-- Navigation -->
+<nav class="site-nav">
+<div class="nav-inner">
+<a class="nav-item" href="/">Home</a>
+<a class="nav-item" href="/?cat=politics">Politics</a>
+<a class="nav-item" href="/?cat=business">Business</a>
+<a class="nav-item" href="/?cat=sports">Sports</a>
+<a class="nav-item" href="/?cat=technology">Technology</a>
+<a class="nav-item active" href="/ifsc-codes">IFSC Codes</a>
+<a class="nav-item" href="/cricket-live">&#127951; Live Scores</a>
+</div>
+</nav>
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+<a href="/">Home</a> &rsaquo; <a href="/ifsc-codes">Financial Tools</a> &rsaquo; <strong>IFSC Code Finder</strong>
+</div>
+
+<!-- Hero + Finder -->
+<div class="hero">
+<div class="hero-left">
+<h2>IFSC Code Finder</h2>
+<p><strong>IFSC</strong> (Indian Financial System Code) is an 11-character alphanumeric code assigned by the Reserve Bank of India to every bank branch in India. This code is essential for electronic fund transfers via NEFT, RTGS, and IMPS.</p>
+<div class="info-box">
+<h3>How IFSC Code Works</h3>
+<p>The first 4 characters represent the <strong>bank code</strong>, the 5th character is always <strong>0</strong> (reserved for future use), and the last 6 characters identify the specific <strong>branch</strong>. For example, in <strong>SBIN0001234</strong>: SBIN = State Bank of India, 0 = reserved, 001234 = branch code.</p>
+</div>
+<div id="moreInfo" style="display:none">
+<div class="info-box" style="border-color:var(--accent);background:rgba(124,58,237,.05)">
+<h3 style="color:var(--accent)">Why You Need IFSC Code</h3>
+<p>IFSC codes are mandatory for all electronic fund transfers in India including:</p>
+<ul style="padding-left:18px;margin-top:8px;font-size:13px;color:var(--text2)">
+<li><strong>NEFT</strong> (National Electronic Funds Transfer) - For non-urgent transfers</li>
+<li><strong>RTGS</strong> (Real Time Gross Settlement) - For high-value instant transfers</li>
+<li><strong>IMPS</strong> (Immediate Payment Service) - For instant mobile payments</li>
+<li><strong>UPI</strong> - Unified Payments Interface transactions</li>
+<li>Online banking and bill payments</li>
+<li>Mutual fund investments and insurance premiums</li>
+</ul>
+</div>
+</div>
+<button class="show-more-btn" onclick="var el=document.getElementById('moreInfo');el.style.display=el.style.display==='none'?'block':'none';this.textContent=el.style.display==='none'?'Show More...':'Show Less'">Show More...</button>
+</div>
+
+<!-- IFSC Finder Card -->
+<div class="finder-card">
+<h3>&#128270; IFSC Code Finder</h3>
+<div class="finder-tabs">
+<button class="finder-tab active" onclick="switchFinderTab('browse')">Browse Bank</button>
+<button class="finder-tab" onclick="switchFinderTab('direct')">Enter IFSC</button>
+</div>
+
+<!-- Browse Panel -->
+<div class="finder-panel active" id="panelBrowse">
+<div class="form-group">
+<label>Select Your Bank</label>
+<select id="bankSelect" onchange="onBankChange()">
+<option value="">-- Select Bank --</option>
+<option value="ABHY">ABHYUDAYA COOPERATIVE BANK LIMITED</option>
+<option value="AMCB">AHMEDABAD MERCANTILE COOPERATIVE BANK</option>
+<option value="AHMN">AHMEDNAGAR MERCHANTS CO-OP BANK LTD</option>
+<option value="AIRP">AIRTEL PAYMENTS BANK LIMITED</option>
+<option value="AKJB">AKOLA JANATA COMMERCIAL COOPERATIVE BANK</option>
+<option value="ALLA">ALLAHABAD BANK</option>
+<option value="ALMR">ALMORA URBAN COOPERATIVE BANK LIMITED</option>
+<option value="ANDB">ANDHRA BANK</option>
+<option value="APGV">ANDHRA PRADESH GRAMEENA VIKAS BANK</option>
+<option value="APGB">ANDHRA PRAGATHI GRAMEENA BANK</option>
+<option value="APNA">APNA SAHAKARI BANK LIMITED</option>
+<option value="AUBL">AU SMALL FINANCE BANK LIMITED</option>
+<option value="ANZB">AUSTRALIA AND NEW ZEALAND BANKING GROUP LIMITED</option>
+<option value="UTIB">AXIS BANK</option>
+<option value="BDBL">BANDHAN BANK LIMITED</option>
+<option value="BOFA">BANK OF AMERICA</option>
+<option value="BARB">BANK OF BARODA</option>
+<option value="BCEY">BANK OF CEYLON</option>
+<option value="BKID">BANK OF INDIA</option>
+<option value="MAHB">BANK OF MAHARASHTRA</option>
+<option value="NOSC">BANK OF NOVA SCOTIA</option>
+<option value="BARC">BARCLAYS BANK</option>
+<option value="BACB">BASSEIN CATHOLIC COOPERATIVE BANK LIMITED</option>
+<option value="BNPA">BNP PARIBAS</option>
+<option value="CNRB">CANARA BANK</option>
+<option value="CLBL">CAPITAL SMALL FINANCE BANK LIMITED</option>
+<option value="CBIN">CENTRAL BANK OF INDIA</option>
+<option value="CRGB">CHHATTISGARH RAJYA GRAMIN BANK</option>
+<option value="CITI">CITI BANK</option>
+<option value="CIUB">CITY UNION BANK LIMITED</option>
+<option value="CORP">CORPORATION BANK</option>
+<option value="CRLY">CREDIT AGRICOLE CORPORATE AND INVESTMENT BANK</option>
+<option value="CRES">CREDIT SUISSE AG</option>
+<option value="CSBK">CSB BANK LIMITED</option>
+<option value="CTCB">CTBC BANK CO LTD</option>
+<option value="DBSS">DBS BANK INDIA LIMITED</option>
+<option value="DCBL">DCB BANK LIMITED</option>
+<option value="BKDN">DENA BANK</option>
+<option value="DEUT">DEUTSCHE BANK</option>
+<option value="DLXB">DHANALAKSHMI BANK</option>
+<option value="DHBK">DOHA BANK QSC</option>
+<option value="EBIL">EMIRATES NBD BANK PJSC</option>
+<option value="ESFB">EQUITAS SMALL FINANCE BANK LIMITED</option>
+<option value="ESAF">ESAF SMALL FINANCE BANK LIMITED</option>
+<option value="EIBI">EXPORT IMPORT BANK OF INDIA</option>
+<option value="FDRL">FEDERAL BANK</option>
+<option value="FSFB">FINCARE SMALL FINANCE BANK LTD</option>
+<option value="FINO">FINO PAYMENTS BANK</option>
+<option value="NBAD">FIRST ABU DHABI BANK PJSC</option>
+<option value="FIRN">FIRSTRAND BANK LIMITED</option>
+<option value="HSBC">HARYANA STATE COOPERATIVE BANK</option>
+<option value="HDFC">HDFC BANK</option>
+<option value="HPSC">HIMACHAL PRADESH STATE COOPERATIVE BANK LTD</option>
+<option value="HSBC">HSBC BANK</option>
+<option value="ICIC">ICICI BANK</option>
+<option value="IBKL">IDBI BANK</option>
+<option value="IDFB">IDFC FIRST BANK LTD</option>
+<option value="IPOS">INDIA POST PAYMENT BANK</option>
+<option value="IDIB">INDIAN BANK</option>
+<option value="IOBA">INDIAN OVERSEAS BANK</option>
+<option value="INDB">INDUSIND BANK</option>
+<option value="ICBK">INDUSTRIAL AND COMMERCIAL BANK OF CHINA LIMITED</option>
+<option value="IBKO">INDUSTRIAL BANK OF KOREA</option>
+<option value="JAKA">JAMMU AND KASHMIR BANK LIMITED</option>
+<option value="JSFB">JANA SMALL FINANCE BANK LTD</option>
+<option value="JIOP">JIO PAYMENTS BANK LIMITED</option>
+<option value="CHAS">JP MORGAN BANK</option>
+<option value="KARB">KARNATAKA BANK LIMITED</option>
+<option value="PKGB">KARNATAKA GRAMIN BANK</option>
+<option value="KVGB">KARNATAKA VIKAS GRAMEENA BANK</option>
+<option value="KVBL">KARUR VYSYA BANK</option>
+<option value="KOEX">KEB HANA BANK</option>
+<option value="KLGB">KERALA GRAMIN BANK</option>
+<option value="KCUB">KOOKMIN BANK</option>
+<option value="KKBK">KOTAK MAHINDRA BANK</option>
+<option value="KRTH">KRUNG THAI BANK PCL</option>
+<option value="LAVB">LAXMI VILAS BANK</option>
+<option value="MAHG">MAHARASHTRA GRAMIN BANK</option>
+<option value="MSCI">MAHARASHTRA STATE COOPERATIVE BANK</option>
+<option value="MSHQ">MASHREQBANK PSC</option>
+<option value="MHCB">MIZUHO BANK LTD</option>
+<option value="BOTM">MUFG BANK LTD</option>
+<option value="NTBL">NAINITAL BANK LIMITED</option>
+<option value="NKGS">NKGSB COOPERATIVE BANK LIMITED</option>
+<option value="NESF">NORTH EAST SMALL FINANCE BANK LIMITED</option>
+<option value="NSPB">NSDL PAYMENTS BANK LIMITED</option>
+<option value="ORBC">ORIENTAL BANK OF COMMERCE</option>
+<option value="PYTM">PAYTM PAYMENTS BANK LTD</option>
+<option value="IBBK">PT BANK MAYBANK INDONESIA TBK</option>
+<option value="PMCB">PUNJAB AND MAHARASHTRA COOPERATIVE BANK</option>
+<option value="PSIB">PUNJAB AND SIND BANK</option>
+<option value="PUNB">PUNJAB NATIONAL BANK</option>
+<option value="QNBA">QATAR NATIONAL BANK SAQ</option>
+<option value="RABO">RABOBANK INTERNATIONAL</option>
+<option value="RMGB">RAJASTHAN MARUDHARA GRAMIN BANK</option>
+<option value="RATN">RBL BANK LIMITED</option>
+<option value="RBIS">RESERVE BANK OF INDIA</option>
+<option value="SRCB">SARASWAT COOPERATIVE BANK LIMITED</option>
+<option value="SBER">SBER BANK</option>
+<option value="STCB">SBM BANK INDIA LIMITED</option>
+<option value="SHBK">SHINHAN BANK</option>
+<option value="SOGE">SOCIETE GENERALE</option>
+<option value="SIBL">SOUTH INDIAN BANK</option>
+<option value="SCBL">STANDARD CHARTERED BANK</option>
+<option value="SBIN">STATE BANK OF INDIA</option>
+<option value="SMBC">SUMITOMO MITSUI BANKING CORPORATION</option>
+<option value="SURY">SURYODAY SMALL FINANCE BANK LIMITED</option>
+<option value="SYNB">SYNDICATE BANK</option>
+<option value="TMBL">TAMILNAD MERCANTILE BANK LIMITED</option>
+<option value="TSAB">TELANGANA STATE COOP APEX BANK</option>
+<option value="APSC">THE ANDHRA PRADESH STATE COOPERATIVE BANK LIMITED</option>
+<option value="COSB">THE COSMOS CO OPERATIVE BANK LIMITED</option>
+<option value="DLSC">THE DELHI STATE COOPERATIVE BANK LIMITED</option>
+<option value="FDRL">THE FEDERAL BANK LIMITED</option>
+<option value="GSCB">THE GUJARAT STATE COOPERATIVE BANK LIMITED</option>
+<option value="JAKA">THE JAMMU AND KASHMIR BANK LIMITED</option>
+<option value="KSCB">THE KARNATAKA STATE COOPERATIVE APEX BANK LIMITED</option>
+<option value="KLSC">THE KERALA STATE COOPERATIVE BANK</option>
+<option value="ORSC">THE ODISHA STATE COOPERATIVE BANK LTD</option>
+<option value="PSCO">THE PUNJAB STATE COOPERATIVE BANK LTD</option>
+<option value="RSCB">THE RAJASTHAN STATE COOPERATIVE BANK LIMITED</option>
+<option value="SVCB">THE SHAMRAO VITHAL COOPERATIVE BANK</option>
+<option value="TNSC">THE TAMIL NADU STATE APEX COOPERATIVE BANK</option>
+<option value="WBSC">THE WEST BENGAL STATE COOPERATIVE BANK</option>
+<option value="TJSB">TJSB SAHAKARI BANK LTD</option>
+<option value="UCBA">UCO BANK</option>
+<option value="UJVN">UJJIVAN SMALL FINANCE BANK LIMITED</option>
+<option value="UBIN">UNION BANK OF INDIA</option>
+<option value="UTBI">UNITED BANK OF INDIA</option>
+<option value="UOVB">UNITED OVERSEAS BANK LIMITED</option>
+<option value="UTKS">UTKARSH SMALL FINANCE BANK</option>
+<option value="UPCB">UTTAR PRADESH COOPERATIVE BANK LTD</option>
+<option value="VIJB">VIJAYA BANK</option>
+<option value="HVBK">WOORI BANK</option>
+<option value="YESB">YES BANK</option>
+</select>
+</div>
+<div class="form-group">
+<label>State</label>
+<select id="stateSelect" onchange="onStateChange()">
+<option value="">-- Select State --</option>
+<option value="ANDAMAN AND NICOBAR ISLANDS">ANDAMAN AND NICOBAR ISLANDS</option>
+<option value="ANDHRA PRADESH">ANDHRA PRADESH</option>
+<option value="ARUNACHAL PRADESH">ARUNACHAL PRADESH</option>
+<option value="ASSAM">ASSAM</option>
+<option value="BIHAR">BIHAR</option>
+<option value="CHANDIGARH">CHANDIGARH</option>
+<option value="CHHATTISGARH">CHHATTISGARH</option>
+<option value="DADRA AND NAGAR HAVELI AND DAMAN AND DIU">DADRA AND NAGAR HAVELI AND DAMAN AND DIU</option>
+<option value="DELHI">DELHI</option>
+<option value="GOA">GOA</option>
+<option value="GUJARAT">GUJARAT</option>
+<option value="HARYANA">HARYANA</option>
+<option value="HIMACHAL PRADESH">HIMACHAL PRADESH</option>
+<option value="JAMMU AND KASHMIR">JAMMU AND KASHMIR</option>
+<option value="JHARKHAND">JHARKHAND</option>
+<option value="KARNATAKA">KARNATAKA</option>
+<option value="KERALA">KERALA</option>
+<option value="LADAKH">LADAKH</option>
+<option value="LAKSHADWEEP">LAKSHADWEEP</option>
+<option value="MADHYA PRADESH">MADHYA PRADESH</option>
+<option value="MAHARASHTRA">MAHARASHTRA</option>
+<option value="MANIPUR">MANIPUR</option>
+<option value="MEGHALAYA">MEGHALAYA</option>
+<option value="MIZORAM">MIZORAM</option>
+<option value="NAGALAND">NAGALAND</option>
+<option value="ODISHA">ODISHA</option>
+<option value="PUDUCHERRY">PUDUCHERRY</option>
+<option value="PUNJAB">PUNJAB</option>
+<option value="RAJASTHAN">RAJASTHAN</option>
+<option value="SIKKIM">SIKKIM</option>
+<option value="TAMIL NADU">TAMIL NADU</option>
+<option value="TELANGANA">TELANGANA</option>
+<option value="TRIPURA">TRIPURA</option>
+<option value="UTTAR PRADESH">UTTAR PRADESH</option>
+<option value="UTTARAKHAND">UTTARAKHAND</option>
+<option value="WEST BENGAL">WEST BENGAL</option>
+</select>
+</div>
+<div class="form-group">
+<label>District</label>
+<select id="districtSelect" onchange="onDistrictChange()">
+<option value="">-- Select District --</option>
+</select>
+</div>
+<div class="form-group">
+<label>Branch</label>
+<select id="branchSelect">
+<option value="">-- Select Branch --</option>
+</select>
+</div>
+<button class="find-btn" onclick="findIFSC()">&#128269; Find IFSC Code</button>
+</div>
+
+<!-- Direct Lookup Panel -->
+<div class="finder-panel" id="panelDirect">
+<div class="form-group">
+<label>Enter IFSC Code</label>
+<input type="text" id="ifscInput" placeholder="e.g. SBIN0001234" maxlength="11" style="text-transform:uppercase;letter-spacing:2px;font-weight:600" onkeyup="if(event.key==='Enter')lookupIFSC()">
+</div>
+<button class="find-btn" onclick="lookupIFSC()">&#128269; Get Bank Details</button>
+</div>
+
+<!-- Loading -->
+<div class="loading" id="loadingSpinner">
+<div class="spinner"></div>
+<p style="color:var(--text3);font-size:13px">Looking up IFSC code...</p>
+</div>
+
+<!-- Error -->
+<div class="error-msg" id="errorMsg"></div>
+
+<!-- Result Panel -->
+<div class="result-panel" id="resultPanel">
+<div class="result-header">
+<h4 id="resultBankName">Bank Name</h4>
+<p id="resultBranchName">Branch Name</p>
+</div>
+<div class="result-body">
+<div class="result-row"><div class="result-label">IFSC Code</div><div class="result-value ifsc-code" id="resultIFSC">--<button class="copy-btn" onclick="copyIFSC()">&#128203; Copy</button></div></div>
+<div class="result-row"><div class="result-label">Bank</div><div class="result-value" id="resultBank">--</div></div>
+<div class="result-row"><div class="result-label">Branch</div><div class="result-value" id="resultBranch">--</div></div>
+<div class="result-row"><div class="result-label">Address</div><div class="result-value" id="resultAddress">--</div></div>
+<div class="result-row"><div class="result-label">City</div><div class="result-value" id="resultCity">--</div></div>
+<div class="result-row"><div class="result-label">District</div><div class="result-value" id="resultDistrict">--</div></div>
+<div class="result-row"><div class="result-label">State</div><div class="result-value" id="resultState">--</div></div>
+<div class="result-row"><div class="result-label">MICR Code</div><div class="result-value" id="resultMICR">--</div></div>
+<div class="result-row"><div class="result-label">Contact</div><div class="result-value" id="resultContact">--</div></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Popular Banks -->
+<div class="section">
+<h2>&#127975; Popular Banks</h2>
+<div class="popular-grid"><div class="popular-bank-card" onclick="selectBankFromCard('SBIN')">
+<div class="pbc-icon" style="background:#2563eb">SB</div>
+<div class="pbc-info"><div class="pbc-name">STATE BANK OF INDIA</div><div class="pbc-branches">22000+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('PUNB')">
+<div class="pbc-icon" style="background:#2563eb">PU</div>
+<div class="pbc-info"><div class="pbc-name">PUNJAB NATIONAL BANK</div><div class="pbc-branches">10000+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('BARB')">
+<div class="pbc-icon" style="background:#2563eb">BA</div>
+<div class="pbc-info"><div class="pbc-name">BANK OF BARODA</div><div class="pbc-branches">8000+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('CNRB')">
+<div class="pbc-icon" style="background:#2563eb">CN</div>
+<div class="pbc-info"><div class="pbc-name">CANARA BANK</div><div class="pbc-branches">9000+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('UBIN')">
+<div class="pbc-icon" style="background:#2563eb">UB</div>
+<div class="pbc-info"><div class="pbc-name">UNION BANK OF INDIA</div><div class="pbc-branches">8500+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('BKID')">
+<div class="pbc-icon" style="background:#2563eb">BK</div>
+<div class="pbc-info"><div class="pbc-name">BANK OF INDIA</div><div class="pbc-branches">5000+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('IDIB')">
+<div class="pbc-icon" style="background:#2563eb">ID</div>
+<div class="pbc-info"><div class="pbc-name">INDIAN BANK</div><div class="pbc-branches">6000+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('CBIN')">
+<div class="pbc-icon" style="background:#2563eb">CB</div>
+<div class="pbc-info"><div class="pbc-name">CENTRAL BANK OF INDIA</div><div class="pbc-branches">4500+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('HDFC')">
+<div class="pbc-icon" style="background:#7c3aed">HD</div>
+<div class="pbc-info"><div class="pbc-name">HDFC BANK</div><div class="pbc-branches">7500+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('ICIC')">
+<div class="pbc-icon" style="background:#7c3aed">IC</div>
+<div class="pbc-info"><div class="pbc-name">ICICI BANK</div><div class="pbc-branches">5500+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('UTIB')">
+<div class="pbc-icon" style="background:#7c3aed">UT</div>
+<div class="pbc-info"><div class="pbc-name">AXIS BANK</div><div class="pbc-branches">4500+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('KKBK')">
+<div class="pbc-icon" style="background:#7c3aed">KK</div>
+<div class="pbc-info"><div class="pbc-name">KOTAK MAHINDRA BANK</div><div class="pbc-branches">1600+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('INDB')">
+<div class="pbc-icon" style="background:#7c3aed">IN</div>
+<div class="pbc-info"><div class="pbc-name">INDUSIND BANK</div><div class="pbc-branches">2000+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('IDFB')">
+<div class="pbc-icon" style="background:#7c3aed">ID</div>
+<div class="pbc-info"><div class="pbc-name">IDFC FIRST BANK LTD</div><div class="pbc-branches">600+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('YESB')">
+<div class="pbc-icon" style="background:#7c3aed">YE</div>
+<div class="pbc-info"><div class="pbc-name">YES BANK</div><div class="pbc-branches">1100+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('FDRL')">
+<div class="pbc-icon" style="background:#7c3aed">FD</div>
+<div class="pbc-info"><div class="pbc-name">FEDERAL BANK</div><div class="pbc-branches">1200+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('SIBL')">
+<div class="pbc-icon" style="background:#7c3aed">SI</div>
+<div class="pbc-info"><div class="pbc-name">SOUTH INDIAN BANK</div><div class="pbc-branches">900+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('KVBL')">
+<div class="pbc-icon" style="background:#7c3aed">KV</div>
+<div class="pbc-info"><div class="pbc-name">KARUR VYSYA BANK</div><div class="pbc-branches">800+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('KARB')">
+<div class="pbc-icon" style="background:#7c3aed">KA</div>
+<div class="pbc-info"><div class="pbc-name">KARNATAKA BANK LIMITED</div><div class="pbc-branches">800+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('IOBA')">
+<div class="pbc-icon" style="background:#2563eb">IO</div>
+<div class="pbc-info"><div class="pbc-name">INDIAN OVERSEAS BANK</div><div class="pbc-branches">3400+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('UCBA')">
+<div class="pbc-icon" style="background:#2563eb">UC</div>
+<div class="pbc-info"><div class="pbc-name">UCO BANK</div><div class="pbc-branches">3000+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('MAHB')">
+<div class="pbc-icon" style="background:#2563eb">MA</div>
+<div class="pbc-info"><div class="pbc-name">BANK OF MAHARASHTRA</div><div class="pbc-branches">2000+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('PSIB')">
+<div class="pbc-icon" style="background:#2563eb">PS</div>
+<div class="pbc-info"><div class="pbc-name">PUNJAB AND SIND BANK</div><div class="pbc-branches">1500+ Branches</div></div>
+</div><div class="popular-bank-card" onclick="selectBankFromCard('IBKL')">
+<div class="pbc-icon" style="background:#2563eb">IB</div>
+<div class="pbc-info"><div class="pbc-name">IDBI BANK</div><div class="pbc-branches">1900+ Branches</div></div>
+</div></div>
+</div>
+
+<!-- All Banks Directory -->
+<div class="section">
+<h2>&#128218; All Bank IFSC Code Directory</h2>
+<input type="text" class="bank-search" id="bankSearchInput" placeholder="Search banks by name or IFSC prefix..." oninput="filterBanks()">
+<div class="bank-filter">
+<button class="filter-btn active" onclick="filterByType('all',this)">All</button>
+<button class="filter-btn" onclick="filterByType('public',this)">Public Sector</button>
+<button class="filter-btn" onclick="filterByType('private',this)">Private Sector</button>
+<button class="filter-btn" onclick="filterByType('foreign',this)">Foreign Banks</button>
+<button class="filter-btn" onclick="filterByType('cooperative',this)">Cooperative</button>
+<button class="filter-btn" onclick="filterByType('small_finance',this)">Small Finance</button>
+<button class="filter-btn" onclick="filterByType('payments',this)">Payments</button>
+<button class="filter-btn" onclick="filterByType('gramin',this)">Gramin/Rural</button>
+</div>
+<div id="bankDirectory"><div class="letter-group"><div class="letter-header">A</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('ABHY')">
+<span class="bank-code" style="background:#d97706">ABHY</span>
+<span class="bank-name-text">ABHYUDAYA COOPERATIVE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('AMCB')">
+<span class="bank-code" style="background:#d97706">AMCB</span>
+<span class="bank-name-text">AHMEDABAD MERCANTILE COOPERATIVE BANK</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('AHMN')">
+<span class="bank-code" style="background:#d97706">AHMN</span>
+<span class="bank-name-text">AHMEDNAGAR MERCHANTS CO-OP BANK LTD</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('AIRP')">
+<span class="bank-code" style="background:#e11d48">AIRP</span>
+<span class="bank-name-text">AIRTEL PAYMENTS BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#e11d48;border-color:#e11d48">Payments Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('AKJB')">
+<span class="bank-code" style="background:#d97706">AKJB</span>
+<span class="bank-name-text">AKOLA JANATA COMMERCIAL COOPERATIVE BANK</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('ALLA')">
+<span class="bank-code" style="background:#2563eb">ALLA</span>
+<span class="bank-name-text">ALLAHABAD BANK</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('ALMR')">
+<span class="bank-code" style="background:#d97706">ALMR</span>
+<span class="bank-name-text">ALMORA URBAN COOPERATIVE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('ANDB')">
+<span class="bank-code" style="background:#2563eb">ANDB</span>
+<span class="bank-name-text">ANDHRA BANK</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('APGV')">
+<span class="bank-code" style="background:#16a34a">APGV</span>
+<span class="bank-name-text">ANDHRA PRADESH GRAMEENA VIKAS BANK</span>
+<span class="bank-type-badge" style="color:#16a34a;border-color:#16a34a">Gramin/Rural</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('APGB')">
+<span class="bank-code" style="background:#16a34a">APGB</span>
+<span class="bank-name-text">ANDHRA PRAGATHI GRAMEENA BANK</span>
+<span class="bank-type-badge" style="color:#16a34a;border-color:#16a34a">Gramin/Rural</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('APNA')">
+<span class="bank-code" style="background:#d97706">APNA</span>
+<span class="bank-name-text">APNA SAHAKARI BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('AUBL')">
+<span class="bank-code" style="background:#0891b2">AUBL</span>
+<span class="bank-name-text">AU SMALL FINANCE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#0891b2;border-color:#0891b2">Small Finance</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('ANZB')">
+<span class="bank-code" style="background:#059669">ANZB</span>
+<span class="bank-name-text">AUSTRALIA AND NEW ZEALAND BANKING GROUP LIMITED</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('UTIB')">
+<span class="bank-code" style="background:#7c3aed">UTIB</span>
+<span class="bank-name-text">AXIS BANK</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('APSC')">
+<span class="bank-code" style="background:#d97706">APSC</span>
+<span class="bank-name-text">THE ANDHRA PRADESH STATE COOPERATIVE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div></div></div><div class="letter-group"><div class="letter-header">B</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('BDBL')">
+<span class="bank-code" style="background:#7c3aed">BDBL</span>
+<span class="bank-name-text">BANDHAN BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('BOFA')">
+<span class="bank-code" style="background:#059669">BOFA</span>
+<span class="bank-name-text">BANK OF AMERICA</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('BARB')">
+<span class="bank-code" style="background:#2563eb">BARB</span>
+<span class="bank-name-text">BANK OF BARODA</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('BCEY')">
+<span class="bank-code" style="background:#059669">BCEY</span>
+<span class="bank-name-text">BANK OF CEYLON</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('BKID')">
+<span class="bank-code" style="background:#2563eb">BKID</span>
+<span class="bank-name-text">BANK OF INDIA</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('MAHB')">
+<span class="bank-code" style="background:#2563eb">MAHB</span>
+<span class="bank-name-text">BANK OF MAHARASHTRA</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('NOSC')">
+<span class="bank-code" style="background:#059669">NOSC</span>
+<span class="bank-name-text">BANK OF NOVA SCOTIA</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('BARC')">
+<span class="bank-code" style="background:#059669">BARC</span>
+<span class="bank-name-text">BARCLAYS BANK</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('BACB')">
+<span class="bank-code" style="background:#d97706">BACB</span>
+<span class="bank-name-text">BASSEIN CATHOLIC COOPERATIVE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('BNPA')">
+<span class="bank-code" style="background:#059669">BNPA</span>
+<span class="bank-name-text">BNP PARIBAS</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div></div></div><div class="letter-group"><div class="letter-header">C</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('CNRB')">
+<span class="bank-code" style="background:#2563eb">CNRB</span>
+<span class="bank-name-text">CANARA BANK</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('CLBL')">
+<span class="bank-code" style="background:#0891b2">CLBL</span>
+<span class="bank-name-text">CAPITAL SMALL FINANCE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#0891b2;border-color:#0891b2">Small Finance</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('CBIN')">
+<span class="bank-code" style="background:#2563eb">CBIN</span>
+<span class="bank-name-text">CENTRAL BANK OF INDIA</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('CRGB')">
+<span class="bank-code" style="background:#16a34a">CRGB</span>
+<span class="bank-name-text">CHHATTISGARH RAJYA GRAMIN BANK</span>
+<span class="bank-type-badge" style="color:#16a34a;border-color:#16a34a">Gramin/Rural</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('CITI')">
+<span class="bank-code" style="background:#059669">CITI</span>
+<span class="bank-name-text">CITI BANK</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('CIUB')">
+<span class="bank-code" style="background:#7c3aed">CIUB</span>
+<span class="bank-name-text">CITY UNION BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('CORP')">
+<span class="bank-code" style="background:#2563eb">CORP</span>
+<span class="bank-name-text">CORPORATION BANK</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('CRLY')">
+<span class="bank-code" style="background:#059669">CRLY</span>
+<span class="bank-name-text">CREDIT AGRICOLE CORPORATE AND INVESTMENT BANK</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('CRES')">
+<span class="bank-code" style="background:#059669">CRES</span>
+<span class="bank-name-text">CREDIT SUISSE AG</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('CSBK')">
+<span class="bank-code" style="background:#7c3aed">CSBK</span>
+<span class="bank-name-text">CSB BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('CTCB')">
+<span class="bank-code" style="background:#059669">CTCB</span>
+<span class="bank-name-text">CTBC BANK CO LTD</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('COSB')">
+<span class="bank-code" style="background:#d97706">COSB</span>
+<span class="bank-name-text">THE COSMOS CO OPERATIVE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div></div></div><div class="letter-group"><div class="letter-header">D</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('DBSS')">
+<span class="bank-code" style="background:#059669">DBSS</span>
+<span class="bank-name-text">DBS BANK INDIA LIMITED</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('DCBL')">
+<span class="bank-code" style="background:#7c3aed">DCBL</span>
+<span class="bank-name-text">DCB BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('BKDN')">
+<span class="bank-code" style="background:#2563eb">BKDN</span>
+<span class="bank-name-text">DENA BANK</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('DEUT')">
+<span class="bank-code" style="background:#059669">DEUT</span>
+<span class="bank-name-text">DEUTSCHE BANK</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('DLXB')">
+<span class="bank-code" style="background:#7c3aed">DLXB</span>
+<span class="bank-name-text">DHANALAKSHMI BANK</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('DHBK')">
+<span class="bank-code" style="background:#059669">DHBK</span>
+<span class="bank-name-text">DOHA BANK QSC</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('DLSC')">
+<span class="bank-code" style="background:#d97706">DLSC</span>
+<span class="bank-name-text">THE DELHI STATE COOPERATIVE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div></div></div><div class="letter-group"><div class="letter-header">E</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('EBIL')">
+<span class="bank-code" style="background:#059669">EBIL</span>
+<span class="bank-name-text">EMIRATES NBD BANK PJSC</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('ESFB')">
+<span class="bank-code" style="background:#0891b2">ESFB</span>
+<span class="bank-name-text">EQUITAS SMALL FINANCE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#0891b2;border-color:#0891b2">Small Finance</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('ESAF')">
+<span class="bank-code" style="background:#0891b2">ESAF</span>
+<span class="bank-name-text">ESAF SMALL FINANCE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#0891b2;border-color:#0891b2">Small Finance</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('EIBI')">
+<span class="bank-code" style="background:#2563eb">EIBI</span>
+<span class="bank-name-text">EXPORT IMPORT BANK OF INDIA</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div></div></div><div class="letter-group"><div class="letter-header">F</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('FDRL')">
+<span class="bank-code" style="background:#7c3aed">FDRL</span>
+<span class="bank-name-text">FEDERAL BANK</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('FSFB')">
+<span class="bank-code" style="background:#0891b2">FSFB</span>
+<span class="bank-name-text">FINCARE SMALL FINANCE BANK LTD</span>
+<span class="bank-type-badge" style="color:#0891b2;border-color:#0891b2">Small Finance</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('FINO')">
+<span class="bank-code" style="background:#e11d48">FINO</span>
+<span class="bank-name-text">FINO PAYMENTS BANK</span>
+<span class="bank-type-badge" style="color:#e11d48;border-color:#e11d48">Payments Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('NBAD')">
+<span class="bank-code" style="background:#059669">NBAD</span>
+<span class="bank-name-text">FIRST ABU DHABI BANK PJSC</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('FIRN')">
+<span class="bank-code" style="background:#059669">FIRN</span>
+<span class="bank-name-text">FIRSTRAND BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div></div></div><div class="letter-group"><div class="letter-header">G</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('GSCB')">
+<span class="bank-code" style="background:#d97706">GSCB</span>
+<span class="bank-name-text">THE GUJARAT STATE COOPERATIVE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div></div></div><div class="letter-group"><div class="letter-header">H</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('HSBC')">
+<span class="bank-code" style="background:#d97706">HSBC</span>
+<span class="bank-name-text">HARYANA STATE COOPERATIVE BANK</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('HDFC')">
+<span class="bank-code" style="background:#7c3aed">HDFC</span>
+<span class="bank-name-text">HDFC BANK</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('HPSC')">
+<span class="bank-code" style="background:#d97706">HPSC</span>
+<span class="bank-name-text">HIMACHAL PRADESH STATE COOPERATIVE BANK LTD</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div></div></div><div class="letter-group"><div class="letter-header">I</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('ICIC')">
+<span class="bank-code" style="background:#7c3aed">ICIC</span>
+<span class="bank-name-text">ICICI BANK</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('IBKL')">
+<span class="bank-code" style="background:#2563eb">IBKL</span>
+<span class="bank-name-text">IDBI BANK</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('IDFB')">
+<span class="bank-code" style="background:#7c3aed">IDFB</span>
+<span class="bank-name-text">IDFC FIRST BANK LTD</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('IPOS')">
+<span class="bank-code" style="background:#e11d48">IPOS</span>
+<span class="bank-name-text">INDIA POST PAYMENT BANK</span>
+<span class="bank-type-badge" style="color:#e11d48;border-color:#e11d48">Payments Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('IDIB')">
+<span class="bank-code" style="background:#2563eb">IDIB</span>
+<span class="bank-name-text">INDIAN BANK</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('IOBA')">
+<span class="bank-code" style="background:#2563eb">IOBA</span>
+<span class="bank-name-text">INDIAN OVERSEAS BANK</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('INDB')">
+<span class="bank-code" style="background:#7c3aed">INDB</span>
+<span class="bank-name-text">INDUSIND BANK</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('ICBK')">
+<span class="bank-code" style="background:#059669">ICBK</span>
+<span class="bank-name-text">INDUSTRIAL AND COMMERCIAL BANK OF CHINA LIMITED</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('IBKO')">
+<span class="bank-code" style="background:#059669">IBKO</span>
+<span class="bank-name-text">INDUSTRIAL BANK OF KOREA</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div></div></div><div class="letter-group"><div class="letter-header">J</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('JAKA')">
+<span class="bank-code" style="background:#7c3aed">JAKA</span>
+<span class="bank-name-text">JAMMU AND KASHMIR BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('JSFB')">
+<span class="bank-code" style="background:#0891b2">JSFB</span>
+<span class="bank-name-text">JANA SMALL FINANCE BANK LTD</span>
+<span class="bank-type-badge" style="color:#0891b2;border-color:#0891b2">Small Finance</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('JIOP')">
+<span class="bank-code" style="background:#e11d48">JIOP</span>
+<span class="bank-name-text">JIO PAYMENTS BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#e11d48;border-color:#e11d48">Payments Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('CHAS')">
+<span class="bank-code" style="background:#059669">CHAS</span>
+<span class="bank-name-text">JP MORGAN BANK</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div></div></div><div class="letter-group"><div class="letter-header">K</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('KARB')">
+<span class="bank-code" style="background:#7c3aed">KARB</span>
+<span class="bank-name-text">KARNATAKA BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('PKGB')">
+<span class="bank-code" style="background:#16a34a">PKGB</span>
+<span class="bank-name-text">KARNATAKA GRAMIN BANK</span>
+<span class="bank-type-badge" style="color:#16a34a;border-color:#16a34a">Gramin/Rural</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('KVGB')">
+<span class="bank-code" style="background:#16a34a">KVGB</span>
+<span class="bank-name-text">KARNATAKA VIKAS GRAMEENA BANK</span>
+<span class="bank-type-badge" style="color:#16a34a;border-color:#16a34a">Gramin/Rural</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('KVBL')">
+<span class="bank-code" style="background:#7c3aed">KVBL</span>
+<span class="bank-name-text">KARUR VYSYA BANK</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('KOEX')">
+<span class="bank-code" style="background:#059669">KOEX</span>
+<span class="bank-name-text">KEB HANA BANK</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('KLGB')">
+<span class="bank-code" style="background:#16a34a">KLGB</span>
+<span class="bank-name-text">KERALA GRAMIN BANK</span>
+<span class="bank-type-badge" style="color:#16a34a;border-color:#16a34a">Gramin/Rural</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('KCUB')">
+<span class="bank-code" style="background:#059669">KCUB</span>
+<span class="bank-name-text">KOOKMIN BANK</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('KKBK')">
+<span class="bank-code" style="background:#7c3aed">KKBK</span>
+<span class="bank-name-text">KOTAK MAHINDRA BANK</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('KRTH')">
+<span class="bank-code" style="background:#059669">KRTH</span>
+<span class="bank-name-text">KRUNG THAI BANK PCL</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('KSCB')">
+<span class="bank-code" style="background:#d97706">KSCB</span>
+<span class="bank-name-text">THE KARNATAKA STATE COOPERATIVE APEX BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('KLSC')">
+<span class="bank-code" style="background:#d97706">KLSC</span>
+<span class="bank-name-text">THE KERALA STATE COOPERATIVE BANK</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div></div></div><div class="letter-group"><div class="letter-header">L</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('LAVB')">
+<span class="bank-code" style="background:#7c3aed">LAVB</span>
+<span class="bank-name-text">LAXMI VILAS BANK</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div></div></div><div class="letter-group"><div class="letter-header">M</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('MAHG')">
+<span class="bank-code" style="background:#16a34a">MAHG</span>
+<span class="bank-name-text">MAHARASHTRA GRAMIN BANK</span>
+<span class="bank-type-badge" style="color:#16a34a;border-color:#16a34a">Gramin/Rural</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('MSCI')">
+<span class="bank-code" style="background:#d97706">MSCI</span>
+<span class="bank-name-text">MAHARASHTRA STATE COOPERATIVE BANK</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('MSHQ')">
+<span class="bank-code" style="background:#059669">MSHQ</span>
+<span class="bank-name-text">MASHREQBANK PSC</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('MHCB')">
+<span class="bank-code" style="background:#059669">MHCB</span>
+<span class="bank-name-text">MIZUHO BANK LTD</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('BOTM')">
+<span class="bank-code" style="background:#059669">BOTM</span>
+<span class="bank-name-text">MUFG BANK LTD</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div></div></div><div class="letter-group"><div class="letter-header">N</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('NTBL')">
+<span class="bank-code" style="background:#7c3aed">NTBL</span>
+<span class="bank-name-text">NAINITAL BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('NKGS')">
+<span class="bank-code" style="background:#d97706">NKGS</span>
+<span class="bank-name-text">NKGSB COOPERATIVE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('NESF')">
+<span class="bank-code" style="background:#0891b2">NESF</span>
+<span class="bank-name-text">NORTH EAST SMALL FINANCE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#0891b2;border-color:#0891b2">Small Finance</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('NSPB')">
+<span class="bank-code" style="background:#e11d48">NSPB</span>
+<span class="bank-name-text">NSDL PAYMENTS BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#e11d48;border-color:#e11d48">Payments Bank</span>
+</div></div></div><div class="letter-group"><div class="letter-header">O</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('ORBC')">
+<span class="bank-code" style="background:#2563eb">ORBC</span>
+<span class="bank-name-text">ORIENTAL BANK OF COMMERCE</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('ORSC')">
+<span class="bank-code" style="background:#d97706">ORSC</span>
+<span class="bank-name-text">THE ODISHA STATE COOPERATIVE BANK LTD</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div></div></div><div class="letter-group"><div class="letter-header">P</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('PYTM')">
+<span class="bank-code" style="background:#e11d48">PYTM</span>
+<span class="bank-name-text">PAYTM PAYMENTS BANK LTD</span>
+<span class="bank-type-badge" style="color:#e11d48;border-color:#e11d48">Payments Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('IBBK')">
+<span class="bank-code" style="background:#059669">IBBK</span>
+<span class="bank-name-text">PT BANK MAYBANK INDONESIA TBK</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('PMCB')">
+<span class="bank-code" style="background:#d97706">PMCB</span>
+<span class="bank-name-text">PUNJAB AND MAHARASHTRA COOPERATIVE BANK</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('PSIB')">
+<span class="bank-code" style="background:#2563eb">PSIB</span>
+<span class="bank-name-text">PUNJAB AND SIND BANK</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('PUNB')">
+<span class="bank-code" style="background:#2563eb">PUNB</span>
+<span class="bank-name-text">PUNJAB NATIONAL BANK</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('PSCO')">
+<span class="bank-code" style="background:#d97706">PSCO</span>
+<span class="bank-name-text">THE PUNJAB STATE COOPERATIVE BANK LTD</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div></div></div><div class="letter-group"><div class="letter-header">Q</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('QNBA')">
+<span class="bank-code" style="background:#059669">QNBA</span>
+<span class="bank-name-text">QATAR NATIONAL BANK SAQ</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div></div></div><div class="letter-group"><div class="letter-header">R</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('RABO')">
+<span class="bank-code" style="background:#059669">RABO</span>
+<span class="bank-name-text">RABOBANK INTERNATIONAL</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('RMGB')">
+<span class="bank-code" style="background:#16a34a">RMGB</span>
+<span class="bank-name-text">RAJASTHAN MARUDHARA GRAMIN BANK</span>
+<span class="bank-type-badge" style="color:#16a34a;border-color:#16a34a">Gramin/Rural</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('RATN')">
+<span class="bank-code" style="background:#7c3aed">RATN</span>
+<span class="bank-name-text">RBL BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('RBIS')">
+<span class="bank-code" style="background:#2563eb">RBIS</span>
+<span class="bank-name-text">RESERVE BANK OF INDIA</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('RSCB')">
+<span class="bank-code" style="background:#d97706">RSCB</span>
+<span class="bank-name-text">THE RAJASTHAN STATE COOPERATIVE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div></div></div><div class="letter-group"><div class="letter-header">S</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('SRCB')">
+<span class="bank-code" style="background:#d97706">SRCB</span>
+<span class="bank-name-text">SARASWAT COOPERATIVE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('SBER')">
+<span class="bank-code" style="background:#059669">SBER</span>
+<span class="bank-name-text">SBER BANK</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('STCB')">
+<span class="bank-code" style="background:#059669">STCB</span>
+<span class="bank-name-text">SBM BANK INDIA LIMITED</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('SHBK')">
+<span class="bank-code" style="background:#059669">SHBK</span>
+<span class="bank-name-text">SHINHAN BANK</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('SOGE')">
+<span class="bank-code" style="background:#059669">SOGE</span>
+<span class="bank-name-text">SOCIETE GENERALE</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('SIBL')">
+<span class="bank-code" style="background:#7c3aed">SIBL</span>
+<span class="bank-name-text">SOUTH INDIAN BANK</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('SCBL')">
+<span class="bank-code" style="background:#059669">SCBL</span>
+<span class="bank-name-text">STANDARD CHARTERED BANK</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('SBIN')">
+<span class="bank-code" style="background:#2563eb">SBIN</span>
+<span class="bank-name-text">STATE BANK OF INDIA</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('SMBC')">
+<span class="bank-code" style="background:#059669">SMBC</span>
+<span class="bank-name-text">SUMITOMO MITSUI BANKING CORPORATION</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('SURY')">
+<span class="bank-code" style="background:#0891b2">SURY</span>
+<span class="bank-name-text">SURYODAY SMALL FINANCE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#0891b2;border-color:#0891b2">Small Finance</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('SYNB')">
+<span class="bank-code" style="background:#2563eb">SYNB</span>
+<span class="bank-name-text">SYNDICATE BANK</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('SVCB')">
+<span class="bank-code" style="background:#d97706">SVCB</span>
+<span class="bank-name-text">THE SHAMRAO VITHAL COOPERATIVE BANK</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div></div></div><div class="letter-group"><div class="letter-header">T</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('TMBL')">
+<span class="bank-code" style="background:#7c3aed">TMBL</span>
+<span class="bank-name-text">TAMILNAD MERCANTILE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('TSAB')">
+<span class="bank-code" style="background:#d97706">TSAB</span>
+<span class="bank-name-text">TELANGANA STATE COOP APEX BANK</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('TNSC')">
+<span class="bank-code" style="background:#d97706">TNSC</span>
+<span class="bank-name-text">THE TAMIL NADU STATE APEX COOPERATIVE BANK</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('TJSB')">
+<span class="bank-code" style="background:#d97706">TJSB</span>
+<span class="bank-name-text">TJSB SAHAKARI BANK LTD</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div></div></div><div class="letter-group"><div class="letter-header">U</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('UCBA')">
+<span class="bank-code" style="background:#2563eb">UCBA</span>
+<span class="bank-name-text">UCO BANK</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('UJVN')">
+<span class="bank-code" style="background:#0891b2">UJVN</span>
+<span class="bank-name-text">UJJIVAN SMALL FINANCE BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#0891b2;border-color:#0891b2">Small Finance</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('UBIN')">
+<span class="bank-code" style="background:#2563eb">UBIN</span>
+<span class="bank-name-text">UNION BANK OF INDIA</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('UTBI')">
+<span class="bank-code" style="background:#2563eb">UTBI</span>
+<span class="bank-name-text">UNITED BANK OF INDIA</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('UOVB')">
+<span class="bank-code" style="background:#059669">UOVB</span>
+<span class="bank-name-text">UNITED OVERSEAS BANK LIMITED</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('UTKS')">
+<span class="bank-code" style="background:#0891b2">UTKS</span>
+<span class="bank-name-text">UTKARSH SMALL FINANCE BANK</span>
+<span class="bank-type-badge" style="color:#0891b2;border-color:#0891b2">Small Finance</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('UPCB')">
+<span class="bank-code" style="background:#d97706">UPCB</span>
+<span class="bank-name-text">UTTAR PRADESH COOPERATIVE BANK LTD</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div></div></div><div class="letter-group"><div class="letter-header">V</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('VIJB')">
+<span class="bank-code" style="background:#2563eb">VIJB</span>
+<span class="bank-name-text">VIJAYA BANK</span>
+<span class="bank-type-badge" style="color:#2563eb;border-color:#2563eb">Public Sector</span>
+</div></div></div><div class="letter-group"><div class="letter-header">W</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('WBSC')">
+<span class="bank-code" style="background:#d97706">WBSC</span>
+<span class="bank-name-text">THE WEST BENGAL STATE COOPERATIVE BANK</span>
+<span class="bank-type-badge" style="color:#d97706;border-color:#d97706">Cooperative</span>
+</div><div class="bank-list-item" onclick="selectBankFromCard('HVBK')">
+<span class="bank-code" style="background:#059669">HVBK</span>
+<span class="bank-name-text">WOORI BANK</span>
+<span class="bank-type-badge" style="color:#059669;border-color:#059669">Foreign Bank</span>
+</div></div></div><div class="letter-group"><div class="letter-header">Y</div><div class="letter-banks"><div class="bank-list-item" onclick="selectBankFromCard('YESB')">
+<span class="bank-code" style="background:#7c3aed">YESB</span>
+<span class="bank-name-text">YES BANK</span>
+<span class="bank-type-badge" style="color:#7c3aed;border-color:#7c3aed">Private Sector</span>
+</div></div></div></div>
+</div>
+
+<!-- About IFSC -->
+<div class="section">
+<div class="about-section">
+<h3>What is IFSC Code?</h3>
+<p>IFSC stands for <strong>Indian Financial System Code</strong>. It is an 11-character alphanumeric code that uniquely identifies every bank branch participating in the two main Electronic Fund Settlement Systems in India - the Real Time Gross Settlement (RTGS) and the National Electronic Funds Transfer (NEFT) systems.</p>
+<p>The IFSC code is assigned by the <strong>Reserve Bank of India (RBI)</strong> and can be found on your cheque book, bank passbook, or on the RBI website. It is essential for facilitating electronic payments and settlements.</p>
+<h3 style="margin-top:20px">Structure of IFSC Code</h3>
+<ul>
+<li><strong>First 4 characters</strong> - Represent the bank (e.g., SBIN for State Bank of India, HDFC for HDFC Bank)</li>
+<li><strong>5th character</strong> - Always 0 (zero), reserved for future use by RBI</li>
+<li><strong>Last 6 characters</strong> - Represent the specific branch (alphanumeric)</li>
+</ul>
+</div>
+</div>
+
+<!-- FAQs -->
+<div class="section">
+<h2>&#10067; Frequently Asked Questions</h2>
+<div class="faq-item" onclick="this.classList.toggle('open')">
+<div class="faq-q">What is IFSC Code and where can I find it?<span class="faq-arrow">&#9660;</span></div>
+<div class="faq-a">IFSC (Indian Financial System Code) is an 11-character code that identifies bank branches in India. You can find it on your cheque book (printed at the top), bank passbook, bank's website, or through our IFSC Code Finder tool above.</div>
+</div>
+<div class="faq-item" onclick="this.classList.toggle('open')">
+<div class="faq-q">Is IFSC Code same for all branches of a bank?<span class="faq-arrow">&#9660;</span></div>
+<div class="faq-a">No. Each branch of a bank has a unique IFSC code. While the first 4 characters identify the bank, the last 6 characters are unique to each branch. So two branches of the same bank will have different IFSC codes.</div>
+</div>
+<div class="faq-item" onclick="this.classList.toggle('open')">
+<div class="faq-q">What happens if I use wrong IFSC Code?<span class="faq-arrow">&#9660;</span></div>
+<div class="faq-a">If you use an incorrect IFSC code, the transaction may fail and the amount will be returned to your account within a few working days. In some cases, it may get credited to a wrong branch. Always verify the IFSC code before initiating any transaction.</div>
+</div>
+<div class="faq-item" onclick="this.classList.toggle('open')">
+<div class="faq-q">Can IFSC Code change for a branch?<span class="faq-arrow">&#9660;</span></div>
+<div class="faq-a">Yes, IFSC codes can change when banks merge or branches are relocated. For example, after the merger of several public sector banks in 2020, many branch IFSC codes were updated. Always verify the latest IFSC code before making transactions.</div>
+</div>
+<div class="faq-item" onclick="this.classList.toggle('open')">
+<div class="faq-q">What is the difference between IFSC and MICR code?<span class="faq-arrow">&#9660;</span></div>
+<div class="faq-a">IFSC (11 characters) is used for electronic fund transfers (NEFT, RTGS, IMPS). MICR (9 digits) is a code printed on cheques using magnetic ink for cheque-based transactions. Both identify bank branches but serve different purposes.</div>
+</div>
+<div class="faq-item" onclick="this.classList.toggle('open')">
+<div class="faq-q">Is IFSC Code required for UPI transactions?<span class="faq-arrow">&#9660;</span></div>
+<div class="faq-a">Generally, UPI transactions use VPA (Virtual Payment Address) so you don't need to manually enter IFSC code. However, the IFSC code is used internally by the system to route your transaction to the correct bank branch.</div>
+</div>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-col">
+<h4>News Reporter Live</h4>
+<a href="/">Home</a>
+<a href="/?cat=politics">Politics</a>
+<a href="/?cat=business">Business</a>
+<a href="/?cat=sports">Sports</a>
+<a href="/?cat=technology">Technology</a>
+</div>
+<div class="footer-col">
+<h4>Financial Tools</h4>
+<a href="/ifsc-codes" style="color:var(--primary);font-weight:600">IFSC Code Finder</a>
+<a href="/?cat=business">Business News</a>
+<a href="/?cat=business">Markets</a>
+</div>
+<div class="footer-col">
+<h4>Popular Banks</h4>
+<a href="javascript:selectBankFromCard('SBIN')">State Bank of India</a>
+<a href="javascript:selectBankFromCard('HDFC')">HDFC Bank</a>
+<a href="javascript:selectBankFromCard('ICIC')">ICICI Bank</a>
+<a href="javascript:selectBankFromCard('PUNB')">Punjab National Bank</a>
+<a href="javascript:selectBankFromCard('BARB')">Bank of Baroda</a>
+</div>
+<div class="footer-col">
+<h4>About</h4>
+<p style="font-size:12px;color:var(--text3);line-height:1.6">IFSC codes data is sourced from RBI. We use the Razorpay IFSC API for real-time verification. Always verify your IFSC code with your bank before making large transactions.</p>
+</div>
+</div>
+<div class="footer-bottom">&copy; 2024-2026 News Reporter Live. All rights reserved. IFSC data sourced from Reserve Bank of India.</div>
+</footer>
+
+<script>
+// Bank data for JS
+var ALL_BANKS = [{name:"ABHYUDAYA COOPERATIVE BANK LIMITED",code:"ABHY",type:"cooperative"},
+{name:"AHMEDABAD MERCANTILE COOPERATIVE BANK",code:"AMCB",type:"cooperative"},
+{name:"AHMEDNAGAR MERCHANTS CO-OP BANK LTD",code:"AHMN",type:"cooperative"},
+{name:"AIRTEL PAYMENTS BANK LIMITED",code:"AIRP",type:"payments"},
+{name:"AKOLA JANATA COMMERCIAL COOPERATIVE BANK",code:"AKJB",type:"cooperative"},
+{name:"ALLAHABAD BANK",code:"ALLA",type:"public"},
+{name:"ALMORA URBAN COOPERATIVE BANK LIMITED",code:"ALMR",type:"cooperative"},
+{name:"ANDHRA BANK",code:"ANDB",type:"public"},
+{name:"ANDHRA PRADESH GRAMEENA VIKAS BANK",code:"APGV",type:"gramin"},
+{name:"ANDHRA PRAGATHI GRAMEENA BANK",code:"APGB",type:"gramin"},
+{name:"APNA SAHAKARI BANK LIMITED",code:"APNA",type:"cooperative"},
+{name:"AU SMALL FINANCE BANK LIMITED",code:"AUBL",type:"small_finance"},
+{name:"AUSTRALIA AND NEW ZEALAND BANKING GROUP LIMITED",code:"ANZB",type:"foreign"},
+{name:"AXIS BANK",code:"UTIB",type:"private"},
+{name:"BANDHAN BANK LIMITED",code:"BDBL",type:"private"},
+{name:"BANK OF AMERICA",code:"BOFA",type:"foreign"},
+{name:"BANK OF BARODA",code:"BARB",type:"public"},
+{name:"BANK OF CEYLON",code:"BCEY",type:"foreign"},
+{name:"BANK OF INDIA",code:"BKID",type:"public"},
+{name:"BANK OF MAHARASHTRA",code:"MAHB",type:"public"},
+{name:"BANK OF NOVA SCOTIA",code:"NOSC",type:"foreign"},
+{name:"BARCLAYS BANK",code:"BARC",type:"foreign"},
+{name:"BASSEIN CATHOLIC COOPERATIVE BANK LIMITED",code:"BACB",type:"cooperative"},
+{name:"BNP PARIBAS",code:"BNPA",type:"foreign"},
+{name:"CANARA BANK",code:"CNRB",type:"public"},
+{name:"CAPITAL SMALL FINANCE BANK LIMITED",code:"CLBL",type:"small_finance"},
+{name:"CENTRAL BANK OF INDIA",code:"CBIN",type:"public"},
+{name:"CHHATTISGARH RAJYA GRAMIN BANK",code:"CRGB",type:"gramin"},
+{name:"CITI BANK",code:"CITI",type:"foreign"},
+{name:"CITY UNION BANK LIMITED",code:"CIUB",type:"private"},
+{name:"CORPORATION BANK",code:"CORP",type:"public"},
+{name:"CREDIT AGRICOLE CORPORATE AND INVESTMENT BANK",code:"CRLY",type:"foreign"},
+{name:"CREDIT SUISSE AG",code:"CRES",type:"foreign"},
+{name:"CSB BANK LIMITED",code:"CSBK",type:"private"},
+{name:"CTBC BANK CO LTD",code:"CTCB",type:"foreign"},
+{name:"DBS BANK INDIA LIMITED",code:"DBSS",type:"foreign"},
+{name:"DCB BANK LIMITED",code:"DCBL",type:"private"},
+{name:"DENA BANK",code:"BKDN",type:"public"},
+{name:"DEUTSCHE BANK",code:"DEUT",type:"foreign"},
+{name:"DHANALAKSHMI BANK",code:"DLXB",type:"private"},
+{name:"DOHA BANK QSC",code:"DHBK",type:"foreign"},
+{name:"EMIRATES NBD BANK PJSC",code:"EBIL",type:"foreign"},
+{name:"EQUITAS SMALL FINANCE BANK LIMITED",code:"ESFB",type:"small_finance"},
+{name:"ESAF SMALL FINANCE BANK LIMITED",code:"ESAF",type:"small_finance"},
+{name:"EXPORT IMPORT BANK OF INDIA",code:"EIBI",type:"public"},
+{name:"FEDERAL BANK",code:"FDRL",type:"private"},
+{name:"FINCARE SMALL FINANCE BANK LTD",code:"FSFB",type:"small_finance"},
+{name:"FINO PAYMENTS BANK",code:"FINO",type:"payments"},
+{name:"FIRST ABU DHABI BANK PJSC",code:"NBAD",type:"foreign"},
+{name:"FIRSTRAND BANK LIMITED",code:"FIRN",type:"foreign"},
+{name:"HARYANA STATE COOPERATIVE BANK",code:"HSBC",type:"cooperative"},
+{name:"HDFC BANK",code:"HDFC",type:"private"},
+{name:"HIMACHAL PRADESH STATE COOPERATIVE BANK LTD",code:"HPSC",type:"cooperative"},
+{name:"ICICI BANK",code:"ICIC",type:"private"},
+{name:"IDBI BANK",code:"IBKL",type:"public"},
+{name:"IDFC FIRST BANK LTD",code:"IDFB",type:"private"},
+{name:"INDIA POST PAYMENT BANK",code:"IPOS",type:"payments"},
+{name:"INDIAN BANK",code:"IDIB",type:"public"},
+{name:"INDIAN OVERSEAS BANK",code:"IOBA",type:"public"},
+{name:"INDUSIND BANK",code:"INDB",type:"private"},
+{name:"INDUSTRIAL AND COMMERCIAL BANK OF CHINA LIMITED",code:"ICBK",type:"foreign"},
+{name:"INDUSTRIAL BANK OF KOREA",code:"IBKO",type:"foreign"},
+{name:"JAMMU AND KASHMIR BANK LIMITED",code:"JAKA",type:"private"},
+{name:"JANA SMALL FINANCE BANK LTD",code:"JSFB",type:"small_finance"},
+{name:"JIO PAYMENTS BANK LIMITED",code:"JIOP",type:"payments"},
+{name:"JP MORGAN BANK",code:"CHAS",type:"foreign"},
+{name:"KARNATAKA BANK LIMITED",code:"KARB",type:"private"},
+{name:"KARNATAKA GRAMIN BANK",code:"PKGB",type:"gramin"},
+{name:"KARNATAKA VIKAS GRAMEENA BANK",code:"KVGB",type:"gramin"},
+{name:"KARUR VYSYA BANK",code:"KVBL",type:"private"},
+{name:"KEB HANA BANK",code:"KOEX",type:"foreign"},
+{name:"KERALA GRAMIN BANK",code:"KLGB",type:"gramin"},
+{name:"KOOKMIN BANK",code:"KCUB",type:"foreign"},
+{name:"KOTAK MAHINDRA BANK",code:"KKBK",type:"private"},
+{name:"KRUNG THAI BANK PCL",code:"KRTH",type:"foreign"},
+{name:"LAXMI VILAS BANK",code:"LAVB",type:"private"},
+{name:"MAHARASHTRA GRAMIN BANK",code:"MAHG",type:"gramin"},
+{name:"MAHARASHTRA STATE COOPERATIVE BANK",code:"MSCI",type:"cooperative"},
+{name:"MASHREQBANK PSC",code:"MSHQ",type:"foreign"},
+{name:"MIZUHO BANK LTD",code:"MHCB",type:"foreign"},
+{name:"MUFG BANK LTD",code:"BOTM",type:"foreign"},
+{name:"NAINITAL BANK LIMITED",code:"NTBL",type:"private"},
+{name:"NKGSB COOPERATIVE BANK LIMITED",code:"NKGS",type:"cooperative"},
+{name:"NORTH EAST SMALL FINANCE BANK LIMITED",code:"NESF",type:"small_finance"},
+{name:"NSDL PAYMENTS BANK LIMITED",code:"NSPB",type:"payments"},
+{name:"ORIENTAL BANK OF COMMERCE",code:"ORBC",type:"public"},
+{name:"PAYTM PAYMENTS BANK LTD",code:"PYTM",type:"payments"},
+{name:"PT BANK MAYBANK INDONESIA TBK",code:"IBBK",type:"foreign"},
+{name:"PUNJAB AND MAHARASHTRA COOPERATIVE BANK",code:"PMCB",type:"cooperative"},
+{name:"PUNJAB AND SIND BANK",code:"PSIB",type:"public"},
+{name:"PUNJAB NATIONAL BANK",code:"PUNB",type:"public"},
+{name:"QATAR NATIONAL BANK SAQ",code:"QNBA",type:"foreign"},
+{name:"RABOBANK INTERNATIONAL",code:"RABO",type:"foreign"},
+{name:"RAJASTHAN MARUDHARA GRAMIN BANK",code:"RMGB",type:"gramin"},
+{name:"RBL BANK LIMITED",code:"RATN",type:"private"},
+{name:"RESERVE BANK OF INDIA",code:"RBIS",type:"public"},
+{name:"SARASWAT COOPERATIVE BANK LIMITED",code:"SRCB",type:"cooperative"},
+{name:"SBER BANK",code:"SBER",type:"foreign"},
+{name:"SBM BANK INDIA LIMITED",code:"STCB",type:"foreign"},
+{name:"SHINHAN BANK",code:"SHBK",type:"foreign"},
+{name:"SOCIETE GENERALE",code:"SOGE",type:"foreign"},
+{name:"SOUTH INDIAN BANK",code:"SIBL",type:"private"},
+{name:"STANDARD CHARTERED BANK",code:"SCBL",type:"foreign"},
+{name:"STATE BANK OF INDIA",code:"SBIN",type:"public"},
+{name:"SUMITOMO MITSUI BANKING CORPORATION",code:"SMBC",type:"foreign"},
+{name:"SURYODAY SMALL FINANCE BANK LIMITED",code:"SURY",type:"small_finance"},
+{name:"SYNDICATE BANK",code:"SYNB",type:"public"},
+{name:"TAMILNAD MERCANTILE BANK LIMITED",code:"TMBL",type:"private"},
+{name:"TELANGANA STATE COOP APEX BANK",code:"TSAB",type:"cooperative"},
+{name:"THE ANDHRA PRADESH STATE COOPERATIVE BANK LIMITED",code:"APSC",type:"cooperative"},
+{name:"THE COSMOS CO OPERATIVE BANK LIMITED",code:"COSB",type:"cooperative"},
+{name:"THE DELHI STATE COOPERATIVE BANK LIMITED",code:"DLSC",type:"cooperative"},
+{name:"THE GUJARAT STATE COOPERATIVE BANK LIMITED",code:"GSCB",type:"cooperative"},
+{name:"THE KARNATAKA STATE COOPERATIVE APEX BANK LIMITED",code:"KSCB",type:"cooperative"},
+{name:"THE KERALA STATE COOPERATIVE BANK",code:"KLSC",type:"cooperative"},
+{name:"THE ODISHA STATE COOPERATIVE BANK LTD",code:"ORSC",type:"cooperative"},
+{name:"THE PUNJAB STATE COOPERATIVE BANK LTD",code:"PSCO",type:"cooperative"},
+{name:"THE RAJASTHAN STATE COOPERATIVE BANK LIMITED",code:"RSCB",type:"cooperative"},
+{name:"THE SHAMRAO VITHAL COOPERATIVE BANK",code:"SVCB",type:"cooperative"},
+{name:"THE TAMIL NADU STATE APEX COOPERATIVE BANK",code:"TNSC",type:"cooperative"},
+{name:"THE WEST BENGAL STATE COOPERATIVE BANK",code:"WBSC",type:"cooperative"},
+{name:"TJSB SAHAKARI BANK LTD",code:"TJSB",type:"cooperative"},
+{name:"UCO BANK",code:"UCBA",type:"public"},
+{name:"UJJIVAN SMALL FINANCE BANK LIMITED",code:"UJVN",type:"small_finance"},
+{name:"UNION BANK OF INDIA",code:"UBIN",type:"public"},
+{name:"UNITED BANK OF INDIA",code:"UTBI",type:"public"},
+{name:"UNITED OVERSEAS BANK LIMITED",code:"UOVB",type:"foreign"},
+{name:"UTKARSH SMALL FINANCE BANK",code:"UTKS",type:"small_finance"},
+{name:"UTTAR PRADESH COOPERATIVE BANK LTD",code:"UPCB",type:"cooperative"},
+{name:"VIJAYA BANK",code:"VIJB",type:"public"},
+{name:"WOORI BANK",code:"HVBK",type:"foreign"},
+{name:"YES BANK",code:"YESB",type:"private"}];
+
+// Razorpay IFSC API base
+var IFSC_API = '/api/ifsc/';
+
+// Dark mode
+function toggleDarkMode() {
+    document.body.classList.toggle('dark');
+    var isDark = document.body.classList.contains('dark');
+    localStorage.setItem('darkMode', isDark);
+    document.getElementById('darkIcon').textContent = isDark ? '\u2600' : '\u263E';
+    document.getElementById('darkText').textContent = isDark ? 'Light' : 'Dark';
+}
+(function() {
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark');
+        document.getElementById('darkIcon').textContent = '\u2600';
+        document.getElementById('darkText').textContent = 'Light';
+    }
+})();
+
+// Tab switching
+function switchFinderTab(tab) {
+    document.querySelectorAll('.finder-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.finder-panel').forEach(function(p) { p.classList.remove('active'); });
+    if (tab === 'browse') {
+        document.querySelectorAll('.finder-tab')[0].classList.add('active');
+        document.getElementById('panelBrowse').classList.add('active');
+    } else {
+        document.querySelectorAll('.finder-tab')[1].classList.add('active');
+        document.getElementById('panelDirect').classList.add('active');
+    }
+    hideResult();
+}
+
+// Show/hide helpers
+function showLoading() { document.getElementById('loadingSpinner').classList.add('show'); }
+function hideLoading() { document.getElementById('loadingSpinner').classList.remove('show'); }
+function showError(msg) { var el = document.getElementById('errorMsg'); el.textContent = msg; el.classList.add('show'); }
+function hideError() { document.getElementById('errorMsg').classList.remove('show'); }
+function showResult() { document.getElementById('resultPanel').classList.add('show'); }
+function hideResult() { document.getElementById('resultPanel').classList.remove('show'); hideError(); }
+
+// Copy IFSC
+function copyIFSC() {
+    var code = document.getElementById('resultIFSC').childNodes[0].textContent.trim();
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(code);
+        var btn = document.querySelector('.copy-btn');
+        btn.textContent = '\u2713 Copied!';
+        setTimeout(function() { btn.innerHTML = '&#128203; Copy'; }, 2000);
+    }
+}
+
+// Select bank from card click
+function selectBankFromCard(code) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    switchFinderTab('browse');
+    document.getElementById('bankSelect').value = code;
+    onBankChange();
+}
+
+// Cascading dropdowns - use Razorpay IFSC dataset
+// We'll use a lightweight approach: fetch from our backend which proxies Razorpay
+
+function onBankChange() {
+    var bank = document.getElementById('bankSelect').value;
+    document.getElementById('stateSelect').value = '';
+    document.getElementById('districtSelect').innerHTML = '<option value="">-- Select District --</option>';
+    document.getElementById('branchSelect').innerHTML = '<option value="">-- Select Branch --</option>';
+    hideResult();
+}
+
+function onStateChange() {
+    document.getElementById('districtSelect').innerHTML = '<option value="">-- Select District --</option>';
+    document.getElementById('branchSelect').innerHTML = '<option value="">-- Select Branch --</option>';
+    hideResult();
+}
+
+function onDistrictChange() {
+    document.getElementById('branchSelect').innerHTML = '<option value="">-- Select Branch --</option>';
+    hideResult();
+}
+
+// Main lookup by IFSC code
+function lookupIFSC() {
+    var code = document.getElementById('ifscInput').value.toUpperCase().trim();
+    if (!code || code.length !== 11) {
+        showError('Please enter a valid 11-character IFSC code');
+        return;
+    }
+    hideError();
+    hideResult();
+    showLoading();
+
+    fetch(IFSC_API + code)
+        .then(function(r) { return r.json(); })
+        .then(function(resp) {
+            hideLoading();
+            if (resp.success && resp.data) {
+                displayResult(resp.data);
+            } else {
+                showError('IFSC code not found. Please verify and try again.');
+            }
+        })
+        .catch(function() {
+            hideLoading();
+            // Fallback: try Razorpay directly
+            fetch('https://ifsc.razorpay.com/' + code)
+                .then(function(r) {
+                    if (r.ok) return r.json();
+                    throw new Error('not found');
+                })
+                .then(function(data) { displayResult(data); })
+                .catch(function() { showError('IFSC code not found. Please check and try again.'); });
+        });
+}
+
+// Find IFSC from dropdowns
+function findIFSC() {
+    var bank = document.getElementById('bankSelect').value;
+    var state = document.getElementById('stateSelect').value;
+    if (!bank) {
+        showError('Please select a bank first');
+        return;
+    }
+    if (!state) {
+        showError('Please select a state');
+        return;
+    }
+
+    hideError();
+    hideResult();
+    showLoading();
+
+    // Use the bank code + 0 + known branch patterns
+    // We'll look up a known branch code pattern for the selected bank
+    var sampleCode = bank + '0000001';
+    fetch(IFSC_API + sampleCode)
+        .then(function(r) { return r.json(); })
+        .then(function(resp) {
+            hideLoading();
+            if (resp.success && resp.data) {
+                displayResult(resp.data);
+                showError('Showing main branch. For specific branch lookup, use the "Enter IFSC" tab with the exact code, or search your bank\'s website for branch-specific IFSC codes.');
+                document.getElementById('errorMsg').style.background = '#fffbeb';
+                document.getElementById('errorMsg').style.borderColor = '#fde68a';
+                document.getElementById('errorMsg').style.color = '#92400e';
+            } else {
+                // Try with different branch patterns
+                tryBranchPatterns(bank, state, 0);
+            }
+        })
+        .catch(function() {
+            hideLoading();
+            showError('Could not find IFSC for this selection. Try entering the IFSC code directly.');
+        });
+}
+
+function tryBranchPatterns(bankCode, state, attempt) {
+    var patterns = ['000001', '000002', '000100', '001000', '000000', '100000'];
+    if (attempt >= patterns.length) {
+        hideLoading();
+        showError('Could not find a matching branch. Please enter the IFSC code directly in the "Enter IFSC" tab.');
+        return;
+    }
+    var code = bankCode + '0' + patterns[attempt];
+    fetch('https://ifsc.razorpay.com/' + code)
+        .then(function(r) {
+            if (r.ok) return r.json();
+            throw new Error('nf');
+        })
+        .then(function(data) {
+            hideLoading();
+            displayResult(data);
+        })
+        .catch(function() {
+            tryBranchPatterns(bankCode, state, attempt + 1);
+        });
+}
+
+function displayResult(data) {
+    document.getElementById('resultBankName').textContent = data.BANK || data.bank || '--';
+    document.getElementById('resultBranchName').textContent = (data.BRANCH || data.branch || '') + (data.CITY ? ', ' + (data.CITY || data.city) : '');
+    var ifscEl = document.getElementById('resultIFSC');
+    ifscEl.innerHTML = (data.IFSC || data.ifsc || '--') + '<button class="copy-btn" onclick="copyIFSC()">&#128203; Copy</button>';
+    document.getElementById('resultBank').textContent = data.BANK || data.bank || '--';
+    document.getElementById('resultBranch').textContent = data.BRANCH || data.branch || '--';
+    document.getElementById('resultAddress').textContent = data.ADDRESS || data.address || '--';
+    document.getElementById('resultCity').textContent = data.CITY || data.city || '--';
+    document.getElementById('resultDistrict').textContent = data.DISTRICT || data.district || '--';
+    document.getElementById('resultState').textContent = data.STATE || data.state || '--';
+    document.getElementById('resultMICR').textContent = data.MICR || data.micr || '--';
+    document.getElementById('resultContact').textContent = data.CONTACT || data.contact || '--';
+    showResult();
+}
+
+// Filter banks by type
+var currentFilter = 'all';
+function filterByType(type, btn) {
+    currentFilter = type;
+    document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+    filterBanks();
+}
+
+function filterBanks() {
+    var query = (document.getElementById('bankSearchInput').value || '').toLowerCase();
+    var items = document.querySelectorAll('.bank-list-item');
+    var groups = document.querySelectorAll('.letter-group');
+
+    items.forEach(function(item) {
+        var name = item.querySelector('.bank-name-text').textContent.toLowerCase();
+        var code = item.querySelector('.bank-code').textContent.toLowerCase();
+        var matchSearch = !query || name.indexOf(query) !== -1 || code.indexOf(query) !== -1;
+
+        // Get type from ALL_BANKS
+        var bankCode = item.querySelector('.bank-code').textContent;
+        var bankData = ALL_BANKS.find(function(b) { return b.code === bankCode; });
+        var matchType = currentFilter === 'all' || (bankData && bankData.type === currentFilter);
+
+        item.style.display = (matchSearch && matchType) ? 'flex' : 'none';
+    });
+
+    // Hide empty letter groups
+    groups.forEach(function(g) {
+        var visible = g.querySelectorAll('.bank-list-item[style*="flex"],.bank-list-item:not([style])');
+        var hasVisible = false;
+        visible.forEach(function(v) { if (v.style.display !== 'none') hasVisible = true; });
+        g.style.display = hasVisible ? 'block' : 'none';
+    });
+}
+
+// Schema.org structured data
+var schema = document.createElement('script');
+schema.type = 'application/ld+json';
+schema.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "IFSC Code Finder - All Indian Bank IFSC Codes",
+    "description": "Find IFSC codes for all banks in India. Search by bank name, state, district, or branch.",
+    "url": "https://newsreporter.live/ifsc-codes",
+    "publisher": {
+        "@type": "Organization",
+        "name": "News Reporter Live",
+        "url": "https://newsreporter.live"
+    },
+    "mainEntity": {
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "What is IFSC Code?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "IFSC stands for Indian Financial System Code. It is an 11-character alphanumeric code that uniquely identifies every bank branch in India."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Where can I find my IFSC Code?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "You can find your IFSC code on your cheque book, bank passbook, bank statement, or through the IFSC Code Finder tool on this page."
+                }
+            }
+        ]
+    }
+});
+document.head.appendChild(schema);
+</script>
+</body>
+</html>

@@ -14,6 +14,7 @@ const cron = require('node-cron');
 const crypto = require('crypto');
 
 const http = require('http');
+const https = require('https');
 
 // Category-specific author profiles for SEO
 const CATEGORY_AUTHORS = {
@@ -3621,6 +3622,51 @@ app.get('/api/cricket/img/:imageId', (req, res) => {
     });
     proxyReq.setTimeout(10000, () => { proxyReq.destroy(); res.status(500).send('Image timeout'); });
     proxyReq.end();
+});
+
+// ============================================================
+// IFSC Code Lookup API
+// ============================================================
+
+// IFSC code lookup via Razorpay API (free, public)
+app.get('/api/ifsc/:code', async (req, res) => {
+    try {
+        const code = (req.params.code || '').toUpperCase().trim();
+        if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(code)) {
+            return res.status(400).json({ success: false, message: 'Invalid IFSC code format. Must be 11 characters: 4 letters + 0 + 6 alphanumeric.' });
+        }
+        const cached = getCricketCache('ifsc_' + code);
+        if (cached) return res.json({ success: true, data: JSON.parse(cached) });
+
+        const url = `https://ifsc.razorpay.com/${code}`;
+        const result = await new Promise((resolve, reject) => {
+            https.get(url, (resp) => {
+                let data = '';
+                resp.on('data', chunk => data += chunk);
+                resp.on('end', () => {
+                    if (resp.statusCode === 200) {
+                        try { resolve(JSON.parse(data)); } catch(e) { reject(new Error('Parse error')); }
+                    } else {
+                        reject(new Error('Not found'));
+                    }
+                });
+            }).on('error', reject);
+        });
+        setCricketCache('ifsc_' + code, JSON.stringify(result));
+        res.json({ success: true, data: result });
+    } catch (e) {
+        res.status(404).json({ success: false, message: 'IFSC code not found or invalid' });
+    }
+});
+
+// Serve IFSC codes page
+app.get('/ifsc-codes', (req, res) => {
+    const ifscPage = path.join(DASHBOARD_DIR, 'newssite', 'ifsc-codes.html');
+    if (fs.existsSync(ifscPage)) {
+        res.sendFile(ifscPage);
+    } else {
+        res.status(404).send('IFSC Codes page not found');
+    }
 });
 
 // Serve cricket live page
