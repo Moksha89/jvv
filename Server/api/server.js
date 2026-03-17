@@ -3553,7 +3553,7 @@ RESPOND ONLY with a JSON array. Each movie object must have these fields:
 - review (string, 3-5 sentence professional review)
 - verdict (string, one line like "Must Watch", "Worth Streaming", "Skip It", "Blockbuster Hit")
 - poster_url (string, leave empty)
-- trailer_url (string, YouTube trailer URL if known, else empty)
+- trailer_url (string, YouTube EMBED URL in format "https://www.youtube.com/embed/VIDEO_ID" if known, else empty. Do NOT use watch URLs.)
 - ott_platform (string, OTT platform name if available, else empty)
 - ott_release_date (string, OTT release date if known)
 - box_office (string, worldwide collection if known)
@@ -4399,14 +4399,19 @@ app.get('/api/financial-aids/admin', requireAdmin, (req, res) => {
 // Movies & Reviews API Endpoints
 // ============================================================
 
-// Public: Get movies for frontend (filterable by industry, section)
+// Public: Get movies for frontend (filterable by industry, section, search)
 app.get('/api/movies', (req, res) => {
     try {
-        const { industry, section, limit = 50, offset = 0 } = req.query;
+        const { industry, section, search, limit = 50, offset = 0 } = req.query;
         let query = 'SELECT * FROM movies WHERE status = ?';
         const params = ['published'];
         if (industry && industry !== 'all') { query += ' AND industry = ?'; params.push(industry); }
         if (section && section !== 'all') { query += ' AND section = ?'; params.push(section); }
+        if (search && search.trim()) {
+            const s = '%' + search.trim() + '%';
+            query += ' AND (title LIKE ? OR director LIKE ? OR "cast" LIKE ? OR plot LIKE ? OR original_title LIKE ?)';
+            params.push(s, s, s, s, s);
+        }
         query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
         params.push(parseInt(limit) || 50, parseInt(offset) || 0);
         const movies = db.prepare(query).all(...params);
@@ -4416,10 +4421,15 @@ app.get('/api/movies', (req, res) => {
             cast: JSON.parse(m.cast || '[]'),
             tags: JSON.parse(m.tags || '[]')
         }));
-        const totalQ = 'SELECT COUNT(*) as c FROM movies WHERE status = ?' + (industry && industry !== 'all' ? ' AND industry = ?' : '') + (section && section !== 'all' ? ' AND section = ?' : '');
+        let totalQ = 'SELECT COUNT(*) as c FROM movies WHERE status = ?';
         const totalParams = ['published'];
-        if (industry && industry !== 'all') totalParams.push(industry);
-        if (section && section !== 'all') totalParams.push(section);
+        if (industry && industry !== 'all') { totalQ += ' AND industry = ?'; totalParams.push(industry); }
+        if (section && section !== 'all') { totalQ += ' AND section = ?'; totalParams.push(section); }
+        if (search && search.trim()) {
+            const s = '%' + search.trim() + '%';
+            totalQ += ' AND (title LIKE ? OR director LIKE ? OR "cast" LIKE ? OR plot LIKE ? OR original_title LIKE ?)';
+            totalParams.push(s, s, s, s, s);
+        }
         const total = db.prepare(totalQ).get(...totalParams).c;
         res.json({ success: true, movies: parsed, total });
     } catch (err) {

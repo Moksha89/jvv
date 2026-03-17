@@ -71,6 +71,17 @@ header { background:var(--bg2); border-bottom:1px solid var(--border); padding:1
 .stat b { display:block; font-size:26px; color:var(--gold); font-weight:800; }
 .stat small { color:rgba(255,255,255,0.6); font-size:11px; text-transform:uppercase; letter-spacing:1px; }
 
+/* Search */
+.search-section { max-width:1320px; margin:0 auto; padding:24px 20px 0; }
+.search-bar { display:flex; gap:10px; max-width:600px; margin:0 auto; }
+.search-bar input { flex:1; padding:12px 18px; border-radius:50px; border:2px solid var(--border); background:var(--bg2); color:var(--text1); font-size:15px; font-family:inherit; outline:none; transition:var(--transition); }
+.search-bar input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(156,39,176,0.15); }
+.search-bar input::placeholder { color:var(--text3); }
+.search-bar button { padding:12px 24px; border-radius:50px; background:var(--primary); color:#fff; font-size:14px; font-weight:600; border:none; cursor:pointer; transition:var(--transition); white-space:nowrap; }
+.search-bar button:hover { background:var(--primary-dark); }
+.search-clear { padding:12px 18px; border-radius:50px; background:var(--bg3); color:var(--text2); font-size:14px; font-weight:600; border:1px solid var(--border); cursor:pointer; display:none; }
+.search-clear.visible { display:inline-block; }
+
 /* Industry Tabs */
 .tabs-section { max-width:1320px; margin:0 auto; padding:24px 20px 0; }
 .industry-tabs { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:16px; }
@@ -154,6 +165,13 @@ body.dark .modal-tags .tag { background:rgba(156,39,176,0.2); }
 .btn-trailer:hover { opacity:0.9; }
 .btn-ott { background:var(--primary); color:#fff; }
 
+/* YouTube Embed */
+.trailer-embed { margin-bottom:20px; border-radius:var(--radius-sm); overflow:hidden; background:#000; }
+.trailer-embed iframe { width:100%; aspect-ratio:16/9; border:none; display:block; }
+
+/* Movie poster with TMDb */
+.card-poster img, .modal-poster img { background:#1a0a2e; }
+
 /* Footer */
 footer { background:var(--bg2); border-top:1px solid var(--border); padding:32px 20px; text-align:center; }
 footer p { font-size:13px; color:var(--text3); line-height:1.8; }
@@ -212,6 +230,14 @@ footer a { color:var(--primary); }
     </div>
 </section>
 
+<div class="search-section">
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search movies by title, director, cast..." onkeydown="if(event.key==='Enter')searchMovies()">
+        <button onclick="searchMovies()">&#128269; Search</button>
+        <button class="search-clear" id="searchClear" onclick="clearSearch()">&#10005; Clear</button>
+    </div>
+</div>
+
 <div class="tabs-section">
     <div class="industry-tabs" id="industryTabs">
         <div class="industry-tab active" data-industry="all" onclick="setIndustry('all',this)">&#127758; All</div>
@@ -268,6 +294,7 @@ footer a { color:var(--primary); }
 <script>
 let currentIndustry = 'all';
 let currentSection = 'all';
+let currentSearch = '';
 let currentOffset = 0;
 const PAGE_SIZE = 24;
 let allMovies = [];
@@ -294,6 +321,22 @@ function setSection(sec, el) {
     currentOffset = 0;
     document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
+    loadMovies();
+}
+
+function searchMovies() {
+    const val = document.getElementById('searchInput').value.trim();
+    currentSearch = val;
+    currentOffset = 0;
+    document.getElementById('searchClear').classList.toggle('visible', val.length > 0);
+    loadMovies();
+}
+
+function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    currentSearch = '';
+    currentOffset = 0;
+    document.getElementById('searchClear').classList.remove('visible');
     loadMovies();
 }
 
@@ -383,8 +426,24 @@ function openMovie(id) {
     
     const castHTML = castArr.length > 0 ? '<div class="modal-section"><h4>&#127917; Cast</h4><div class="modal-cast">' + castArr.map(c => '<span>' + c + '</span>').join('') + '</div></div>' : '';
     
-    let links = '';
-    if (movie.trailer_url) links += '<a href="' + movie.trailer_url + '" target="_blank" rel="noopener" class="btn-trailer">&#9654; Watch Trailer</a>';
+    // Build YouTube embed if trailer URL exists
+    let trailerEmbed = '';
+    if (movie.trailer_url) {
+        let embedUrl = movie.trailer_url;
+        // Convert various YouTube URL formats to embed format
+        if (embedUrl.includes('youtube.com/watch')) {
+            const vid = new URL(embedUrl).searchParams.get('v');
+            if (vid) embedUrl = 'https://www.youtube.com/embed/' + vid;
+        } else if (embedUrl.includes('youtu.be/')) {
+            const vid = embedUrl.split('youtu.be/')[1].split(/[?&#]/)[0];
+            if (vid) embedUrl = 'https://www.youtube.com/embed/' + vid;
+        }
+        if (embedUrl.includes('/embed/')) {
+            trailerEmbed = '<div class="modal-section"><h4>&#127909; Trailer</h4><div class="trailer-embed"><iframe src="' + embedUrl + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div></div>';
+        } else {
+            trailerEmbed = '<div class="modal-links"><a href="' + movie.trailer_url + '" target="_blank" rel="noopener" class="btn-trailer">&#9654; Watch Trailer on YouTube</a></div>';
+        }
+    }
     
     const html = '<button class="modal-close" onclick="closeModal()">&times;</button>' +
         '<div class="modal-poster">' + posterBg +
@@ -397,10 +456,10 @@ function openMovie(id) {
             '<div class="modal-tags">' + genres.map(g => '<span class="tag">' + g + '</span>').join('') + '</div>' +
             (movie.verdict ? '<div class="modal-verdict-big ' + verdictClass + '">' + movie.verdict + '</div>' : '') +
             '<div class="modal-info-grid">' + infoItems + '</div>' +
+            trailerEmbed +
             (movie.plot ? '<div class="modal-section"><h4>&#128214; Synopsis</h4><p>' + movie.plot + '</p></div>' : '') +
             (movie.review ? '<div class="modal-section"><h4>&#128221; Review</h4><p>' + movie.review + '</p></div>' : '') +
             castHTML +
-            (links ? '<div class="modal-links">' + links + '</div>' : '') +
             '<div style="margin-top:16px;font-size:11px;color:var(--text3);">&#129302; AI-discovered movie &middot; Verify details on IMDb or official sources</div>' +
         '</div>';
     
@@ -429,6 +488,7 @@ async function loadMovies(append) {
         const params = new URLSearchParams({ limit: PAGE_SIZE, offset: currentOffset });
         if (currentIndustry !== 'all') params.set('industry', currentIndustry);
         if (currentSection !== 'all') params.set('section', currentSection);
+        if (currentSearch) params.set('search', currentSearch);
         
         const res = await fetch('/api/movies?' + params.toString());
         const data = await res.json();
