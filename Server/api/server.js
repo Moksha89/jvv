@@ -34,7 +34,8 @@ const CATEGORY_AUTHORS = {
     'Cricket': { name: 'Vikram Singh Rathore', title: 'Cricket Correspondent', url: 'https://newsreporter.live/team#vikram-rathore' },
     'IPL': { name: 'Siddharth Malhotra', title: 'IPL & T20 Specialist', url: 'https://newsreporter.live/team#siddharth-malhotra' },
     'Gadget Reviews': { name: 'Ananya Desai', title: 'Tech & Gadgets Reviewer', url: 'https://newsreporter.live/team#ananya-desai' },
-    'CBSE': { name: 'Sunita Patel', title: 'CBSE & Education Specialist', url: 'https://newsreporter.live/team#sunita-patel' }
+    'CBSE': { name: 'Sunita Patel', title: 'CBSE & Education Specialist', url: 'https://newsreporter.live/team#sunita-patel' },
+    'Movies': { name: 'Kavitha Nair', title: 'Movies & Entertainment Critic', url: 'https://newsreporter.live/team#kavitha-nair' }
 };
 
 function getAuthorForCategory(category) {
@@ -485,6 +486,50 @@ db.exec(`
     CREATE INDEX IF NOT EXISTS idx_financial_aids_status ON financial_aids(status);
 `);
 
+// ============================================================
+// Movies & Reviews Database Table
+// ============================================================
+db.exec(`
+    CREATE TABLE IF NOT EXISTS movies (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        original_title TEXT DEFAULT '',
+        industry TEXT NOT NULL DEFAULT 'hollywood',
+        genre TEXT DEFAULT '[]',
+        release_date TEXT DEFAULT '',
+        release_year INTEGER DEFAULT 0,
+        rating REAL DEFAULT 0,
+        rating_source TEXT DEFAULT 'AI Estimate',
+        director TEXT DEFAULT '',
+        cast TEXT DEFAULT '[]',
+        runtime TEXT DEFAULT '',
+        language TEXT DEFAULT 'English',
+        country TEXT DEFAULT '',
+        plot TEXT DEFAULT '',
+        review TEXT DEFAULT '',
+        verdict TEXT DEFAULT '',
+        poster_url TEXT DEFAULT '',
+        trailer_url TEXT DEFAULT '',
+        ott_platform TEXT DEFAULT '',
+        ott_release_date TEXT DEFAULT '',
+        box_office TEXT DEFAULT '',
+        budget TEXT DEFAULT '',
+        certification TEXT DEFAULT '',
+        tags TEXT DEFAULT '[]',
+        section TEXT DEFAULT 'latest',
+        ai_generated INTEGER DEFAULT 1,
+        status TEXT DEFAULT 'published',
+        created_at TEXT DEFAULT (datetime('now')),
+        updated_at TEXT DEFAULT (datetime('now'))
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_movies_industry ON movies(industry);
+    CREATE INDEX IF NOT EXISTS idx_movies_section ON movies(section);
+    CREATE INDEX IF NOT EXISTS idx_movies_status ON movies(status);
+    CREATE INDEX IF NOT EXISTS idx_movies_rating ON movies(rating);
+    CREATE INDEX IF NOT EXISTS idx_movies_release_date ON movies(release_date);
+`);
+
 // Add scheduled_at column to articles if not exists
 try {
     db.exec("ALTER TABLE cms_articles ADD COLUMN scheduled_at TEXT");
@@ -563,7 +608,8 @@ if (catCount.c === 0) {
         ['Health', 'health', '#C62828', 7],
         ['Science', 'science', '#4527A0', 8],
         ['Opinion', 'opinion', '#546E7A', 9],
-        ['CBSE', 'cbse', '#E65100', 10]
+        ['CBSE', 'cbse', '#E65100', 10],
+        ['Movies', 'movies', '#9C27B0', 11]
     ];
     for (const cat of defaultCats) insertCat.run(...cat);
 }
@@ -1814,7 +1860,8 @@ app.post('/api/cms/ai-generate', requireAdmin, async (req, res) => {
             'Cricket': ['India vs Pakistan match analysis', 'Test cricket series highlights', 'women cricket team performance', 'domestic cricket tournament update', 'cricket player injury and fitness news'],
             'IPL': ['IPL team auction strategy', 'IPL match day highlights and scores', 'IPL player performance review', 'IPL franchise business analysis', 'IPL emerging players to watch'],
             'Gadget Reviews': ['latest smartphone review and comparison', 'laptop buying guide for students', 'smartwatch and wearable tech review', 'budget gadget recommendations India', 'upcoming gadget launches in India'],
-            'CBSE': ['CBSE board exam 2026 latest news and updates', 'CBSE syllabus 2025-26 changes and important topics', 'CBSE Class 10 preparation tips and study strategy', 'CBSE Class 12 board exam result analysis', 'NCERT textbook updates and new edition changes', 'CBSE sample paper analysis and marking scheme tips', 'NEP 2020 impact on CBSE curriculum and assessment', 'CBSE scholarship and fellowship opportunities for students']
+            'CBSE': ['CBSE board exam 2026 latest news and updates', 'CBSE syllabus 2025-26 changes and important topics', 'CBSE Class 10 preparation tips and study strategy', 'CBSE Class 12 board exam result analysis', 'NCERT textbook updates and new edition changes', 'CBSE sample paper analysis and marking scheme tips', 'NEP 2020 impact on CBSE curriculum and assessment', 'CBSE scholarship and fellowship opportunities for students'],
+            'Movies': ['new Bollywood movie release review and rating', 'Hollywood blockbuster movie review and box office collection', 'new OTT releases this week on Netflix Amazon Prime Disney Hotstar', 'upcoming movie release dates and trailers worldwide', 'Tollywood Telugu movie review and collection update', 'Korean drama and K-movie new releases and ratings', 'South Indian movie dubbed release and OTT premiere date', 'top rated movies of the week worldwide with audience rating']
         };
 
         // Filter categories based on mode
@@ -2954,6 +3001,16 @@ function searchUnsplashImage(query) {
             'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800&q=80',
             'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&q=80',
             'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80'
+        ],
+        'movies': [
+            'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&q=80',
+            'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&q=80',
+            'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=800&q=80',
+            'https://images.unsplash.com/photo-1585951237318-9ea5e175b891?w=800&q=80',
+            'https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=800&q=80',
+            'https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=800&q=80',
+            'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=800&q=80',
+            'https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=800&q=80'
         ]
     };
     // Pick a random image from the category pool
@@ -3192,7 +3249,8 @@ function startAIAutoPublishTimer() {
                 'Cricket': ['India vs Pakistan match analysis', 'Test cricket series highlights', 'women cricket team performance', 'domestic cricket tournament update', 'cricket player injury and fitness news'],
                 'IPL': ['IPL team auction strategy', 'IPL match day highlights and scores', 'IPL player performance review', 'IPL franchise business analysis', 'IPL emerging players to watch'],
                 'Gadget Reviews': ['latest smartphone review and comparison', 'laptop buying guide for students', 'smartwatch and wearable tech review', 'budget gadget recommendations India', 'upcoming gadget launches in India'],
-                'CBSE': ['CBSE board exam 2026 latest news and updates', 'CBSE syllabus 2025-26 changes and important topics', 'CBSE Class 10 preparation tips and study strategy', 'CBSE Class 12 board exam result analysis', 'NCERT textbook updates and new edition changes', 'CBSE sample paper analysis and marking scheme tips', 'NEP 2020 impact on CBSE curriculum and assessment', 'CBSE scholarship and fellowship opportunities for students']
+                'CBSE': ['CBSE board exam 2026 latest news and updates', 'CBSE syllabus 2025-26 changes and important topics', 'CBSE Class 10 preparation tips and study strategy', 'CBSE Class 12 board exam result analysis', 'NCERT textbook updates and new edition changes', 'CBSE sample paper analysis and marking scheme tips', 'NEP 2020 impact on CBSE curriculum and assessment', 'CBSE scholarship and fellowship opportunities for students'],
+                'Movies': ['new Bollywood movie release review and rating', 'Hollywood blockbuster movie review and box office collection', 'new OTT releases this week on Netflix Amazon Prime Disney Hotstar', 'upcoming movie release dates and trailers worldwide', 'Tollywood Telugu movie review and collection update', 'Korean drama and K-movie new releases and ratings', 'South Indian movie dubbed release and OTT premiere date', 'top rated movies of the week worldwide with audience rating']
             };
             
             const seoPrompt = `You are a senior investigative reporter at News Reporter Live, India's trusted digital news source. Write an ORIGINAL, exclusive news article about the given topic. 
@@ -3427,6 +3485,157 @@ Find NEW or recently updated programs only. Return a JSON array.`;
     financialAidsTimer = setInterval(discoverFinancialAids, 6 * 60 * 60 * 1000);
 }
 startFinancialAidsTimer();
+
+// ============================================================
+// Movies & Reviews AI Auto-Discover Timer
+// ============================================================
+let moviesTimer = null;
+function startMoviesTimer() {
+    if (moviesTimer) clearInterval(moviesTimer);
+    const settings = {};
+    try {
+        db.prepare('SELECT * FROM cms_settings').all().forEach(r => settings[r.key] = r.value);
+    } catch(e) {}
+    
+    const autoPublish = settings.auto_publish === 'true' || settings.auto_publish === '1';
+    if (!autoPublish) { console.log('Movies auto-discover: disabled (auto_publish is off)'); return; }
+    
+    const apiKey = settings.ai_api_key || settings.openrouter_api_key;
+    if (!apiKey) { console.log('Movies auto-discover: No API key configured'); return; }
+    
+    console.log('Movies auto-discover enabled: checking for new movies every 4 hours');
+    
+    async function discoverMovies() {
+        try {
+            const currentSettings = {};
+            db.prepare('SELECT * FROM cms_settings').all().forEach(r => currentSettings[r.key] = r.value);
+            const isEnabled = currentSettings.auto_publish === 'true' || currentSettings.auto_publish === '1';
+            if (!isEnabled) return;
+            const key = currentSettings.ai_api_key || currentSettings.openrouter_api_key;
+            if (!key) return;
+            const provider = currentSettings.ai_provider || 'openrouter';
+            const model = currentSettings.ai_model || 'google/gemini-2.0-flash-001';
+            
+            const existing = db.prepare('SELECT title FROM movies').all().map(r => r.title.toLowerCase());
+            
+            const industries = [
+                { code: 'bollywood', label: 'Bollywood (Hindi)', lang: 'Hindi' },
+                { code: 'hollywood', label: 'Hollywood', lang: 'English' },
+                { code: 'tollywood', label: 'Tollywood (Telugu)', lang: 'Telugu' },
+                { code: 'kollywood', label: 'Kollywood (Tamil)', lang: 'Tamil' },
+                { code: 'korean', label: 'Korean Cinema (K-Movies)', lang: 'Korean' },
+                { code: 'sandalwood', label: 'Sandalwood (Kannada)', lang: 'Kannada' },
+                { code: 'mollywood', label: 'Mollywood (Malayalam)', lang: 'Malayalam' },
+                { code: 'japanese', label: 'Japanese Cinema (Anime/Live-action)', lang: 'Japanese' }
+            ];
+            
+            const sections = ['latest', 'upcoming', 'ott', 'top_rated'];
+            const section = sections[Math.floor(Math.random() * sections.length)];
+            const industry = industries[Math.floor(Math.random() * industries.length)];
+            
+            const sectionLabels = { latest: 'recently released', upcoming: 'upcoming/announced', ott: 'recently released on OTT platforms (Netflix, Amazon Prime, Disney+ Hotstar, Apple TV+, Zee5, Jio Cinema, etc.)', top_rated: 'top rated and critically acclaimed' };
+            
+            const systemPrompt = `You are a worldwide movie critic and entertainment journalist. Find REAL movies that are ${sectionLabels[section]} in ${industry.label}. Include movies from 2025-2026.
+
+RESPOND ONLY with a JSON array. Each movie object must have these fields:
+- title (string, official English title)
+- original_title (string, in original language if different)
+- genre (array of strings like ["Action","Drama"])
+- release_date (string, format "YYYY-MM-DD" or "TBA")
+- rating (number 0-10, use known ratings from IMDb/Rotten Tomatoes or estimate)
+- rating_source (string, e.g. "IMDb", "Rotten Tomatoes", "AI Estimate")
+- director (string)
+- cast (array of top 3-5 actor names)
+- runtime (string like "2h 15m")
+- language (string)
+- country (string)
+- plot (string, 2-3 sentence synopsis without major spoilers)
+- review (string, 3-5 sentence professional review)
+- verdict (string, one line like "Must Watch", "Worth Streaming", "Skip It", "Blockbuster Hit")
+- poster_url (string, leave empty)
+- trailer_url (string, YouTube trailer URL if known, else empty)
+- ott_platform (string, OTT platform name if available, else empty)
+- ott_release_date (string, OTT release date if known)
+- box_office (string, worldwide collection if known)
+- budget (string, production budget if known)
+- certification (string, like "UA", "A", "U", "R", "PG-13")
+- tags (array of strings for SEO like ["action","thriller","2026"])
+
+CRITICAL: Only REAL movies. No made-up titles. No markdown wrapping. Return JSON array only.`;
+            
+            const result = await callAI(provider, key, model, systemPrompt,
+                `Find 3-5 ${sectionLabels[section]} ${industry.label} movies`,
+                `Industry: ${industry.label}\nSection: ${section}\nLanguage: ${industry.lang}\nDate: ${new Date().toISOString().split('T')[0]}\n\nFind real ${sectionLabels[section]} ${industry.label} movies. Do NOT include these already-known titles: ${existing.slice(-30).join(', ')}`
+            );
+            
+            let movies = [];
+            if (Array.isArray(result)) {
+                movies = result;
+            } else if (result && result.content) {
+                let clean = result.content.replace(/<[^>]+>/g, '').trim().replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim();
+                const s = clean.indexOf('['), e = clean.lastIndexOf(']') + 1;
+                if (s !== -1 && e > s) movies = JSON.parse(clean.substring(s, e));
+            } else if (result && result.title) {
+                movies = [result];
+            }
+            
+            let added = 0;
+            for (const movie of movies) {
+                if (!movie.title || !movie.plot) continue;
+                
+                const titleLC = movie.title.toLowerCase();
+                if (existing.some(e => e === titleLC || (e.length > 10 && titleLC.includes(e.substring(0, 10))) || (titleLC.length > 10 && e.includes(titleLC.substring(0, 10))))) {
+                    console.log(`Movies: skipping duplicate "${movie.title}"`);
+                    continue;
+                }
+                
+                const rating = parseFloat(movie.rating) || 0;
+                if (rating < 0 || rating > 10) continue;
+                
+                const releaseYear = movie.release_date ? parseInt(movie.release_date.substring(0, 4)) || 0 : 0;
+                
+                db.prepare(`INSERT INTO movies (title, original_title, industry, genre, release_date, release_year, rating, rating_source, director, cast, runtime, language, country, plot, review, verdict, poster_url, trailer_url, ott_platform, ott_release_date, box_office, budget, certification, tags, section, ai_generated)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`).run(
+                    movie.title,
+                    movie.original_title || '',
+                    industry.code,
+                    JSON.stringify(movie.genre || []),
+                    movie.release_date || '',
+                    releaseYear,
+                    rating,
+                    movie.rating_source || 'AI Estimate',
+                    movie.director || '',
+                    JSON.stringify(movie.cast || []),
+                    movie.runtime || '',
+                    movie.language || industry.lang,
+                    movie.country || '',
+                    movie.plot || '',
+                    movie.review || '',
+                    movie.verdict || '',
+                    movie.poster_url || '',
+                    movie.trailer_url || '',
+                    movie.ott_platform || '',
+                    movie.ott_release_date || '',
+                    movie.box_office || '',
+                    movie.budget || '',
+                    movie.certification || '',
+                    JSON.stringify(movie.tags || []),
+                    section
+                );
+                existing.push(titleLC);
+                added++;
+                console.log(`Movies: added "${movie.title}" (${industry.code}, ${section})`);
+            }
+            if (added > 0) console.log(`Movies auto-discover: added ${added} new ${industry.label} movies (${section})`);
+        } catch (err) {
+            console.error('Movies auto-discover error:', err.message);
+        }
+    }
+    
+    setTimeout(discoverMovies, 90000);
+    moviesTimer = setInterval(discoverMovies, 4 * 60 * 60 * 1000);
+}
+startMoviesTimer();
 
 // ============================================================
 // Cricket Live Score API (CricBuzz via RapidAPI)
@@ -4181,6 +4390,108 @@ app.get('/api/financial-aids/admin', requireAdmin, (req, res) => {
         const aids = db.prepare('SELECT * FROM financial_aids ORDER BY created_at DESC').all();
         const parsed = aids.map(a => ({ ...a, eligibility: JSON.parse(a.eligibility || '[]'), info: JSON.parse(a.info || '{}') }));
         res.json({ success: true, aids: parsed, total: parsed.length });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ============================================================
+// Movies & Reviews API Endpoints
+// ============================================================
+
+// Public: Get movies for frontend (filterable by industry, section)
+app.get('/api/movies', (req, res) => {
+    try {
+        const { industry, section, limit = 50, offset = 0 } = req.query;
+        let query = 'SELECT * FROM movies WHERE status = ?';
+        const params = ['published'];
+        if (industry && industry !== 'all') { query += ' AND industry = ?'; params.push(industry); }
+        if (section && section !== 'all') { query += ' AND section = ?'; params.push(section); }
+        query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
+        params.push(parseInt(limit) || 50, parseInt(offset) || 0);
+        const movies = db.prepare(query).all(...params);
+        const parsed = movies.map(m => ({
+            ...m,
+            genre: JSON.parse(m.genre || '[]'),
+            cast: JSON.parse(m.cast || '[]'),
+            tags: JSON.parse(m.tags || '[]')
+        }));
+        const totalQ = 'SELECT COUNT(*) as c FROM movies WHERE status = ?' + (industry && industry !== 'all' ? ' AND industry = ?' : '') + (section && section !== 'all' ? ' AND section = ?' : '');
+        const totalParams = ['published'];
+        if (industry && industry !== 'all') totalParams.push(industry);
+        if (section && section !== 'all') totalParams.push(section);
+        const total = db.prepare(totalQ).get(...totalParams).c;
+        res.json({ success: true, movies: parsed, total });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Public: Get movie stats
+app.get('/api/movies/stats', (req, res) => {
+    try {
+        const total = db.prepare('SELECT COUNT(*) as c FROM movies WHERE status = ?').get('published').c;
+        const industries = db.prepare('SELECT industry, COUNT(*) as c FROM movies WHERE status = ? GROUP BY industry ORDER BY c DESC').all('published');
+        const sections = db.prepare('SELECT section, COUNT(*) as c FROM movies WHERE status = ? GROUP BY section ORDER BY c DESC').all('published');
+        const avgRating = db.prepare('SELECT AVG(rating) as avg FROM movies WHERE status = ? AND rating > 0').get('published');
+        res.json({ success: true, total, industries, sections, avgRating: Math.round((avgRating.avg || 0) * 10) / 10 });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Admin: Manually trigger movie discovery
+app.post('/api/movies/discover', requireAdmin, async (req, res) => {
+    try {
+        const settings = {};
+        db.prepare('SELECT * FROM cms_settings').all().forEach(r => settings[r.key] = r.value);
+        const key = settings.ai_api_key || settings.openrouter_api_key;
+        if (!key) return res.status(400).json({ success: false, message: 'No AI API key configured' });
+        const provider = settings.ai_provider || 'openrouter';
+        const model = settings.ai_model || 'google/gemini-2.0-flash-001';
+        const { industry = 'bollywood', section = 'latest' } = req.body;
+        
+        const industryLabels = { bollywood: 'Bollywood (Hindi)', hollywood: 'Hollywood', tollywood: 'Tollywood (Telugu)', kollywood: 'Kollywood (Tamil)', korean: 'Korean Cinema', sandalwood: 'Sandalwood (Kannada)', mollywood: 'Mollywood (Malayalam)', japanese: 'Japanese Cinema' };
+        const industryLangs = { bollywood: 'Hindi', hollywood: 'English', tollywood: 'Telugu', kollywood: 'Tamil', korean: 'Korean', sandalwood: 'Kannada', mollywood: 'Malayalam', japanese: 'Japanese' };
+        const sectionLabels = { latest: 'recently released', upcoming: 'upcoming/announced', ott: 'recently released on OTT platforms', top_rated: 'top rated and critically acclaimed' };
+        const label = industryLabels[industry] || industry;
+        const lang = industryLangs[industry] || 'English';
+        
+        const existing = db.prepare('SELECT title FROM movies WHERE industry = ?').all(industry).map(r => r.title);
+        
+        const systemPrompt = `You are a worldwide movie critic. Find REAL ${sectionLabels[section] || 'recent'} ${label} movies from 2025-2026. RESPOND ONLY with a JSON array. Each movie: title, original_title, genre (array), release_date, rating (0-10), rating_source, director, cast (array), runtime, language, country, plot, review, verdict, poster_url (empty), trailer_url, ott_platform, ott_release_date, box_office, budget, certification, tags (array). Only REAL movies. No markdown.`;
+        
+        const result = await callAI(provider, key, model, systemPrompt, `Find 3-5 ${sectionLabels[section] || 'recent'} ${label} movies`, `Industry: ${label}\nSection: ${section}\nLanguage: ${lang}\nDate: ${new Date().toISOString().split('T')[0]}\n\nDo NOT include: ${existing.join(', ')}`);
+        
+        let movies = [];
+        if (Array.isArray(result)) movies = result;
+        else if (result && result.content) {
+            let clean = result.content.replace(/<[^>]+>/g, '').trim().replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim();
+            const s = clean.indexOf('['), e = clean.lastIndexOf(']') + 1;
+            if (s !== -1 && e > s) movies = JSON.parse(clean.substring(s, e));
+        } else if (result && result.title) movies = [result];
+        
+        let added = 0;
+        for (const movie of movies) {
+            if (!movie.title || !movie.plot) continue;
+            const dup = db.prepare('SELECT id FROM movies WHERE title = ? AND industry = ?').get(movie.title, industry);
+            if (dup) continue;
+            db.prepare(`INSERT INTO movies (title, original_title, industry, genre, release_date, release_year, rating, rating_source, director, cast, runtime, language, country, plot, review, verdict, poster_url, trailer_url, ott_platform, ott_release_date, box_office, budget, certification, tags, section, ai_generated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`).run(
+                movie.title, movie.original_title || '', industry, JSON.stringify(movie.genre || []), movie.release_date || '', movie.release_date ? parseInt(movie.release_date.substring(0, 4)) || 0 : 0, parseFloat(movie.rating) || 0, movie.rating_source || 'AI Estimate', movie.director || '', JSON.stringify(movie.cast || []), movie.runtime || '', movie.language || lang, movie.country || '', movie.plot || '', movie.review || '', movie.verdict || '', movie.poster_url || '', movie.trailer_url || '', movie.ott_platform || '', movie.ott_release_date || '', movie.box_office || '', movie.budget || '', movie.certification || '', JSON.stringify(movie.tags || []), section
+            );
+            added++;
+        }
+        res.json({ success: true, message: `Discovered ${added} new ${label} movies (${section})`, added });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Admin: Delete a movie
+app.delete('/api/movies/:id', requireAdmin, (req, res) => {
+    try {
+        db.prepare('DELETE FROM movies WHERE id = ?').run(req.params.id);
+        res.json({ success: true });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
