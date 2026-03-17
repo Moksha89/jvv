@@ -4705,6 +4705,64 @@ app.get('/cricket-live', (req, res) => {
     }
 });
 
+// Dynamic sitemap.xml with all articles
+app.get('/sitemap.xml', (req, res) => {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        const articles = db.prepare('SELECT slug, updated_at, published_at, category FROM cms_articles WHERE status = ? ORDER BY published_at DESC').all('published');
+        
+        let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n';
+        xml += '        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">\n\n';
+        
+        // Static pages
+        const staticPages = [
+            { loc: '/', changefreq: 'hourly', priority: '1.0' },
+            { loc: '/investment-calculator', changefreq: 'monthly', priority: '0.9' },
+            { loc: '/loan-calculator', changefreq: 'monthly', priority: '0.9' },
+            { loc: '/ifsc-codes', changefreq: 'monthly', priority: '0.9' },
+            { loc: '/pincode', changefreq: 'monthly', priority: '0.9' },
+            { loc: '/directory', changefreq: 'monthly', priority: '0.9' },
+            { loc: '/cricket-live', changefreq: 'always', priority: '0.9' },
+            { loc: '/movies', changefreq: 'daily', priority: '0.8' },
+            { loc: '/financial-aids', changefreq: 'daily', priority: '0.8' },
+            { loc: '/cbse', changefreq: 'weekly', priority: '0.8' },
+        ];
+        
+        for (const page of staticPages) {
+            xml += '  <url>\n';
+            xml += '    <loc>https://newsreporter.live' + page.loc + '</loc>\n';
+            xml += '    <changefreq>' + page.changefreq + '</changefreq>\n';
+            xml += '    <priority>' + page.priority + '</priority>\n';
+            xml += '    <lastmod>' + today + '</lastmod>\n';
+            xml += '  </url>\n';
+        }
+        
+        // All published articles
+        for (const article of articles) {
+            const lastmod = (article.updated_at || article.published_at || today).split('T')[0].split(' ')[0];
+            xml += '  <url>\n';
+            xml += '    <loc>https://newsreporter.live/article/' + article.slug + '</loc>\n';
+            xml += '    <changefreq>weekly</changefreq>\n';
+            xml += '    <priority>0.7</priority>\n';
+            xml += '    <lastmod>' + lastmod + '</lastmod>\n';
+            xml += '  </url>\n';
+        }
+        
+        xml += '</urlset>\n';
+        
+        res.setHeader('Content-Type', 'application/xml');
+        res.setHeader('Cache-Control', 'public, max-age=3600');
+        res.send(xml);
+    } catch (err) {
+        console.error('Sitemap error:', err.message);
+        // Fall back to static sitemap file
+        const staticSitemap = path.join(DASHBOARD_DIR, 'newssite', 'sitemap.xml');
+        if (fs.existsSync(staticSitemap)) return res.sendFile(staticSitemap);
+        res.status(500).send('Sitemap generation error');
+    }
+});
+
 // Article pages with dynamic SEO titles
 app.get('/article/:slug', (req, res) => {
     try {
