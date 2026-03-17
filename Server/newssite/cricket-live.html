@@ -562,7 +562,7 @@ async function loadMatches() {
         const mList = sAd.matches || [];
         mList.forEach(m => {
           const mi = m.matchInfo || m;
-          const ms = m.matchScore ||;
+          const ms = m.matchScore || {}
           matches.push({ info: mi, score: ms, seriesId: mi.seriesId || sAd.seriesId, seriesName: mi.seriesName || sAd.seriesName || '' });
         });
       });
@@ -572,22 +572,22 @@ async function loadMatches() {
   el.innerHTML = matches.map(m => {
     const i = m.info;
     const s = m.score;
-    const t1 = i.team1 ||;
-    const t2 = i.team2 ||;
+    const t1 = i.team1 || {}
+    const t2 = i.team2 || {}
     const t1n = t1.teamName || t1.teamSName || 'TBA';
     const t2n = t2.teamName || t2.teamSName || 'TBA';
     const t1img = t1.imageId || t1.imageid || '';
     const t2img = t2.imageId || t2.imageid || '';
     let scoreHtml = '';
-    const t1s = s.team1Score || s.team1score ||;
-    const t2s = s.team2Score || s.team2score ||;
+    const t1s = s.team1Score || s.team1score || {}
+    const t2s = s.team2Score || s.team2score || {}
     if (t1s.inngs1 || t1s.inngs2) {
-      const i1 = t1s.inngs1 ||;
+      const i1 = t1s.inngs1 || {}
       const i2 = t1s.inngs2;
       scoreHtml += '<div class="match-score-line"><span>' + escHtml(t1n) + '</span> <span>' + (i1.runs != null ? i1.runs + '/' + (i1.wickets != null ? i1.wickets : '-') + (i1.overs ? ' (' + i1.overs + ' ov)' : '') : '') + (i2 ? ' & ' + (i2.runs != null ? i2.runs + '/' + (i2.wickets != null ? i2.wickets : '-') + (i2.overs ? ' (' + i2.overs + ' ov)' : '') : '') : '') + '</span></div>';
     }
     if (t2s.inngs1 || t2s.inngs2) {
-      const i1 = t2s.inngs1 ||;
+      const i1 = t2s.inngs1 || {}
       const i2 = t2s.inngs2;
       scoreHtml += '<div class="match-score-line"><span>' + escHtml(t2n) + '</span> <span>' + (i1.runs != null ? i1.runs + '/' + (i1.wickets != null ? i1.wickets : '-') + (i1.overs ? ' (' + i1.overs + ' ov)' : '') : '') + (i2 ? ' & ' + (i2.runs != null ? i2.runs + '/' + (i2.wickets != null ? i2.wickets : '-') + (i2.overs ? ' (' + i2.overs + ' ov)' : '') : '') : '') + '</span></div>';
     }
@@ -636,17 +636,17 @@ async function openMatchPage(matchId) {
   ]);
 
   // Match Header - data may be at top level or under matchheader
-  const hdr = (infoData && infoData.matchheader) || (infoData && infoData.matchHeader) ||;
-  const root = infoData ||;
-  const t1 = hdr.team1 || root.team1 ||;
-  const t2 = hdr.team2 || root.team2 ||;
+  const hdr = (infoData && infoData.matchheader) || (infoData && infoData.matchHeader) || {}
+  const root = infoData || {}
+  const t1 = hdr.team1 || root.team1 || {}
+  const t2 = hdr.team2 || root.team2 || {}
   const t1n = t1.name || t1.teamName || t1.teamname || (typeof t1 === 'string' ? t1 : 'Team 1');
   const t2n = t2.name || t2.teamName || t2.teamname || (typeof t2 === 'string' ? t2 : 'Team 2');
   const status = hdr.status || root.status || hdr.state || root.state || '';
   const matchDesc = hdr.matchDescription || hdr.matchdesc || root.matchdesc || root.matchDescription || '';
   const seriesName = hdr.seriesName || hdr.seriesname || root.seriesname || root.seriesName || '';
   const seriesId = hdr.seriesId || hdr.seriesid || root.seriesid || root.seriesId || '';
-  const venue = (infoData && (infoData.venueinfo || infoData.venueInfo)) ||;
+  const venue = (infoData && (infoData.venueinfo || infoData.venueInfo)) || {}
 
   document.getElementById('matchPageHeader').innerHTML =
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
@@ -695,7 +695,7 @@ function renderScorecard(data) {
   if (!innings.length) { el.innerHTML = '<div style="padding:20px;color:var(--text3);text-align:center">Scorecard not available yet</div>'; return; }
   let html = '';
   innings.forEach((inn, idx) => {
-    const batTeam = inn.batTeamDetails || inn.batteamname || inn.batTeamName ||;
+    const batTeam = inn.batTeamDetails || inn.batteamname || inn.batTeamName || {}
     const teamName = (typeof batTeam === 'string') ? batTeam : (batTeam.batTeamName || batTeam.batteamname || batTeam.teamName || 'Innings ' + (idx+1));
     const score = inn.scoreDetails || inn;
     const runs = score.runs || score.score || 0;
@@ -857,9 +857,9 @@ async function generateAICommentary() {
 function renderMatchInfo(data) {
   const el = document.getElementById('mp-info');
   if (!data) { el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3)">Info not available</div>'; return; }
-  const hdr = data.matchheader || data.matchHeader ||;
-  const venue = data.venueinfo || data.venueInfo ||;
-  const toss = hdr.tossResults || hdr.tossresults ||;
+  const hdr = data.matchheader || data.matchHeader || {}
+  const venue = data.venueinfo || data.venueInfo || {}
+  const toss = hdr.tossResults || hdr.tossresults || {}
   let html = '<div style="padding:12px">';
 
   // Venue
@@ -882,10 +882,10 @@ function renderMatchInfo(data) {
   }
 
   // Umpires
-  const ump1 = hdr.umpire1 || data.umpire1 ||;
-  const ump2 = hdr.umpire2 || data.umpire2 ||;
-  const ump3 = hdr.umpire3 || data.umpire3 ||;
-  const ref = hdr.referee || data.referee ||;
+  const ump1 = hdr.umpire1 || data.umpire1 || {}
+  const ump2 = hdr.umpire2 || data.umpire2 || {}
+  const ump3 = hdr.umpire3 || data.umpire3 || {}
+  const ref = hdr.referee || data.referee || {}
   if (ump1.name || ump2.name || ref.name) {
     html += '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px">';
     html += '<div style="font-weight:700;font-size:14px;margin-bottom:8px;color:var(--accent)">Officials</div>';
@@ -1119,7 +1119,7 @@ async function openSeriesPage(seriesId) {
   let matchCount = 0;
   const matchDetails = data.matchDetails || [];
   matchDetails.forEach(md => {
-    const mdm = md.matchDetailsMap ||;
+    const mdm = md.matchDetailsMap || {}
     const key = mdm.key || '';
     const matches = mdm.match || [];
     matches.forEach(m => {
@@ -1169,27 +1169,27 @@ function renderSeriesFixtures(matchDetails, seriesId) {
   if (!matchDetails || !matchDetails.length) { el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3)">No fixtures available</div>'; return; }
   let html = '';
   matchDetails.forEach(md => {
-    const mdm = md.matchDetailsMap ||;
+    const mdm = md.matchDetailsMap || {}
     const key = mdm.key || '';
     const matches = mdm.match || [];
     if (!matches.length) return;
     if (key) html += '<div style="font-weight:700;font-size:13px;color:var(--accent);margin:12px 0 6px;text-transform:uppercase;letter-spacing:0.5px">' + escHtml(key) + '</div>';
     matches.forEach(m => {
       const mi = m.matchInfo || m;
-      const ms = m.matchScore ||;
-      const t1 = mi.team1 ||;
-      const t2 = mi.team2 ||;
+      const ms = m.matchScore || {}
+      const t1 = mi.team1 || {}
+      const t2 = mi.team2 || {}
       const t1n = t1.teamName || t1.teamSName || 'TBA';
       const t2n = t2.teamName || t2.teamSName || 'TBA';
       const matchId = mi.matchId || mi.matchid || '';
       const matchDesc = mi.matchDesc || mi.matchdesc || '';
-      const venue = mi.venueInfo || mi.venueinfo ||;
+      const venue = mi.venueInfo || mi.venueinfo || {}
       const status = mi.status || mi.state || '';
       const isLive = (mi.state === 'In Progress' || mi.state === 'Innings Break');
 
       let scoreStr = '';
-      const t1s = ms.team1Score || ms.team1score ||;
-      const t2s = ms.team2Score || ms.team2score ||;
+      const t1s = ms.team1Score || ms.team1score || {}
+      const t2s = ms.team2Score || ms.team2score || {}
       if (t1s.inngs1) {
         const i1 = t1s.inngs1;
         scoreStr += t1n + ': ' + (i1.runs || 0) + '/' + (i1.wickets != null ? i1.wickets : '-') + (i1.overs ? ' (' + i1.overs + ' ov)' : '');
@@ -1322,14 +1322,14 @@ function renderSeriesNews(data) {
 
 function renderSeriesVenues(matchDetails) {
   const el = document.getElementById('sp-venues');
-  const venues =;
+  const venues = {};
   if (matchDetails) {
     matchDetails.forEach(md => {
-      const mdm = md.matchDetailsMap ||;
+      const mdm = md.matchDetailsMap || {}
       const matches = mdm.match || [];
       matches.forEach(m => {
         const mi = m.matchInfo || m;
-        const v = mi.venueInfo || mi.venueinfo ||;
+        const v = mi.venueInfo || mi.venueinfo || {}
         const key = v.ground || v.id || '';
         if (key && !venues[key]) {
           venues[key] = { ground: v.ground || '', city: v.city || '', country: v.country || '', capacity: v.capacity || '', timezone: v.timezone || '' };
