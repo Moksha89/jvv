@@ -4705,6 +4705,38 @@ app.get('/cricket-live', (req, res) => {
     }
 });
 
+// Article pages with dynamic SEO titles
+app.get('/article/:slug', (req, res) => {
+    try {
+        const indexPath = path.join(DASHBOARD_DIR, 'newssite', 'index.html');
+        if (!fs.existsSync(indexPath)) return res.status(404).send('Page not found');
+        let html = fs.readFileSync(indexPath, 'utf8');
+        const article = db.prepare('SELECT title, excerpt, image_url, category, slug FROM cms_articles WHERE slug = ? AND status = ?').get(req.params.slug, 'published');
+        if (article) {
+            const safeTitle = (article.title || '').replace(/[<>"&]/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;','&':'&amp;'}[c]));
+            const safeDesc = (article.excerpt || article.title || '').replace(/[<>"&]/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;','&':'&amp;'}[c])).substring(0, 160);
+            const pageTitle = safeTitle + ' | News Reporter Live';
+            html = html.replace(/<title>[^<]*<\/title>/, '<title>' + pageTitle + '</title>');
+            html = html.replace(/<meta property="og:title" content="[^"]*"/, '<meta property="og:title" content="' + pageTitle + '"');
+            html = html.replace(/<meta name="description" content="[^"]*"/, '<meta name="description" content="' + safeDesc + '"');
+            html = html.replace(/<meta property="og:description" content="[^"]*"/, '<meta property="og:description" content="' + safeDesc + '"');
+            if (article.image_url) {
+                html = html.replace(/<meta property="og:image" content="[^"]*"/, '<meta property="og:image" content="' + article.image_url + '"');
+            }
+            const canonicalUrl = 'https://newsreporter.live/article/' + article.slug;
+            html = html.replace(/<link rel="canonical" href="[^"]*"/, '<link rel="canonical" href="' + canonicalUrl + '"');
+            html = html.replace(/<meta property="og:url" content="[^"]*"/, '<meta property="og:url" content="' + canonicalUrl + '"');
+        }
+        res.setHeader('Content-Type', 'text/html');
+        res.send(html);
+    } catch (err) {
+        console.error('Article page error:', err.message);
+        const indexPath = path.join(DASHBOARD_DIR, 'newssite', 'index.html');
+        if (fs.existsSync(indexPath)) return res.sendFile(indexPath);
+        res.status(500).send('Server error');
+    }
+});
+
 // Graceful shutdown
 process.on('SIGTERM', () => {
     console.log('Shutting down relay API server...');

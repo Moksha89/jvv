@@ -625,6 +625,7 @@ async function openArticle(id) {
     document.getElementById('articleContent').innerHTML = renderDetail(article, initialContent) + renderComments(article.id);
     document.getElementById('articleModal').classList.add('active');
     document.body.style.overflow = 'hidden';
+    document.title = article.title + ' | News Reporter Live';
     trackView(article.id);
     if (!article.content && article.slug) {
         try {
@@ -641,7 +642,7 @@ async function openArticle(id) {
     setTimeout(attachTriggers, 200);
 }
 
-function closeArticle() { document.getElementById('articleModal').classList.remove('active'); document.body.style.overflow = ''; }
+function closeArticle() { document.getElementById('articleModal').classList.remove('active'); document.body.style.overflow = ''; document.title = 'News Reporter Live - Latest India News & Breaking Stories'; }
 document.getElementById('articleModal').addEventListener('click', function(e) { if (e.target === this) closeArticle(); });
 
 function attachTriggers() {
