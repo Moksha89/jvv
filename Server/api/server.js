@@ -629,7 +629,7 @@ if (settCount.c === 0) {
     insertSetting.run('ai_provider', 'openrouter');
     insertSetting.run('ai_model', 'google/gemini-2.0-flash-001');
     insertSetting.run('ai_auto_publish', '0');
-    insertSetting.run('ai_rewrite_prompt', 'You are a senior Indian news reporter writing for News Reporter Live. Rewrite this article in a natural, engaging journalistic tone as if you are a real reporter on the ground. Use vivid language, quotes from sources, and proper news structure (inverted pyramid). Ensure HIGH SEO optimization: use relevant keywords naturally in the first paragraph, include semantic variations, and write compelling subheadings. The article must be 500-800 words, split into multiple paragraphs with <p> tags. Include the word "reportersays" naturally once somewhere in the middle of the article. Make it feel authentic and human-written, NOT robotic or AI-generated.');
+    insertSetting.run('ai_rewrite_prompt', 'You are a senior Indian news reporter writing for News Reporter Live. Rewrite this article in a natural, engaging journalistic tone as if you are a real reporter on the ground. Use vivid language, quotes from sources, and proper news structure (inverted pyramid). Ensure HIGH SEO optimization: use relevant keywords naturally in the first paragraph, include semantic variations, and write compelling subheadings. The article must be 500-800 words, split into multiple paragraphs with <p> tags. Include the word "reportersays" naturally once somewhere in the middle of the article. Make it feel authentic and human-written. STRICT RULE: NEVER use the words "AI-powered", "AI-generated", "AI-discovered", "AI-driven", "AI-curated", or any variation mentioning AI in the output. Write as a human journalist. Do not reference artificial intelligence or machine learning in any way.');
     insertSetting.run('rss_fetch_interval', '30');
     insertSetting.run('google_verification', '');
     insertSetting.run('robots_txt', '');
@@ -1884,6 +1884,13 @@ CRITICAL RULES:
 8. Make it sound like a REAL reporter wrote this - use location details, time references, and specific details
 9. DO NOT use phrases like "In conclusion", "Furthermore", "It is worth noting" - these sound robotic
 10. Add a compelling, click-worthy headline that includes the main keyword
+
+STRICT CONTENT GUIDELINES (NEVER VIOLATE):
+- NEVER use the words "AI-powered", "AI-generated", "AI-discovered", "AI-driven", "AI-curated", or ANY phrase mentioning AI/artificial intelligence in the article text, title, excerpt, or meta description
+- Write as a REAL human journalist. The reader must never suspect this was written by AI
+- Do NOT include disclaimers about AI or automated content
+- Do NOT reference machine learning, neural networks, or automated systems in the context of content creation
+- All content must read as authentic, professionally written journalism
 
 IMPORTANT: Respond ONLY with raw JSON. Do NOT wrap in markdown code blocks. No \`\`\`json or \`\`\`. Just the raw JSON object starting with { and ending with }.`;
 
@@ -3267,6 +3274,13 @@ CRITICAL RULES:
 9. DO NOT use phrases like "In conclusion", "Furthermore", "It is worth noting" - these sound robotic
 10. Add a compelling, click-worthy headline that includes the main keyword
 
+STRICT CONTENT GUIDELINES (NEVER VIOLATE):
+- NEVER use the words "AI-powered", "AI-generated", "AI-discovered", "AI-driven", "AI-curated", or ANY phrase mentioning AI/artificial intelligence in the article text, title, excerpt, or meta description
+- Write as a REAL human journalist. The reader must never suspect this was written by AI
+- Do NOT include disclaimers about AI or automated content
+- Do NOT reference machine learning, neural networks, or automated systems in the context of content creation
+- All content must read as authentic, professionally written journalism
+
 IMPORTANT: Respond ONLY with raw JSON. Do NOT wrap in markdown code blocks. No \`\`\`json or \`\`\`. Just the raw JSON object starting with { and ending with }.`;
 
             let totalGenerated = 0;
@@ -3383,6 +3397,12 @@ RESPOND ONLY with a JSON array of programs. Each program object must have:
 - "claim_url": Official government website URL to apply (must be a real .gov or official URL)
 - "claim_text": Short text for the apply button (e.g. "Apply at website.gov")
 - "source": Official source URL
+
+STRICT CONTENT GUIDELINES (NEVER VIOLATE):
+- NEVER use the words "AI-powered", "AI-generated", "AI-discovered", "AI-driven", "AI-curated" or ANY mention of AI/artificial intelligence in any text field
+- All descriptions must read as professionally written by a human researcher
+- Do NOT include any disclaimers about AI or automated content
+- Write naturally as a government program researcher would
 
 CRITICAL: Only include REAL programs with REAL official URLs. Do NOT make up programs or URLs. Respond with ONLY the JSON array, no markdown.`;
             
@@ -3543,7 +3563,7 @@ RESPOND ONLY with a JSON array. Each movie object must have these fields:
 - genre (array of strings like ["Action","Drama"])
 - release_date (string, format "YYYY-MM-DD" or "TBA")
 - rating (number 0-10, use known ratings from IMDb/Rotten Tomatoes or estimate)
-- rating_source (string, e.g. "IMDb", "Rotten Tomatoes", "AI Estimate")
+- rating_source (string, e.g. "IMDb", "Rotten Tomatoes", "Metacritic", "Audience Score" - NEVER use "AI Estimate" or mention AI)
 - director (string)
 - cast (array of top 3-5 actor names)
 - runtime (string like "2h 15m")
@@ -3560,6 +3580,13 @@ RESPOND ONLY with a JSON array. Each movie object must have these fields:
 - budget (string, production budget if known)
 - certification (string, like "UA", "A", "U", "R", "PG-13")
 - tags (array of strings for SEO like ["action","thriller","2026"])
+
+STRICT CONTENT GUIDELINES (NEVER VIOLATE):
+- NEVER use the words "AI-powered", "AI-generated", "AI-discovered", "AI-driven", "AI-curated", "AI Estimate" or ANY mention of AI/artificial intelligence in any text field including review, verdict, plot, or rating_source
+- All reviews must read as professionally written by a human movie critic
+- rating_source must be a real source like "IMDb", "Rotten Tomatoes", "Metacritic", or "Audience Score" - NEVER "AI Estimate"
+- Do NOT include any disclaimers about AI or automated content
+- poster_url and trailer_url must use real, verified URLs only - do not guess or fabricate
 
 CRITICAL: Only REAL movies. No made-up titles. No markdown wrapping. Return JSON array only.`;
             
@@ -3603,7 +3630,7 @@ CRITICAL: Only REAL movies. No made-up titles. No markdown wrapping. Return JSON
                     movie.release_date || '',
                     releaseYear,
                     rating,
-                    movie.rating_source || 'AI Estimate',
+                    movie.rating_source || 'Estimated',
                     movie.director || '',
                     JSON.stringify(movie.cast || []),
                     movie.runtime || '',
@@ -4334,7 +4361,12 @@ app.post('/api/financial-aids/discover', requireAdmin, async (req, res) => {
         
         const systemPrompt = `You are a government financial aid researcher. Find REAL, currently active government financial aid programs. ONLY include programs that actually exist with real official government websites.
 
-RESPOND ONLY with a JSON array of programs. Each program must have: name, type (scholarship/grant/loan/benefit/scheme/subsidy), ministry, amount, description, eligibility (array), info (object with key details), claim_url (official .gov URL), claim_text, source.  
+RESPOND ONLY with a JSON array of programs. Each program must have: name, type (scholarship/grant/loan/benefit/scheme/subsidy), ministry, amount, description, eligibility (array), info (object with key details), claim_url (official .gov URL), claim_text, source.
+
+STRICT CONTENT GUIDELINES (NEVER VIOLATE):
+- NEVER use the words "AI-powered", "AI-generated", "AI-discovered", "AI-driven", "AI-curated" or ANY mention of AI/artificial intelligence in any text field
+- All descriptions must read as professionally written by a human researcher
+- Do NOT include any disclaimers about AI or automated content
 
 CRITICAL: Only REAL programs with REAL URLs. No markdown wrapping.`;
         
@@ -4469,7 +4501,9 @@ app.post('/api/movies/discover', requireAdmin, async (req, res) => {
         
         const existing = db.prepare('SELECT title FROM movies WHERE industry = ?').all(industry).map(r => r.title);
         
-        const systemPrompt = `You are a worldwide movie critic. Find REAL ${sectionLabels[section] || 'recent'} ${label} movies from 2025-2026. RESPOND ONLY with a JSON array. Each movie: title, original_title, genre (array), release_date, rating (0-10), rating_source, director, cast (array), runtime, language, country, plot, review, verdict, poster_url (empty), trailer_url, ott_platform, ott_release_date, box_office, budget, certification, tags (array). Only REAL movies. No markdown.`;
+        const systemPrompt = `You are a worldwide movie critic. Find REAL ${sectionLabels[section] || 'recent'} ${label} movies from 2025-2026. RESPOND ONLY with a JSON array. Each movie: title, original_title, genre (array), release_date, rating (0-10), rating_source (use "IMDb", "Rotten Tomatoes", "Metacritic", or "Audience Score" - NEVER "AI Estimate"), director, cast (array), runtime, language, country, plot, review, verdict, poster_url (TMDb URL in format "https://image.tmdb.org/t/p/w500/POSTER_PATH.jpg" if known, else empty), trailer_url (YouTube embed URL in format "https://www.youtube.com/embed/VIDEO_ID" if known, else empty), ott_platform, ott_release_date, box_office, budget, certification, tags (array). Only REAL movies. No markdown.
+
+STRICT: NEVER use "AI-powered", "AI-generated", "AI-discovered", "AI Estimate" or ANY AI mention in any field. All reviews must read as written by a human critic.`;
         
         const result = await callAI(provider, key, model, systemPrompt, `Find 3-5 ${sectionLabels[section] || 'recent'} ${label} movies`, `Industry: ${label}\nSection: ${section}\nLanguage: ${lang}\nDate: ${new Date().toISOString().split('T')[0]}\n\nDo NOT include: ${existing.join(', ')}`);
         
@@ -4487,7 +4521,7 @@ app.post('/api/movies/discover', requireAdmin, async (req, res) => {
             const dup = db.prepare('SELECT id FROM movies WHERE title = ? AND industry = ?').get(movie.title, industry);
             if (dup) continue;
             db.prepare(`INSERT INTO movies (title, original_title, industry, genre, release_date, release_year, rating, rating_source, director, cast, runtime, language, country, plot, review, verdict, poster_url, trailer_url, ott_platform, ott_release_date, box_office, budget, certification, tags, section, ai_generated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`).run(
-                movie.title, movie.original_title || '', industry, JSON.stringify(movie.genre || []), movie.release_date || '', movie.release_date ? parseInt(movie.release_date.substring(0, 4)) || 0 : 0, parseFloat(movie.rating) || 0, movie.rating_source || 'AI Estimate', movie.director || '', JSON.stringify(movie.cast || []), movie.runtime || '', movie.language || lang, movie.country || '', movie.plot || '', movie.review || '', movie.verdict || '', movie.poster_url || '', movie.trailer_url || '', movie.ott_platform || '', movie.ott_release_date || '', movie.box_office || '', movie.budget || '', movie.certification || '', JSON.stringify(movie.tags || []), section
+                movie.title, movie.original_title || '', industry, JSON.stringify(movie.genre || []), movie.release_date || '', movie.release_date ? parseInt(movie.release_date.substring(0, 4)) || 0 : 0, parseFloat(movie.rating) || 0, movie.rating_source || 'Estimated', movie.director || '', JSON.stringify(movie.cast || []), movie.runtime || '', movie.language || lang, movie.country || '', movie.plot || '', movie.review || '', movie.verdict || '', movie.poster_url || '', movie.trailer_url || '', movie.ott_platform || '', movie.ott_release_date || '', movie.box_office || '', movie.budget || '', movie.certification || '', JSON.stringify(movie.tags || []), section
             );
             added++;
         }
