@@ -360,6 +360,31 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         Connection Logs
     </div>
+    <div class="nav-section">Appearance</div>
+    <div class="nav-item" onclick="showPage('header')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="6" rx="1"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+        Header &amp; Menu
+    </div>
+    <div class="nav-item" onclick="showPage('footer_mgmt')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="15" width="18" height="6" rx="1"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+        Footer
+    </div>
+    <div class="nav-item" onclick="showPage('hero')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Hero Sections
+    </div>
+    <div class="nav-item" onclick="showPage('layout')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+        Site Layout
+    </div>
+    <div class="nav-item" onclick="showPage('pages')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Pages
+    </div>
+    <div class="nav-item" onclick="showPage('widgets')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Widgets &amp; Ads
+    </div>
     <div class="nav-section">Settings</div>
     <div class="nav-item" onclick="showPage('settings')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
@@ -368,6 +393,10 @@
     <div class="nav-item" onclick="showPage('seo')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         SEO
+    </div>
+    <div class="nav-item" onclick="showPage('api')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+        API Management
     </div>
     <div class="nav-item" onclick="showPage('auditlog')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -669,6 +698,7 @@
     <div class="page" id="page-seo">
         <div class="topbar"><h1>SEO Settings</h1></div>
         <div class="card">
+            <div class="card-header"><h3>Meta Tags</h3></div>
             <div class="card-body">
                 <div class="form-group">
                     <label>Default Meta Title</label>
@@ -683,6 +713,92 @@
                     <input type="text" id="set_meta_keywords">
                 </div>
                 <button class="btn btn-primary" onclick="saveSEO()">Save SEO Settings</button>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Open Graph &amp; Social</h3></div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>OG Site Name</label>
+                        <input type="text" id="seo_og_site_name" value="News Reporter Live">
+                    </div>
+                    <div class="form-group">
+                        <label>Default OG Image URL</label>
+                        <input type="text" id="seo_og_image" placeholder="https://newsreporter.live/og-image.jpg">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Twitter Card Type</label>
+                        <select id="seo_twitter_card">
+                            <option value="summary_large_image" selected>Summary Large Image</option>
+                            <option value="summary">Summary</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Twitter Handle</label>
+                        <input type="text" id="seo_twitter_handle" placeholder="@newsreporter">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveSEOAdvanced()">Save Social SEO</button>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Structured Data &amp; Schema</h3></div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Organization Name</label>
+                        <input type="text" id="seo_org_name" value="News Reporter Live">
+                    </div>
+                    <div class="form-group">
+                        <label>Organization Logo URL</label>
+                        <input type="text" id="seo_org_logo" placeholder="https://newsreporter.live/logo.png">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Schema Types Enabled</label>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
+                        <label style="display:flex;align-items:center;gap:4px;font-size:13px;"><input type="checkbox" id="seo_schema_article" checked> NewsArticle</label>
+                        <label style="display:flex;align-items:center;gap:4px;font-size:13px;"><input type="checkbox" id="seo_schema_faq" checked> FAQPage</label>
+                        <label style="display:flex;align-items:center;gap:4px;font-size:13px;"><input type="checkbox" id="seo_schema_breadcrumb" checked> BreadcrumbList</label>
+                        <label style="display:flex;align-items:center;gap:4px;font-size:13px;"><input type="checkbox" id="seo_schema_search" checked> SearchAction</label>
+                        <label style="display:flex;align-items:center;gap:4px;font-size:13px;"><input type="checkbox" id="seo_schema_webapp" checked> WebApplication</label>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveSEOAdvanced()">Save Schema Settings</button>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Robots &amp; Indexing</h3></div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>robots.txt Content</label>
+                        <textarea id="seo_robots_txt" rows="6" style="min-height:120px;font-family:monospace;font-size:12px;">User-agent: *
+Allow: /
+Sitemap: https://newsreporter.live/sitemap.xml</textarea>
+                    </div>
+                </div>
+                <p style="margin-bottom:12px"><strong>Sitemap:</strong> <a href="/sitemap.xml" target="_blank" style="color:var(--primary)">/sitemap.xml</a> (auto-generated)</p>
+                <p style="margin-bottom:12px"><strong>Robots.txt:</strong> <a href="/robots.txt" target="_blank" style="color:var(--primary)">/robots.txt</a></p>
+                <button class="btn btn-primary" onclick="saveSEOAdvanced()">Save Robots Settings</button>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Google Search Console</h3></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Verification Meta Tag Content</label>
+                    <input type="text" id="seo_google_verification" placeholder="e.g. abc123xyz">
+                </div>
+                <div class="form-group">
+                    <label>Google Analytics / GA4 Measurement ID</label>
+                    <input type="text" id="seo_ga_id" placeholder="G-XXXXXXXXXX">
+                </div>
+                <button class="btn btn-primary" onclick="saveSEOAdvanced()">Save</button>
+                <a href="https://search.google.com/search-console" target="_blank" class="btn btn-outline" style="margin-left:8px;">Open Search Console</a>
             </div>
         </div>
     </div>
@@ -798,6 +914,569 @@
                 <thead><tr><th>Action</th><th>Details</th><th>IP Address</th><th>Time</th></tr></thead>
                 <tbody id="auditLogTable"><tr><td colspan="4" class="text-center" style="padding:40px;color:var(--text-secondary)">Loading...</td></tr></tbody>
             </table>
+        </div>
+    </div>
+
+
+    <!-- Header & Menu Management Page -->
+    <div class="page" id="page-header">
+        <div class="topbar"><h1>Header &amp; Menu Management</h1></div>
+        <div class="card">
+            <div class="card-header"><h3>Site Header</h3></div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Logo Type</label>
+                        <select id="hdr_logo_type" onchange="toggleLogoFields()">
+                            <option value="text">Text Logo (NR)</option>
+                            <option value="image">Image Logo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Logo Image URL</label>
+                        <input type="text" id="hdr_logo_url" placeholder="https://example.com/logo.png" disabled>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Site Title</label>
+                        <input type="text" id="hdr_site_title" value="News Reporter">
+                    </div>
+                    <div class="form-group">
+                        <label>Header Tagline</label>
+                        <input type="text" id="hdr_tagline" value="Live &#8226; Trusted &#8226; Independent">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Header Background Color</label>
+                        <input type="color" id="hdr_bg_color" value="#ffffff" style="height:38px;width:100px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Header Text Color</label>
+                        <input type="color" id="hdr_text_color" value="#0f172a" style="height:38px;width:100px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Header Style</label>
+                        <select id="hdr_sticky">
+                            <option value="sticky">Sticky (fixed on scroll)</option>
+                            <option value="static">Static</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveHeaderSettings()">Save Header Settings</button>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Navigation Menu Items</h3><button class="btn btn-sm btn-primary" onclick="addMenuItem()">+ Add Item</button></div>
+            <div class="card-body">
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Drag to reorder. These items appear in the top navigation bar on all pages.</p>
+                <div id="menuItemsList" style="display:flex;flex-direction:column;gap:8px;"></div>
+                <button class="btn btn-primary" style="margin-top:16px;" onclick="saveMenuItems()">Save Menu Order</button>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Back Button</h3></div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Show Back Button</label>
+                        <select id="hdr_back_btn">
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Back Button Text</label>
+                        <input type="text" id="hdr_back_text" value="&#8592; Back to News">
+                    </div>
+                    <div class="form-group">
+                        <label>Back Button URL</label>
+                        <input type="text" id="hdr_back_url" value="/">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveHeaderSettings()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Management Page -->
+    <div class="page" id="page-footer_mgmt">
+        <div class="topbar"><h1>Footer Management</h1></div>
+        <div class="card">
+            <div class="card-header"><h3>Footer Columns</h3></div>
+            <div class="card-body">
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Configure up to 4 footer columns with titles and links.</p>
+                <div id="footerColumnsEditor">
+                    <div class="footer-col-editor" data-col="1" style="border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px;">
+                        <div class="form-row">
+                            <div class="form-group"><label>Column 1 Title</label><input type="text" id="ftr_col1_title" value="News Reporter Live"></div>
+                            <div class="form-group"><label>Column 1 Links (one per line: Label|URL)</label><textarea id="ftr_col1_links" rows="4" style="min-height:80px" placeholder="Home|/&#10;Politics|/?cat=politics&#10;Business|/?cat=business">Home|/
+Politics|/?cat=politics
+Business|/?cat=business
+Sports|/?cat=sports
+Technology|/?cat=technology</textarea></div>
+                        </div>
+                    </div>
+                    <div class="footer-col-editor" data-col="2" style="border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px;">
+                        <div class="form-row">
+                            <div class="form-group"><label>Column 2 Title</label><input type="text" id="ftr_col2_title" value="Financial Tools"></div>
+                            <div class="form-group"><label>Column 2 Links</label><textarea id="ftr_col2_links" rows="4" style="min-height:80px">Loan EMI Calculator|/loan-calculator
+IFSC Code Finder|/ifsc-codes
+PIN Code Finder|/pincode
+India Directory|/directory</textarea></div>
+                        </div>
+                    </div>
+                    <div class="footer-col-editor" data-col="3" style="border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px;">
+                        <div class="form-row">
+                            <div class="form-group"><label>Column 3 Title</label><input type="text" id="ftr_col3_title" value="Entertainment"></div>
+                            <div class="form-group"><label>Column 3 Links</label><textarea id="ftr_col3_links" rows="4" style="min-height:80px">Movies &amp; Reviews|/movies
+Cricket Live Scores|/cricket-live
+CBSE Study Materials|/cbse
+Financial Aid|/financial-aids</textarea></div>
+                        </div>
+                    </div>
+                    <div class="footer-col-editor" data-col="4" style="border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px;">
+                        <div class="form-row">
+                            <div class="form-group"><label>Column 4 Title</label><input type="text" id="ftr_col4_title" value="About"></div>
+                            <div class="form-group"><label>Column 4 Content (HTML allowed)</label><textarea id="ftr_col4_links" rows="4" style="min-height:80px">About Us|/about
+Contact|/contact
+Privacy Policy|/privacy
+Terms of Service|/terms</textarea></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Footer Settings</h3></div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Copyright Text</label>
+                        <input type="text" id="ftr_copyright" value="&copy; 2024-2026 News Reporter Live. All rights reserved.">
+                    </div>
+                    <div class="form-group">
+                        <label>Footer Background Color</label>
+                        <input type="color" id="ftr_bg_color" value="#ffffff" style="height:38px;width:100px;">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Social Links (one per line: Platform|URL)</label>
+                        <textarea id="ftr_social_links" rows="3" style="min-height:60px" placeholder="Facebook|https://facebook.com/newsreporter&#10;Twitter|https://twitter.com/newsreporter"></textarea>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveFooterSettings()">Save Footer Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Sections Management Page -->
+    <div class="page" id="page-hero">
+        <div class="topbar"><h1>Hero Sections</h1></div>
+        <div class="card">
+            <div class="card-header"><h3>Homepage Hero Banner</h3></div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Hero Style</label>
+                        <select id="hero_style">
+                            <option value="featured">Featured Article (auto)</option>
+                            <option value="slider">Article Slider</option>
+                            <option value="custom">Custom Banner</option>
+                            <option value="none">No Hero</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Hero Height</label>
+                        <select id="hero_height">
+                            <option value="small">Small (300px)</option>
+                            <option value="medium" selected>Medium (400px)</option>
+                            <option value="large">Large (500px)</option>
+                            <option value="fullscreen">Full Screen</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Custom Hero Title (if Custom Banner selected)</label>
+                    <input type="text" id="hero_title" placeholder="Breaking News & Latest Updates">
+                </div>
+                <div class="form-group">
+                    <label>Custom Hero Subtitle</label>
+                    <input type="text" id="hero_subtitle" placeholder="Stay informed with News Reporter Live">
+                </div>
+                <div class="form-group">
+                    <label>Custom Hero Background Image URL</label>
+                    <input type="text" id="hero_bg_image" placeholder="https://example.com/hero-bg.jpg">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Hero Overlay Color</label>
+                        <input type="color" id="hero_overlay_color" value="#000000" style="height:38px;width:100px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Overlay Opacity</label>
+                        <input type="range" id="hero_overlay_opacity" min="0" max="100" value="50" style="width:200px;"> <span id="hero_opacity_val">50%</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveHeroSettings()">Save Hero Settings</button>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Category Page Heroes</h3></div>
+            <div class="card-body">
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Enable/disable hero banners on category pages and sub-pages.</p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Show Hero on Category Pages</label>
+                        <select id="hero_category_enabled">
+                            <option value="yes" selected>Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Show Hero on Tool Pages</label>
+                        <select id="hero_tools_enabled">
+                            <option value="yes">Yes</option>
+                            <option value="no" selected>No</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveHeroSettings()">Save</button>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Breaking News Ticker</h3></div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Show Breaking News Ticker</label>
+                        <select id="hero_ticker_enabled">
+                            <option value="yes" selected>Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ticker Speed (seconds)</label>
+                        <input type="number" id="hero_ticker_speed" value="30" min="5" max="120">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Ticker Source</label>
+                    <select id="hero_ticker_source">
+                        <option value="latest">Latest Published Articles</option>
+                        <option value="featured">Featured Articles Only</option>
+                        <option value="custom">Custom Items</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Custom Ticker Items (one per line, for Custom source)</label>
+                    <textarea id="hero_ticker_items" rows="3" style="min-height:60px" placeholder="Breaking: Major update on economic policy&#10;Live: Cricket match in progress"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="saveHeroSettings()">Save Ticker Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Site Layout Management Page -->
+    <div class="page" id="page-layout">
+        <div class="topbar"><h1>Site Layout Management</h1></div>
+        <div class="card">
+            <div class="card-header"><h3>Homepage Layout</h3></div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Layout Style</label>
+                        <select id="layout_style">
+                            <option value="magazine" selected>Magazine (sidebar + content)</option>
+                            <option value="blog">Blog (full width)</option>
+                            <option value="grid">Grid (card layout)</option>
+                            <option value="newspaper">Newspaper (multi-column)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Sidebar Position</label>
+                        <select id="layout_sidebar">
+                            <option value="right" selected>Right Sidebar</option>
+                            <option value="left">Left Sidebar</option>
+                            <option value="none">No Sidebar</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Content Width</label>
+                        <select id="layout_width">
+                            <option value="1200">Standard (1200px)</option>
+                            <option value="1320" selected>Wide (1320px)</option>
+                            <option value="1440">Extra Wide (1440px)</option>
+                            <option value="100%">Full Width</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Articles Per Page</label>
+                        <input type="number" id="layout_articles_per_page" value="12" min="6" max="50">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveLayoutSettings()">Save Layout Settings</button>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Color Theme</h3></div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Primary Color</label>
+                        <input type="color" id="layout_primary_color" value="#E53935" style="height:38px;width:100px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Accent Color</label>
+                        <input type="color" id="layout_accent_color" value="#1565C0" style="height:38px;width:100px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Background Color</label>
+                        <input type="color" id="layout_bg_color" value="#f8fafc" style="height:38px;width:100px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Text Color</label>
+                        <input type="color" id="layout_text_color" value="#0f172a" style="height:38px;width:100px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Font Family</label>
+                    <select id="layout_font">
+                        <option value="Inter" selected>Inter (Modern)</option>
+                        <option value="Roboto">Roboto</option>
+                        <option value="Open Sans">Open Sans</option>
+                        <option value="Lato">Lato</option>
+                        <option value="Poppins">Poppins</option>
+                        <option value="Noto Sans">Noto Sans</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="saveLayoutSettings()">Save Theme</button>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Category Sections on Homepage</h3></div>
+            <div class="card-body">
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Choose which category sections appear on the homepage and their order.</p>
+                <div id="categorySectionsEditor"></div>
+                <button class="btn btn-primary" style="margin-top:16px;" onclick="saveLayoutSettings()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pages Management Page -->
+    <div class="page" id="page-pages">
+        <div class="topbar"><h1>Pages Management</h1></div>
+        <div class="card">
+            <div class="card-header"><h3>Site Pages</h3></div>
+            <div class="card-body">
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Manage all pages on your site. Toggle visibility and configure page-specific settings.</p>
+                <table>
+                    <thead><tr><th>Page</th><th>URL Path</th><th>Status</th><th>In Nav</th><th>SEO Title</th><th>Actions</th></tr></thead>
+                    <tbody id="pagesTable"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Custom Pages</h3><button class="btn btn-sm btn-primary" onclick="addCustomPage()">+ Add Custom Page</button></div>
+            <div class="card-body">
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Create custom static pages (About, Contact, Privacy Policy, Terms, etc.).</p>
+                <table>
+                    <thead><tr><th>Title</th><th>Slug</th><th>Status</th><th>Last Updated</th><th>Actions</th></tr></thead>
+                    <tbody id="customPagesTable"><tr><td colspan="5" class="text-center" style="padding:20px;color:var(--text-secondary);">No custom pages yet</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Widgets & Ads Management Page -->
+    <div class="page" id="page-widgets">
+        <div class="topbar"><h1>Widgets &amp; Ads Management</h1></div>
+        <div class="card">
+            <div class="card-header"><h3>Google AdSense</h3></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>AdSense Publisher ID</label>
+                    <input type="text" id="ads_adsense_id" placeholder="ca-pub-XXXXXXXXXXXXXXXX">
+                    <small style="color:var(--text-secondary);font-size:12px;display:block;margin-top:4px;">Your Google AdSense publisher ID. Leave empty to disable ads.</small>
+                </div>
+                <div class="form-group">
+                    <label>Auto Ads</label>
+                    <select id="ads_auto_ads">
+                        <option value="enabled">Enabled (Google places ads automatically)</option>
+                        <option value="disabled" selected>Disabled (manual placement only)</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="saveWidgetSettings()">Save AdSense Settings</button>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Ad Placements</h3></div>
+            <div class="card-body">
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Configure where ads appear on the site.</p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div style="border:1px solid var(--border);border-radius:8px;padding:12px;">
+                        <label style="font-weight:600;font-size:13px;">Header Banner Ad</label>
+                        <select id="ads_header_banner" style="margin-top:6px;">
+                            <option value="disabled" selected>Disabled</option>
+                            <option value="enabled">Enabled</option>
+                        </select>
+                        <input type="text" id="ads_header_slot" placeholder="Ad Slot ID" style="margin-top:6px;">
+                    </div>
+                    <div style="border:1px solid var(--border);border-radius:8px;padding:12px;">
+                        <label style="font-weight:600;font-size:13px;">Sidebar Ad</label>
+                        <select id="ads_sidebar" style="margin-top:6px;">
+                            <option value="disabled" selected>Disabled</option>
+                            <option value="enabled">Enabled</option>
+                        </select>
+                        <input type="text" id="ads_sidebar_slot" placeholder="Ad Slot ID" style="margin-top:6px;">
+                    </div>
+                    <div style="border:1px solid var(--border);border-radius:8px;padding:12px;">
+                        <label style="font-weight:600;font-size:13px;">In-Article Ad</label>
+                        <select id="ads_in_article" style="margin-top:6px;">
+                            <option value="disabled" selected>Disabled</option>
+                            <option value="enabled">Enabled</option>
+                        </select>
+                        <input type="text" id="ads_in_article_slot" placeholder="Ad Slot ID" style="margin-top:6px;">
+                    </div>
+                    <div style="border:1px solid var(--border);border-radius:8px;padding:12px;">
+                        <label style="font-weight:600;font-size:13px;">Footer Ad</label>
+                        <select id="ads_footer" style="margin-top:6px;">
+                            <option value="disabled" selected>Disabled</option>
+                            <option value="enabled">Enabled</option>
+                        </select>
+                        <input type="text" id="ads_footer_slot" placeholder="Ad Slot ID" style="margin-top:6px;">
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="margin-top:16px;" onclick="saveWidgetSettings()">Save Ad Placements</button>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Sidebar Widgets</h3></div>
+            <div class="card-body">
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Toggle sidebar widgets on the homepage.</p>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                    <label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;">
+                        <input type="checkbox" id="widget_trending" checked> <strong>Trending Now</strong> - Shows top trending articles
+                    </label>
+                    <label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;">
+                        <input type="checkbox" id="widget_cricket" checked> <strong>Cricket Scores</strong> - Live cricket score widget
+                    </label>
+                    <label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;">
+                        <input type="checkbox" id="widget_newsletter" checked> <strong>Newsletter Signup</strong> - Email subscription form
+                    </label>
+                    <label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;">
+                        <input type="checkbox" id="widget_quick_links" checked> <strong>Quick Links</strong> - Links to tools and pages
+                    </label>
+                    <label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;">
+                        <input type="checkbox" id="widget_weather"> <strong>Weather</strong> - Local weather widget
+                    </label>
+                    <label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;">
+                        <input type="checkbox" id="widget_social"> <strong>Social Feed</strong> - Social media feed embed
+                    </label>
+                </div>
+                <button class="btn btn-primary" style="margin-top:16px;" onclick="saveWidgetSettings()">Save Widget Settings</button>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>Custom HTML Widgets</h3></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Custom Head HTML (analytics, tracking codes, etc.)</label>
+                    <textarea id="widget_custom_head" rows="4" style="min-height:80px;font-family:monospace;font-size:12px;" placeholder="<!-- Google Analytics -->&#10;<script async src='https://...'></script>"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Custom Body End HTML (chat widgets, popups, etc.)</label>
+                    <textarea id="widget_custom_body" rows="4" style="min-height:80px;font-family:monospace;font-size:12px;" placeholder="<!-- Chat Widget -->&#10;<script>...</script>"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="saveWidgetSettings()">Save Custom HTML</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Management Page -->
+    <div class="page" id="page-api">
+        <div class="topbar"><h1>API Management</h1></div>
+        <div class="card">
+            <div class="card-header"><h3>API Keys &amp; Integrations</h3></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>AI Provider</label>
+                    <select id="api_ai_provider">
+                        <option value="openrouter">OpenRouter (recommended)</option>
+                        <option value="openai">OpenAI</option>
+                        <option value="groq">Groq</option>
+                        <option value="gemini">Google Gemini</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>AI API Key</label>
+                    <input type="password" id="api_ai_key" placeholder="sk-or-... or sk-...">
+                    <small style="color:var(--text-secondary);font-size:12px;display:block;margin-top:4px;">Used for AI article generation and rewriting.</small>
+                </div>
+                <div class="form-group">
+                    <label>AI Model</label>
+                    <input type="text" id="api_ai_model" placeholder="google/gemini-2.0-flash-001">
+                </div>
+                <button class="btn btn-primary" onclick="saveAPISettings()">Save AI Settings</button>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>External APIs</h3></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>TMDb API Key (Movies)</label>
+                    <input type="password" id="api_tmdb_key" placeholder="TMDb API key for movie data">
+                    <small style="color:var(--text-secondary);font-size:12px;display:block;margin-top:4px;">Used for fetching movie posters, ratings, and metadata. Get one at <a href="https://www.themoviedb.org/settings/api" target="_blank">TMDb</a>.</small>
+                </div>
+                <div class="form-group">
+                    <label>CricBuzz/Cricket API Key</label>
+                    <input type="password" id="api_cricket_key" placeholder="Cricket API key">
+                </div>
+                <div class="form-group">
+                    <label>Google Maps API Key</label>
+                    <input type="password" id="api_maps_key" placeholder="Google Maps API key for directory features">
+                </div>
+                <div class="form-group">
+                    <label>Weather API Key</label>
+                    <input type="password" id="api_weather_key" placeholder="OpenWeatherMap or similar API key">
+                </div>
+                <button class="btn btn-primary" onclick="saveAPISettings()">Save API Keys</button>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>API Endpoints Status</h3></div>
+            <div class="card-body">
+                <div id="apiStatusList" style="display:flex;flex-direction:column;gap:8px;"></div>
+                <button class="btn btn-outline" style="margin-top:12px;" onclick="checkAPIStatus()">Refresh Status</button>
+            </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+            <div class="card-header"><h3>CORS &amp; Rate Limiting</h3></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Allowed Origins (CORS)</label>
+                    <textarea id="api_cors_origins" rows="2" style="min-height:40px;font-family:monospace;font-size:12px;" placeholder="https://newsreporter.live&#10;https://www.newsreporter.live">https://newsreporter.live</textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Rate Limit (requests/min)</label>
+                        <input type="number" id="api_rate_limit" value="60" min="10" max="1000">
+                    </div>
+                    <div class="form-group">
+                        <label>API Logging</label>
+                        <select id="api_logging">
+                            <option value="errors">Errors Only</option>
+                            <option value="all" selected>All Requests</option>
+                            <option value="off">Off</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveAPISettings()">Save</button>
+            </div>
         </div>
     </div>
 
@@ -1158,7 +1837,7 @@
         if (page === 'ai') { loadAISettings(); populateGenCategoryDropdowns(); }
         if (page === 'feeds') loadFeeds();
         if (page === 'settings') loadSiteSettings();
-        if (page === 'seo') loadSEOSettings();
+        if (page === 'seo') { loadSEOSettings(); loadSEOAdvanced(); }
         if (page === 'dashboard') loadDashboard();
         if (page === 'users') loadUsers();
         if (page === 'analytics') loadAnalytics();
@@ -1166,6 +1845,13 @@
         if (page === 'newsletter') loadNewsletter();
         if (page === 'connlogs') loadConnectionLogs();
         if (page === 'auditlog') loadAuditLog();
+        if (page === 'header') loadHeaderSettings();
+        if (page === 'footer_mgmt') loadFooterSettings();
+        if (page === 'hero') loadHeroSettings();
+        if (page === 'layout') loadLayoutSettings();
+        if (page === 'pages') loadPages();
+        if (page === 'widgets') loadWidgetSettings();
+        if (page === 'api') loadAPISettings();
     }
 
     // ===== Init =====
@@ -1736,6 +2422,40 @@
             if (data.success) toast('SEO settings saved', 'success');
             else toast('Error', 'error');
         } catch (e) { toast('Error', 'error'); }
+    }
+
+
+    // ===== Enhanced SEO =====
+    async function saveSEOAdvanced() {
+        try {
+            const body = {};
+            ['seo_og_site_name','seo_og_image','seo_twitter_card','seo_twitter_handle','seo_org_name','seo_org_logo','seo_robots_txt','seo_google_verification','seo_ga_id'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) body[id] = el.value;
+            });
+            ['seo_schema_article','seo_schema_faq','seo_schema_breadcrumb','seo_schema_search','seo_schema_webapp'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) body[id] = el.checked ? 'true' : 'false';
+            });
+            await authFetch(API + '/api/cms/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            toast('SEO settings saved', 'success');
+        } catch(e) { toast('Error saving SEO settings', 'error'); }
+    }
+
+    async function loadSEOAdvanced() {
+        try {
+            const res = await authFetch(API + '/api/cms/settings');
+            const data = await res.json();
+            const s = data.settings || {};
+            ['seo_og_site_name','seo_og_image','seo_twitter_card','seo_twitter_handle','seo_org_name','seo_org_logo','seo_robots_txt','seo_google_verification','seo_ga_id'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el && s[id] !== undefined) el.value = s[id];
+            });
+            ['seo_schema_article','seo_schema_faq','seo_schema_breadcrumb','seo_schema_search','seo_schema_webapp'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.checked = s[id] !== 'false';
+            });
+        } catch(e) {}
     }
 
     // ===== Portal Users =====
