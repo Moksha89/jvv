@@ -241,7 +241,7 @@
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "WebSite", "name": "News Reporter Live", "url": "https://newsreporter.live", "potentialAction": {"@type": "SearchAction", "target": {"@type": "EntryPoint", "urlTemplate": "https://newsreporter.live/?q={search_term_string}"}, "query-input": "required name=search_term_string"}}
 </script>
-<link rel="stylesheet" href="/common.css">
+<link rel="stylesheet" href="/common.css?v=2">
 </head>
 <body>
 
@@ -338,8 +338,10 @@
     <button class="gate-close" onclick="closeGate()">&times;</button>
     <div class="gate-box">
         <h3>Access Restricted</h3>
-        <input type="password" id="gatePassword" placeholder="Enter access code" onkeydown="if(event.key==='Enter')checkGate()">
-        <button onclick="checkGate()">Enter</button>
+        <form onsubmit="event.preventDefault();checkGate();">
+        <input type="password" id="gatePassword" placeholder="Enter access code" autocomplete="off">
+        <button type="submit">Enter</button>
+        </form>
     </div>
 </div>
 
@@ -943,7 +945,8 @@ setInterval(loadCricketWidget, 60000);
 
 loadArticles();
 </script>
-<script src="/common.js" defer>
+<script src="/common.js?v=2" defer></script>
+<script>
 // Scroll reveal for category sections
 var revealObserver = new IntersectionObserver(function(entries) {
     entries.forEach(function(entry) { if (entry.isIntersecting) entry.target.classList.add('visible'); });
