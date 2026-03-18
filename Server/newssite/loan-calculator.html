@@ -971,10 +971,8 @@ function toggleFaq(el) {
   el.parentElement.classList.toggle('open');
 }
 
-// ============== DARK MODE ==============
-
 // ============== INIT ==============
-document.addEventListener('DOMContentLoaded', function()
+document.addEventListener('DOMContentLoaded', function() {
   calculateEMI();
   filterProviders('all');
   buildCompareTable();

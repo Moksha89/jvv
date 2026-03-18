@@ -86,21 +86,7 @@ function animateCounters() {
 }
 
 
-function toggleDarkMode() {
-    
-    
-    const isDark = false;
-    
-    
-    // Update toggle button text
-    
-}
-
-
-(function() {
-    );
-    }
-})();
+// Dark mode removed — light mode only
 
 // Smooth scroll to anchors
 document.addEventListener('click', (e) => {

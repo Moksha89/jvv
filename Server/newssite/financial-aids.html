@@ -1690,8 +1690,6 @@ footer p{color:var(--text3);font-size:13px}
 </footer>
 
 <script>
-if(localStorage.getItem('d')==='true') 
-
 let currentCountry = 'india';
 let currentType = 'all';
 
@@ -1752,7 +1750,7 @@ function filterType(type, btn) {
             const typeUpper = (aid.type || '').toUpperCase();
             const typeLower = (aid.type || '').toLowerCase();
             const eligList = (Array.isArray(aid.eligibility) ? aid.eligibility : []).map(e => '<li>' + e + '</li>').join('');
-            const infoObj = (typeof aid.info === 'object' && aid.info) ?;
+            const infoObj = (typeof aid.info === 'object' && aid.info) ? aid.info : {};
             const infoBoxes = Object.entries(infoObj).map(([k, v]) => '<div class="info-box"><label>' + k + '</label><span>' + v + '</span></div>').join('');
 
             const card = document.createElement('div');

@@ -653,9 +653,9 @@ function parseNum(s){return parseInt(String(s).replace(/[^0-9.-]/g,''))||0}
 function parseFloat2(s){return parseFloat(String(s).replace(/[^0-9.-]/g,''))||0}
 function toIndian(n){var s=Math.round(n).toString();var afterPoint='';if(s.indexOf('.')>0){afterPoint=s.substring(s.indexOf('.'),s.length)}s=s.indexOf('.')>0?s.substring(0,s.indexOf('.')):s;var lastThree=s.substring(s.length-3);var otherNumbers=s.substring(0,s.length-3);if(otherNumbers!='')lastThree=','+lastThree;return otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g,',')+lastThree+afterPoint}
 
-// ===== Dark Mode =====
-
-';
+// ===== Tab Switching =====
+var sections=['sip','swp','lumpsum','stepup','goal'];
+function switchCalcType(type){
 sections.forEach(function(s){document.getElementById(s+'Section').style.display=s===type?'block':'none'});
 document.querySelectorAll('.calc-tab').forEach(function(t,i){t.classList.toggle('active',sections[i]===type)});
 }
