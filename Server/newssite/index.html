@@ -223,8 +223,8 @@
           
     
         /* Scroll Reveal Animations */
-        .category-section { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
-        .category-section.visible { opacity: 1; transform: translateY(0); }
+        .category-section { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease, max-height 0.6s ease; max-height: 0; overflow: hidden; margin-bottom: 0; }
+        .category-section.visible { opacity: 1; transform: translateY(0); max-height: 2000px; overflow: visible; margin-bottom: 12px; }
         .article-card { animation: cardFadeIn 0.4s ease forwards; }
         @keyframes cardFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .articles-grid .article-card:nth-child(2) { animation-delay: 0.1s; }
@@ -342,6 +342,24 @@
         <button onclick="checkGate()">Enter</button>
     </div>
 </div>
+
+<!-- SEO: Internal Linking - Tools & Resources -->
+<section style="max-width:1280px;margin:40px auto 0;padding:0 24px">
+<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:28px 32px;margin-bottom:24px">
+<h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:16px;color:#0f172a">Explore Our Tools & Resources</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
+<a href="/investment-calculator" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#128200;</span> SIP & SWP Calculator</a>
+<a href="/loan-calculator" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#128176;</span> EMI & Loan Calculator</a>
+<a href="/financial-aids" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#127974;</span> Financial Aid Programs</a>
+<a href="/movies" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#127916;</span> Movies & Reviews</a>
+<a href="/cricket-live" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#127951;</span> Live Cricket Scores</a>
+<a href="/cbse" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#128218;</span> CBSE Study Materials</a>
+<a href="/directory" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#127758;</span> India Directory</a>
+<a href="/ifsc-codes" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#127975;</span> IFSC Code Finder</a>
+<a href="/pincode" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#128238;</span> PIN Code Lookup</a>
+</div>
+</div>
+</section>
 
 <footer class="footer">
     <div class="footer-inner">
@@ -934,24 +952,6 @@ function observeSections() { document.querySelectorAll('.category-section').forE
 var origRenderHome = renderHome;
 renderHome = function() { origRenderHome(); setTimeout(observeSections, 100); };
 </script>
-
-<!-- SEO: Internal Linking - Tools & Resources -->
-<section style="max-width:1280px;margin:40px auto 0;padding:0 24px">
-<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:28px 32px;margin-bottom:24px">
-<h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:16px;color:#0f172a">Explore Our Tools & Resources</h2>
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
-<a href="/investment-calculator" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#128200;</span> SIP & SWP Calculator</a>
-<a href="/loan-calculator" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#128176;</span> EMI & Loan Calculator</a>
-<a href="/financial-aids" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#127974;</span> Financial Aid Programs</a>
-<a href="/movies" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#127916;</span> Movies & Reviews</a>
-<a href="/cricket-live" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#127951;</span> Live Cricket Scores</a>
-<a href="/cbse" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#128218;</span> CBSE Study Materials</a>
-<a href="/directory" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#127758;</span> India Directory</a>
-<a href="/ifsc-codes" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#127975;</span> IFSC Code Finder</a>
-<a href="/pincode" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#0f172a;font-size:14px;font-weight:500;transition:all 0.2s"><span style="font-size:20px">&#128238;</span> PIN Code Lookup</a>
-</div>
-</div>
-</section>
 
 </body>
 </html>
