@@ -783,7 +783,7 @@ async function injectStructuredData(slug) {
     var s2 = document.createElement('script'); s2.type = 'application/ld+json'; s2.textContent = JSON.stringify(orgSchema); document.head.appendChild(s2);
 })();
 
-async function trackView(articleId) { try { await fetch('/api/article-view/' + articleId, { method: 'POST' }); } catch (e) }
+async function trackView(articleId) { try { await fetch('/api/article-view/' + articleId, { method: 'POST' }); } catch (e) {} }
 
 // ============================================================
 // Cricket Live Score Functions
