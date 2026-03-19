@@ -4909,16 +4909,29 @@ app.get('/sitemap.xml', (req, res) => {
         // Static pages
         const staticPages = [
             { loc: '/', changefreq: 'hourly', priority: '1.0' },
-            { loc: '/investment-calculator', changefreq: 'monthly', priority: '0.9' },
-            { loc: '/loan-calculator', changefreq: 'monthly', priority: '0.9' },
-            { loc: '/ifsc-codes', changefreq: 'monthly', priority: '0.9' },
-            { loc: '/pincode', changefreq: 'monthly', priority: '0.9' },
-            { loc: '/directory', changefreq: 'monthly', priority: '0.9' },
+            { loc: '/movies', changefreq: 'daily', priority: '0.9' },
             { loc: '/cricket-live', changefreq: 'always', priority: '0.9' },
-            { loc: '/movies', changefreq: 'daily', priority: '0.8' },
-            { loc: '/financial-aids', changefreq: 'daily', priority: '0.8' },
-            { loc: '/cbse', changefreq: 'weekly', priority: '0.8' },
+            { loc: '/financial-aids', changefreq: 'daily', priority: '0.9' },
+            { loc: '/cbse', changefreq: 'weekly', priority: '0.9' },
+            { loc: '/investment-calculator', changefreq: 'monthly', priority: '0.8' },
+            { loc: '/loan-calculator', changefreq: 'monthly', priority: '0.8' },
+            { loc: '/ifsc-codes', changefreq: 'monthly', priority: '0.8' },
+            { loc: '/pincode', changefreq: 'monthly', priority: '0.8' },
+            { loc: '/directory', changefreq: 'monthly', priority: '0.8' },
         ];
+        
+        // Category pages
+        const categories = db.prepare('SELECT DISTINCT LOWER(category) as cat FROM cms_articles WHERE status = ?').all('published');
+        for (const c of categories) {
+            if (c.cat) {
+                xml += '  <url>\n';
+                xml += '    <loc>https://newsreporter.live/category/' + c.cat.replace(/\s+/g, '-') + '</loc>\n';
+                xml += '    <changefreq>daily</changefreq>\n';
+                xml += '    <priority>0.8</priority>\n';
+                xml += '    <lastmod>' + today + '</lastmod>\n';
+                xml += '  </url>\n';
+            }
+        }
         
         for (const page of staticPages) {
             xml += '  <url>\n';
@@ -4954,13 +4967,53 @@ app.get('/sitemap.xml', (req, res) => {
     }
 });
 
-// Article pages with dynamic SEO titles
+// Category pages with proper SEO titles for Google indexing
+app.get('/category/:name', (req, res) => {
+    try {
+        const indexPath = path.join(DASHBOARD_DIR, 'newssite', 'index.html');
+        if (!fs.existsSync(indexPath)) return res.status(404).send('Page not found');
+        let html = fs.readFileSync(indexPath, 'utf8');
+        const catName = req.params.name.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        const catSlug = req.params.name.toLowerCase();
+        const pageTitle = catName + ' News - News Reporter Live';
+        const pageDesc = 'Latest ' + catName + ' news, updates and analysis from News Reporter Live. Get breaking ' + catName.toLowerCase() + ' stories, expert opinions and in-depth coverage.';
+        const canonicalUrl = 'https://newsreporter.live/category/' + catSlug;
+        html = html.replace(/<title>[^<]*<\/title>/, '<title>' + pageTitle + '</title>');
+        html = html.replace(/<meta name="description" content="[^"]*"/, '<meta name="description" content="' + pageDesc + '"');
+        html = html.replace(/<meta property="og:title" content="[^"]*"/, '<meta property="og:title" content="' + pageTitle + '"');
+        html = html.replace(/<meta property="og:description" content="[^"]*"/, '<meta property="og:description" content="' + pageDesc + '"');
+        html = html.replace(/<link rel="canonical" href="[^"]*"/, '<link rel="canonical" href="' + canonicalUrl + '"');
+        html = html.replace(/<meta property="og:url" content="[^"]*"/, '<meta property="og:url" content="' + canonicalUrl + '"');
+        // Inject category articles as server-rendered HTML for Googlebot
+        const articles = db.prepare('SELECT title, excerpt, slug, image_url, published_at, author FROM cms_articles WHERE status = ? AND LOWER(category) = ? ORDER BY published_at DESC LIMIT 20').all('published', catSlug.replace(/-/g, ' '));
+        let ssrContent = '<div id="ssr-content" style="display:none"><h1>' + catName + ' News</h1>';
+        for (const a of articles) {
+            ssrContent += '<article><h2><a href="/article/' + a.slug + '">' + (a.title || '').replace(/</g, '&lt;') + '</a></h2>';
+            if (a.excerpt) ssrContent += '<p>' + a.excerpt.replace(/</g, '&lt;').substring(0, 200) + '</p>';
+            ssrContent += '</article>';
+        }
+        ssrContent += '</div>';
+        html = html.replace('</body>', ssrContent + '</body>');
+        // Structured data
+        const collectionJsonLd = {"@context": "https://schema.org", "@type": "CollectionPage", "name": pageTitle, "description": pageDesc, "url": canonicalUrl, "mainEntity": {"@type": "ItemList", "itemListElement": articles.slice(0, 10).map((a, i) => ({"@type": "ListItem", "position": i + 1, "url": 'https://newsreporter.live/article/' + a.slug, "name": a.title}))}};
+        html = html.replace('</head>', '<script type="application/ld+json">' + JSON.stringify(collectionJsonLd) + '</script>\n</head>');
+        res.setHeader('Content-Type', 'text/html');
+        res.send(html);
+    } catch (err) {
+        console.error('Category page error:', err.message);
+        const indexPath = path.join(DASHBOARD_DIR, 'newssite', 'index.html');
+        if (fs.existsSync(indexPath)) return res.sendFile(indexPath);
+        res.status(500).send('Server error');
+    }
+});
+
+// Article pages with dynamic SEO titles and server-rendered content for Googlebot
 app.get('/article/:slug', (req, res) => {
     try {
         const indexPath = path.join(DASHBOARD_DIR, 'newssite', 'index.html');
         if (!fs.existsSync(indexPath)) return res.status(404).send('Page not found');
         let html = fs.readFileSync(indexPath, 'utf8');
-        const article = db.prepare('SELECT title, excerpt, image_url, category, slug FROM cms_articles WHERE slug = ? AND status = ?').get(req.params.slug, 'published');
+        const article = db.prepare('SELECT title, excerpt, image_url, category, slug, content, author, published_at, updated_at, meta_keywords FROM cms_articles WHERE slug = ? AND status = ?').get(req.params.slug, 'published');
         if (article) {
             const safeTitle = (article.title || '').replace(/[<>"&]/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;','&':'&amp;'}[c]));
             const safeDesc = (article.excerpt || article.title || '').replace(/[<>"&]/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;','&':'&amp;'}[c])).substring(0, 160);
@@ -4976,8 +5029,28 @@ app.get('/article/:slug', (req, res) => {
             html = html.replace(/<link rel="canonical" href="[^"]*"/, '<link rel="canonical" href="' + canonicalUrl + '"');
             html = html.replace(/<meta property="og:url" content="[^"]*"/, '<meta property="og:url" content="' + canonicalUrl + '"');
             
-            // Inject NewsArticle + FAQPage + BreadcrumbList structured data for Google rich snippets
+            // Inject full article content as server-rendered HTML for Googlebot
             const authorInfo = getAuthorForCategory(article.category);
+            const authorName = article.author || authorInfo.name;
+            const pubDate = article.published_at ? new Date(article.published_at).toLocaleDateString('en-IN', {year: 'numeric', month: 'long', day: 'numeric'}) : '';
+            let ssrContent = '<div id="ssr-content" style="display:none">';
+            ssrContent += '<article>';
+            ssrContent += '<h1>' + safeTitle + '</h1>';
+            if (pubDate) ssrContent += '<time datetime="' + (article.published_at || '') + '">' + pubDate + '</time>';
+            ssrContent += '<span>By ' + (authorName || '').replace(/</g, '&lt;') + '</span>';
+            ssrContent += '<span>Category: <a href="/category/' + encodeURIComponent((article.category || '').toLowerCase().replace(/\s+/g, '-')) + '">' + (article.category || '').replace(/</g, '&lt;') + '</a></span>';
+            if (article.image_url) ssrContent += '<img src="' + article.image_url + '" alt="' + safeTitle + '" loading="lazy">';
+            if (article.content) {
+                // Sanitize but preserve HTML structure for Googlebot
+                ssrContent += '<div class="article-body">' + article.content + '</div>';
+            } else if (article.excerpt) {
+                ssrContent += '<p>' + safeDesc + '</p>';
+            }
+            ssrContent += '</article>';
+            ssrContent += '</div>';
+            html = html.replace('</body>', ssrContent + '</body>');
+            
+            // Inject NewsArticle + FAQPage + BreadcrumbList structured data for Google rich snippets
             const articleJsonLd = {
                 "@context": "https://schema.org",
                 "@type": "NewsArticle",
@@ -4986,31 +5059,32 @@ app.get('/article/:slug', (req, res) => {
                 "image": article.image_url ? [article.image_url] : [],
                 "datePublished": article.published_at || new Date().toISOString(),
                 "dateModified": article.updated_at || article.published_at || new Date().toISOString(),
-                "author": {"@type": "Person", "name": article.author || authorInfo.name, "url": "https://newsreporter.live"},
+                "author": {"@type": "Person", "name": authorName, "url": "https://newsreporter.live"},
                 "publisher": {"@type": "NewsMediaOrganization", "name": "News Reporter Live", "url": "https://newsreporter.live", "logo": {"@type": "ImageObject", "url": "https://newsreporter.live/logo.png"}},
                 "mainEntityOfPage": {"@type": "WebPage", "@id": canonicalUrl},
                 "articleSection": article.category,
                 "keywords": article.meta_keywords || article.category,
                 "inLanguage": "en-IN",
-                "isAccessibleForFree": true
+                "isAccessibleForFree": true,
+                "wordCount": article.content ? article.content.replace(/<[^>]*>/g, '').split(/\s+/).length : 0,
+                "articleBody": article.content ? article.content.replace(/<[^>]*>/g, '').substring(0, 5000) : safeDesc
             };
             const breadcrumbJsonLd = {
                 "@context": "https://schema.org",
                 "@type": "BreadcrumbList",
                 "itemListElement": [
                     {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://newsreporter.live/"},
-                    {"@type": "ListItem", "position": 2, "name": article.category, "item": "https://newsreporter.live/?category=" + encodeURIComponent(article.category.toLowerCase())},
+                    {"@type": "ListItem", "position": 2, "name": article.category, "item": "https://newsreporter.live/category/" + encodeURIComponent((article.category || '').toLowerCase().replace(/\s+/g, '-'))},
                     {"@type": "ListItem", "position": 3, "name": article.title, "item": canonicalUrl}
                 ]
             };
             
             // Extract FAQ from article content if present
             const faqRegex = /itemprop="name">([^<]+)<\/h4>[\s\S]*?itemprop="text">([^<]+)<\/p>/g;
-            const fullArticle = db.prepare('SELECT content FROM cms_articles WHERE slug = ? AND status = ?').get(req.params.slug, 'published');
             const faqItems = [];
-            if (fullArticle && fullArticle.content) {
+            if (article.content) {
                 let faqMatch;
-                while ((faqMatch = faqRegex.exec(fullArticle.content)) !== null) {
+                while ((faqMatch = faqRegex.exec(article.content)) !== null) {
                     faqItems.push({"@type": "Question", "name": faqMatch[1], "acceptedAnswer": {"@type": "Answer", "text": faqMatch[2]}});
                 }
             }
@@ -5022,6 +5096,9 @@ app.get('/article/:slug', (req, res) => {
                 structuredDataScript += '<script type="application/ld+json">' + JSON.stringify(faqJsonLd) + '</script>\n';
             }
             html = html.replace('</head>', structuredDataScript + '</head>');
+        } else {
+            // Article not found - return 404 status with the page
+            res.status(404);
         }
         res.setHeader('Content-Type', 'text/html');
         res.send(html);
