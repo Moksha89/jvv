@@ -2192,13 +2192,20 @@ app.get('/sitemap.xml', (req, res) => {
         let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
         xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
         xml += `  <url><loc>${baseUrl}/</loc><changefreq>hourly</changefreq><priority>1.0</priority></url>\n`;
+        // Static pages
+        const staticPages = ['/movies','/cricket-live','/financial-aids','/cbse','/investment-calculator','/loan-calculator','/ifsc-codes','/pincode','/directory'];
+        for (const p of staticPages) {
+            xml += `  <url><loc>${baseUrl}${p}</loc><changefreq>daily</changefreq><priority>0.9</priority></url>\n`;
+        }
         for (const a of articles) {
             const lastmod = (a.updated_at || a.published_at || '').split(' ')[0];
             xml += `  <url><loc>${baseUrl}/article/${a.slug}</loc>${lastmod ? '<lastmod>' + lastmod + '</lastmod>' : ''}<changefreq>weekly</changefreq><priority>0.8</priority></url>\n`;
+            // AMP version
+            xml += `  <url><loc>${baseUrl}/amp/article/${a.slug}</loc>${lastmod ? '<lastmod>' + lastmod + '</lastmod>' : ''}<changefreq>weekly</changefreq><priority>0.6</priority></url>\n`;
         }
         const categories = db.prepare('SELECT slug FROM cms_categories ORDER BY sort_order').all();
         for (const c of categories) {
-            xml += `  <url><loc>${baseUrl}/category/${c.slug}</loc><changefreq>daily</changefreq><priority>0.6</priority></url>\n`;
+            xml += `  <url><loc>${baseUrl}/category/${c.slug}</loc><changefreq>daily</changefreq><priority>0.7</priority></url>\n`;
         }
         xml += '</urlset>';
         res.set('Content-Type', 'application/xml');
@@ -4942,13 +4949,20 @@ app.get('/sitemap.xml', (req, res) => {
             xml += '  </url>\n';
         }
         
-        // All published articles
+        // All published articles (with AMP alternates)
         for (const article of articles) {
             const lastmod = (article.updated_at || article.published_at || today).split('T')[0].split(' ')[0];
             xml += '  <url>\n';
             xml += '    <loc>https://newsreporter.live/article/' + article.slug + '</loc>\n';
             xml += '    <changefreq>weekly</changefreq>\n';
             xml += '    <priority>0.7</priority>\n';
+            xml += '    <lastmod>' + lastmod + '</lastmod>\n';
+            xml += '  </url>\n';
+            // AMP version
+            xml += '  <url>\n';
+            xml += '    <loc>https://newsreporter.live/amp/article/' + article.slug + '</loc>\n';
+            xml += '    <changefreq>weekly</changefreq>\n';
+            xml += '    <priority>0.6</priority>\n';
             xml += '    <lastmod>' + lastmod + '</lastmod>\n';
             xml += '  </url>\n';
         }
@@ -5028,6 +5042,9 @@ app.get('/article/:slug', (req, res) => {
             const canonicalUrl = 'https://newsreporter.live/article/' + article.slug;
             html = html.replace(/<link rel="canonical" href="[^"]*"/, '<link rel="canonical" href="' + canonicalUrl + '"');
             html = html.replace(/<meta property="og:url" content="[^"]*"/, '<meta property="og:url" content="' + canonicalUrl + '"');
+            // Add AMP link for Google AMP discovery
+            const ampLink = '<link rel="amphtml" href="https://newsreporter.live/amp/article/' + article.slug + '">';
+            html = html.replace('</head>', ampLink + '\n</head>');
             
             // Inject full article content as server-rendered HTML for Googlebot
             const authorInfo = getAuthorForCategory(article.category);
@@ -5107,6 +5124,145 @@ app.get('/article/:slug', (req, res) => {
         const indexPath = path.join(DASHBOARD_DIR, 'newssite', 'index.html');
         if (fs.existsSync(indexPath)) return res.sendFile(indexPath);
         res.status(500).send('Server error');
+    }
+});
+
+// Google AMP pages for article pages - fast mobile loading + Top Stories eligibility
+app.get('/amp/article/:slug', (req, res) => {
+    try {
+        const article = db.prepare('SELECT title, excerpt, image_url, category, slug, content, author, published_at, updated_at, meta_keywords FROM cms_articles WHERE slug = ? AND status = ?').get(req.params.slug, 'published');
+        if (!article) {
+            return res.status(404).send('<!doctype html><html><head><title>Not Found</title></head><body><h1>Article not found</h1></body></html>');
+        }
+        const safeTitle = (article.title || '').replace(/[<>"&]/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;','&':'&amp;'}[c]));
+        const safeDesc = (article.excerpt || article.title || '').replace(/[<>"&]/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;','&':'&amp;'}[c])).substring(0, 160);
+        const canonicalUrl = 'https://newsreporter.live/article/' + article.slug;
+        const ampUrl = 'https://newsreporter.live/amp/article/' + article.slug;
+        const authorInfo = getAuthorForCategory(article.category);
+        const authorName = (article.author || authorInfo.name || '').replace(/[<>"&]/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;','&':'&amp;'}[c]));
+        const pubDate = article.published_at ? new Date(article.published_at).toLocaleDateString('en-IN', {year: 'numeric', month: 'long', day: 'numeric'}) : '';
+        const catSlug = (article.category || '').toLowerCase().replace(/\s+/g, '-');
+        const safeCat = (article.category || '').replace(/[<>"&]/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;','&':'&amp;'}[c]));
+
+        // Convert article content to AMP-safe HTML (replace <img> with <amp-img>)
+        let ampContent = '';
+        if (article.content) {
+            ampContent = article.content
+                .replace(/<img([^>]*)\ssrc="([^"]*)"([^>]*)>/gi, (match, before, src, after) => {
+                    const altMatch = (before + after).match(/alt="([^"]*)"/);
+                    const alt = altMatch ? altMatch[1] : safeTitle;
+                    return '<amp-img src="' + src + '" alt="' + alt + '" width="800" height="450" layout="responsive"></amp-img>';
+                })
+                .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+                .replace(/\s(style|onclick|onload|onerror)="[^"]*"/gi, '')
+                .replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, '');
+        } else if (article.excerpt) {
+            ampContent = '<p>' + safeDesc + '</p>';
+        }
+
+        // Hero image as amp-img
+        let heroImage = '';
+        if (article.image_url) {
+            heroImage = '<amp-img src="' + article.image_url + '" alt="' + safeTitle + '" width="1200" height="675" layout="responsive" class="hero-img"></amp-img>';
+        }
+
+        // Structured data for AMP
+        const articleJsonLd = {
+            "@context": "https://schema.org",
+            "@type": "NewsArticle",
+            "headline": article.title,
+            "description": safeDesc,
+            "image": article.image_url ? [article.image_url] : [],
+            "datePublished": article.published_at || new Date().toISOString(),
+            "dateModified": article.updated_at || article.published_at || new Date().toISOString(),
+            "author": {"@type": "Person", "name": article.author || authorInfo.name, "url": "https://newsreporter.live"},
+            "publisher": {"@type": "NewsMediaOrganization", "name": "News Reporter Live", "url": "https://newsreporter.live", "logo": {"@type": "ImageObject", "url": "https://newsreporter.live/logo.png", "width": 200, "height": 60}},
+            "mainEntityOfPage": {"@type": "WebPage", "@id": canonicalUrl},
+            "articleSection": article.category,
+            "keywords": article.meta_keywords || article.category,
+            "inLanguage": "en-IN",
+            "isAccessibleForFree": true,
+            "wordCount": article.content ? article.content.replace(/<[^>]*>/g, '').split(/\s+/).length : 0
+        };
+
+        // Extract FAQ from article content
+        const faqRegex = /itemprop="name">([^<]+)<\/h4>[\s\S]*?itemprop="text">([^<]+)<\/p>/g;
+        const faqItems = [];
+        if (article.content) {
+            let faqMatch;
+            while ((faqMatch = faqRegex.exec(article.content)) !== null) {
+                faqItems.push({"@type": "Question", "name": faqMatch[1], "acceptedAnswer": {"@type": "Answer", "text": faqMatch[2]}});
+            }
+        }
+
+        let structuredData = '<script type="application/ld+json">' + JSON.stringify(articleJsonLd) + '</script>';
+        if (faqItems.length > 0) {
+            structuredData += '\n<script type="application/ld+json">' + JSON.stringify({"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": faqItems}) + '</script>';
+        }
+
+        const ampHtml = '<!doctype html>\n<html amp lang="en">\n<head>\n' +
+            '<meta charset="utf-8">\n' +
+            '<meta name="viewport" content="width=device-width,minimum-scale=1">\n' +
+            '<script async src="https://cdn.ampproject.org/v0.js"></script>\n' +
+            '<link rel="canonical" href="' + canonicalUrl + '">\n' +
+            '<title>' + safeTitle + ' | News Reporter Live</title>\n' +
+            '<meta name="description" content="' + safeDesc + '">\n' +
+            '<meta property="og:title" content="' + safeTitle + ' | News Reporter Live">\n' +
+            '<meta property="og:description" content="' + safeDesc + '">\n' +
+            '<meta property="og:url" content="' + ampUrl + '">\n' +
+            '<meta property="og:type" content="article">\n' +
+            (article.image_url ? '<meta property="og:image" content="' + article.image_url + '">\n' : '') +
+            structuredData + '\n' +
+            '<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style>' +
+            '<noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>\n' +
+            '<style amp-custom>\n' +
+            'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;padding:0;background:#f8f9fa;color:#222;line-height:1.7}\n' +
+            'header{background:#E53935;color:#fff;padding:12px 16px;text-align:center}\n' +
+            'header a{color:#fff;text-decoration:none;font-size:20px;font-weight:700;letter-spacing:0.5px}\n' +
+            'nav.breadcrumb{padding:10px 16px;font-size:13px;color:#666;background:#fff;border-bottom:1px solid #eee}\n' +
+            'nav.breadcrumb a{color:#1565C0;text-decoration:none}\n' +
+            '.article-container{max-width:720px;margin:0 auto;padding:0 16px 32px}\n' +
+            'h1{font-size:26px;line-height:1.3;margin:20px 0 12px;color:#111;font-weight:800}\n' +
+            '.meta{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:#666;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #eee}\n' +
+            '.meta a{color:#1565C0;text-decoration:none}\n' +
+            '.hero-img{border-radius:8px;margin-bottom:20px}\n' +
+            '.article-body{font-size:17px;line-height:1.8}\n' +
+            '.article-body p{margin:0 0 16px}\n' +
+            '.article-body h2{font-size:22px;margin:28px 0 12px;color:#111}\n' +
+            '.article-body h3{font-size:19px;margin:24px 0 10px;color:#222}\n' +
+            '.article-body blockquote{border-left:4px solid #E53935;margin:16px 0;padding:12px 16px;background:#fff5f5;font-style:italic}\n' +
+            '.article-body ul,.article-body ol{margin:0 0 16px;padding-left:24px}\n' +
+            '.article-body li{margin-bottom:6px}\n' +
+            '.article-body a{color:#1565C0}\n' +
+            '.related{background:#fff;border-radius:8px;padding:20px;margin-top:24px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}\n' +
+            '.related h3{margin:0 0 12px;font-size:18px}\n' +
+            '.related a{display:block;color:#1565C0;text-decoration:none;padding:6px 0;font-size:15px;border-bottom:1px solid #f0f0f0}\n' +
+            'footer{background:#222;color:#aaa;text-align:center;padding:20px 16px;font-size:13px;margin-top:32px}\n' +
+            'footer a{color:#fff;text-decoration:none}\n' +
+            '@media(max-width:600px){h1{font-size:22px}.article-body{font-size:16px}}\n' +
+            '</style>\n' +
+            '</head>\n<body>\n' +
+            '<header><a href="https://newsreporter.live">News Reporter Live</a></header>\n' +
+            '<nav class="breadcrumb"><a href="https://newsreporter.live">Home</a> &rsaquo; <a href="https://newsreporter.live/category/' + catSlug + '">' + safeCat + '</a> &rsaquo; Article</nav>\n' +
+            '<div class="article-container">\n' +
+            '<h1>' + safeTitle + '</h1>\n' +
+            '<div class="meta">\n' +
+            (pubDate ? '<span>' + pubDate + '</span>' : '') +
+            '<span>By ' + authorName + '</span>\n' +
+            '<a href="https://newsreporter.live/category/' + catSlug + '">' + safeCat + '</a>\n' +
+            '</div>\n' +
+            heroImage + '\n' +
+            '<div class="article-body">' + ampContent + '</div>\n' +
+            '</div>\n' +
+            '<footer>&copy; ' + new Date().getFullYear() + ' <a href="https://newsreporter.live">News Reporter Live</a> | India\'s Trusted News Source</footer>\n' +
+            '</body>\n</html>';
+
+        res.setHeader('Content-Type', 'text/html');
+        res.setHeader('AMP-Access-Control-Allow-Source-Origin', 'https://newsreporter.live');
+        res.send(ampHtml);
+    } catch (err) {
+        console.error('AMP page error:', err.message);
+        res.status(500).send('<!doctype html><html><head><title>Error</title></head><body><h1>Server error</h1></body></html>');
     }
 });
 
