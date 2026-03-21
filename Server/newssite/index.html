@@ -30,13 +30,13 @@
     <link rel="sitemap" type="application/xml" href="/sitemap.xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&family=Source+Serif+4:wght@400;600;700&display=optional" rel="stylesheet">
     <style>
         :root {
             --primary: #E53935; --primary-dark: #C62828; --primary-light: #FFCDD2;
             --accent: #1565C0; --accent-light: #42A5F5;
             --bg: #F8F9FA; --bg-white: #FFFFFF;
-            --text-primary: #1A1A2E; --text-secondary: #4A4A68; --text-muted: #8E8EA0;
+            --text-primary: #1A1A2E; --text-secondary: #4A4A68; --text-muted: #555570;
             --border: #E8E8EF; --border-light: #F0F0F5;
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
             --shadow: 0 4px 12px rgba(0,0,0,0.06); --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
@@ -45,14 +45,32 @@
             --max-width: 1320px;
             --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        
+        /* Font fallback metrics to minimize CLS */
+        @font-face {
+            font-family: 'Inter Fallback';
+            src: local('Arial');
+            size-adjust: 107%;
+            ascent-override: 90%;
+            descent-override: 22%;
+            line-gap-override: 0%;
+        }
+        @font-face {
+            font-family: 'Playfair Fallback';
+            src: local('Georgia');
+            size-adjust: 112%;
+            ascent-override: 88%;
+            descent-override: 22%;
+            line-gap-override: 0%;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Inter', 'Inter Fallback', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.6; -webkit-font-smoothing: antialiased; }
         a { text-decoration: none; color: inherit; }
         img { max-width: 100%; }
         .breaking-bar { background: linear-gradient(135deg, #E53935 0%, #D32F2F 100%); color: white; padding: 10px 0; font-size: 13px; font-weight: 500; overflow: hidden; white-space: nowrap; }
         .breaking-bar .label { background: rgba(0,0,0,0.25); padding: 5px 14px; margin: 0 20px; display: inline-block; text-transform: uppercase; letter-spacing: 1.5px; font-size: 10px; font-weight: 700; border-radius: 4px; animation: pulse 2s ease-in-out infinite; vertical-align: middle; }
-        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.8; } }
         .ticker-wrap { overflow: hidden; display: inline-block; width: calc(100% - 160px); vertical-align: middle; }
         .ticker { display: inline-block; animation: ticker 35s linear infinite; }
         .ticker span { padding: 0 50px; }
@@ -95,9 +113,9 @@
         .hero-card img { width: 100%; height: 100%; min-height: 440px; object-fit: cover; display: block; transition: transform 0.5s ease; }
         .hero-card:hover img { transform: scale(1.03); }
         .hero-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(0deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.4) 60%, transparent 100%); padding: 60px 28px 28px; color: white; }
-        .category-pill { background: var(--primary); color: white; padding: 5px 14px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; display: inline-block; margin-bottom: 14px; }
+        .category-pill { text-shadow: 0 1px 2px rgba(0,0,0,0.3); background: var(--primary); color: white; padding: 5px 14px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; display: inline-block; margin-bottom: 14px; }
         .hero-overlay h2 { font-family: 'Playfair Display', serif; font-size: 28px; line-height: 1.3; margin-bottom: 12px; font-weight: 700; }
-        .hero-overlay .meta { font-size: 12px; opacity: 0.85; display: flex; align-items: center; gap: 16px; }
+        .hero-overlay .meta { font-size: 12px; opacity: 1; display: flex; align-items: center; gap: 16px; }
         .hero-overlay .meta .dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,0.5); }
         .article-card { background: var(--bg-white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition); cursor: pointer; border: 1px solid var(--border-light); display: flex; flex-direction: column; }
         .article-card:hover { box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 8px 16px rgba(0,0,0,0.04); transform: translateY(-6px); border-color: transparent; }
@@ -106,12 +124,12 @@
         .article-card:hover img { transform: scale(1.06); }
         .article-card .card-body { padding: 18px 20px 20px; flex: 1; display: flex; flex-direction: column; }
         .article-card .category-pill { font-size: 9px; padding: 4px 10px; margin-bottom: 10px; align-self: flex-start; }
-        .cat-politics { background: #ef4444; } .cat-business { background: #10b981; } .cat-sports { background: #3b82f6; }
-        .cat-technology, .cat-tech { background: #E53935; } .cat-entertainment { background: #f59e0b; }
-        .cat-world { background: #06b6d4; } .cat-health { background: #ec4899; } .cat-science { background: #E53935; }
-        .cat-opinion { background: #64748b; } .cat-cricket, .cat-ipl { background: #3b82f6; }
-        .cat-education { background: #14b8a6; } .cat-jobs { background: #f97316; } .cat-war { background: #78716c; }
-        .cat-gadget { background: #a855f7; }
+        .cat-politics { background: #dc2626; } .cat-business { background: #047857; } .cat-sports { background: #2563eb; }
+        .cat-technology, .cat-tech { background: #E53935; } .cat-entertainment { background: #b45309; }
+        .cat-world { background: #0e7490; } .cat-health { background: #be185d; } .cat-science { background: #E53935; }
+        .cat-opinion { background: #64748b; } .cat-cricket, .cat-ipl { background: #2563eb; }
+        .cat-education { background: #0d7377; } .cat-jobs { background: #c2410c; } .cat-war { background: #78716c; }
+        .cat-gadget { background: #7c3aed; }
         .article-card h3 { font-family: 'Source Serif 4', 'Playfair Display', serif; font-size: 17px; line-height: 1.45; margin-bottom: 10px; color: var(--text-primary); font-weight: 700; flex: 1; }
         .article-card .excerpt { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .article-card .meta { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 12px; padding-top: 14px; border-top: 1px solid var(--border-light); font-weight: 500; }
@@ -141,8 +159,8 @@
         .footer { background: #0b0f1a; color: #B0B0C8; padding: 56px 24px 0; margin-top: 56px; }
         .footer-inner { max-width: var(--max-width); margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; }
         .footer-brand p { font-size: 13px; line-height: 1.7; margin-top: 12px; color: #8E8EA0; }
-        .footer h4 { color: white; font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; margin-bottom: 18px; position: relative; padding-bottom: 10px; }
-        .footer h4::after { content: ''; position: absolute; bottom: 0; left: 0; width: 30px; height: 2px; background: linear-gradient(90deg, #E53935, #a855f7); border-radius: 1px; }
+        .footer h3 { color: white; font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; margin-bottom: 18px; position: relative; padding-bottom: 10px; }
+        .footer h3::after { content: ''; position: absolute; bottom: 0; left: 0; width: 30px; height: 2px; background: linear-gradient(90deg, #E53935, #a855f7); border-radius: 1px; }
         .footer a { color: #8E8EA0; font-size: 13px; display: block; padding: 5px 0; transition: var(--transition); }
         .footer a:hover { color: var(--primary); transform: translateX(4px); }
         .footer-newsletter { background: linear-gradient(135deg, #E53935, #C62828, #D32F2F); padding: 32px; margin-top: 40px; border-radius: var(--radius); display: flex; align-items: center; justify-content: space-between; gap: 24px; }
@@ -152,7 +170,7 @@
         .footer-newsletter input[type="email"] { padding: 12px 18px; border: none; border-radius: var(--radius-sm); font-size: 14px; width: 280px; font-family: 'Inter', sans-serif; outline: none; }
         .footer-newsletter button { padding: 12px 24px; background: rgba(0,0,0,0.3); color: white; border: 2px solid rgba(255,255,255,0.3); border-radius: var(--radius-sm); cursor: pointer; font-weight: 700; font-size: 13px; transition: var(--transition); white-space: nowrap; font-family: 'Inter', sans-serif; }
         .footer-newsletter button:hover { background: rgba(0,0,0,0.5); border-color: white; }
-        .footer-bottom { max-width: var(--max-width); margin: 32px auto 0; padding: 20px 0; border-top: 1px solid #1E1E36; text-align: center; font-size: 12px; color: #5A5A78; }
+        .footer-bottom { max-width: var(--max-width); margin: 32px auto 0; padding: 20px 0; border-top: 1px solid #1E1E36; text-align: center; font-size: 12px; color: #9090A8; }
         .article-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); z-index: 1000; overflow-y: auto; }
         .article-modal.active { display: flex; justify-content: center; padding: 40px 20px; }
         .article-detail { background: var(--bg-white); max-width: 840px; width: 100%; border-radius: 16px; overflow: hidden; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: var(--shadow-lg); }
@@ -209,19 +227,7 @@
         .cricket-widget-loading .dot-loader { display: inline-flex; gap: 4px; } .cricket-widget-loading .dot-loader span { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: dotBounce 1.4s ease-in-out infinite; } .cricket-widget-loading .dot-loader span:nth-child(2) { animation-delay: 0.2s; } .cricket-widget-loading .dot-loader span:nth-child(3) { animation-delay: 0.4s; }
         @keyframes dotBounce { 0%,80%,100% { transform: scale(0); } 40% { transform: scale(1); } }
         /* Cricket scores horizontal strip */
-        
-        
-        
-        
-        
-        
-        
-        
-        
-          
-        
-          
-    
+
         /* Scroll Reveal Animations */
         .category-section { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease, max-height 0.6s ease; max-height: 0; overflow: hidden; margin-bottom: 0; }
         .category-section.visible { opacity: 1; transform: translateY(0); max-height: 2000px; overflow: visible; margin-bottom: 12px; }
@@ -232,8 +238,7 @@
         .articles-grid .article-card:nth-child(4) { animation-delay: 0.15s; }
         .articles-grid .article-card:nth-child(5) { animation-delay: 0.2s; }
         .articles-grid .article-card:nth-child(6) { animation-delay: 0.25s; }
-    
-    
+
     </style>
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "SiteNavigationElement", "name": "Main Navigation", "url": "https://newsreporter.live", "hasPart": [{"@type": "WebPage", "name": "CBSE Study Materials", "url": "https://newsreporter.live/cbse"}, {"@type": "WebPage", "name": "Live Cricket Scores", "url": "https://newsreporter.live/cricket-live"}, {"@type": "WebPage", "name": "PIN Code Finder", "url": "https://newsreporter.live/pincode"}, {"@type": "WebPage", "name": "IFSC Code Finder", "url": "https://newsreporter.live/ifsc-codes"}, {"@type": "WebPage", "name": "India Directory", "url": "https://newsreporter.live/directory"}, {"@type": "WebPage", "name": "Loan EMI Calculator", "url": "https://newsreporter.live/loan-calculator"}, {"@type": "WebPage", "name": "SIP Calculator", "url": "https://newsreporter.live/investment-calculator"}]}
@@ -241,7 +246,7 @@
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "WebSite", "name": "News Reporter Live", "url": "https://newsreporter.live", "potentialAction": {"@type": "SearchAction", "target": {"@type": "EntryPoint", "urlTemplate": "https://newsreporter.live/?q={search_term_string}"}, "query-input": "required name=search_term_string"}}
 </script>
-<link rel="stylesheet" href="/common.css?v=2">
+<link rel="stylesheet" href="/common.css?v=4">
 </head>
 <body>
 
@@ -259,7 +264,7 @@
     </div>
 </div>
 
-<header class="header">
+<header class="header" role="banner">
     <div class="header-top">
         <div class="logo" onclick="showCategory('all')">
             <div class="logo-icon">NR</div>
@@ -271,15 +276,16 @@
         <div class="header-right">
             <div class="header-date" id="currentDate"></div>
             <div class="search-box">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                <input type="text" placeholder="Search news..." id="searchInput" onkeyup="handleSearch(event)">
+                <label for="searchInput" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0">Search</label>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" placeholder="Search news..." id="searchInput" onkeyup="handleSearch(event)" aria-label="Search news articles">
             </div>
         </div>
-        <button class="hamburger" onclick="document.querySelector('.nav-inner').classList.toggle('open')">&#9776;</button>
+        <button class="hamburger" aria-label="Toggle navigation menu" onclick="document.querySelector('.nav-inner').classList.toggle('open')">&#9776;</button>
     </div>
 </header>
 
-<nav class="nav">
+<nav class="nav" aria-label="Main navigation">
     <div class="nav-inner">
         <div class="nav-item home-tab" onclick="showCategory('all', this)">Home</div>
         <div class="cat-dropdown">
@@ -312,7 +318,7 @@
     </div>
 </nav>
 
-<div class="main" id="mainContent">
+<main class="main" id="mainContent" role="main">
     <div style="display:grid;grid-template-columns:1fr 380px;gap:28px;">
         <div class="skeleton" style="height:440px;border-radius:12px;"></div>
         <div>
@@ -322,7 +328,7 @@
             <div class="skeleton" style="height:70px;margin-bottom:12px;"></div>
         </div>
     </div>
-</div>
+</main>
 
 <div class="article-modal" id="articleModal">
     <div class="article-detail" id="articleDetail">
@@ -336,14 +342,15 @@
     <div class="gate-box">
         <h3>Access Restricted</h3>
         <form onsubmit="event.preventDefault();checkGate();">
-        <input type="password" id="gatePassword" placeholder="Enter access code" autocomplete="off">
+        <label for="gatePassword" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0">Access code</label>
+        <input type="password" id="gatePassword" aria-label="Enter access code" placeholder="Enter access code" autocomplete="off">
         <button type="submit">Enter</button>
         </form>
     </div>
 </div>
 
 <!-- SEO: Internal Linking - Tools & Resources -->
-<section style="max-width:1280px;margin:40px auto 0;padding:0 24px">
+<section style="max-width:1280px;margin:40px auto 0;padding:0 24px;min-height:200px" aria-label="Tools and Resources">
 <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:28px 32px;margin-bottom:24px">
 <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:16px;color:#0f172a">Explore Our Tools & Resources</h2>
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
@@ -360,38 +367,38 @@
 </div>
 </section>
 
-<footer class="footer">
+<footer class="footer" role="contentinfo">
     <div class="footer-inner">
         <div class="footer-brand">
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
                 <div style="width:40px;height:40px;background:linear-gradient(135deg,#E53935,#C62828);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-size:16px;font-weight:900;font-family:'Playfair Display',serif;">NR</div>
                 <div>
                     <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:white;">News Reporter</div>
-                    <div style="font-size:10px;color:#5A5A78;text-transform:uppercase;letter-spacing:2px;">Live</div>
+                    <div style="font-size:10px;color:#9CA3AF;text-transform:uppercase;letter-spacing:2px;">Live</div>
                 </div>
             </div>
             <p>India's trusted independent digital news source, delivering accurate and timely news coverage across politics, business, sports, technology, and more.</p>
         </div>
         <div>
-            <h4>Categories</h4>
-            <a href="#" onclick="showCategory('politics')">Politics</a>
-            <a href="#" onclick="showCategory('business')">Business</a>
-            <a href="#" onclick="showCategory('sports')">Sports</a>
-            <a href="#" onclick="showCategory('technology')">Technology</a>
-            <a href="#" onclick="showCategory('entertainment')">Entertainment</a>
-            <a href="#" onclick="showCategory('world')">World</a>
-            <a href="#" onclick="showCategory('health')">Health</a>
-            <a href="#" onclick="showCategory('science')">Science</a>
-            <a href="#" onclick="showCategory('opinion')">Opinion</a>
-            <a href="#" onclick="showCategory('cricket')">Cricket</a>
-            <a href="#" onclick="showCategory('ipl')">IPL</a>
-            <a href="#" onclick="showCategory('education')">Education</a>
-            <a href="#" onclick="showCategory('jobs')">Jobs</a>
-            <a href="#" onclick="showCategory('war')">War &amp; Defence</a>
-            <a href="#" onclick="showCategory('gadget reviews')">Gadget Reviews</a>
+            <h3 style="font-size:inherit">Categories</h3>
+            <a href="/?cat=politics" onclick="event.preventDefault();showCategory('politics')">Politics</a>
+            <a href="/?cat=business" onclick="event.preventDefault();showCategory('business')">Business</a>
+            <a href="/?cat=sports" onclick="event.preventDefault();showCategory('sports')">Sports</a>
+            <a href="/?cat=technology" onclick="event.preventDefault();showCategory('technology')">Technology</a>
+            <a href="/?cat=entertainment" onclick="event.preventDefault();showCategory('entertainment')">Entertainment</a>
+            <a href="/?cat=world" onclick="event.preventDefault();showCategory('world')">World</a>
+            <a href="/?cat=health" onclick="event.preventDefault();showCategory('health')">Health</a>
+            <a href="/?cat=science" onclick="event.preventDefault();showCategory('science')">Science</a>
+            <a href="/?cat=opinion" onclick="event.preventDefault();showCategory('opinion')">Opinion</a>
+            <a href="/?cat=cricket" onclick="event.preventDefault();showCategory('cricket')">Cricket</a>
+            <a href="/?cat=ipl" onclick="event.preventDefault();showCategory('ipl')">IPL</a>
+            <a href="/?cat=education" onclick="event.preventDefault();showCategory('education')">Education</a>
+            <a href="/?cat=jobs" onclick="event.preventDefault();showCategory('jobs')">Jobs</a>
+            <a href="/?cat=war" onclick="event.preventDefault();showCategory('war')">War &amp; Defence</a>
+            <a href="/?cat=gadgets" onclick="event.preventDefault();showCategory('gadget reviews')">Gadget Reviews</a>
         </div>
         <div>
-            <h4>Quick Links</h4>
+            <h3 style="font-size:inherit">Quick Links</h3>
             <a href="/privacy">Privacy Policy</a>
             <a href="/terms">Terms of Service</a>
             <a href="/cookies">Cookie Policy</a>
@@ -399,12 +406,12 @@
             <a href="/sitemap.xml">Sitemap</a>
         </div>
         <div>
-            <h4>Connect</h4>
-            <a href="#">Twitter / X</a>
-            <a href="#">Facebook</a>
-            <a href="#">Instagram</a>
-            <a href="#">YouTube</a>
-            <a href="#">Telegram</a>
+            <h3 style="font-size:inherit">Connect</h3>
+            <a href="https://twitter.com/newsreporterliv" rel="noopener noreferrer" target="_blank">Twitter / X</a>
+            <a href="https://facebook.com/newsreporterlive" rel="noopener noreferrer" target="_blank">Facebook</a>
+            <a href="https://instagram.com/newsreporterlive" rel="noopener noreferrer" target="_blank">Instagram</a>
+            <a href="https://youtube.com/@newsreporterlive" rel="noopener noreferrer" target="_blank">YouTube</a>
+            <a href="https://t.me/newsreporterlive" rel="noopener noreferrer" target="_blank">Telegram</a>
         </div>
     </div>
     <div class="footer-newsletter" style="max-width:var(--max-width);margin:40px auto 0;">
@@ -413,7 +420,8 @@
             <p>Get breaking news and top stories delivered to your inbox every morning.</p>
         </div>
         <form onsubmit="subscribeNewsletter(event)">
-            <input type="email" id="newsletterEmail" placeholder="Your email address" required>
+            <label for="newsletterEmail" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0">Email address</label>
+            <input type="email" id="newsletterEmail" aria-label="Email address for newsletter" placeholder="Your email address" required>
             <button type="submit">Subscribe</button>
         </form>
         <div id="newsletterMsg" style="font-size:12px;color:rgba(255,255,255,0.8);"></div>
@@ -471,10 +479,10 @@ var categoryDisplayNames = {
     'cricket': 'Cricket', 'ipl': 'IPL', 'gadget reviews': 'Gadget Reviews'
 };
 var categoryColors = {
-    'politics': '#ef4444', 'business': '#10b981', 'sports': '#3b82f6', 'technology': '#E53935',
-    'entertainment': '#f59e0b', 'world': '#06b6d4', 'health': '#ec4899', 'science': '#E53935',
-    'opinion': '#64748b', 'cricket': '#3b82f6', 'ipl': '#3b82f6', 'education': '#14b8a6',
-    'jobs': '#f97316', 'war': '#78716c', 'gadget reviews': '#a855f7'
+    'politics': '#dc2626', 'business': '#047857', 'sports': '#2563eb', 'technology': '#E53935',
+    'entertainment': '#b45309', 'world': '#0e7490', 'health': '#be185d', 'science': '#E53935',
+    'opinion': '#64748b', 'cricket': '#2563eb', 'ipl': '#2563eb', 'education': '#0d7377',
+    'jobs': '#c2410c', 'war': '#78716c', 'gadget reviews': '#7c3aed'
 };
 
 function handleSearch(e) {
@@ -520,7 +528,7 @@ function renderHome() {
     var latest = articles.filter(function(a) { return a.id !== hero.id; }).slice(0, 6);
     var html = '<div class="grid-2col"><div>';
     html += '<div class="hero-card" onclick="openArticle(' + hero.id + ')">';
-    html += '<img src="' + hero.image + '" alt="' + escQ(hero.title) + '" onerror="this.src=\'' + placeholderImg + '\'">';
+    html += '<img src="' + hero.image + '" alt="' + escQ(hero.title) + '" fetchpriority="high" onerror="this.src=\'' + placeholderImg + '\'">';
     html += '<div class="hero-overlay"><span class="category-pill">' + (categoryDisplayNames[hero.category] || hero.category) + '</span>';
     html += '<h2>' + hero.title + '</h2>';
     html += '<div class="meta"><span>' + hero.author + '</span><span class="dot"></span><span>' + hero.time + '</span><span class="dot"></span><span>' + hero.readTime + '</span></div>';
@@ -542,7 +550,7 @@ function renderHome() {
     articles.slice(0, 6).forEach(function(a, i) {
         html += '<div class="trending-item" onclick="openArticle(' + a.id + ')">';
         html += '<div class="trending-num">' + String(i + 1).padStart(2, '0') + '</div><div>';
-        html += '<h4>' + a.title + '</h4>';
+        html += '<h4>' + a.title + '</h3>';
         html += '<div class="meta">' + (categoryDisplayNames[a.category] || a.category) + ' &middot; ' + a.time + '</div></div></div>';
     });
     html += '</div></div></div>';
@@ -568,7 +576,7 @@ function renderArticleCard(a) {
     var catClass = 'cat-' + a.category.split(' ')[0];
     var catColor = categoryColors[a.category] || '#616161';
     var html = '<div class="article-card" onclick="openArticle(' + a.id + ')">';
-    html += '<div class="card-img"><img src="' + a.image + '" alt="' + escQ(a.title) + '" loading="lazy" onerror="this.src=\'https://placehold.co/400x200/e8e8ef/8e8ea0?text=News\'"></div>';
+    html += '<div class="card-img"><img src="' + a.image + '" alt="' + escQ(a.title) + '" loading="lazy" width="400" height="200" onerror="this.src=\'https://placehold.co/400x200/e8e8ef/8e8ea0?text=News\'"></div>';
     html += '<div class="card-body">';
     html += '<span class="category-pill ' + catClass + '" style="background:' + catColor + '">' + (categoryDisplayNames[a.category] || a.category) + '</span>';
     html += '<h3>' + a.title + '</h3>';
@@ -595,7 +603,7 @@ function renderCategoryPage(cat) {
         catArticles.slice(1, 8).forEach(function(a) {
             html += '<div class="article-list-item" onclick="openArticle(' + a.id + ')">';
             html += '<img src="' + a.image + '" alt="' + escQ(a.title) + '" loading="lazy" onerror="this.src=\'https://placehold.co/100x70/e8e8ef/8e8ea0?text=News\'">';
-            html += '<div><h4>' + a.title + '</h4><div class="meta">' + a.author + ' &middot; ' + a.time + '</div></div></div>';
+            html += '<div><h4>' + a.title + '</h3><div class="meta">' + a.author + ' &middot; ' + a.time + '</div></div></div>';
         });
         html += '</div></div></div>';
     }
@@ -725,7 +733,6 @@ function checkGate() {
     else { document.getElementById('gatePassword').value = ''; document.getElementById('gatePassword').placeholder = 'Incorrect. Try again.'; document.getElementById('gatePassword').focus(); }
 }
 
-
 async function subscribeNewsletter(e) {
     e.preventDefault();
     var email = document.getElementById('newsletterEmail').value, msgEl = document.getElementById('newsletterMsg');
@@ -742,7 +749,7 @@ function renderComments(articleId) {
         '<h3 style="font-family:Playfair Display,serif;font-size:20px;margin-bottom:20px;">Comments</h3>' +
         '<div id="commentsList-' + articleId + '" style="margin-bottom:24px;"><p style="color:var(--text-muted)">Loading comments...</p></div>' +
         '<div style="background:var(--bg);padding:20px;border-radius:var(--radius);border:1px solid var(--border-light);">' +
-        '<h4 style="margin-bottom:14px;font-weight:600;">Leave a Comment</h4>' +
+        '<h3 style="font-size:inherit" style="margin-bottom:14px;font-weight:600;">Leave a Comment</h3>' +
         '<input type="text" id="commentName-' + articleId + '" placeholder="Your Name" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-xs);margin-bottom:10px;background:var(--bg-white);color:var(--text-primary);font-family:Inter,sans-serif;font-size:14px;outline:none;">' +
         '<input type="email" id="commentEmail-' + articleId + '" placeholder="Your Email (optional)" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-xs);margin-bottom:10px;background:var(--bg-white);color:var(--text-primary);font-family:Inter,sans-serif;font-size:14px;outline:none;">' +
         '<textarea id="commentText-' + articleId + '" placeholder="Write your comment..." rows="3" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-xs);margin-bottom:12px;resize:vertical;background:var(--bg-white);color:var(--text-primary);font-family:Inter,sans-serif;font-size:14px;outline:none;"></textarea>' +
@@ -951,6 +958,17 @@ var revealObserver = new IntersectionObserver(function(entries) {
 function observeSections() { document.querySelectorAll('.category-section').forEach(function(el) { revealObserver.observe(el); }); }
 var origRenderHome = renderHome;
 renderHome = function() { origRenderHome(); setTimeout(observeSections, 100); };
+
+// IntersectionObserver for scroll-reveal
+if ('IntersectionObserver' in window) {
+    var revealObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); } });
+    }, { rootMargin: '100px', threshold: 0.01 });
+    function observeSections() { document.querySelectorAll('.category-section:not(.visible)').forEach(function(el) { revealObs.observe(el); }); }
+    var _rh = renderHome; renderHome = function() { _rh(); setTimeout(observeSections, 100); };
+    var _rc = renderCategoryPage; renderCategoryPage = function(c) { _rc(c); setTimeout(observeSections, 100); };
+}
+
 </script>
 
 </body>
