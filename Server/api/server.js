@@ -2037,6 +2037,12 @@ app.post('/api/cms/fetch-rss', requireAdmin, async (req, res) => {
                     }
 
                     const slug = generateSlug(item.title);
+                    // Check for duplicate before RSS insert
+                    const existingRSS = db.prepare('SELECT id FROM cms_articles WHERE title = ? AND category = ? LIMIT 1').get(item.title, feed.category);
+                    if (existingRSS) {
+                        console.log(`RSS: Skipping duplicate "${item.title}" in ${feed.category}`);
+                        continue;
+                    }
                     const status = (apiKey && settings.ai_auto_publish === '1') ? 'published' : 'draft';
                     db.prepare(`
                         INSERT INTO cms_articles (title, slug, excerpt, content, category, image_url, author, status, source_url, ai_generated, published_at)
@@ -2121,6 +2127,19 @@ app.post('/api/cms/ai-generate', requireAdmin, async (req, res) => {
                     );
 
                     if (result && result.title && result.content) {
+                        // CHECK FOR DUPLICATE: skip if title already exists in this category
+                        const existingArticle = db.prepare('SELECT id FROM cms_articles WHERE title = ? AND category = ? LIMIT 1').get(result.title, cat.name);
+                        if (existingArticle) {
+                            console.log(`Skipping duplicate: "${result.title}" already exists in ${cat.name} (ID: ${existingArticle.id})`);
+                            continue;
+                        }
+                        const slug = generateSlug(result.title);
+                        const existingSlug = db.prepare('SELECT id FROM cms_articles WHERE slug = ? LIMIT 1').get(slug);
+                        if (existingSlug) {
+                            console.log(`Skipping duplicate slug: "${result.title}" (slug: ${slug}) already exists (ID: ${existingSlug.id})`);
+                            continue;
+                        }
+                        
                         // Fetch thumbnail image based on category
                         const imageQuery = result.image_query || topic;
                         let imageUrl = '';
@@ -2131,8 +2150,8 @@ app.post('/api/cms/ai-generate', requireAdmin, async (req, res) => {
                             imageUrl = `https://images.unsplash.com/photo-1504711434969-e33886168d6c?w=800&q=80`;
                         }
 
-                        const slug = generateSlug(result.title);
-                        const excerpt = result.excerpt || result.content.replace(/<[^>]+>/g, '').substring(0, 200);
+                        // slug already generated above for duplicate check
+                        const excerpt = sanitizeArticleExcerpt(result.excerpt || result.content.replace(/<[^>]+>/g, '').substring(0, 200));
                         const metaDesc = result.meta_description || excerpt.substring(0, 160);
                         const metaKeywords = result.meta_keywords || '';
 
@@ -2962,6 +2981,43 @@ function getVncPortForDevice(rdpPort) {
 }
 
 // AI API call helper
+
+// Sanitize article content - remove code blocks, raw JSON, and unwanted markup
+function sanitizeArticleContent(content) {
+    if (!content) return '';
+    let clean = content;
+    // Remove code block markers and their language tags
+    clean = clean.replace(/```(?:json|html|javascript)?[\s\S]*?```/gi, '');
+    clean = clean.replace(/```(?:json|html|javascript)?/gi, '');
+    clean = clean.replace(/```/g, '');
+    // Remove raw JSON objects that look like AI response wrappers
+    clean = clean.replace(/^\s*\{\s*"title"\s*:.*?"content"\s*:\s*/s, '');
+    // Clean up excessive whitespace
+    clean = clean.replace(/\n{3,}/g, '\n\n').trim();
+    return clean;
+}
+
+// Sanitize article excerpt - must be plain text, no JSON/HTML/code
+function sanitizeArticleExcerpt(excerpt) {
+    if (!excerpt) return '';
+    let clean = excerpt;
+    // Remove code blocks
+    clean = clean.replace(/```[\s\S]*?```/g, '');
+    clean = clean.replace(/```/g, '');
+    // Remove HTML tags
+    clean = clean.replace(/<[^>]+>/g, '');
+    // Remove JSON-like content
+    clean = clean.replace(/\{[\s\S]*?"title"[\s\S]*?\}/g, '');
+    clean = clean.replace(/\{[\s\S]*?"content"[\s\S]*?\}/g, '');
+    // Clean up
+    clean = clean.replace(/\s+/g, ' ').trim();
+    // If still looks like JSON/code, return empty
+    if (clean.startsWith('{') || clean.startsWith('[') || clean.indexOf('`' + '`' + '`') >= 0) {
+        return '';
+    }
+    return clean.substring(0, 300);
+}
+
 async function callAI(provider, apiKey, model, systemPrompt, title, content) {
     const https = require('https');
     
@@ -3022,27 +3078,44 @@ async function callAI(provider, apiKey, model, systemPrompt, title, content) {
                         text = parsed.choices?.[0]?.message?.content;
                     }
                     if (!text) return reject(new Error('No response from AI: ' + data.substring(0, 500)));
-                    // Strip markdown code block wrappers if present
+                    // Strip ALL markdown code block wrappers (handle multiple/nested blocks)
                     let cleanText = text.trim();
-                    cleanText = cleanText.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim();
+                    cleanText = cleanText.replace(/```(?:json|html|javascript)?\s*/gi, '').replace(/```/g, '').trim();
                     // Try to parse as JSON
                     try {
                         const jsonStart = cleanText.indexOf('{');
                         const jsonEnd = cleanText.lastIndexOf('}') + 1;
                         if (jsonStart === -1 || jsonEnd <= jsonStart) throw new Error('No JSON object found');
-                        const result = JSON.parse(cleanText.substring(jsonStart, jsonEnd));
+                        let jsonStr = cleanText.substring(jsonStart, jsonEnd);
+                        // Fix common JSON issues: trailing commas
+                        jsonStr = jsonStr.replace(/,\s*([}\]])/g, '$1');
+                        const result = JSON.parse(jsonStr);
                         // Validate required fields
                         if (!result.title || !result.content) throw new Error('Missing title or content in JSON');
                         // Clean up content - fix literal \n\n and escaped quotes
                         result.content = result.content.replace(/\\n\\n/g, '</p><p>').replace(/\\n/g, ' ').replace(/\\"/g, '"');
+                        // Sanitize content and excerpt
+                        result.content = sanitizeArticleContent(result.content);
+                        if (result.excerpt) result.excerpt = sanitizeArticleExcerpt(result.excerpt);
                         resolve(result);
                     } catch (jsonErr) {
-                        // Fallback: extract a clean title from the content, not the prompt
-                        const firstLine = text.replace(/<[^>]+>/g, '').trim().split(/[.!?\n]/)[0].trim();
-                        const fallbackTitle = firstLine.length > 10 && firstLine.length < 200 ? firstLine : 'Breaking News Update';
-                        const fallbackContent = text.replace(/\\n\\n/g, '</p><p>').replace(/\\n/g, ' ');
-                        console.error('AI JSON parse failed:', jsonErr.message, '| Using fallback title:', fallbackTitle);
-                        resolve({ title: fallbackTitle, content: fallbackContent, excerpt: fallbackContent.replace(/<[^>]+>/g, '').substring(0, 200), meta_description: fallbackContent.replace(/<[^>]+>/g, '').substring(0, 160) });
+                        // Fallback: try harder to extract JSON
+                        try {
+                            const jsonMatch = cleanText.match(/\{[\s\S]*?"title"\s*:\s*"[^"]+?"[\s\S]*?"content"\s*:[\s\S]*?\}/);
+                            if (jsonMatch) {
+                                let extracted = jsonMatch[0].replace(/,\s*([}\]])/g, '$1');
+                                const secondResult = JSON.parse(extracted);
+                                if (secondResult.title && secondResult.content) {
+                                    secondResult.content = sanitizeArticleContent(secondResult.content);
+                                    if (secondResult.excerpt) secondResult.excerpt = sanitizeArticleExcerpt(secondResult.excerpt);
+                                    resolve(secondResult);
+                                    return;
+                                }
+                            }
+                        } catch(e) { /* second attempt failed too */ }
+                        // REJECT instead of creating "Breaking News Update" garbage
+                        console.error('AI JSON parse failed completely:', jsonErr.message, '| Raw (300):', text.substring(0, 300));
+                        reject(new Error('AI returned unparseable response: ' + jsonErr.message));
                     }
                 } catch (e) {
                     reject(new Error('Failed to parse AI response: ' + e.message + ' | Raw: ' + data.substring(0, 300)));
@@ -3496,6 +3569,19 @@ function startAIAutoPublishTimer() {
                     );
                     
                     if (result && result.title && result.content) {
+                        // CHECK FOR DUPLICATE: skip if title already exists
+                        const existingArticle = db.prepare('SELECT id FROM cms_articles WHERE title = ? AND category = ? LIMIT 1').get(result.title, cat.name);
+                        if (existingArticle) {
+                            console.log(`AI auto-publish: Skipping duplicate "${result.title}" in ${cat.name} (ID: ${existingArticle.id})`);
+                            continue;
+                        }
+                        const autoSlug = generateSlug(result.title);
+                        const existingSlug = db.prepare('SELECT id FROM cms_articles WHERE slug = ? LIMIT 1').get(autoSlug);
+                        if (existingSlug) {
+                            console.log(`AI auto-publish: Skipping duplicate slug "${result.title}" (ID: ${existingSlug.id})`);
+                            continue;
+                        }
+                        
                         let imageUrl = '';
                         try {
                             imageUrl = await searchUnsplashImage(cat.name.toLowerCase() + ' ' + (result.image_query || chosenTopic));
@@ -3503,15 +3589,15 @@ function startAIAutoPublishTimer() {
                             imageUrl = 'https://images.unsplash.com/photo-1504711434969-e33886168d6c?w=800&q=80';
                         }
                         
-                        const slug = generateSlug(result.title);
-                        const excerpt = result.excerpt || result.content.replace(/<[^>]+>/g, '').substring(0, 200);
+                        // slug already generated above for duplicate check
+                        const excerpt = sanitizeArticleExcerpt(result.excerpt || result.content.replace(/<[^>]+>/g, '').substring(0, 200));
                         const metaDesc = result.meta_description || excerpt.substring(0, 160);
                         
                         const catAuthor = getAuthorForCategory(cat.name);
                         db.prepare(`
                             INSERT INTO cms_articles (title, slug, excerpt, content, category, image_url, author, status, source_url, ai_generated, published_at, meta_description)
                             VALUES (?, ?, ?, ?, ?, ?, ?, 'published', ?, 1, ?, ?)
-                        `).run(result.title, slug, excerpt, result.content, cat.name, imageUrl, catAuthor.name, 'ai-auto-generated', new Date().toISOString(), metaDesc);
+                        `).run(result.title, autoSlug, excerpt, result.content, cat.name, imageUrl, catAuthor.name, 'ai-auto-generated', new Date().toISOString(), metaDesc);
                         
                         db.prepare('INSERT INTO cms_ai_log (source_url, source_title, status) VALUES (?, ?, ?)').run('ai-auto-generated', result.title, 'auto-published');
                         totalGenerated++;
