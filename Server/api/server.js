@@ -2206,28 +2206,32 @@ app.get('/api/cms/stats', requireAdmin, (req, res) => {
 // --- Sitemap XML ---
 app.get('/sitemap.xml', (req, res) => {
     try {
-        const articles = db.prepare('SELECT slug, updated_at, published_at FROM cms_articles WHERE status = ? ORDER BY published_at DESC').all('published');
+        const articles = db.prepare('SELECT slug, updated_at, published_at, category FROM cms_articles WHERE status = ? ORDER BY published_at DESC').all('published');
         const baseUrl = 'https://newsreporter.live';
+        const today = new Date().toISOString().split('T')[0];
         let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-        xml += `  <url><loc>${baseUrl}/</loc><changefreq>hourly</changefreq><priority>1.0</priority></url>\n`;
+        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n';
+        xml += '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n';
+        xml += `  <url><loc>${baseUrl}/</loc><changefreq>hourly</changefreq><priority>1.0</priority><lastmod>${today}</lastmod></url>\n`;
         // Static pages
         const staticPages = ['/movies','/cricket-live','/financial-aids','/cbse','/investment-calculator','/loan-calculator','/ifsc-codes','/pincode','/directory'];
         for (const p of staticPages) {
-            xml += `  <url><loc>${baseUrl}${p}</loc><changefreq>daily</changefreq><priority>0.9</priority></url>\n`;
+            xml += `  <url><loc>${baseUrl}${p}</loc><changefreq>daily</changefreq><priority>0.9</priority><lastmod>${today}</lastmod></url>\n`;
         }
         for (const a of articles) {
-            const lastmod = (a.updated_at || a.published_at || '').split(' ')[0];
-            xml += `  <url><loc>${baseUrl}/article/${a.slug}</loc>${lastmod ? '<lastmod>' + lastmod + '</lastmod>' : ''}<changefreq>weekly</changefreq><priority>0.8</priority></url>\n`;
-            // AMP version
-            xml += `  <url><loc>${baseUrl}/amp/article/${a.slug}</loc>${lastmod ? '<lastmod>' + lastmod + '</lastmod>' : ''}<changefreq>weekly</changefreq><priority>0.6</priority></url>\n`;
+            const lastmod = (a.updated_at || a.published_at || '').split(' ')[0] || today;
+            xml += `  <url><loc>${baseUrl}/article/${a.slug}</loc><lastmod>${lastmod}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>\n`;
+            // NOTE: AMP URLs intentionally excluded from sitemap
+            // AMP pages are discovered via <link rel="amphtml"> on article pages
+            // Including AMP in sitemap causes "Alternative page with proper canonical tag" in Google Search Console
         }
         const categories = db.prepare('SELECT slug FROM cms_categories ORDER BY sort_order').all();
         for (const c of categories) {
-            xml += `  <url><loc>${baseUrl}/category/${c.slug}</loc><changefreq>daily</changefreq><priority>0.7</priority></url>\n`;
+            xml += `  <url><loc>${baseUrl}/category/${c.slug}</loc><changefreq>daily</changefreq><priority>0.7</priority><lastmod>${today}</lastmod></url>\n`;
         }
         xml += '</urlset>';
         res.set('Content-Type', 'application/xml');
+        res.setHeader('Cache-Control', 'public, max-age=7200');
         res.send(xml);
     } catch (err) {
         res.status(500).send('Error generating sitemap');
@@ -2236,8 +2240,18 @@ app.get('/sitemap.xml', (req, res) => {
 
 // --- Robots.txt ---
 app.get('/robots.txt', (req, res) => {
-    const txt = `User-agent: *\nAllow: /\nSitemap: https://newsreporter.live/sitemap.xml\n`;
+    const txt = [
+        'User-agent: *',
+        'Allow: /',
+        'Disallow: /api/',
+        'Disallow: /admin',
+        'Disallow: /portal',
+        '',
+        'Sitemap: https://newsreporter.live/sitemap.xml',
+        ''
+    ].join('\n');
     res.set('Content-Type', 'text/plain');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
     res.send(txt);
 });
 
@@ -2758,19 +2772,22 @@ app.get('/sitemap.xml', (req, res) => {
 // SEO: Robots.txt
 // ============================================================
 app.get('/robots.txt', (req, res) => {
-    const robots = `User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /portal
-Disallow: /api/
-Allow: /api/news
-Allow: /api/news/
-
-Sitemap: https://newsreporter.live/sitemap.xml
-
-# Crawl-delay: 1
-`;
-    res.set('Content-Type', 'text/plain');
+    const robots = [
+        'User-agent: *',
+        'Allow: /',
+        'Disallow: /api/',
+        'Disallow: /admin',
+        'Disallow: /portal',
+        '',
+        '# AMP pages should not be indexed directly (canonical points to regular pages)',
+        'User-agent: Googlebot',
+        'Allow: /amp/article/',
+        '',
+        'Sitemap: https://newsreporter.live/sitemap.xml',
+        ''
+    ].join('\n');
+    res.setHeader('Content-Type', 'text/plain');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
     res.send(robots);
 });
 
@@ -4997,7 +5014,8 @@ app.get('/sitemap.xml', (req, res) => {
         
         let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
         xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n';
-        xml += '        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">\n\n';
+        xml += '        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"\n';
+        xml += '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n\n';
         
         // Static pages
         const staticPages = [
@@ -5044,19 +5062,13 @@ app.get('/sitemap.xml', (req, res) => {
             xml += '    <priority>0.7</priority>\n';
             xml += '    <lastmod>' + lastmod + '</lastmod>\n';
             xml += '  </url>\n';
-            // AMP version
-            xml += '  <url>\n';
-            xml += '    <loc>https://newsreporter.live/amp/article/' + article.slug + '</loc>\n';
-            xml += '    <changefreq>weekly</changefreq>\n';
-            xml += '    <priority>0.6</priority>\n';
-            xml += '    <lastmod>' + lastmod + '</lastmod>\n';
-            xml += '  </url>\n';
+            // AMP version NOT included in sitemap - discovered via <link rel="amphtml"> on article pages
         }
         
         xml += '</urlset>\n';
         
         res.setHeader('Content-Type', 'application/xml');
-        res.setHeader('Cache-Control', 'public, max-age=3600');
+        res.setHeader('Cache-Control', 'public, max-age=7200');
         res.send(xml);
     } catch (err) {
         console.error('Sitemap error:', err.message);
@@ -5200,8 +5212,15 @@ app.get('/article/:slug', (req, res) => {
             }
             html = html.replace('</head>', structuredDataScript + '</head>');
         } else {
-            // Article not found - return 404 status with the page
-            res.status(404);
+            // Article not found - return 410 Gone to tell Google to de-index
+            const notFoundHtml = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+                '<meta name="robots" content="noindex">' +
+                '<title>Article Not Found | News Reporter Live</title>' +
+                '<style>body{font-family:-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f8f9fa;color:#333}' +
+                '.container{text-align:center;padding:40px}h1{font-size:48px;color:#E53935;margin:0}p{font-size:18px;margin:16px 0}a{color:#1565C0;text-decoration:none}</style></head>' +
+                '<body><div class="container"><h1>410</h1><p>This article has been removed.</p>' +
+                '<a href="https://newsreporter.live">← Back to News Reporter Live</a></div></body></html>';
+            return res.status(410).setHeader('Content-Type', 'text/html').send(notFoundHtml);
         }
         res.setHeader('Content-Type', 'text/html');
         res.send(html);
@@ -5218,7 +5237,7 @@ app.get('/amp/article/:slug', (req, res) => {
     try {
         const article = db.prepare('SELECT title, excerpt, image_url, category, slug, content, author, published_at, updated_at, meta_keywords FROM cms_articles WHERE slug = ? AND status = ?').get(req.params.slug, 'published');
         if (!article) {
-            return res.status(404).send('<!doctype html><html><head><title>Not Found</title></head><body><h1>Article not found</h1></body></html>');
+            return res.status(410).send('<!doctype html><html><head><meta name="robots" content="noindex"><title>Gone</title></head><body><h1>This article has been removed.</h1><p><a href="https://newsreporter.live">Back to News Reporter Live</a></p></body></html>');
         }
         const safeTitle = (article.title || '').replace(/[<>"&]/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;','&':'&amp;'}[c]));
         const safeDesc = (article.excerpt || article.title || '').replace(/[<>"&]/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;','&':'&amp;'}[c])).substring(0, 160);
@@ -5345,6 +5364,8 @@ app.get('/amp/article/:slug', (req, res) => {
 
         res.setHeader('Content-Type', 'text/html');
         res.setHeader('AMP-Access-Control-Allow-Source-Origin', 'https://newsreporter.live');
+        res.setHeader('X-Robots-Tag', 'noindex');
+        res.setHeader('Link', '<https://newsreporter.live/article/' + article.slug + '>; rel="canonical"');
         res.send(ampHtml);
     } catch (err) {
         console.error('AMP page error:', err.message);
