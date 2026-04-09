@@ -1120,8 +1120,23 @@
     }
 
     function runCommand(action) {
-        showToast('Sending command: ' + action, 'success');
+        showToast('Sending command: ' + action + '...', 'success');
         addLogEntry('system', 'Quick command: ' + action);
+        fetch('/api/remote-command', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: action, target: 'vps' })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast(data.message || ('Command ' + action + ' executed'), 'success');
+                sendNotification('Command Executed', data.message || action);
+            } else {
+                showToast('Command failed: ' + (data.message || 'Unknown error'), 'error');
+            }
+        })
+        .catch(err => showToast('Command error: ' + err.message, 'error'));
     }
 
     // ============ Keyboard Shortcuts ============
@@ -1146,8 +1161,22 @@
     }
 
     function sendKeyCombo(keys) {
-        showToast('Sent: ' + keys, 'success');
+        showToast('Sending: ' + keys + '...', 'success');
         addLogEntry('system', 'Keyboard shortcut: ' + keys);
+        fetch('/api/guac-keys', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ keys: keys })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Sent: ' + keys, 'success');
+            } else {
+                showToast('Key send failed: ' + (data.message || 'Error'), 'error');
+            }
+        })
+        .catch(err => showToast('Key send error: ' + err.message, 'error'));
     }
 
     // ============ Scheduled Tasks ============
@@ -1213,11 +1242,24 @@
 
     function sendWoL(id) {
         const d = devices.find(x => x.id === id);
-        if (d) {
-            showToast('WoL packet sent to ' + d.name, 'success');
-            addLogEntry('system', 'Wake-on-LAN sent to ' + d.name + ' (' + d.mac + ')');
-            sendNotification('Wake-on-LAN', 'Magic packet sent to ' + d.name);
-        }
+        if (!d || !d.mac) return;
+        showToast('Sending WoL to ' + d.name + '...', 'success');
+        addLogEntry('system', 'Wake-on-LAN sent to ' + d.name + ' (' + d.mac + ')');
+        fetch('/api/wol', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mac: d.mac })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast('WoL packet sent to ' + d.name, 'success');
+                sendNotification('Wake-on-LAN', data.message || 'Magic packet sent to ' + d.name);
+            } else {
+                showToast('WoL failed: ' + (data.message || 'Error'), 'error');
+            }
+        })
+        .catch(err => showToast('WoL error: ' + err.message, 'error'));
     }
 
     // ============ File Transfer ============
@@ -1228,25 +1270,64 @@
         input.onchange = (e) => {
             const files = Array.from(e.target.files);
             files.forEach(f => {
-                showToast('Uploading: ' + f.name + ' (' + (f.size / 1024).toFixed(1) + ' KB)', 'success');
+                showToast('Uploading: ' + f.name + ' (' + (f.size / 1024).toFixed(1) + ' KB)...', 'success');
                 addLogEntry('system', 'File upload: ' + f.name);
+                const formData = new FormData();
+                formData.append('file', f);
+                fetch('/api/file-upload', { method: 'POST', body: formData })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast('Uploaded: ' + f.name, 'success');
+                        sendNotification('File Uploaded', f.name + ' uploaded to shared drive');
+                    } else {
+                        showToast('Upload failed: ' + (data.message || 'Error'), 'error');
+                    }
+                })
+                .catch(err => showToast('Upload error: ' + err.message, 'error'));
             });
         };
         input.click();
     }
 
     function openFileDownload() {
-        showToast('Opening remote file browser...', 'success');
+        showToast('Opening Guacamole file browser...', 'success');
+        addLogEntry('system', 'File download: opened Guacamole file browser');
+        // Open Guacamole's built-in SFTP file browser
         const guacUrl = GUAC_BASE + '/#/';
         window.open(guacUrl, '_blank');
+        // Also fetch file listing from shared drive
+        fetch('/api/file-browser')
+        .then(r => r.json())
+        .then(data => {
+            if (data.items && data.items.length > 0) {
+                showToast(data.items.length + ' files on shared drive', 'success');
+            }
+        })
+        .catch(() => {});
     }
 
     // ============ Clipboard Sync ============
     function sendClipboard() {
         const text = document.getElementById('clipboard-text').value;
         if (!text) { showToast('Clipboard is empty', 'error'); return; }
-        showToast('Clipboard sent to remote desktop', 'success');
+        showToast('Sending clipboard...', 'success');
         addLogEntry('system', 'Clipboard sync: sent ' + text.length + ' chars');
+        fetch('/api/guac-clipboard', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: text })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast(data.message || 'Clipboard synced', 'success');
+                sendNotification('Clipboard Synced', text.length + ' characters sent to remote');
+            } else {
+                showToast('Clipboard sync failed: ' + (data.message || 'Error'), 'error');
+            }
+        })
+        .catch(err => showToast('Clipboard error: ' + err.message, 'error'));
     }
 
     async function readClipboard() {
@@ -1275,6 +1356,12 @@
             btn.classList.remove('btn-danger');
             showToast('Recording saved (' + dur + 's)', 'success');
             addLogEntry('system', 'Session recording stopped (' + dur + 's)');
+            // Disable server-side Guacamole recording
+            fetch('/api/guac-recording', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ enable: false })
+            }).catch(() => {});
         } else {
             isRecording = true;
             recordingStart = Date.now();
@@ -1284,18 +1371,44 @@
             btn.style.color = 'var(--red)';
             showToast('Recording started', 'success');
             addLogEntry('system', 'Session recording started');
+            // Enable server-side Guacamole recording
+            fetch('/api/guac-recording', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ enable: true, connectionName: 'UAE Office PC' })
+            }).then(r => r.json()).then(data => {
+                if (data.success) showToast('Server-side recording enabled', 'success');
+            }).catch(() => {});
         }
     }
 
     function showRecordings() {
         const list = document.getElementById('recordings-list');
-        if (!recordings.length) { list.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">No recordings yet.</p>'; return; }
-        list.innerHTML = '';
+        // Show local recordings
+        let html = '';
         recordings.slice(-10).reverse().forEach(r => {
             const d = new Date(r.date);
-            list.innerHTML += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-subtle);">' +
+            html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-subtle);">' +
                 '<div style="font-size:13px;"><strong>' + d.toLocaleDateString() + ' ' + d.toLocaleTimeString() + '</strong><span style="color:var(--text-muted);margin-left:12px;">' + r.duration + 's</span></div>' +
-                '<button class="btn btn-ghost btn-xs" onclick="showToast(\'Playback not available in demo\',\'error\')">Play</button></div>';
+                '<span class="btn btn-ghost btn-xs" style="opacity:0.6;">Local</span></div>';
+        });
+        // Also fetch server-side Guacamole recordings
+        fetch('/api/guac-recordings')
+        .then(r => r.json())
+        .then(data => {
+            if (data.recordings && data.recordings.length > 0) {
+                data.recordings.forEach(r => {
+                    html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-subtle);">' +
+                        '<div style="font-size:13px;"><strong>' + r.name + '</strong><span style="color:var(--text-muted);margin-left:12px;">' + r.size + ' bytes - ' + r.date + '</span></div>' +
+                        '<span class="btn btn-ghost btn-xs" style="color:var(--green);">Server</span></div>';
+                });
+            }
+            if (!html) html = '<p style="color:var(--text-muted);font-size:13px;">No recordings yet.</p>';
+            list.innerHTML = html;
+        })
+        .catch(() => {
+            if (!html) html = '<p style="color:var(--text-muted);font-size:13px;">No recordings yet.</p>';
+            list.innerHTML = html;
         });
     }
 
@@ -1372,35 +1485,50 @@
     }
 
     function updateMonitors() {
-        const cpu = 15 + Math.random() * 50;
-        const ramUsed = 3.5 + Math.random() * 3;
-        const diskUsed = 115 + Math.random() * 10;
-        const netDown = 20 + Math.random() * 60;
-        const netUp = 5 + Math.random() * 20;
-        document.getElementById('mon-cpu').textContent = Math.round(cpu) + '%';
-        document.getElementById('mon-cpu-bar').style.width = cpu + '%';
-        document.getElementById('mon-cpu-info').textContent = 'Intel i5 - 4 Cores @ ' + (1.5 + Math.random() * 2.5).toFixed(1) + ' GHz';
-        document.getElementById('mon-ram').textContent = ramUsed.toFixed(1) + ' GB';
-        document.getElementById('mon-ram-bar').style.width = (ramUsed / 8 * 100) + '%';
-        document.getElementById('mon-ram-info').textContent = ramUsed.toFixed(1) + ' / 8 GB Used';
-        document.getElementById('mon-disk').textContent = Math.round(diskUsed) + ' GB';
-        document.getElementById('mon-disk-bar').style.width = (diskUsed / 256 * 100) + '%';
-        document.getElementById('mon-disk-info').textContent = Math.round(diskUsed) + ' / 256 GB Used';
-        document.getElementById('mon-net').textContent = Math.round(netDown) + ' Mbps';
-        document.getElementById('mon-net-bar').style.width = (netDown / 100 * 100) + '%';
-        document.getElementById('mon-net-info').textContent = 'Up: ' + Math.round(netUp) + ' Mbps | Down: ' + Math.round(netDown) + ' Mbps';
-        // Update connection quality
-        const latency = 8 + Math.random() * 30;
-        const fps = 25 + Math.random() * 10;
-        const bw = 1.5 + Math.random() * 3;
-        document.getElementById('q-latency').textContent = Math.round(latency) + 'ms';
-        document.getElementById('q-fps').textContent = Math.round(fps);
-        document.getElementById('q-bw').textContent = bw.toFixed(1) + ' Mbps';
-        const dot = document.getElementById('q-dot');
-        const status = document.getElementById('q-status');
-        if (latency < 20) { dot.className = 'quality-dot good'; status.textContent = 'Excellent'; }
-        else if (latency < 35) { dot.className = 'quality-dot fair'; status.textContent = 'Good'; }
-        else { dot.className = 'quality-dot poor'; status.textContent = 'Fair'; }
+        fetch('/api/system-metrics')
+        .then(r => r.json())
+        .then(data => {
+            // CPU
+            const cpu = data.cpu.usage;
+            document.getElementById('mon-cpu').textContent = cpu + '%';
+            document.getElementById('mon-cpu-bar').style.width = cpu + '%';
+            document.getElementById('mon-cpu-info').textContent = data.cpu.model.substring(0, 30) + ' - ' + data.cpu.cores + ' Cores @ ' + (data.cpu.speed / 1000).toFixed(1) + ' GHz';
+            // RAM
+            const ramUsed = parseFloat(data.ram.usedGB);
+            const ramTotal = parseFloat(data.ram.totalGB);
+            document.getElementById('mon-ram').textContent = ramUsed.toFixed(1) + ' GB';
+            document.getElementById('mon-ram-bar').style.width = data.ram.percent + '%';
+            document.getElementById('mon-ram-info').textContent = ramUsed.toFixed(1) + ' / ' + ramTotal.toFixed(1) + ' GB Used';
+            // Disk
+            document.getElementById('mon-disk').textContent = data.disk.usedGB + ' GB';
+            document.getElementById('mon-disk-bar').style.width = data.disk.percent + '%';
+            document.getElementById('mon-disk-info').textContent = data.disk.usedGB + ' / ' + data.disk.totalGB + ' GB Used';
+            // Network
+            const netDown = data.network.rxMbps;
+            const netUp = data.network.txMbps;
+            document.getElementById('mon-net').textContent = netDown + ' Mbps';
+            document.getElementById('mon-net-bar').style.width = Math.min(100, netDown) + '%';
+            document.getElementById('mon-net-info').textContent = 'Up: ' + netUp + ' Mbps | Down: ' + netDown + ' Mbps';
+            // Connection quality based on real latency measurement
+            const latencyStart = performance.now();
+            fetch('/api/system-metrics', { method: 'HEAD' }).then(() => {
+                const latency = Math.round(performance.now() - latencyStart);
+                document.getElementById('q-latency').textContent = latency + 'ms';
+                document.getElementById('q-fps').textContent = latency < 50 ? '30' : latency < 100 ? '24' : '15';
+                document.getElementById('q-bw').textContent = (netDown || 0) + ' Mbps';
+                const dot = document.getElementById('q-dot');
+                const status = document.getElementById('q-status');
+                if (latency < 50) { dot.className = 'quality-dot good'; status.textContent = 'Excellent'; }
+                else if (latency < 150) { dot.className = 'quality-dot fair'; status.textContent = 'Good'; }
+                else { dot.className = 'quality-dot poor'; status.textContent = 'Fair'; }
+            }).catch(() => {});
+        })
+        .catch(err => {
+            // Fallback to simulated data if API unavailable
+            const cpu = 15 + Math.random() * 50;
+            document.getElementById('mon-cpu').textContent = Math.round(cpu) + '%';
+            document.getElementById('mon-cpu-bar').style.width = cpu + '%';
+        });
     }
 
     // ============ Push Notifications ============

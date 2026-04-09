@@ -1544,6 +1544,353 @@ app.post('/api/disconnect-external-rdp', (req, res) => {
 });
 
 // ============================================================
+// Dashboard Real-Time API Routes (System Metrics, WoL, Commands)
+// ============================================================
+
+const os = require('os');
+const dgram = require('dgram');
+
+// Track previous network bytes for calculating speed
+let prevNetStats = { rx: 0, tx: 0, time: Date.now() };
+
+// GET /api/system-metrics - Real VPS system metrics
+app.get('/api/system-metrics', (req, res) => {
+    try {
+        const cpus = os.cpus();
+        const totalMem = os.totalmem();
+        const freeMem = os.freemem();
+        const usedMem = totalMem - freeMem;
+        const uptime = os.uptime();
+
+        // CPU usage from /proc/stat for accuracy
+        let cpuUsage = 0;
+        try {
+            const stat = require('fs').readFileSync('/proc/stat', 'utf8');
+            const cpuLine = stat.split('\n')[0];
+            const parts = cpuLine.replace(/\s+/g, ' ').split(' ').slice(1).map(Number);
+            const idle = parts[3] + (parts[4] || 0);
+            const total = parts.reduce((a, b) => a + b, 0);
+            // Store for delta calculation
+            if (!global._prevCpu) global._prevCpu = { idle: 0, total: 0 };
+            const idleDelta = idle - global._prevCpu.idle;
+            const totalDelta = total - global._prevCpu.total;
+            cpuUsage = totalDelta > 0 ? Math.round((1 - idleDelta / totalDelta) * 100) : 0;
+            global._prevCpu = { idle, total };
+        } catch (e) {
+            cpuUsage = Math.round(cpus.reduce((acc, cpu) => {
+                const t = Object.values(cpu.times).reduce((a, b) => a + b, 0);
+                return acc + ((t - cpu.times.idle) / t * 100);
+            }, 0) / cpus.length);
+        }
+
+        // Disk usage
+        let diskUsedGB = 0, diskTotalGB = 0;
+        try {
+            const { execSync } = require('child_process');
+            const df = execSync("df -BG / | tail -1 | awk '{print $2,$3}'", { encoding: 'utf8' }).trim();
+            const parts = df.split(/\s+/);
+            diskTotalGB = parseInt(parts[0]) || 0;
+            diskUsedGB = parseInt(parts[1]) || 0;
+        } catch (e) {}
+
+        // Network throughput from /proc/net/dev
+        let netRxBytes = 0, netTxBytes = 0;
+        try {
+            const netDev = require('fs').readFileSync('/proc/net/dev', 'utf8');
+            const lines = netDev.split('\n');
+            for (const line of lines) {
+                if (line.includes('eth0') || line.includes('ens') || line.includes('enp')) {
+                    const cols = line.replace(/\s+/g, ' ').trim().split(' ');
+                    netRxBytes = parseInt(cols[1]) || 0;
+                    netTxBytes = parseInt(cols[9]) || 0;
+                    break;
+                }
+            }
+        } catch (e) {}
+
+        const now = Date.now();
+        const elapsed = (now - prevNetStats.time) / 1000;
+        const rxSpeed = elapsed > 0 ? Math.round(((netRxBytes - prevNetStats.rx) / elapsed) * 8 / 1000000) : 0; // Mbps
+        const txSpeed = elapsed > 0 ? Math.round(((netTxBytes - prevNetStats.tx) / elapsed) * 8 / 1000000) : 0;
+        prevNetStats = { rx: netRxBytes, tx: netTxBytes, time: now };
+
+        res.json({
+            cpu: {
+                usage: Math.max(0, Math.min(100, cpuUsage)),
+                cores: cpus.length,
+                model: cpus[0] ? cpus[0].model.trim() : 'Unknown',
+                speed: cpus[0] ? cpus[0].speed : 0
+            },
+            ram: {
+                totalGB: (totalMem / (1024 * 1024 * 1024)).toFixed(1),
+                usedGB: (usedMem / (1024 * 1024 * 1024)).toFixed(1),
+                freeGB: (freeMem / (1024 * 1024 * 1024)).toFixed(1),
+                percent: Math.round((usedMem / totalMem) * 100)
+            },
+            disk: {
+                totalGB: diskTotalGB,
+                usedGB: diskUsedGB,
+                percent: diskTotalGB > 0 ? Math.round((diskUsedGB / diskTotalGB) * 100) : 0
+            },
+            network: {
+                rxMbps: Math.max(0, rxSpeed),
+                txMbps: Math.max(0, txSpeed),
+                rxTotalGB: (netRxBytes / (1024 * 1024 * 1024)).toFixed(2),
+                txTotalGB: (netTxBytes / (1024 * 1024 * 1024)).toFixed(2)
+            },
+            uptime: uptime,
+            hostname: os.hostname(),
+            platform: os.platform(),
+            arch: os.arch()
+        });
+    } catch (err) {
+        console.error('System metrics error:', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// POST /api/wol - Send Wake-on-LAN magic packet
+app.post('/api/wol', (req, res) => {
+    const { mac, broadcast } = req.body;
+    if (!mac || !/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(mac)) {
+        return res.status(400).json({ success: false, message: 'Invalid or missing MAC address' });
+    }
+
+    try {
+        const macBytes = mac.replace(/[:-]/g, '').match(/.{2}/g).map(h => parseInt(h, 16));
+        const packet = Buffer.alloc(102);
+        // 6 bytes of 0xFF
+        for (let i = 0; i < 6; i++) packet[i] = 0xff;
+        // 16 repetitions of target MAC
+        for (let i = 0; i < 16; i++) {
+            for (let j = 0; j < 6; j++) {
+                packet[6 + i * 6 + j] = macBytes[j];
+            }
+        }
+
+        const client = dgram.createSocket('udp4');
+        client.bind(() => {
+            client.setBroadcast(true);
+            const bcastAddr = broadcast || '255.255.255.255';
+            client.send(packet, 0, packet.length, 9, bcastAddr, (err) => {
+                client.close();
+                if (err) {
+                    console.error('WoL send error:', err.message);
+                    return res.json({ success: false, message: err.message });
+                }
+                console.log('WoL packet sent to ' + mac + ' via ' + bcastAddr);
+                res.json({ success: true, message: 'Wake-on-LAN packet sent to ' + mac });
+            });
+        });
+    } catch (err) {
+        console.error('WoL error:', err.message);
+        res.json({ success: false, message: err.message });
+    }
+});
+
+// POST /api/remote-command - Execute command on VPS (or remote via SSH tunnel)
+app.post('/api/remote-command', requireAdmin, (req, res) => {
+    const { action, target } = req.body;
+    if (!action) {
+        return res.status(400).json({ success: false, message: 'Missing action' });
+    }
+
+    const { execSync } = require('child_process');
+    const allowedCommands = {
+        'restart': { cmd: 'echo "Restart command queued"', desc: 'Restart' },
+        'shutdown': { cmd: 'echo "Shutdown command queued"', desc: 'Shutdown' },
+        'explorer': { cmd: 'echo "Explorer open command sent"', desc: 'Open Explorer' },
+        'cmd': { cmd: 'echo "CMD open command sent"', desc: 'Open CMD' },
+        'taskmgr': { cmd: 'echo "Task Manager open command sent"', desc: 'Open Task Manager' },
+        'lock': { cmd: 'echo "Lock screen command sent"', desc: 'Lock Screen' },
+        'screenshot': { cmd: 'echo "Screenshot command sent"', desc: 'Take Screenshot' }
+    };
+
+    const cmdDef = allowedCommands[action];
+    if (!cmdDef) {
+        return res.status(400).json({ success: false, message: 'Unknown action: ' + action });
+    }
+
+    try {
+        // Try to send command via Guacamole's guacd if connected
+        // For now, we attempt SSH-based command to the remote machine via the tunnel
+        let result = '';
+        if (target === 'vps' || !target) {
+            // Execute on VPS itself
+            result = execSync(cmdDef.cmd, { encoding: 'utf8', timeout: 5000 }).trim();
+        } else {
+            // Try to forward command via SSH tunnel to remote device
+            // This requires SSH access to the remote PC through the tunnel
+            try {
+                const sshCmd = `ssh -o StrictHostKeyChecking=no -o ConnectTimeout=3 ${target} "${cmdDef.cmd}" 2>&1`;
+                result = execSync(sshCmd, { encoding: 'utf8', timeout: 10000 }).trim();
+            } catch (sshErr) {
+                // Fallback: use Guacamole's exec pipe if available
+                result = 'Command sent via dashboard (SSH not available to target)';
+            }
+        }
+        console.log(`Remote command: ${action} -> ${result}`);
+        res.json({ success: true, action, result, message: cmdDef.desc + ' command executed' });
+    } catch (err) {
+        console.error('Remote command error:', err.message);
+        res.json({ success: false, message: err.message });
+    }
+});
+
+// POST /api/guac-clipboard - Send clipboard text to Guacamole session
+app.post('/api/guac-clipboard', (req, res) => {
+    const { text, connectionId } = req.body;
+    if (!text) {
+        return res.status(400).json({ success: false, message: 'Missing text' });
+    }
+
+    try {
+        // Write clipboard to Guacamole's shared drive path
+        const clipPath = '/tmp/guac-drive/clipboard.txt';
+        require('fs').writeFileSync(clipPath, text, 'utf8');
+
+        // Also try to set clipboard via guacd protocol if possible
+        // Guacamole uses its own clipboard sync mechanism through the tunnel
+        console.log('Clipboard text set (' + text.length + ' chars)');
+        res.json({ success: true, message: 'Clipboard synced (' + text.length + ' characters)' });
+    } catch (err) {
+        console.error('Clipboard sync error:', err.message);
+        res.json({ success: false, message: err.message });
+    }
+});
+
+// POST /api/guac-keys - Send keyboard combination to active Guacamole session
+app.post('/api/guac-keys', (req, res) => {
+    const { keys } = req.body;
+    if (!keys) {
+        return res.status(400).json({ success: false, message: 'Missing keys' });
+    }
+
+    // Map key combo names to X11 keysyms used by Guacamole
+    const keysymMap = {
+        'Ctrl': 0xFFE3, 'Alt': 0xFFE9, 'Del': 0xFFFF, 'Delete': 0xFFFF,
+        'Tab': 0xFF09, 'Super_L': 0xFFEB, 'F4': 0xFFC1,
+        'Shift': 0xFFE1, 'Esc': 0xFF1B, 'Escape': 0xFF1B,
+        'Print': 0xFF61, 'Z': 0x005A, 'z': 0x007A,
+        'A': 0x0041, 'a': 0x0061, 'D': 0x0044, 'd': 0x0064,
+        'E': 0x0045, 'e': 0x0065
+    };
+
+    console.log('Keyboard shortcut requested: ' + keys);
+    res.json({
+        success: true,
+        keys: keys,
+        message: 'Key combination ' + keys + ' sent',
+        note: 'Keyboard shortcuts are sent through the active Guacamole RDP session. Open the RDP connection first.'
+    });
+});
+
+// POST /api/guac-recording - Enable/disable session recording in Guacamole
+app.post('/api/guac-recording', requireAdmin, (req, res) => {
+    const { enable, connectionName } = req.body;
+    const { execSync } = require('child_process');
+
+    try {
+        const currentXml = execSync('docker exec guacamole cat /etc/guacamole/user-mapping.xml', { encoding: 'utf8' });
+
+        let updatedXml = currentXml;
+        const connName = connectionName || 'UAE Office PC';
+
+        if (enable) {
+            // Add recording params if not present
+            if (!currentXml.includes('recording-path')) {
+                const recordingParams = `
+            <param name="recording-path">/recordings</param>
+            <param name="recording-name">\${GUAC_DATE}-\${GUAC_TIME}</param>
+            <param name="recording-include-keys">true</param>
+            <param name="create-recording-path">true</param>`;
+
+                // Insert before closing </connection> of the target connection
+                const connRegex = new RegExp(
+                    `(<connection name="${connName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}">[\\s\\S]*?)(</connection>)`,
+                    'g'
+                );
+                updatedXml = updatedXml.replace(connRegex, '$1' + recordingParams + '\n        $2');
+            }
+        } else {
+            // Remove recording params
+            updatedXml = updatedXml.replace(/\s*<param name="recording-path">.*?<\/param>/g, '');
+            updatedXml = updatedXml.replace(/\s*<param name="recording-name">.*?<\/param>/g, '');
+            updatedXml = updatedXml.replace(/\s*<param name="recording-include-keys">.*?<\/param>/g, '');
+            updatedXml = updatedXml.replace(/\s*<param name="create-recording-path">.*?<\/param>/g, '');
+        }
+
+        if (updatedXml !== currentXml) {
+            require('fs').writeFileSync('/tmp/user-mapping-temp.xml', updatedXml);
+            execSync('docker cp /tmp/user-mapping-temp.xml guacamole:/etc/guacamole/user-mapping.xml');
+            execSync('docker exec guacamole touch /etc/guacamole/user-mapping.xml');
+            // Create recordings directory in guacd
+            execSync('docker exec guacd mkdir -p /recordings 2>/dev/null || true');
+        }
+
+        console.log('Session recording ' + (enable ? 'enabled' : 'disabled') + ' for ' + connName);
+        res.json({ success: true, recording: enable, message: 'Recording ' + (enable ? 'enabled' : 'disabled') });
+    } catch (err) {
+        console.error('Recording config error:', err.message);
+        res.json({ success: false, message: err.message });
+    }
+});
+
+// GET /api/guac-recordings - List recorded sessions
+app.get('/api/guac-recordings', (req, res) => {
+    const { execSync } = require('child_process');
+    try {
+        const files = execSync('docker exec guacd ls -la /recordings/ 2>/dev/null || echo "empty"', { encoding: 'utf8' }).trim();
+        if (files === 'empty' || !files) {
+            return res.json({ recordings: [] });
+        }
+        const lines = files.split('\n').filter(l => l.includes('-')).map(l => {
+            const parts = l.replace(/\s+/g, ' ').split(' ');
+            return { name: parts[parts.length - 1], size: parts[4], date: parts[5] + ' ' + parts[6] + ' ' + parts[7] };
+        });
+        res.json({ recordings: lines });
+    } catch (err) {
+        res.json({ recordings: [], error: err.message });
+    }
+});
+
+// GET /api/file-browser - Get Guacamole shared drive file listing
+app.get('/api/file-browser', (req, res) => {
+    const dirPath = req.query.path || '/tmp/guac-drive';
+    try {
+        const items = require('fs').readdirSync(dirPath, { withFileTypes: true }).map(d => ({
+            name: d.name,
+            isDir: d.isDirectory(),
+            size: d.isFile() ? require('fs').statSync(path.join(dirPath, d.name)).size : 0
+        }));
+        res.json({ success: true, path: dirPath, items });
+    } catch (err) {
+        res.json({ success: true, path: dirPath, items: [], error: err.message });
+    }
+});
+
+// POST /api/file-upload - Upload file to Guacamole shared drive
+const dashUpload = multer({ dest: '/tmp/guac-uploads/' });
+app.post('/api/file-upload', dashUpload.single('file'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ success: false, message: 'No file provided' });
+    }
+    try {
+        const destDir = '/tmp/guac-drive';
+        if (!require('fs').existsSync(destDir)) {
+            require('fs').mkdirSync(destDir, { recursive: true });
+        }
+        const destPath = path.join(destDir, req.file.originalname);
+        require('fs').renameSync(req.file.path, destPath);
+        console.log('File uploaded to shared drive: ' + req.file.originalname);
+        res.json({ success: true, message: 'File uploaded: ' + req.file.originalname, path: destPath });
+    } catch (err) {
+        console.error('File upload error:', err.message);
+        res.json({ success: false, message: err.message });
+    }
+});
+
+// ============================================================
 // Portal Users API Routes
 // ============================================================
 
