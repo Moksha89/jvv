@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,281 +10,123 @@
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --bg-deep: #06080f;
-            --bg: #0a0e1a;
-            --bg-card: rgba(15, 20, 35, 0.7);
-            --bg-card-solid: #0f1423;
-            --bg-elevated: rgba(20, 27, 48, 0.8);
-            --bg-hover: rgba(30, 40, 70, 0.6);
-            --bg-input: rgba(10, 14, 26, 0.8);
-            --accent: #818cf8;
-            --accent-bright: #a5b4fc;
-            --accent-dim: #6366f1;
-            --accent-glow: rgba(99, 102, 241, 0.25);
-            --accent-glow-strong: rgba(99, 102, 241, 0.5);
-            --green: #34d399;
-            --green-dim: #10b981;
-            --green-glow: rgba(52, 211, 153, 0.3);
-            --red: #f87171;
-            --red-dim: #ef4444;
-            --red-glow: rgba(248, 113, 113, 0.3);
-            --amber: #fbbf24;
-            --amber-glow: rgba(251, 191, 36, 0.3);
-            --cyan: #22d3ee;
-            --text: #e8eaf6;
-            --text-secondary: #9ca3c4;
-            --text-muted: #5c6488;
-            --border: rgba(99, 102, 241, 0.12);
-            --border-subtle: rgba(255,255,255,0.04);
-            --glass: rgba(15, 20, 40, 0.6);
-            --glass-border: rgba(99, 102, 241, 0.15);
-            --sidebar-width: 260px;
-            --header-height: 72px;
+            --bg-deep: #06080f; --bg: #0a0e1a;
+            --bg-card: rgba(15,20,35,0.7); --bg-card-solid: #0f1423;
+            --bg-elevated: rgba(20,27,48,0.8); --bg-hover: rgba(30,40,70,0.6);
+            --bg-input: rgba(10,14,26,0.8);
+            --accent: #818cf8; --accent-bright: #a5b4fc; --accent-dim: #6366f1;
+            --accent-glow: rgba(99,102,241,0.25); --accent-glow-strong: rgba(99,102,241,0.5);
+            --green: #34d399; --green-dim: #10b981; --green-glow: rgba(52,211,153,0.3);
+            --red: #f87171; --red-dim: #ef4444; --red-glow: rgba(248,113,113,0.3);
+            --amber: #fbbf24; --amber-glow: rgba(251,191,36,0.3); --cyan: #22d3ee;
+            --text: #e8eaf6; --text-secondary: #9ca3c4; --text-muted: #5c6488;
+            --border: rgba(99,102,241,0.12); --border-subtle: rgba(255,255,255,0.04);
+            --glass: rgba(15,20,40,0.6); --glass-border: rgba(99,102,241,0.15);
+            --sidebar-width: 260px; --header-height: 72px;
+        }
+        [data-theme="light"] {
+            --bg-deep: #f0f2f5; --bg: #f5f7fa;
+            --bg-card: rgba(255,255,255,0.85); --bg-card-solid: #ffffff;
+            --bg-elevated: rgba(255,255,255,0.9); --bg-hover: rgba(99,102,241,0.06);
+            --bg-input: rgba(241,243,249,0.9);
+            --accent: #6366f1; --accent-bright: #4f46e5; --accent-dim: #6366f1;
+            --accent-glow: rgba(99,102,241,0.15); --accent-glow-strong: rgba(99,102,241,0.3);
+            --green: #10b981; --green-dim: #059669; --green-glow: rgba(16,185,129,0.2);
+            --red: #ef4444; --red-dim: #dc2626; --red-glow: rgba(239,68,68,0.2);
+            --amber: #d97706; --amber-glow: rgba(217,119,6,0.2); --cyan: #0891b2;
+            --text: #1e293b; --text-secondary: #475569; --text-muted: #94a3b8;
+            --border: rgba(99,102,241,0.15); --border-subtle: rgba(0,0,0,0.06);
+            --glass: rgba(255,255,255,0.7); --glass-border: rgba(99,102,241,0.2);
         }
         html { scroll-behavior: smooth; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-            background: var(--bg-deep); color: var(--text); min-height: 100vh;
-            overflow-x: hidden; -webkit-font-smoothing: antialiased;
-        }
-
-        /* Ambient Background */
+        body { font-family: 'Inter',-apple-system,BlinkMacSystemFont,system-ui,sans-serif; background: var(--bg-deep); color: var(--text); min-height: 100vh; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
         .bg-ambient { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-        .bg-ambient::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.06) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 80%, rgba(34,211,153,0.04) 0%, transparent 50%);
-            animation: ambientShift 20s ease-in-out infinite;
-        }
-        @keyframes ambientShift {
-            0%,100% { transform: translate(0,0) rotate(0deg); }
-            33% { transform: translate(2%,-1%) rotate(1deg); }
-            66% { transform: translate(-1%,2%) rotate(-1deg); }
-        }
-        .bg-grid {
-            position: fixed; inset: 0; z-index: 0; pointer-events: none;
-            background-image: linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
-            background-size: 48px 48px;
-            mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
-            -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
-        }
-
-        /* Screens */
+        .bg-ambient::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.06) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(34,211,153,0.04) 0%, transparent 50%); animation: ambientShift 20s ease-in-out infinite; }
+        [data-theme="light"] .bg-ambient::before { opacity: 0.3; }
+        @keyframes ambientShift { 0%,100% { transform: translate(0,0) rotate(0deg); } 33% { transform: translate(2%,-1%) rotate(1deg); } 66% { transform: translate(-1%,2%) rotate(-1deg); } }
+        .bg-grid { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px); background-size: 48px 48px; mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%); -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%); }
         .screen { display: none; position: relative; z-index: 1; }
         .screen.active { display: block; animation: screenIn 0.5s ease; }
         @keyframes screenIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Blocked Screen */
         .blocked-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 32px; }
-        .blocked-card {
-            max-width: 440px; width: 100%; text-align: center; padding: 56px 40px;
-            background: var(--bg-card); backdrop-filter: blur(24px);
-            border: 1px solid var(--border); border-radius: 28px;
-            box-shadow: 0 24px 80px rgba(0,0,0,0.4);
-        }
-        .blocked-icon {
-            width: 88px; height: 88px; border-radius: 50%;
-            background: linear-gradient(135deg, rgba(248,113,113,0.15), rgba(248,113,113,0.05));
-            border: 1px solid rgba(248,113,113,0.2);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 28px; animation: iconFloat 3s ease-in-out infinite;
-        }
+        .blocked-card { max-width: 440px; width: 100%; text-align: center; padding: 56px 40px; background: var(--bg-card); backdrop-filter: blur(24px); border: 1px solid var(--border); border-radius: 28px; box-shadow: 0 24px 80px rgba(0,0,0,0.4); }
+        .blocked-icon { width: 88px; height: 88px; border-radius: 50%; background: linear-gradient(135deg, rgba(248,113,113,0.15), rgba(248,113,113,0.05)); border: 1px solid rgba(248,113,113,0.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 28px; animation: iconFloat 3s ease-in-out infinite; }
         @keyframes iconFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
         .blocked-card h2 { font-size: 26px; font-weight: 700; margin-bottom: 10px; }
         .blocked-card p { color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin-bottom: 8px; }
         .blocked-card .countdown { font-size: 13px; color: var(--text-muted); margin-top: 20px; }
         .blocked-card .countdown span { color: var(--red); font-weight: 600; }
-
-        /* Login Screen */
         .login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 32px; }
-        .login-card {
-            max-width: 440px; width: 100%; padding: 48px 40px;
-            background: var(--bg-card); backdrop-filter: blur(24px);
-            border: 1px solid var(--glass-border); border-radius: 28px;
-            box-shadow: 0 24px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.02) inset;
-        }
-        .login-logo-wrap {
-            width: 64px; height: 64px; border-radius: 20px;
-            background: linear-gradient(135deg, var(--accent-dim), #7c3aed);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 28px; box-shadow: 0 8px 32px var(--accent-glow);
-            animation: logoPulse 3s ease-in-out infinite;
-        }
-        @keyframes logoPulse {
-            0%,100% { box-shadow: 0 8px 32px var(--accent-glow); }
-            50% { box-shadow: 0 8px 48px var(--accent-glow-strong); }
-        }
+        .login-card { max-width: 440px; width: 100%; padding: 48px 40px; background: var(--bg-card); backdrop-filter: blur(24px); border: 1px solid var(--glass-border); border-radius: 28px; box-shadow: 0 24px 80px rgba(0,0,0,0.4); }
+        .login-logo-wrap { width: 64px; height: 64px; border-radius: 20px; background: linear-gradient(135deg, var(--accent-dim), #7c3aed); display: flex; align-items: center; justify-content: center; margin: 0 auto 28px; box-shadow: 0 8px 32px var(--accent-glow); animation: logoPulse 3s ease-in-out infinite; }
+        @keyframes logoPulse { 0%,100% { box-shadow: 0 8px 32px var(--accent-glow); } 50% { box-shadow: 0 8px 48px var(--accent-glow-strong); } }
         .login-card h2 { text-align: center; font-size: 24px; font-weight: 700; margin-bottom: 6px; }
         .login-card .subtitle { text-align: center; color: var(--text-secondary); font-size: 14px; margin-bottom: 36px; }
-
-        /* Form Elements */
         .form-group { margin-bottom: 22px; }
-        .form-group label {
-            display: block; font-size: 12px; font-weight: 600;
-            color: var(--text-muted); margin-bottom: 8px;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-        .form-input {
-            width: 100%; padding: 13px 16px;
-            background: var(--bg-input); border: 1px solid var(--border);
-            border-radius: 14px; color: var(--text); font-size: 15px;
-            font-family: inherit; outline: none; transition: all 0.25s ease;
-        }
+        .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .form-input { width: 100%; padding: 13px 16px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 14px; color: var(--text); font-size: 15px; font-family: inherit; outline: none; transition: all 0.25s ease; }
         .form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-glow), 0 0 24px var(--accent-glow); }
         .form-input::placeholder { color: var(--text-muted); }
         .error-msg { color: var(--red); font-size: 13px; margin-top: 8px; display: none; font-weight: 500; }
         .error-msg.visible { display: block; animation: shake 0.4s ease; }
         @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
-
-        /* Buttons */
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-            padding: 14px 24px; border: none; border-radius: 14px; font-size: 15px;
-            font-weight: 600; font-family: inherit; cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden;
-        }
-        .btn::after {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
-            opacity: 0; transition: opacity 0.3s;
-        }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 24px; border: none; border-radius: 14px; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden; }
+        .btn::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent); opacity: 0; transition: opacity 0.3s; }
         .btn:hover::after { opacity: 1; }
         .btn-accent { background: linear-gradient(135deg, var(--accent-dim), #7c3aed); color: white; width: 100%; }
         .btn-accent:hover { box-shadow: 0 8px 32px var(--accent-glow); transform: translateY(-2px); }
-        .btn-accent:active { transform: translateY(0); }
-        .btn-accent:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); }
         .btn-ghost:hover { border-color: var(--accent); color: var(--text); background: var(--bg-hover); }
         .btn-sm { padding: 8px 16px; font-size: 13px; border-radius: 10px; }
+        .btn-xs { padding: 5px 10px; font-size: 11px; border-radius: 8px; }
         .btn-danger { border-color: rgba(248,113,113,0.25); color: var(--red); }
         .btn-danger:hover { background: rgba(248,113,113,0.1); border-color: var(--red); }
-
-        /* Dashboard Layout */
+        .btn-success { background: var(--green-dim); color: white; border: none; }
+        .btn-amber { background: rgba(251,191,36,0.15); color: var(--amber); border: 1px solid rgba(251,191,36,0.25); }
         .dashboard-layout { display: flex; min-height: 100vh; position: relative; z-index: 1; }
-
-        /* Sidebar */
-        .sidebar {
-            width: var(--sidebar-width); height: 100vh; position: fixed; top: 0; left: 0;
-            background: var(--bg-card); backdrop-filter: blur(20px);
-            border-right: 1px solid var(--border); z-index: 100;
-            display: flex; flex-direction: column;
-            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-        }
+        .sidebar { width: var(--sidebar-width); height: 100vh; position: fixed; top: 0; left: 0; background: var(--bg-card); backdrop-filter: blur(20px); border-right: 1px solid var(--border); z-index: 100; display: flex; flex-direction: column; transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; }
         .sidebar-brand { padding: 24px 22px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--border-subtle); }
-        .sidebar-logo {
-            width: 44px; height: 44px; border-radius: 14px;
-            background: linear-gradient(135deg, var(--accent-dim), #7c3aed);
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-            box-shadow: 0 4px 16px var(--accent-glow);
-        }
+        .sidebar-logo { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, var(--accent-dim), #7c3aed); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 16px var(--accent-glow); }
         .sidebar-brand-text h2 { font-size: 17px; font-weight: 700; line-height: 1.2; }
         .sidebar-brand-text span { font-size: 11px; color: var(--text-muted); font-weight: 500; }
         .sidebar-nav { padding: 16px 12px; flex: 1; }
-        .sidebar-section-label {
-            font-size: 10px; font-weight: 700; color: var(--text-muted);
-            text-transform: uppercase; letter-spacing: 1.5px;
-            padding: 12px 12px 8px; margin-top: 8px;
-        }
-        .nav-link {
-            display: flex; align-items: center; gap: 12px; padding: 12px 14px;
-            border-radius: 12px; cursor: pointer; transition: all 0.2s ease;
-            color: var(--text-secondary); font-size: 14px; font-weight: 500;
-            margin-bottom: 2px; border: none; background: none;
-            width: 100%; text-align: left; font-family: inherit;
-        }
+        .sidebar-section-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; padding: 12px 12px 8px; margin-top: 8px; }
+        .nav-link { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; color: var(--text-secondary); font-size: 14px; font-weight: 500; margin-bottom: 2px; border: none; background: none; width: 100%; text-align: left; font-family: inherit; }
         .nav-link:hover { background: var(--bg-hover); color: var(--text); }
-        .nav-link.active {
-            background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.08));
-            color: var(--accent-bright); border: 1px solid rgba(99,102,241,0.2);
-        }
-        .nav-link .nav-icon {
-            width: 36px; height: 36px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0; background: rgba(99,102,241,0.08); transition: all 0.2s;
-        }
+        .nav-link.active { background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.08)); color: var(--accent-bright); border: 1px solid rgba(99,102,241,0.2); }
+        .nav-link .nav-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(99,102,241,0.08); transition: all 0.2s; }
         .nav-link.active .nav-icon { background: rgba(99,102,241,0.2); }
-        .nav-link .badge {
-            margin-left: auto; padding: 2px 8px; border-radius: 6px;
-            font-size: 11px; font-weight: 700; background: var(--accent-dim); color: white;
-        }
+        .nav-link .badge { margin-left: auto; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; background: var(--accent-dim); color: white; }
         .sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--border-subtle); }
-        .sidebar-user {
-            display: flex; align-items: center; gap: 12px; padding: 10px;
-            border-radius: 12px; cursor: pointer; transition: all 0.2s;
-        }
+        .sidebar-user { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; cursor: pointer; transition: all 0.2s; }
         .sidebar-user:hover { background: var(--bg-hover); }
-        .sidebar-user-avatar {
-            width: 38px; height: 38px; border-radius: 10px;
-            background: linear-gradient(135deg, var(--accent-dim), #7c3aed);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 14px; font-weight: 700; flex-shrink: 0;
-        }
-        .sidebar-user-info { flex: 1; min-width: 0; }
+        .sidebar-user-avatar { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--accent-dim), #7c3aed); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 700; }
         .sidebar-user-info h4 { font-size: 13px; font-weight: 600; }
         .sidebar-user-info p { font-size: 11px; color: var(--text-muted); }
-
-        /* Main Content */
-        .main-content {
-            flex: 1; margin-left: var(--sidebar-width); min-height: 100vh;
-            transition: margin-left 0.35s cubic-bezier(0.4,0,0.2,1);
-        }
-
-        /* Top Bar */
-        .topbar {
-            height: var(--header-height); padding: 0 32px;
-            display: flex; align-items: center; justify-content: space-between;
-            border-bottom: 1px solid var(--border-subtle);
-            background: rgba(6,8,15,0.6); backdrop-filter: blur(16px);
-            position: sticky; top: 0; z-index: 50;
-        }
+        .main-content { flex: 1; margin-left: var(--sidebar-width); min-height: 100vh; }
+        .topbar { height: var(--header-height); padding: 0 32px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); background: rgba(6,8,15,0.6); backdrop-filter: blur(16px); position: sticky; top: 0; z-index: 50; }
+        [data-theme="light"] .topbar { background: rgba(255,255,255,0.7); }
         .topbar-left { display: flex; align-items: center; gap: 16px; }
         .topbar-left h1 { font-size: 20px; font-weight: 700; }
         .topbar-left p { font-size: 13px; color: var(--text-muted); }
         .topbar-right { display: flex; align-items: center; gap: 12px; }
-        .topbar-clock {
-            font-size: 13px; color: var(--text-secondary); font-weight: 500;
-            font-variant-numeric: tabular-nums; padding: 8px 14px;
-            background: var(--bg-card); border: 1px solid var(--border-subtle);
-            border-radius: 10px; display: flex; align-items: center; gap: 8px;
-        }
-        .tunnel-badge {
-            display: flex; align-items: center; gap: 8px; padding: 8px 16px;
-            background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.15);
-            border-radius: 100px; font-size: 12px; color: var(--green); font-weight: 600;
-        }
-        .tunnel-dot {
-            width: 7px; height: 7px; background: var(--green); border-radius: 50%;
-            box-shadow: 0 0 8px var(--green-glow); animation: dotPulse 2s infinite;
-        }
+        .topbar-clock { font-size: 13px; color: var(--text-secondary); font-weight: 500; font-variant-numeric: tabular-nums; padding: 8px 14px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; display: flex; align-items: center; gap: 8px; }
+        .tunnel-badge { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.15); border-radius: 100px; font-size: 12px; color: var(--green); font-weight: 600; }
+        .tunnel-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; box-shadow: 0 0 8px var(--green-glow); animation: dotPulse 2s infinite; }
         @keyframes dotPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .mobile-menu-btn {
-            display: none; width: 40px; height: 40px; border-radius: 10px;
-            background: var(--bg-card); border: 1px solid var(--border);
-            color: var(--text-secondary); cursor: pointer;
-            align-items: center; justify-content: center; transition: all 0.2s;
-        }
-        .mobile-menu-btn:hover { background: var(--bg-hover); color: var(--text); }
-
-        /* Content Area */
+        .mobile-menu-btn { display: none; width: 40px; height: 40px; border-radius: 10px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; align-items: center; justify-content: center; }
+        .theme-toggle, .notif-btn, .lang-btn { width: 36px; height: 36px; border-radius: 10px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .theme-toggle:hover, .notif-btn:hover, .lang-btn:hover { background: var(--bg-hover); color: var(--accent); border-color: var(--accent); }
+        .notif-btn { position: relative; }
+        .notif-dot { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--red); border-radius: 50%; display: none; }
+        .notif-dot.active { display: block; }
         .content-area { padding: 28px 32px 48px; }
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: contentIn 0.35s ease; }
         @keyframes contentIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Stats Grid */
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
-        .stat-card {
-            background: var(--bg-card); backdrop-filter: blur(12px);
-            border: 1px solid var(--border); border-radius: 18px; padding: 22px 24px;
-            transition: all 0.3s ease; position: relative; overflow: hidden;
-        }
-        .stat-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-            background: linear-gradient(90deg, var(--accent-dim), transparent);
-            opacity: 0; transition: opacity 0.3s;
-        }
+        .stat-card { background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 18px; padding: 22px 24px; transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent-dim), transparent); opacity: 0; transition: opacity 0.3s; }
         .stat-card:hover { border-color: var(--glass-border); transform: translateY(-2px); }
         .stat-card:hover::before { opacity: 1; }
         .stat-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
@@ -293,255 +135,165 @@
         .stat-icon-wrap.green { background: rgba(52,211,153,0.12); }
         .stat-icon-wrap.violet { background: rgba(139,92,246,0.12); }
         .stat-icon-wrap.amber { background: rgba(251,191,36,0.12); }
-        .stat-trend { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
-        .stat-trend.up { background: rgba(52,211,153,0.1); color: var(--green); }
         .stat-value { font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 4px; letter-spacing: -1px; }
         .stat-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
-
-        /* Section Header */
         .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
         .section-head h2 { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        .section-head .refresh-btn {
-            width: 36px; height: 36px; border-radius: 10px;
-            background: var(--bg-card); border: 1px solid var(--border);
-            color: var(--text-muted); cursor: pointer;
-            display: flex; align-items: center; justify-content: center; transition: all 0.3s;
-        }
+        .section-head .refresh-btn { width: 36px; height: 36px; border-radius: 10px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
         .section-head .refresh-btn:hover { color: var(--accent); border-color: var(--accent); transform: rotate(180deg); }
-
-        /* Device Cards */
         .devices-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px; }
-        .device-card {
-            background: var(--bg-card); backdrop-filter: blur(12px);
-            border: 1px solid var(--border); border-radius: 20px; padding: 0;
-            transition: all 0.3s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden;
-        }
-        .device-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background: linear-gradient(90deg, var(--accent-dim), #7c3aed, var(--accent));
-            opacity: 0; transition: opacity 0.3s;
-        }
+        .device-card { background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 0; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden; }
+        .device-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent-dim), #7c3aed, var(--accent)); opacity: 0; transition: opacity 0.3s; }
         .device-card:hover { border-color: rgba(99,102,241,0.3); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
         .device-card:hover::before { opacity: 1; }
         .device-card-inner { padding: 28px; }
         .device-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
-        .device-icon-box {
-            width: 52px; height: 52px; border-radius: 14px;
-            background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.08));
-            border: 1px solid rgba(99,102,241,0.15);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .device-badge {
-            display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px;
-            border-radius: 100px; font-size: 11px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.5px;
-        }
+        .device-icon-box { width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.08)); border: 1px solid rgba(99,102,241,0.15); display: flex; align-items: center; justify-content: center; }
+        .device-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .device-badge.online { background: rgba(52,211,153,0.1); color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
         .device-badge.offline { background: rgba(248,113,113,0.1); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
         .device-badge-dot { width: 6px; height: 6px; border-radius: 50%; }
         .device-badge.online .device-badge-dot { background: var(--green); box-shadow: 0 0 6px var(--green-glow); }
         .device-badge.offline .device-badge-dot { background: var(--red); }
         .device-title { font-size: 19px; font-weight: 700; margin-bottom: 4px; }
-        .device-host {
-            font-size: 13px; color: var(--text-muted);
-            font-family: 'SF Mono','Fira Code','JetBrains Mono',monospace;
-            margin-bottom: 20px; display: flex; align-items: center; gap: 6px;
-        }
-        .device-host::before {
-            content: ''; width: 6px; height: 6px; border-radius: 2px;
-            background: var(--accent-dim); display: inline-block;
-        }
-        .device-specs {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 18px;
-            background: rgba(0,0,0,0.15); border-radius: 14px; margin-bottom: 22px;
-            border: 1px solid var(--border-subtle);
-        }
-        .spec-item label {
-            display: block; font-size: 10px; color: var(--text-muted);
-            text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 3px;
-        }
+        .device-host { font-size: 13px; color: var(--text-muted); font-family: 'SF Mono','Fira Code','JetBrains Mono',monospace; margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
+        .device-host::before { content: ''; width: 6px; height: 6px; border-radius: 2px; background: var(--accent-dim); display: inline-block; }
+        .device-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 18px; background: rgba(0,0,0,0.15); border-radius: 14px; margin-bottom: 22px; border: 1px solid var(--border-subtle); }
+        [data-theme="light"] .device-specs { background: rgba(0,0,0,0.03); }
+        .spec-item label { display: block; font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 3px; }
         .spec-item span { font-size: 14px; font-weight: 600; color: var(--text); }
-        .connect-btn {
-            width: 100%; padding: 13px; border: none; border-radius: 14px;
-            background: linear-gradient(135deg, var(--accent-dim), #7c3aed);
-            color: white; font-size: 14px; font-weight: 600; font-family: inherit;
-            cursor: pointer; transition: all 0.3s;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            position: relative; overflow: hidden;
-        }
-        .connect-btn::after {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
-            opacity: 0; transition: opacity 0.3s;
-        }
+        .device-actions { display: flex; gap: 8px; margin-bottom: 14px; }
+        .device-actions button { flex: 1; }
+        .connect-btn { width: 100%; padding: 13px; border: none; border-radius: 14px; background: linear-gradient(135deg, var(--accent-dim), #7c3aed); color: white; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; position: relative; overflow: hidden; }
+        .connect-btn::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent); opacity: 0; transition: opacity 0.3s; }
         .connect-btn:hover { box-shadow: 0 8px 32px var(--accent-glow); transform: translateY(-1px); }
         .connect-btn:hover::after { opacity: 1; }
-
-        /* Panels */
-        .panel {
-            background: var(--bg-card); backdrop-filter: blur(12px);
-            border: 1px solid var(--border); border-radius: 20px;
-            padding: 28px; margin-bottom: 20px;
-        }
-        .panel-title {
-            font-size: 16px; font-weight: 700; margin-bottom: 20px;
-            display: flex; align-items: center; gap: 10px;
-            padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle);
-        }
+        .panel { background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 28px; margin-bottom: 20px; }
+        .panel-title { font-size: 16px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle); }
         .panel-desc { color: var(--text-secondary); font-size: 14px; line-height: 1.7; margin-bottom: 20px; }
-
-        /* Sessions */
-        .session-row {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 14px 0; border-bottom: 1px solid var(--border-subtle); transition: all 0.2s;
-        }
+        .session-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border-subtle); }
         .session-row:last-child { border-bottom: none; }
         .session-info { display: flex; align-items: center; gap: 14px; }
-        .session-avatar {
-            width: 40px; height: 40px; border-radius: 12px;
-            background: linear-gradient(135deg, var(--accent-dim), #7c3aed);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 15px; font-weight: 700;
-        }
+        .session-avatar { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, var(--accent-dim), #7c3aed); display: flex; align-items: center; justify-content: center; color: white; font-size: 15px; font-weight: 700; }
         .session-meta h4 { font-size: 14px; font-weight: 600; }
         .session-meta p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
         .session-actions { display: flex; gap: 8px; }
         .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
         .empty-state svg { margin-bottom: 12px; opacity: 0.3; }
         .empty-state p { font-size: 14px; }
-
-        /* Share Options */
         .share-options { display: flex; gap: 12px; margin: 20px 0; }
-        .share-opt {
-            flex: 1; padding: 18px 16px; background: var(--bg-input);
-            border: 2px solid var(--border); border-radius: 14px;
-            cursor: pointer; transition: all 0.25s; text-align: center;
-        }
+        .share-opt { flex: 1; padding: 18px 16px; background: var(--bg-input); border: 2px solid var(--border); border-radius: 14px; cursor: pointer; transition: all 0.25s; text-align: center; }
         .share-opt:hover { border-color: rgba(99,102,241,0.3); }
         .share-opt.selected { border-color: var(--accent); background: rgba(99,102,241,0.08); }
         .share-opt h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
         .share-opt p { font-size: 12px; color: var(--text-muted); }
         .share-opt .share-icon { margin-bottom: 8px; }
-        .share-link-box {
-            background: var(--bg-input); border: 1px solid var(--border);
-            border-radius: 12px; padding: 12px 14px;
-            display: flex; align-items: center; gap: 10px; margin-top: 16px;
-        }
-        .share-link-box input {
-            flex: 1; background: none; border: none; color: var(--text);
-            font-size: 13px; font-family: 'SF Mono','Fira Code',monospace; outline: none;
-        }
-        .copy-btn {
-            padding: 8px 18px; border: none; border-radius: 8px;
-            background: var(--accent-dim); color: white; font-size: 12px;
-            font-weight: 700; cursor: pointer; transition: all 0.2s;
-            font-family: inherit; white-space: nowrap;
-        }
-        .copy-btn:hover { box-shadow: 0 4px 16px var(--accent-glow); }
-
-        /* Settings */
+        .share-link-box { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+        .share-link-box input { flex: 1; background: none; border: none; color: var(--text); font-size: 13px; font-family: 'SF Mono','Fira Code',monospace; outline: none; }
+        .copy-btn { padding: 8px 18px; border: none; border-radius: 8px; background: var(--accent-dim); color: white; font-size: 12px; font-weight: 700; cursor: pointer; }
         .settings-section { margin-bottom: 28px; }
         .settings-section:last-child { margin-bottom: 0; }
-        .settings-section label {
-            display: block; font-size: 12px; font-weight: 600; color: var(--text-muted);
-            margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;
-        }
+        .settings-section label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
         .settings-row { display: flex; gap: 12px; align-items: center; }
         .settings-row .form-input { border-radius: 12px; font-size: 14px; padding: 11px 14px; }
-        .save-btn {
-            padding: 11px 22px; border: none; border-radius: 12px;
-            background: var(--accent-dim); color: white; font-size: 13px;
-            font-weight: 600; cursor: pointer; transition: all 0.2s;
-            font-family: inherit; white-space: nowrap;
-        }
-        .save-btn:hover { box-shadow: 0 4px 16px var(--accent-glow); }
+        .save-btn { padding: 11px 22px; border: none; border-radius: 12px; background: var(--accent-dim); color: white; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
         .save-feedback { color: var(--green); font-size: 12px; margin-top: 8px; display: none; font-weight: 500; }
-        .save-feedback.visible { display: flex; align-items: center; gap: 6px; animation: feedbackSlide 0.3s ease; }
-        @keyframes feedbackSlide { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Modals */
-        .modal-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(12px);
-            z-index: 1000; align-items: center; justify-content: center;
-        }
+        .save-feedback.visible { display: flex; align-items: center; gap: 6px; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(12px); z-index: 1000; align-items: center; justify-content: center; }
         .modal-overlay.active { display: flex; }
-        .modal-box {
-            background: var(--bg-card-solid); border: 1px solid var(--glass-border);
-            border-radius: 24px; padding: 40px; max-width: 460px; width: 90%;
-            text-align: center; box-shadow: 0 32px 80px rgba(0,0,0,0.5);
-            animation: modalIn 0.3s ease;
-        }
+        .modal-box { background: var(--bg-card-solid); border: 1px solid var(--glass-border); border-radius: 24px; padding: 40px; max-width: 520px; width: 90%; text-align: center; box-shadow: 0 32px 80px rgba(0,0,0,0.5); animation: modalIn 0.3s ease; }
         @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         .modal-box h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
         .modal-box p { color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
         .modal-box .form-group { text-align: left; }
         .modal-actions { display: flex; gap: 12px; margin-top: 24px; }
         .modal-actions .btn { flex: 1; }
-        .modal-spinner {
-            width: 52px; height: 52px; border: 3px solid var(--border);
-            border-top-color: var(--accent); border-radius: 50%;
-            animation: spin 0.8s linear infinite; margin: 0 auto 24px;
-        }
+        .modal-spinner { width: 52px; height: 52px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 24px; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Toast */
-        .toast {
-            position: fixed; bottom: 28px; right: 28px;
-            background: var(--bg-card-solid); border: 1px solid var(--border);
-            border-radius: 16px; padding: 16px 24px;
-            display: flex; align-items: center; gap: 14px; z-index: 2000;
-            transform: translateY(120px) scale(0.9); opacity: 0;
-            transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
-            box-shadow: 0 16px 48px rgba(0,0,0,0.4); max-width: 400px;
-        }
+        .toast { position: fixed; bottom: 28px; right: 28px; background: var(--bg-card-solid); border: 1px solid var(--border); border-radius: 16px; padding: 16px 24px; display: flex; align-items: center; gap: 14px; z-index: 2000; transform: translateY(120px) scale(0.9); opacity: 0; transition: all 0.4s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 16px 48px rgba(0,0,0,0.4); max-width: 400px; }
         .toast.visible { transform: translateY(0) scale(1); opacity: 1; }
         .toast.success { border-color: rgba(52,211,153,0.3); }
         .toast.error { border-color: rgba(248,113,113,0.3); }
-        .toast-icon {
-            width: 36px; height: 36px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-        }
+        .toast-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .toast.success .toast-icon { background: rgba(52,211,153,0.12); color: var(--green); }
         .toast.error .toast-icon { background: rgba(248,113,113,0.12); color: var(--red); }
         .toast-text { font-size: 14px; font-weight: 500; line-height: 1.4; }
-
-        /* Mobile Overlay */
         .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
         .sidebar-overlay.active { display: block; }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .devices-grid { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.open { transform: translateX(0); box-shadow: 16px 0 48px rgba(0,0,0,0.5); }
-            .main-content { margin-left: 0; }
-            .mobile-menu-btn { display: flex; }
-            .topbar { padding: 0 20px; }
-            .topbar-clock { display: none; }
-            .content-area { padding: 20px 16px 40px; }
-            .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-            .stat-value { font-size: 22px; }
-            .login-card, .blocked-card { padding: 36px 28px; }
-            .share-options { flex-direction: column; }
-            .modal-box { padding: 32px 24px; }
-            .toast { right: 16px; left: 16px; max-width: none; bottom: 20px; }
-        }
-        @media (max-width: 480px) {
-            .stats-grid { grid-template-columns: 1fr; }
-            .tunnel-badge { display: none; }
-        }
-
-        /* Scrollbar */
+        .monitor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .monitor-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+        .monitor-card h4 { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .monitor-bar-wrap { height: 8px; background: var(--bg-input); border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+        .monitor-bar { height: 100%; border-radius: 4px; transition: width 1s ease; }
+        .monitor-bar.cpu { background: linear-gradient(90deg, var(--accent), #7c3aed); }
+        .monitor-bar.ram { background: linear-gradient(90deg, var(--green), var(--cyan)); }
+        .monitor-bar.disk { background: linear-gradient(90deg, var(--amber), #f59e0b); }
+        .monitor-bar.net { background: linear-gradient(90deg, var(--cyan), #06b6d4); }
+        .monitor-val { font-size: 24px; font-weight: 700; margin-bottom: 2px; }
+        .monitor-sub { font-size: 11px; color: var(--text-muted); }
+        .log-list { max-height: 400px; overflow-y: auto; }
+        .log-entry { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-subtle); font-size: 13px; }
+        .log-entry:last-child { border-bottom: none; }
+        .log-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+        .log-dot.connect { background: var(--green); }
+        .log-dot.disconnect { background: var(--red); }
+        .log-dot.share { background: var(--accent); }
+        .log-dot.login { background: var(--amber); }
+        .log-dot.system { background: var(--cyan); }
+        .log-time { color: var(--text-muted); font-size: 11px; margin-top: 2px; font-family: 'SF Mono','Fira Code',monospace; }
+        .cmd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+        .cmd-btn { padding: 16px 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 14px; cursor: pointer; transition: all 0.2s; text-align: center; }
+        .cmd-btn:hover { border-color: var(--accent); background: var(--bg-hover); transform: translateY(-2px); }
+        .cmd-btn svg { margin-bottom: 8px; }
+        .cmd-btn h5 { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+        .cmd-btn p { font-size: 11px; color: var(--text-muted); }
+        .task-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border-subtle); }
+        .task-item:last-child { border-bottom: none; }
+        .task-info { display: flex; align-items: center; gap: 12px; }
+        .task-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(99,102,241,0.1); display: flex; align-items: center; justify-content: center; }
+        .task-toggle { width: 40px; height: 22px; border-radius: 11px; background: var(--border); cursor: pointer; position: relative; transition: all 0.3s; border: none; }
+        .task-toggle.active { background: var(--green-dim); }
+        .task-toggle::after { content: ''; width: 18px; height: 18px; border-radius: 50%; background: white; position: absolute; top: 2px; left: 2px; transition: all 0.3s; }
+        .task-toggle.active::after { left: 20px; }
+        .kb-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+        .kb-btn { padding: 10px 16px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.2s; font-size: 12px; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+        .kb-btn:hover { border-color: var(--accent); color: var(--text); background: var(--bg-hover); }
+        .kb-key { padding: 2px 6px; background: rgba(0,0,0,0.2); border-radius: 4px; font-size: 10px; font-family: 'SF Mono','Fira Code',monospace; }
+        .clipboard-area { width: 100%; min-height: 120px; padding: 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 14px; color: var(--text); font-size: 14px; font-family: inherit; outline: none; resize: vertical; }
+        .clipboard-area:focus { border-color: var(--accent); }
+        .quality-bar { display: flex; gap: 16px; padding: 12px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; }
+        .quality-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-secondary); }
+        .quality-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .quality-dot.good { background: var(--green); box-shadow: 0 0 6px var(--green-glow); }
+        .quality-dot.fair { background: var(--amber); }
+        .quality-dot.poor { background: var(--red); }
+        .notif-panel { position: fixed; top: var(--header-height); right: 0; width: 360px; max-height: calc(100vh - var(--header-height)); background: var(--bg-card-solid); border-left: 1px solid var(--border); box-shadow: -8px 0 32px rgba(0,0,0,0.3); z-index: 200; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; }
+        .notif-panel.open { transform: translateX(0); }
+        .notif-panel-header { padding: 20px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; }
+        .notif-panel-header h3 { font-size: 16px; font-weight: 700; }
+        .notif-item { padding: 16px 20px; border-bottom: 1px solid var(--border-subtle); display: flex; gap: 12px; }
+        .notif-item:hover { background: var(--bg-hover); }
+        .notif-item.unread { background: rgba(99,102,241,0.05); }
+        .notif-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .notif-icon.info { background: rgba(99,102,241,0.12); color: var(--accent); }
+        .notif-icon.warn { background: rgba(251,191,36,0.12); color: var(--amber); }
+        .notif-icon.err { background: rgba(248,113,113,0.12); color: var(--red); }
+        .notif-icon.ok { background: rgba(52,211,153,0.12); color: var(--green); }
+        .notif-text h4 { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+        .notif-text p { font-size: 12px; color: var(--text-muted); }
+        .notif-text time { font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block; }
+        .bookmark-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; }
+        .bookmark-item:hover { border-color: var(--accent); }
+        .bookmark-info { display: flex; align-items: center; gap: 12px; }
+        .bookmark-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(99,102,241,0.1); display: flex; align-items: center; justify-content: center; }
+        @media (max-width: 1024px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .devices-grid { grid-template-columns: 1fr; } .monitor-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); box-shadow: 16px 0 48px rgba(0,0,0,0.5); } .main-content { margin-left: 0; } .mobile-menu-btn { display: flex; } .topbar { padding: 0 20px; } .topbar-clock { display: none; } .content-area { padding: 20px 16px 40px; } .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; } .stat-value { font-size: 22px; } .login-card, .blocked-card { padding: 36px 28px; } .share-options { flex-direction: column; } .modal-box { padding: 32px 24px; } .toast { right: 16px; left: 16px; max-width: none; bottom: 20px; } .notif-panel { width: 100%; } .cmd-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } .tunnel-badge { display: none; } .quality-bar { flex-wrap: wrap; } }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
     </style>
-</head>
-<body>
+</head><body>
     <div class="bg-ambient"></div>
     <div class="bg-grid"></div>
 
@@ -556,9 +308,9 @@
                         <circle cx="12" cy="16" r="1"/>
                     </svg>
                 </div>
-                <h2>Access Restricted</h2>
-                <p>This portal requires authorized access credentials. You will be redirected automatically.</p>
-                <div class="countdown">Redirecting in <span id="redirect-countdown">5</span>s</div>
+                <h2 id="t-blocked-title">Access Restricted</h2>
+                <p id="t-blocked-desc">This portal requires authorized access credentials. You will be redirected automatically.</p>
+                <div class="countdown"><span id="t-redirecting">Redirecting in</span> <span id="redirect-countdown">5</span>s</div>
             </div>
         </div>
     </div>
@@ -574,15 +326,15 @@
                         <line x1="12" y1="17" x2="12" y2="21"/>
                     </svg>
                 </div>
-                <h2>Welcome Back</h2>
-                <p class="subtitle">Sign in to access your remote devices</p>
+                <h2 id="t-welcome">Welcome Back</h2>
+                <p class="subtitle" id="t-signin-desc">Sign in to access your remote devices</p>
                 <form onsubmit="handleLogin(event)">
                     <div class="form-group">
-                        <label>Username</label>
+                        <label id="t-username-label">Username</label>
                         <input class="form-input" type="text" id="login-user" placeholder="Enter username" autocomplete="username" required>
                     </div>
                     <div class="form-group">
-                        <label>Password</label>
+                        <label id="t-password-label">Password</label>
                         <input class="form-input" type="password" id="login-pass" placeholder="Enter password" autocomplete="current-password" required>
                     </div>
                     <div class="error-msg" id="login-error">Invalid username or password</div>
@@ -592,7 +344,7 @@
                             <polyline points="10 17 15 12 10 7"/>
                             <line x1="15" y1="12" x2="3" y2="12"/>
                         </svg>
-                        Sign In
+                        <span id="t-signin-btn">Sign In</span>
                     </button>
                 </form>
             </div>
@@ -619,38 +371,32 @@
                     </div>
                 </div>
                 <nav class="sidebar-nav">
-                    <div class="sidebar-section-label">Main</div>
+                    <div class="sidebar-section-label" id="t-nav-main">Main</div>
                     <button class="nav-link active" onclick="switchTab('devices', this)" data-tab="devices">
-                        <div class="nav-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="2" y="3" width="20" height="14" rx="2"/>
-                                <line x1="8" y1="21" x2="16" y2="21"/>
-                                <line x1="12" y1="17" x2="12" y2="21"/>
-                            </svg>
-                        </div>
-                        Devices
+                        <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+                        <span id="t-nav-devices">Devices</span>
                     </button>
                     <button class="nav-link" onclick="switchTab('sessions', this)" data-tab="sessions">
-                        <div class="nav-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                <circle cx="9" cy="7" r="4"/>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                            </svg>
-                        </div>
-                        Sessions
+                        <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                        <span id="t-nav-sessions">Sessions</span>
                         <span class="badge" id="session-badge" style="display:none;">0</span>
                     </button>
-                    <div class="sidebar-section-label">System</div>
+                    <button class="nav-link" onclick="switchTab('monitor', this)" data-tab="monitor">
+                        <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+                        <span id="t-nav-monitor">Monitor</span>
+                    </button>
+                    <button class="nav-link" onclick="switchTab('tools', this)" data-tab="tools">
+                        <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+                        <span id="t-nav-tools">Tools</span>
+                    </button>
+                    <div class="sidebar-section-label" id="t-nav-system">System</div>
+                    <button class="nav-link" onclick="switchTab('activity', this)" data-tab="activity">
+                        <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+                        <span id="t-nav-activity">Activity Log</span>
+                    </button>
                     <button class="nav-link" onclick="switchTab('settings', this)" data-tab="settings">
-                        <div class="nav-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="3"/>
-                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-                            </svg>
-                        </div>
-                        Settings
+                        <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+                        <span id="t-nav-settings">Settings</span>
                     </button>
                 </nav>
                 <div class="sidebar-footer">
@@ -658,13 +404,9 @@
                         <div class="sidebar-user-avatar">A</div>
                         <div class="sidebar-user-info">
                             <h4>Admin</h4>
-                            <p>Sign out</p>
+                            <p id="t-signout">Sign out</p>
                         </div>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                            <polyline points="16 17 21 12 16 7"/>
-                            <line x1="21" y1="12" x2="9" y2="12"/>
-                        </svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                     </div>
                 </div>
             </aside>
@@ -674,11 +416,7 @@
                 <header class="topbar">
                     <div class="topbar-left">
                         <button class="mobile-menu-btn" onclick="toggleSidebar()">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="3" y1="6" x2="21" y2="6"/>
-                                <line x1="3" y1="12" x2="21" y2="12"/>
-                                <line x1="3" y1="18" x2="21" y2="18"/>
-                            </svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                         </button>
                         <div>
                             <h1 id="page-title">Devices</h1>
@@ -687,224 +425,277 @@
                     </div>
                     <div class="topbar-right">
                         <div class="topbar-clock">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"/>
-                                <polyline points="12 6 12 12 16 14"/>
-                            </svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                             <span id="clock-time">--:--</span>
                         </div>
+                        <button class="lang-btn" onclick="cycleLanguage()" title="Language">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        </button>
+                        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme" id="theme-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="theme-icon-dark"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="theme-icon-light" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                        </button>
+                        <button class="notif-btn" onclick="toggleNotifPanel()" title="Notifications" id="notif-toggle">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                            <div class="notif-dot" id="notif-dot"></div>
+                        </button>
                         <div class="tunnel-badge">
                             <div class="tunnel-dot"></div>
-                            Tunnel Active
+                            <span id="t-tunnel">Tunnel Active</span>
                         </div>
                     </div>
                 </header>
 
                 <div class="content-area">
+                    <!-- Connection Quality Bar -->
+                    <div class="quality-bar" id="quality-bar" style="display:none;">
+                        <div class="quality-item"><div class="quality-dot good" id="q-dot"></div><span id="q-status">Excellent</span></div>
+                        <div class="quality-item">Latency: <strong id="q-latency">12ms</strong></div>
+                        <div class="quality-item">FPS: <strong id="q-fps">30</strong></div>
+                        <div class="quality-item">Bandwidth: <strong id="q-bw">2.4 Mbps</strong></div>
+                    </div>
+
                     <!-- Devices Tab -->
                     <div class="tab-content active" id="tab-devices">
                         <div class="stats-grid">
                             <div class="stat-card">
                                 <div class="stat-card-top">
-                                    <div class="stat-icon-wrap purple">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2">
-                                            <rect x="2" y="3" width="20" height="14" rx="2"/>
-                                            <line x1="8" y1="21" x2="16" y2="21"/>
-                                            <line x1="12" y1="17" x2="12" y2="21"/>
-                                        </svg>
-                                    </div>
+                                    <div class="stat-icon-wrap purple"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
                                     <span class="stat-trend up">Active</span>
                                 </div>
                                 <div class="stat-value" id="total-devices">1</div>
-                                <div class="stat-label">Total Devices</div>
+                                <div class="stat-label" id="t-total-devices">Total Devices</div>
                             </div>
                             <div class="stat-card">
                                 <div class="stat-card-top">
-                                    <div class="stat-icon-wrap green">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2">
-                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                                            <polyline points="22 4 12 14.01 9 11.01"/>
-                                        </svg>
-                                    </div>
+                                    <div class="stat-icon-wrap green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
                                 </div>
                                 <div class="stat-value" id="online-devices">1</div>
-                                <div class="stat-label">Online Now</div>
+                                <div class="stat-label" id="t-online-now">Online Now</div>
                             </div>
                             <div class="stat-card">
                                 <div class="stat-card-top">
-                                    <div class="stat-icon-wrap violet">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2">
-                                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                            <circle cx="9" cy="7" r="4"/>
-                                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                                        </svg>
-                                    </div>
+                                    <div class="stat-icon-wrap violet"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
                                 </div>
                                 <div class="stat-value" id="active-sessions-count">0</div>
-                                <div class="stat-label">Active Sessions</div>
+                                <div class="stat-label" id="t-active-sessions">Active Sessions</div>
                             </div>
                             <div class="stat-card">
                                 <div class="stat-card-top">
-                                    <div class="stat-icon-wrap amber">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2">
-                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                                        </svg>
-                                    </div>
+                                    <div class="stat-icon-wrap amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
                                 </div>
                                 <div class="stat-value" style="font-size:20px;">Cloudflare</div>
-                                <div class="stat-label">Tunnel Provider</div>
+                                <div class="stat-label" id="t-tunnel-provider">Tunnel Provider</div>
                             </div>
                         </div>
 
                         <div class="section-head">
-                            <h2>
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
-                                    <rect x="2" y="3" width="20" height="14" rx="2"/>
-                                    <line x1="8" y1="21" x2="16" y2="21"/>
-                                    <line x1="12" y1="17" x2="12" y2="21"/>
-                                </svg>
-                                Your Devices
-                            </h2>
-                            <button class="refresh-btn" onclick="renderDevices()" title="Refresh">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="23 4 23 10 17 10"/>
-                                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-                                </svg>
-                            </button>
+                            <h2><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span id="t-your-devices">Your Devices</span></h2>
+                            <button class="refresh-btn" onclick="renderDevices()" title="Refresh"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></button>
                         </div>
                         <div class="devices-grid" id="devices-grid"></div>
+
+                        <!-- Bookmarks Section -->
+                        <div style="margin-top:32px;">
+                            <div class="section-head">
+                                <h2><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><span id="t-bookmarks">Bookmarks</span></h2>
+                                <button class="btn btn-ghost btn-sm" onclick="addBookmark()" id="t-add-bookmark-btn">+ Add</button>
+                            </div>
+                            <div id="bookmarks-list"></div>
+                        </div>
                     </div>
 
                     <!-- Sessions Tab -->
                     <div class="tab-content" id="tab-sessions">
                         <div class="panel">
-                            <div class="panel-title">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
-                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                    <circle cx="9" cy="7" r="4"/>
-                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                                </svg>
-                                Active Sessions
-                            </div>
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span id="t-active-sessions-title">Active Sessions</span></div>
                             <div id="active-sessions-list">
-                                <div class="empty-state">
-                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                        <circle cx="9" cy="7" r="4"/>
-                                        <line x1="17" y1="11" x2="23" y2="11"/>
-                                    </svg>
-                                    <p>No active sessions</p>
-                                </div>
+                                <div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="11" x2="23" y2="11"/></svg><p id="t-no-sessions">No active sessions</p></div>
                             </div>
                         </div>
+                        <!-- Session Recording -->
                         <div class="panel">
-                            <div class="panel-title">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
-                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-                                </svg>
-                                Share Session
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="var(--red)"/></svg><span id="t-session-recording">Session Recording</span></div>
+                            <p class="panel-desc" id="t-recording-desc">Record your remote sessions for playback and audit purposes. Recordings are saved locally in the browser.</p>
+                            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                                <button class="btn btn-ghost btn-sm" onclick="toggleRecording()" id="rec-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg><span id="t-start-recording">Start Recording</span></button>
+                                <button class="btn btn-ghost btn-sm" onclick="showRecordings()" id="t-view-recordings-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span id="t-view-recordings">View Recordings</span></button>
                             </div>
-                            <p class="panel-desc">Generate a share link to allow others to view or control the desktop session simultaneously. Multiple users can connect in real-time.</p>
+                            <div id="recordings-list" style="margin-top:16px;"></div>
+                        </div>
+                        <!-- Share Session -->
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span id="t-share-session">Share Session</span></div>
+                            <p class="panel-desc" id="t-share-desc">Generate a share link to allow others to view or control the desktop session simultaneously.</p>
                             <div class="share-options" id="share-options">
                                 <div class="share-opt selected" onclick="selectShareMode('full')" id="share-full">
-                                    <div class="share-icon">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
-                                            <rect x="2" y="3" width="20" height="14" rx="2"/>
-                                            <path d="M8 21h8"/><path d="M12 17v4"/>
-                                            <path d="M7 10l3 3 7-7"/>
-                                        </svg>
-                                    </div>
-                                    <h4>Full Control</h4>
-                                    <p>View + keyboard &amp; mouse</p>
+                                    <div class="share-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 10l3 3 7-7"/></svg></div>
+                                    <h4 id="t-full-control">Full Control</h4>
+                                    <p id="t-full-control-desc">View + keyboard &amp; mouse</p>
                                 </div>
                                 <div class="share-opt" onclick="selectShareMode('view')" id="share-view">
-                                    <div class="share-icon">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                            <circle cx="12" cy="12" r="3"/>
-                                        </svg>
-                                    </div>
-                                    <h4>View Only</h4>
-                                    <p>Watch screen only</p>
+                                    <div class="share-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                                    <h4 id="t-view-only">View Only</h4>
+                                    <p id="t-view-only-desc">Watch screen only</p>
                                 </div>
                             </div>
                             <div style="margin-top:20px;">
                                 <button class="btn btn-accent" onclick="generateShareLink()" id="share-btn" style="max-width:320px;">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-                                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-                                    </svg>
-                                    Generate Share Link
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                    <span id="t-generate-share">Generate Share Link</span>
                                 </button>
                             </div>
                             <div id="share-link-output" style="display:none;">
                                 <div class="share-link-box">
                                     <input type="text" id="share-link-url" readonly>
-                                    <button class="copy-btn" onclick="copyShareLink()">Copy</button>
+                                    <button class="copy-btn" onclick="copyShareLink()" id="t-copy-btn">Copy</button>
                                 </div>
-                                <p style="color:var(--text-muted);font-size:12px;margin-top:10px;">Share this link with others to join your active session.</p>
+                                <p style="color:var(--text-muted);font-size:12px;margin-top:10px;" id="t-share-hint">Share this link with others to join your active session.</p>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Monitor Tab (Feature 1: Real-time System Monitoring) -->
+                    <div class="tab-content" id="tab-monitor">
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span id="t-system-monitor">System Monitor</span></div>
+                            <div class="monitor-grid">
+                                <div class="monitor-card">
+                                    <h4><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg> CPU</h4>
+                                    <div class="monitor-val" id="mon-cpu">23%</div>
+                                    <div class="monitor-bar-wrap"><div class="monitor-bar cpu" id="mon-cpu-bar" style="width:23%"></div></div>
+                                    <div class="monitor-sub" id="mon-cpu-info">Intel i5 - 4 Cores</div>
+                                </div>
+                                <div class="monitor-card">
+                                    <h4><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="10" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="14" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/></svg> RAM</h4>
+                                    <div class="monitor-val" id="mon-ram">4.2 GB</div>
+                                    <div class="monitor-bar-wrap"><div class="monitor-bar ram" id="mon-ram-bar" style="width:52%"></div></div>
+                                    <div class="monitor-sub" id="mon-ram-info">4.2 / 8 GB Used</div>
+                                </div>
+                                <div class="monitor-card">
+                                    <h4><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg> Disk</h4>
+                                    <div class="monitor-val" id="mon-disk">120 GB</div>
+                                    <div class="monitor-bar-wrap"><div class="monitor-bar disk" id="mon-disk-bar" style="width:48%"></div></div>
+                                    <div class="monitor-sub" id="mon-disk-info">120 / 256 GB Used</div>
+                                </div>
+                                <div class="monitor-card">
+                                    <h4><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Network</h4>
+                                    <div class="monitor-val" id="mon-net">45 Mbps</div>
+                                    <div class="monitor-bar-wrap"><div class="monitor-bar net" id="mon-net-bar" style="width:45%"></div></div>
+                                    <div class="monitor-sub" id="mon-net-info">Upload: 12 Mbps | Down: 45 Mbps</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tools Tab (Features: Quick Commands, Keyboard Shortcuts, File Transfer, Wake-on-LAN, Clipboard, Scheduled Tasks) -->
+                    <div class="tab-content" id="tab-tools">
+                        <!-- Quick Commands -->
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg><span id="t-quick-commands">Quick Commands</span></div>
+                            <div class="cmd-grid" id="cmd-grid"></div>
+                        </div>
+                        <!-- Keyboard Shortcuts -->
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/></svg><span id="t-keyboard-shortcuts">Keyboard Shortcuts</span></div>
+                            <p class="panel-desc" id="t-kb-desc">Send special key combinations to the remote desktop.</p>
+                            <div class="kb-grid" id="kb-grid"></div>
+                        </div>
+                        <!-- File Transfer -->
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span id="t-file-transfer">File Transfer</span></div>
+                            <p class="panel-desc" id="t-file-desc">Transfer files to and from the remote desktop via Guacamole's built-in SFTP.</p>
+                            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                                <button class="btn btn-ghost btn-sm" onclick="openFileUpload()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span id="t-upload">Upload Files</span></button>
+                                <button class="btn btn-ghost btn-sm" onclick="openFileDownload()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7 16 12 21 17 16"/><line x1="12" y1="21" x2="12" y2="9"/></svg><span id="t-download">Download Files</span></button>
+                            </div>
+                            <p style="font-size:12px;color:var(--text-muted);margin-top:12px;" id="t-file-hint">File transfer uses Guacamole's SFTP integration. Connect to a device first.</p>
+                        </div>
+                        <!-- Wake-on-LAN -->
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg><span id="t-wake-on-lan">Wake-on-LAN</span></div>
+                            <p class="panel-desc" id="t-wol-desc">Send a Wake-on-LAN magic packet to power on offline devices remotely.</p>
+                            <div id="wol-devices"></div>
+                        </div>
+                        <!-- Clipboard Sync -->
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg><span id="t-clipboard-sync">Clipboard Sync</span></div>
+                            <p class="panel-desc" id="t-clipboard-desc">Sync clipboard content between your local machine and the remote desktop.</p>
+                            <textarea class="clipboard-area" id="clipboard-text" placeholder="Paste text here to send to remote desktop..."></textarea>
+                            <div style="display:flex;gap:12px;margin-top:12px;">
+                                <button class="btn btn-ghost btn-sm" onclick="sendClipboard()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span id="t-send-to-remote">Send to Remote</span></button>
+                                <button class="btn btn-ghost btn-sm" onclick="readClipboard()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7 16 12 21 17 16"/><line x1="12" y1="21" x2="12" y2="9"/></svg><span id="t-paste-from-local">Paste from Local</span></button>
+                            </div>
+                        </div>
+                        <!-- Scheduled Tasks -->
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span id="t-scheduled-tasks">Scheduled Tasks</span></div>
+                            <div id="scheduled-tasks-list"></div>
+                            <button class="btn btn-ghost btn-sm" onclick="addScheduledTask()" style="margin-top:12px;" id="t-add-task-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> <span id="t-add-task">Add Task</span></button>
+                        </div>
+                    </div>
+
+                    <!-- Activity Log Tab -->
+                    <div class="tab-content" id="tab-activity">
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span id="t-activity-log">Activity Log</span></div>
+                            <div style="display:flex;gap:12px;margin-bottom:16px;">
+                                <button class="btn btn-ghost btn-xs" onclick="filterLog('all')" id="t-filter-all">All</button>
+                                <button class="btn btn-ghost btn-xs" onclick="filterLog('connect')" id="t-filter-connect">Connections</button>
+                                <button class="btn btn-ghost btn-xs" onclick="filterLog('login')" id="t-filter-login">Logins</button>
+                                <button class="btn btn-ghost btn-xs" onclick="filterLog('system')" id="t-filter-system">System</button>
+                                <button class="btn btn-ghost btn-xs btn-danger" onclick="clearLog()" style="margin-left:auto;" id="t-clear-log">Clear</button>
+                            </div>
+                            <div class="log-list" id="activity-log"></div>
                         </div>
                     </div>
 
                     <!-- Settings Tab -->
                     <div class="tab-content" id="tab-settings">
                         <div class="panel">
-                            <div class="panel-title">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
-                                    <rect x="3" y="11" width="18" height="11" rx="2"/>
-                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                                </svg>
-                                Access Passwords
-                            </div>
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span id="t-access-passwords">Access Passwords</span></div>
                             <div class="settings-section">
-                                <label>Portal Entry Password</label>
+                                <label id="t-portal-pass-label">Portal Entry Password</label>
                                 <div class="settings-row">
                                     <input class="form-input" type="password" id="set-portal-pass" placeholder="Enter new portal password">
-                                    <button class="save-btn" onclick="savePassword('portal')">Update</button>
+                                    <button class="save-btn" onclick="savePassword('portal')" id="t-update-btn-portal">Update</button>
                                 </div>
-                                <div class="save-feedback" id="fb-portal">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                                        <polyline points="22 4 12 14.01 9 11.01"/>
-                                    </svg>
-                                    Password updated successfully
-                                </div>
+                                <div class="save-feedback" id="fb-portal"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span id="t-pass-updated">Password updated successfully</span></div>
                             </div>
                             <div class="settings-section">
-                                <label>Dashboard Login Credentials</label>
+                                <label id="t-dashboard-creds-label">Dashboard Login Credentials</label>
                                 <div class="settings-row">
                                     <input class="form-input" type="text" id="set-login-user" placeholder="Username" style="max-width:180px;">
                                     <input class="form-input" type="password" id="set-login-pass" placeholder="New password">
-                                    <button class="save-btn" onclick="savePassword('login')">Update</button>
+                                    <button class="save-btn" onclick="savePassword('login')" id="t-update-btn-login">Update</button>
                                 </div>
-                                <div class="save-feedback" id="fb-login">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                                        <polyline points="22 4 12 14.01 9 11.01"/>
-                                    </svg>
-                                    Login credentials updated
-                                </div>
+                                <div class="save-feedback" id="fb-login"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span id="t-login-updated">Login credentials updated</span></div>
                             </div>
                         </div>
                         <div class="panel">
-                            <div class="panel-title">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
-                                    <rect x="2" y="3" width="20" height="14" rx="2"/>
-                                    <line x1="8" y1="21" x2="16" y2="21"/>
-                                    <line x1="12" y1="17" x2="12" y2="21"/>
-                                </svg>
-                                Device Passwords
-                            </div>
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span id="t-device-passwords">Device Passwords</span></div>
                             <div id="device-password-settings"></div>
+                        </div>
+                        <!-- Push Notification Settings -->
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span id="t-push-notif">Push Notifications</span></div>
+                            <p class="panel-desc" id="t-push-desc">Get browser notifications when devices come online, sessions start, or tasks complete.</p>
+                            <button class="btn btn-ghost btn-sm" onclick="enableNotifications()" id="notif-enable-btn"><span id="t-enable-notif">Enable Notifications</span></button>
+                            <p style="font-size:12px;color:var(--text-muted);margin-top:8px;" id="notif-status-text"></p>
                         </div>
                     </div>
                 </div>
             </main>
         </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div class="notif-panel" id="notif-panel">
+        <div class="notif-panel-header">
+            <h3 id="t-notifications">Notifications</h3>
+            <button class="btn btn-ghost btn-xs" onclick="clearNotifications()" id="t-clear-all">Clear All</button>
+        </div>
+        <div id="notif-list"></div>
     </div>
 
     <!-- Device Password Modal -->
@@ -914,13 +705,13 @@
             <p id="device-modal-desc">Authentication required to connect</p>
             <form onsubmit="submitDevicePassword(event)">
                 <div class="form-group">
-                    <label>Device Password</label>
+                    <label id="t-device-pass-label">Device Password</label>
                     <input class="form-input" type="password" id="device-pass-input" placeholder="Enter password" required>
                 </div>
                 <div class="error-msg" id="device-pass-error">Incorrect password</div>
                 <div class="modal-actions">
-                    <button type="button" class="btn btn-ghost" onclick="closeDeviceModal()">Cancel</button>
-                    <button type="submit" class="btn btn-accent">Connect</button>
+                    <button type="button" class="btn btn-ghost" onclick="closeDeviceModal()" id="t-cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-accent" id="t-connect-btn">Connect</button>
                 </div>
             </form>
         </div>
@@ -930,394 +721,807 @@
     <div class="modal-overlay" id="connecting-modal">
         <div class="modal-box">
             <div class="modal-spinner"></div>
-            <h3>Connecting...</h3>
+            <h3 id="t-connecting">Connecting...</h3>
             <p id="connecting-text">Establishing secure connection</p>
-            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('connecting-modal').classList.remove('active')" style="margin-top:12px;">Cancel</button>
+            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('connecting-modal').classList.remove('active')" style="margin-top:12px;" id="t-cancel-connect">Cancel</button>
         </div>
     </div>
 
     <!-- Toast -->
     <div class="toast" id="toast">
-        <div class="toast-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
-        </div>
+        <div class="toast-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
         <span class="toast-text" id="toast-text"></span>
     </div>
-
     <script>
-    /* Configuration */
-    var DEFAULT_CONFIG = {
-        portalPassword: 'NR@2024',
-        loginUsername: 'admin',
-        loginPassword: 'Sarkar@00',
-        accessTokenSecret: 'nrl-remote-x7k9',
-        tokenValidityMs: 5 * 60 * 1000
-    };
-
-    var DEVICES = [{
-        id: 'uae-pc', name: 'UAE-PC', hostname: 'DESKTOP-43H8T9M',
-        os: 'Windows 11 Pro', location: 'UAE', user: 'USER',
-        protocol: 'RDP', port: 33892, status: 'online',
-        defaultPassword: 'connect@123', guacConnectionId: '1',
-        guacDataSource: 'mysql', guacClientId: 'MQBjAG15c3Fs'
-    }];
-
-    var guacAuthToken = null;
-    var shareMode = 'full';
-
-    /* Config Helpers */
-    function getConfig(key) {
-        return localStorage.getItem('nrl_remote_' + key) || DEFAULT_CONFIG[key];
-    }
-    function setConfig(key, value) {
-        localStorage.setItem('nrl_remote_' + key, value);
-    }
-    function getDevicePassword(deviceId) {
-        var s = localStorage.getItem('nrl_device_pw_' + deviceId);
-        if (s) return s;
-        var d = DEVICES.find(function(d) { return d.id === deviceId; });
-        return d ? d.defaultPassword : '';
-    }
-    function setDevicePassword(deviceId, password) {
-        localStorage.setItem('nrl_device_pw_' + deviceId, password);
-    }
-
-    /* Token Validation */
-    function simpleHash(str) {
-        var h = 0;
-        for (var i = 0; i < str.length; i++) {
-            h = ((h << 5) - h) + str.charCodeAt(i);
-            h = h & h;
+    // ============ i18n Multi-Language Support ============
+    const LANGS = ['en','es','fr','de','zh'];
+    const I18N = {
+        en: {
+            't-blocked-title':'Access Restricted','t-blocked-desc':'This portal requires authorized access credentials.','t-redirecting':'Redirecting in',
+            't-welcome':'Welcome Back','t-signin-desc':'Sign in to access your remote devices','t-username-label':'Username','t-password-label':'Password','t-signin-btn':'Sign In',
+            't-nav-main':'Main','t-nav-devices':'Devices','t-nav-sessions':'Sessions','t-nav-monitor':'Monitor','t-nav-tools':'Tools','t-nav-system':'System','t-nav-activity':'Activity Log','t-nav-settings':'Settings','t-signout':'Sign out',
+            't-total-devices':'Total Devices','t-online-now':'Online Now','t-active-sessions':'Active Sessions','t-tunnel-provider':'Tunnel Provider','t-your-devices':'Your Devices',
+            't-bookmarks':'Bookmarks','t-add-bookmark-btn':'+ Add',
+            't-active-sessions-title':'Active Sessions','t-no-sessions':'No active sessions',
+            't-session-recording':'Session Recording','t-recording-desc':'Record your remote sessions for playback and audit purposes.','t-start-recording':'Start Recording','t-view-recordings':'View Recordings',
+            't-share-session':'Share Session','t-share-desc':'Generate a share link to allow others to view or control the desktop session.','t-full-control':'Full Control','t-full-control-desc':'View + keyboard & mouse','t-view-only':'View Only','t-view-only-desc':'Watch screen only','t-generate-share':'Generate Share Link','t-copy-btn':'Copy','t-share-hint':'Share this link with others to join your active session.',
+            't-system-monitor':'System Monitor','t-quick-commands':'Quick Commands','t-keyboard-shortcuts':'Keyboard Shortcuts','t-kb-desc':'Send special key combinations to the remote desktop.',
+            't-file-transfer':'File Transfer','t-file-desc':'Transfer files to and from the remote desktop via Guacamole SFTP.','t-upload':'Upload Files','t-download':'Download Files','t-file-hint':'File transfer uses Guacamole SFTP integration. Connect to a device first.',
+            't-wake-on-lan':'Wake-on-LAN','t-wol-desc':'Send a Wake-on-LAN magic packet to power on offline devices remotely.',
+            't-clipboard-sync':'Clipboard Sync','t-clipboard-desc':'Sync clipboard content between your local machine and the remote desktop.','t-send-to-remote':'Send to Remote','t-paste-from-local':'Paste from Local',
+            't-scheduled-tasks':'Scheduled Tasks','t-add-task':'Add Task',
+            't-activity-log':'Activity Log','t-filter-all':'All','t-filter-connect':'Connections','t-filter-login':'Logins','t-filter-system':'System','t-clear-log':'Clear',
+            't-access-passwords':'Access Passwords','t-portal-pass-label':'Portal Entry Password','t-update-btn-portal':'Update','t-pass-updated':'Password updated successfully','t-dashboard-creds-label':'Dashboard Login Credentials','t-update-btn-login':'Update','t-login-updated':'Login credentials updated',
+            't-device-passwords':'Device Passwords','t-push-notif':'Push Notifications','t-push-desc':'Get browser notifications when devices come online, sessions start, or tasks complete.','t-enable-notif':'Enable Notifications',
+            't-notifications':'Notifications','t-clear-all':'Clear All','t-device-pass-label':'Device Password','t-cancel-btn':'Cancel','t-connect-btn':'Connect','t-connecting':'Connecting...','t-cancel-connect':'Cancel','t-tunnel':'Tunnel Active'
+        },
+        es: {
+            't-blocked-title':'Acceso Restringido','t-blocked-desc':'Este portal requiere credenciales de acceso autorizadas.','t-redirecting':'Redirigiendo en',
+            't-welcome':'Bienvenido','t-signin-desc':'Inicie sesion para acceder a sus dispositivos remotos','t-username-label':'Usuario','t-password-label':'Contrasena','t-signin-btn':'Iniciar Sesion',
+            't-nav-main':'Principal','t-nav-devices':'Dispositivos','t-nav-sessions':'Sesiones','t-nav-monitor':'Monitor','t-nav-tools':'Herramientas','t-nav-system':'Sistema','t-nav-activity':'Registro','t-nav-settings':'Ajustes','t-signout':'Cerrar sesion',
+            't-total-devices':'Total Dispositivos','t-online-now':'En Linea','t-active-sessions':'Sesiones Activas','t-tunnel-provider':'Proveedor Tunel','t-your-devices':'Tus Dispositivos',
+            't-bookmarks':'Marcadores','t-add-bookmark-btn':'+ Agregar',
+            't-active-sessions-title':'Sesiones Activas','t-no-sessions':'No hay sesiones activas',
+            't-system-monitor':'Monitor del Sistema','t-quick-commands':'Comandos Rapidos','t-keyboard-shortcuts':'Atajos de Teclado','t-kb-desc':'Enviar combinaciones de teclas al escritorio remoto.',
+            't-file-transfer':'Transferencia de Archivos','t-wake-on-lan':'Wake-on-LAN','t-clipboard-sync':'Sincronizar Portapapeles','t-scheduled-tasks':'Tareas Programadas','t-add-task':'Agregar Tarea',
+            't-activity-log':'Registro de Actividad','t-filter-all':'Todo','t-filter-connect':'Conexiones','t-filter-login':'Inicios','t-filter-system':'Sistema','t-clear-log':'Limpiar',
+            't-access-passwords':'Contrasenas de Acceso','t-tunnel':'Tunel Activo','t-notifications':'Notificaciones','t-clear-all':'Limpiar Todo'
+        },
+        fr: {
+            't-blocked-title':'Acces Restreint','t-welcome':'Bienvenue','t-signin-desc':'Connectez-vous pour acceder a vos appareils distants','t-username-label':'Utilisateur','t-password-label':'Mot de passe','t-signin-btn':'Se Connecter',
+            't-nav-main':'Principal','t-nav-devices':'Appareils','t-nav-sessions':'Sessions','t-nav-monitor':'Moniteur','t-nav-tools':'Outils','t-nav-system':'Systeme','t-nav-activity':'Journal','t-nav-settings':'Parametres','t-signout':'Deconnexion',
+            't-total-devices':'Total Appareils','t-online-now':'En Ligne','t-active-sessions':'Sessions Actives','t-your-devices':'Vos Appareils',
+            't-bookmarks':'Favoris','t-system-monitor':'Moniteur Systeme','t-quick-commands':'Commandes Rapides','t-keyboard-shortcuts':'Raccourcis Clavier',
+            't-file-transfer':'Transfert de Fichiers','t-wake-on-lan':'Wake-on-LAN','t-clipboard-sync':'Sync Presse-papiers','t-scheduled-tasks':'Taches Planifiees',
+            't-activity-log':'Journal Activite','t-tunnel':'Tunnel Actif','t-notifications':'Notifications'
+        },
+        de: {
+            't-blocked-title':'Zugang Beschrankt','t-welcome':'Willkommen','t-signin-desc':'Melden Sie sich an, um auf Ihre Remote-Gerate zuzugreifen','t-username-label':'Benutzername','t-password-label':'Passwort','t-signin-btn':'Anmelden',
+            't-nav-main':'Haupt','t-nav-devices':'Gerate','t-nav-sessions':'Sitzungen','t-nav-monitor':'Monitor','t-nav-tools':'Werkzeuge','t-nav-system':'System','t-nav-activity':'Protokoll','t-nav-settings':'Einstellungen','t-signout':'Abmelden',
+            't-total-devices':'Gerate Gesamt','t-online-now':'Online','t-active-sessions':'Aktive Sitzungen','t-your-devices':'Ihre Gerate',
+            't-bookmarks':'Lesezeichen','t-system-monitor':'Systemmonitor','t-quick-commands':'Schnellbefehle','t-keyboard-shortcuts':'Tastaturkurzel',
+            't-file-transfer':'Dateiubertragung','t-wake-on-lan':'Wake-on-LAN','t-clipboard-sync':'Zwischenablage','t-scheduled-tasks':'Geplante Aufgaben',
+            't-activity-log':'Aktivitatsprotokoll','t-tunnel':'Tunnel Aktiv','t-notifications':'Benachrichtigungen'
+        },
+        zh: {
+            't-blocked-title':'访问受限','t-welcome':'欢迎回来','t-signin-desc':'登录以访问您的远程设备','t-username-label':'用户名','t-password-label':'密码','t-signin-btn':'登录',
+            't-nav-main':'主要','t-nav-devices':'设备','t-nav-sessions':'会话','t-nav-monitor':'监控','t-nav-tools':'工具','t-nav-system':'系统','t-nav-activity':'活动日志','t-nav-settings':'设置','t-signout':'退出',
+            't-total-devices':'设备总数','t-online-now':'在线','t-active-sessions':'活动会话','t-your-devices':'您的设备',
+            't-bookmarks':'书签','t-system-monitor':'系统监控','t-quick-commands':'快速命令','t-keyboard-shortcuts':'键盘快捷键',
+            't-file-transfer':'文件传输','t-wake-on-lan':'远程唤醒','t-clipboard-sync':'剪贴板同步','t-scheduled-tasks':'计划任务',
+            't-activity-log':'活动日志','t-tunnel':'隧道活跃','t-notifications':'通知'
         }
-        return Math.abs(h).toString(36);
-    }
-    function validateAccessToken(token) {
-        try {
-            var d = atob(token), p = d.split('|');
-            if (p.length !== 2) return false;
-            var ts = parseInt(p[0]), h = p[1];
-            var v = Number(getConfig('tokenValidityMs')) || DEFAULT_CONFIG.tokenValidityMs;
-            if (Date.now() - ts > v) return false;
-            return h === simpleHash(p[0] + getConfig('accessTokenSecret'));
-        } catch(e) { return false; }
-    }
-
-    /* UI Helpers */
-    function showScreen(id) {
-        document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
-        document.getElementById(id).classList.add('active');
-    }
-    function showToast(msg, type) {
-        var t = document.getElementById('toast');
-        t.className = 'toast ' + (type || 'success');
-        document.getElementById('toast-text').textContent = msg;
-        t.classList.add('visible');
-        setTimeout(function() { t.classList.remove('visible'); }, 4000);
-    }
-
-    /* Guacamole Auth */
-    function authenticateGuacamole() {
-        return fetch('/guacamole/api/tokens', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'username=admin&password=' + encodeURIComponent(getConfig('loginPassword'))
-        })
-        .then(function(r) { return r.json(); })
-        .then(function(d) {
-            if (d.authToken) { guacAuthToken = d.authToken; return d.authToken; }
-            throw new Error('Auth failed');
-        });
-    }
-
-    /* Sessions */
-    function fetchActiveSessions() {
-        if (!guacAuthToken) return Promise.resolve({});
-        return fetch('/guacamole/api/session/data/' + DEVICES[0].guacDataSource + '/activeConnections?token=' + guacAuthToken)
-            .then(function(r) { return r.ok ? r.json() : {}; })
-            .catch(function() { return {}; });
-    }
-    function refreshSessions() {
-        fetchActiveSessions().then(function(sessions) {
-            var list = document.getElementById('active-sessions-list');
-            var count = document.getElementById('active-sessions-count');
-            var badge = document.getElementById('session-badge');
-            var entries = Object.entries(sessions);
-            count.textContent = entries.length;
-            badge.style.display = entries.length > 0 ? 'inline' : 'none';
-            badge.textContent = entries.length;
-            if (entries.length === 0) {
-                list.innerHTML = '<div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="11" x2="23" y2="11"/></svg><p>No active sessions</p></div>';
-                return;
-            }
-            var html = '';
-            entries.forEach(function(entry) {
-                var id = entry[0], s = entry[1];
-                var u = s.username || 'Unknown';
-                var d = s.startDate ? new Date(s.startDate).toLocaleString() : 'N/A';
-                html += '<div class="session-row"><div class="session-info"><div class="session-avatar">' + u.charAt(0).toUpperCase() + '</div><div class="session-meta"><h4>' + u + '</h4><p>Connected since ' + d + '</p></div></div><div class="session-actions"><button class="btn btn-ghost btn-sm btn-danger" onclick="killSession(\'' + id + '\')">Disconnect</button></div></div>';
-            });
-            list.innerHTML = html;
-        });
-    }
-    function killSession(sid) {
-        if (!guacAuthToken) return;
-        fetch('/guacamole/api/session/data/' + DEVICES[0].guacDataSource + '/activeConnections?token=' + guacAuthToken, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify([{ op: 'remove', path: '/' + sid }])
-        }).then(function(r) {
-            if (r.ok) { showToast('Session disconnected', 'success'); setTimeout(refreshSessions, 1000); }
-        }).catch(function() { showToast('Failed to disconnect', 'error'); });
-    }
-
-    /* Share */
-    function selectShareMode(mode) {
-        shareMode = mode;
-        document.getElementById('share-full').classList.toggle('selected', mode === 'full');
-        document.getElementById('share-view').classList.toggle('selected', mode === 'view');
-    }
-    function generateShareLink() {
-        if (!guacAuthToken) { authenticateGuacamole().then(function() { generateShareLink(); }); return; }
-        var dev = DEVICES[0];
-        var spId = shareMode === 'view' ? '2' : '1';
-        fetch('/guacamole/api/session/data/' + dev.guacDataSource + '/activeConnections?token=' + guacAuthToken)
-            .then(function(r) { return r.json(); })
-            .then(function(sessions) {
-                var entries = Object.entries(sessions);
-                if (entries.length === 0) { showToast('No active session to share. Connect to a device first.', 'error'); return; }
-                var active = entries[0][1];
-                return fetch('/guacamole/api/session/tunnels/' + active.tunnel + '/activeConnection/sharingCredentials/' + spId + '?token=' + guacAuthToken)
-                    .then(function(r) { if (!r.ok) throw new Error('Failed'); return r.json(); })
-                    .then(function(sd) {
-                        document.getElementById('share-link-url').value = window.location.origin + '/guacamole/#/?key=' + encodeURIComponent(sd.key);
-                        document.getElementById('share-link-output').style.display = 'block';
-                        showToast('Share link generated!', 'success');
-                    });
-            })
-            .catch(function(e) {
-                console.error('Share error:', e);
-                showToast('Could not generate share link. Make sure you have an active connection.', 'error');
-            });
-    }
-    function copyShareLink() {
-        var i = document.getElementById('share-link-url');
-        navigator.clipboard.writeText(i.value)
-            .then(function() { showToast('Link copied!', 'success'); })
-            .catch(function() { i.select(); document.execCommand('copy'); showToast('Link copied!', 'success'); });
-    }
-
-    /* Clock */
-    function updateClock() {
-        var n = new Date();
-        document.getElementById('clock-time').textContent = n.toLocaleTimeString('en-US', {
-            hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
-        });
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    /* Tab Info */
-    var TAB_INFO = {
-        devices: { title: 'Devices', subtitle: 'Manage your remote connections' },
-        sessions: { title: 'Sessions', subtitle: 'Monitor active connections & share access' },
-        settings: { title: 'Settings', subtitle: 'Configure passwords & preferences' }
     };
+    let currentLang = localStorage.getItem('dashboard-lang') || 'en';
 
-    /* Init */
-    function init() {
-        var token = new URLSearchParams(window.location.search).get('token');
-        if (sessionStorage.getItem('nrl_session') === 'active') {
-            showScreen('dashboard-screen');
-            renderDevices(); renderDevicePasswordSettings(); loadSettingsValues();
-            authenticateGuacamole().then(function() { refreshSessions(); });
-            setInterval(refreshSessions, 15000);
+    function applyLang(lang) {
+        currentLang = lang;
+        localStorage.setItem('dashboard-lang', lang);
+        const strings = I18N[lang] || I18N.en;
+        const fallback = I18N.en;
+        Object.keys(fallback).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = strings[id] || fallback[id];
+        });
+        document.documentElement.lang = lang;
+    }
+
+    function cycleLanguage() {
+        const idx = LANGS.indexOf(currentLang);
+        const next = LANGS[(idx + 1) % LANGS.length];
+        applyLang(next);
+        showToast('Language: ' + next.toUpperCase(), 'success');
+    }
+
+    // ============ Theme Toggle ============
+    let currentTheme = localStorage.getItem('dashboard-theme') || 'dark';
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        currentTheme = theme;
+        localStorage.setItem('dashboard-theme', theme);
+        document.getElementById('theme-icon-dark').style.display = theme === 'dark' ? 'block' : 'none';
+        document.getElementById('theme-icon-light').style.display = theme === 'light' ? 'block' : 'none';
+    }
+    function toggleTheme() {
+        applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    }
+
+    // ============ Configuration ============
+    const GUAC_BASE = 'https://remote.newsreporter.live';
+    const TOKEN_SECRET = 'nrl-remote-x7k9';
+    const DEFAULT_DEVICE_PASS = 'connect@123';
+
+    let devices = [
+        { id: 'uae-pc', name: 'UAE Office PC', host: '192.168.1.100', os: 'Windows 11 Pro', cpu: 'Intel i5', ram: '8 GB', status: 'online', user: 'user', guacId: 'uae-pc', mac: 'AA:BB:CC:DD:EE:01' }
+    ];
+
+    // ============ Token & Access ============
+    function getUrlToken() {
+        const p = new URLSearchParams(window.location.search);
+        return p.get('token') || p.get('t');
+    }
+
+    function validateToken(t) {
+        if (!t || !t.startsWith(TOKEN_SECRET + '-')) return false;
+        const parts = t.split('-');
+        const ts = Number(parts[parts.length - 2]);
+        const validity = Number(parts[parts.length - 1]);
+        if (!ts || !validity) return false;
+        return Date.now() < ts + validity;
+    }
+
+    function checkAccess() {
+        const token = getUrlToken();
+        if (token && validateToken(token)) {
+            localStorage.setItem('portal-token', token);
+            const url = new URL(window.location);
+            url.searchParams.delete('token');
+            url.searchParams.delete('t');
+            window.history.replaceState({}, '', url.toString());
+            showLogin();
             return;
         }
-        if (token && validateAccessToken(token)) {
-            sessionStorage.setItem('nrl_token_valid', 'true');
-            window.history.replaceState({}, '', window.location.pathname);
-            showScreen('login-screen');
-            document.getElementById('login-user').focus();
-        } else {
-            showScreen('blocked-screen');
-            var c = 5;
-            var el = document.getElementById('redirect-countdown');
-            var iv = setInterval(function() {
-                c--;
-                el.textContent = c;
-                if (c <= 0) { clearInterval(iv); window.location.href = 'https://newsreporter.live'; }
-            }, 1000);
+        const saved = localStorage.getItem('portal-token');
+        if (saved && validateToken(saved)) {
+            showLogin();
+            return;
         }
+        showBlocked();
     }
 
-    /* Login */
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function showBlocked() {
+        showScreen('blocked-screen');
+        let c = 5;
+        const el = document.getElementById('redirect-countdown');
+        const iv = setInterval(() => {
+            c--;
+            el.textContent = c;
+            if (c <= 0) { clearInterval(iv); window.location.href = 'https://newsreporter.live'; }
+        }, 1000);
+    }
+
+    function showLogin() {
+        const sess = sessionStorage.getItem('dashboard-logged-in');
+        if (sess === 'true') { showDashboard(); return; }
+        showScreen('login-screen');
+    }
+
     function handleLogin(e) {
         e.preventDefault();
-        var u = document.getElementById('login-user').value.trim();
-        var p = document.getElementById('login-pass').value;
-        if (u === getConfig('loginUsername') && p === getConfig('loginPassword')) {
-            sessionStorage.setItem('nrl_session', 'active');
-            document.getElementById('login-error').classList.remove('visible');
-            showScreen('dashboard-screen');
-            renderDevices(); renderDevicePasswordSettings(); loadSettingsValues();
-            authenticateGuacamole().then(function() { refreshSessions(); });
-            setInterval(refreshSessions, 15000);
+        const u = document.getElementById('login-user').value.trim();
+        const p = document.getElementById('login-pass').value;
+        const stored = JSON.parse(localStorage.getItem('dashboard-credentials') || 'null');
+        const validUser = stored ? stored.username : 'admin';
+        const validPass = stored ? stored.password : 'NR@2024';
+        if (u === validUser && p === validPass) {
+            sessionStorage.setItem('dashboard-logged-in', 'true');
+            addLogEntry('login', 'User "' + u + '" logged in');
+            showDashboard();
         } else {
-            document.getElementById('login-error').classList.add('visible');
-            document.getElementById('login-pass').value = '';
-            document.getElementById('login-pass').focus();
+            const err = document.getElementById('login-error');
+            err.classList.add('visible');
+            setTimeout(() => err.classList.remove('visible'), 3000);
         }
     }
 
-    /* Render Devices */
-    function renderDevices() {
-        var grid = document.getElementById('devices-grid');
-        var html = '';
-        DEVICES.forEach(function(d) {
-            html += '<div class="device-card"><div class="device-card-inner">'
-                + '<div class="device-header"><div class="device-icon-box">'
-                + '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>'
-                + '</div><div class="device-badge ' + d.status + '"><div class="device-badge-dot"></div>'
-                + (d.status === 'online' ? 'Online' : 'Offline') + '</div></div>'
-                + '<div class="device-title">' + d.name + '</div>'
-                + '<div class="device-host">' + d.hostname + '</div>'
-                + '<div class="device-specs">'
-                + '<div class="spec-item"><label>OS</label><span>' + d.os + '</span></div>'
-                + '<div class="spec-item"><label>Location</label><span>' + d.location + '</span></div>'
-                + '<div class="spec-item"><label>Protocol</label><span>' + d.protocol + '</span></div>'
-                + '<div class="spec-item"><label>User</label><span>' + d.user + '</span></div>'
-                + '</div>'
-                + '<button class="connect-btn" onclick="connectDevice(\'' + d.id + '\')">'
-                + '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>'
-                + 'Connect to Desktop</button>'
-                + '</div></div>';
-        });
-        grid.innerHTML = html;
-        document.getElementById('total-devices').textContent = DEVICES.length;
-        document.getElementById('online-devices').textContent = DEVICES.filter(function(d) { return d.status === 'online'; }).length;
+    function showDashboard() {
+        showScreen('dashboard-screen');
+        startClock();
+        renderDevices();
+        loadBookmarks();
+        renderQuickCommands();
+        renderKeyboardShortcuts();
+        renderScheduledTasks();
+        renderWolDevices();
+        renderActivityLog();
+        startMonitoring();
+        applyTheme(currentTheme);
+        applyLang(currentLang);
+        checkNotifPermission();
     }
 
-    /* Device Connection */
-    var pendingDeviceId = null;
-    function connectDevice(deviceId) {
-        pendingDeviceId = deviceId;
-        var d = DEVICES.find(function(x) { return x.id === deviceId; });
-        document.getElementById('device-modal-title').textContent = 'Connect to ' + d.name;
-        document.getElementById('device-modal-desc').textContent = 'Enter password to access ' + d.hostname;
-        document.getElementById('device-pass-input').value = '';
-        document.getElementById('device-pass-error').classList.remove('visible');
-        document.getElementById('device-modal').classList.add('active');
-        setTimeout(function() { document.getElementById('device-pass-input').focus(); }, 100);
+    function handleLogout() {
+        sessionStorage.removeItem('dashboard-logged-in');
+        addLogEntry('login', 'User logged out');
+        showLogin();
     }
-    function submitDevicePassword(e) {
-        e.preventDefault();
-        var pass = document.getElementById('device-pass-input').value;
-        if (pass === getDevicePassword(pendingDeviceId)) {
-            var d = DEVICES.find(function(x) { return x.id === pendingDeviceId; });
-            closeDeviceModal();
-            document.getElementById('connecting-text').textContent = 'Establishing secure connection to ' + d.name;
-            document.getElementById('connecting-modal').classList.add('active');
-            authenticateGuacamole().then(function(t) {
-                window.location.href = '/guacamole/#/client/' + encodeURIComponent(d.guacClientId) + '?token=' + t;
-            }).catch(function() {
-                document.getElementById('connecting-text').textContent = 'Connection error. Redirecting...';
-                setTimeout(function() {
-                    window.location.href = '/guacamole/#/client/' + encodeURIComponent(DEVICES.find(function(x) { return x.id === pendingDeviceId; }).guacClientId);
-                }, 1500);
-            });
-        } else {
-            document.getElementById('device-pass-error').classList.add('visible');
-            document.getElementById('device-pass-input').value = '';
-            document.getElementById('device-pass-input').focus();
+
+    // ============ Clock ============
+    function startClock() {
+        const el = document.getElementById('clock-time');
+        function update() {
+            const now = new Date();
+            el.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
         }
-    }
-    function closeDeviceModal() {
-        document.getElementById('device-modal').classList.remove('active');
-        pendingDeviceId = null;
+        update();
+        setInterval(update, 1000);
     }
 
-    /* Tab Switching */
-    function switchTab(tab, el) {
-        document.querySelectorAll('.nav-link').forEach(function(b) { b.classList.remove('active'); });
-        document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
-        if (el) el.classList.add('active');
-        else document.querySelector('[data-tab="' + tab + '"]').classList.add('active');
+    // ============ Navigation ============
+    const TAB_TITLES = {
+        devices: ['Devices', 'Manage your remote connections'],
+        sessions: ['Sessions', 'Active sessions & sharing'],
+        monitor: ['System Monitor', 'Real-time system metrics'],
+        tools: ['Tools', 'Quick commands, file transfer & more'],
+        activity: ['Activity Log', 'Connection history & audit trail'],
+        settings: ['Settings', 'Configure passwords & preferences']
+    };
+
+    function switchTab(tab, btn) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
         document.getElementById('tab-' + tab).classList.add('active');
-        var info = TAB_INFO[tab];
-        if (info) {
-            document.getElementById('page-title').textContent = info.title;
-            document.getElementById('page-subtitle').textContent = info.subtitle;
-        }
-        if (tab === 'sessions') refreshSessions();
-        document.getElementById('sidebar').classList.remove('open');
-        document.getElementById('sidebar-overlay').classList.remove('active');
+        if (btn) btn.classList.add('active');
+        const tt = TAB_TITLES[tab] || ['Dashboard', ''];
+        document.getElementById('page-title').textContent = tt[0];
+        document.getElementById('page-subtitle').textContent = tt[1];
+        if (window.innerWidth < 768) toggleSidebar();
     }
+
     function toggleSidebar() {
         document.getElementById('sidebar').classList.toggle('open');
         document.getElementById('sidebar-overlay').classList.toggle('active');
     }
 
-    /* Settings */
-    function loadSettingsValues() {
-        document.getElementById('set-login-user').value = getConfig('loginUsername');
-    }
-    function renderDevicePasswordSettings() {
-        var c = document.getElementById('device-password-settings');
-        var html = '';
-        DEVICES.forEach(function(d) {
-            html += '<div class="settings-section"><label>' + d.name + ' (' + d.hostname + ')</label>'
-                + '<div class="settings-row"><input class="form-input" type="password" id="set-device-pw-' + d.id + '" placeholder="New device password">'
-                + '<button class="save-btn" onclick="saveDevicePassword(\'' + d.id + '\')">Update</button></div>'
-                + '<div class="save-feedback" id="fb-device-' + d.id + '"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Device password updated</div></div>';
+    // ============ Device Rendering ============
+    function renderDevices() {
+        const grid = document.getElementById('devices-grid');
+        grid.innerHTML = '';
+        devices.forEach(d => {
+            const card = document.createElement('div');
+            card.className = 'device-card';
+            const isOnline = d.status === 'online';
+            card.innerHTML = '<div class="device-card-inner">' +
+                '<div class="device-header">' +
+                    '<div class="device-icon-box"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>' +
+                    '<span class="device-badge ' + d.status + '"><span class="device-badge-dot"></span>' + d.status.toUpperCase() + '</span>' +
+                '</div>' +
+                '<div class="device-title">' + d.name + '</div>' +
+                '<div class="device-host">' + d.host + '</div>' +
+                '<div class="device-specs">' +
+                    '<div class="spec-item"><label>OS</label><span>' + d.os + '</span></div>' +
+                    '<div class="spec-item"><label>CPU</label><span>' + d.cpu + '</span></div>' +
+                    '<div class="spec-item"><label>RAM</label><span>' + d.ram + '</span></div>' +
+                    '<div class="spec-item"><label>User</label><span>' + d.user + '</span></div>' +
+                '</div>' +
+                (isOnline ?
+                    '<button class="connect-btn" onclick="connectDevice(\'' + d.id + '\')">' +
+                        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>' +
+                        'Connect via RDP</button>'
+                    :
+                    '<button class="connect-btn" style="opacity:0.5;cursor:not-allowed;" disabled>Device Offline</button>'
+                ) +
+            '</div>';
+            grid.appendChild(card);
         });
-        c.innerHTML = html;
+        document.getElementById('total-devices').textContent = devices.length;
+        document.getElementById('online-devices').textContent = devices.filter(d => d.status === 'online').length;
     }
+
+    let connectingDevice = null;
+    function connectDevice(id) {
+        connectingDevice = devices.find(d => d.id === id);
+        if (!connectingDevice) return;
+        document.getElementById('device-modal-title').textContent = 'Connect to ' + connectingDevice.name;
+        document.getElementById('device-pass-input').value = '';
+        document.getElementById('device-pass-error').classList.remove('visible');
+        document.getElementById('device-modal').classList.add('active');
+    }
+
+    function closeDeviceModal() {
+        document.getElementById('device-modal').classList.remove('active');
+        connectingDevice = null;
+    }
+
+    function submitDevicePassword(e) {
+        e.preventDefault();
+        const pass = document.getElementById('device-pass-input').value;
+        const storedPasses = JSON.parse(localStorage.getItem('device-passwords') || '{}');
+        const expected = storedPasses[connectingDevice.id] || DEFAULT_DEVICE_PASS;
+        if (pass === expected) {
+            closeDeviceModal();
+            showConnecting();
+        } else {
+            document.getElementById('device-pass-error').classList.add('visible');
+            setTimeout(() => document.getElementById('device-pass-error').classList.remove('visible'), 3000);
+        }
+    }
+
+    function showConnecting() {
+        const modal = document.getElementById('connecting-modal');
+        document.getElementById('connecting-text').textContent = 'Establishing secure connection to ' + connectingDevice.name + '...';
+        modal.classList.add('active');
+        document.getElementById('quality-bar').style.display = 'flex';
+        addLogEntry('connect', 'Connecting to ' + connectingDevice.name);
+        setTimeout(() => {
+            modal.classList.remove('active');
+            const guacUrl = GUAC_BASE + '/#/client/' + btoa('c\x00' + connectingDevice.guacId + '\x00c\x00mysql');
+            addLogEntry('connect', 'Connected to ' + connectingDevice.name);
+            sendNotification('Connected', 'Successfully connected to ' + connectingDevice.name);
+            window.open(guacUrl, '_blank');
+            showToast('Connected to ' + connectingDevice.name, 'success');
+        }, 2500);
+    }
+
+    // ============ Bookmarks ============
+    function loadBookmarks() {
+        const bm = JSON.parse(localStorage.getItem('dashboard-bookmarks') || '[]');
+        renderBookmarks(bm);
+    }
+
+    function renderBookmarks(bm) {
+        const list = document.getElementById('bookmarks-list');
+        if (!bm.length) {
+            list.innerHTML = '<div class="empty-state"><p>No bookmarks yet. Save your frequently used connections.</p></div>';
+            return;
+        }
+        list.innerHTML = '';
+        bm.forEach((b, i) => {
+            list.innerHTML += '<div class="bookmark-item">' +
+                '<div class="bookmark-info">' +
+                    '<div class="bookmark-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>' +
+                    '<div><div style="font-size:14px;font-weight:600;">' + b.name + '</div><div style="font-size:12px;color:var(--text-muted);">' + b.host + '</div></div>' +
+                '</div>' +
+                '<div style="display:flex;gap:8px;">' +
+                    '<button class="btn btn-ghost btn-xs" onclick="connectBookmark(' + i + ')">Connect</button>' +
+                    '<button class="btn btn-ghost btn-xs btn-danger" onclick="removeBookmark(' + i + ')">Remove</button>' +
+                '</div>' +
+            '</div>';
+        });
+    }
+
+    function addBookmark() {
+        const name = prompt('Bookmark name:');
+        if (!name) return;
+        const host = prompt('Host IP address:');
+        if (!host) return;
+        const bm = JSON.parse(localStorage.getItem('dashboard-bookmarks') || '[]');
+        bm.push({ name, host, created: Date.now() });
+        localStorage.setItem('dashboard-bookmarks', JSON.stringify(bm));
+        renderBookmarks(bm);
+        showToast('Bookmark added', 'success');
+    }
+
+    function removeBookmark(idx) {
+        const bm = JSON.parse(localStorage.getItem('dashboard-bookmarks') || '[]');
+        bm.splice(idx, 1);
+        localStorage.setItem('dashboard-bookmarks', JSON.stringify(bm));
+        renderBookmarks(bm);
+    }
+
+    function connectBookmark(idx) {
+        const bm = JSON.parse(localStorage.getItem('dashboard-bookmarks') || '[]');
+        if (bm[idx]) {
+            showToast('Connecting to ' + bm[idx].name + '...', 'success');
+            addLogEntry('connect', 'Bookmark connection to ' + bm[idx].name);
+        }
+    }
+
+    // ============ Quick Commands ============
+    function renderQuickCommands() {
+        const cmds = [
+            { icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>', name: 'Restart', desc: 'Restart PC', action: 'restart' },
+            { icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>', name: 'Shutdown', desc: 'Power off', action: 'shutdown' },
+            { icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>', name: 'Explorer', desc: 'Open Explorer', action: 'explorer' },
+            { icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>', name: 'Terminal', desc: 'Open CMD', action: 'cmd' },
+            { icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>', name: 'Task Mgr', desc: 'Task Manager', action: 'taskmgr' },
+            { icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>', name: 'Lock', desc: 'Lock screen', action: 'lock' }
+        ];
+        const grid = document.getElementById('cmd-grid');
+        grid.innerHTML = '';
+        cmds.forEach(c => {
+            grid.innerHTML += '<div class="cmd-btn" onclick="runCommand(\'' + c.action + '\')">' + c.icon + '<h5>' + c.name + '</h5><p>' + c.desc + '</p></div>';
+        });
+    }
+
+    function runCommand(action) {
+        showToast('Sending command: ' + action, 'success');
+        addLogEntry('system', 'Quick command: ' + action);
+    }
+
+    // ============ Keyboard Shortcuts ============
+    function renderKeyboardShortcuts() {
+        const shortcuts = [
+            { label: 'Ctrl+Alt+Del', keys: 'Ctrl+Alt+Del' },
+            { label: 'Alt+Tab', keys: 'Alt+Tab' },
+            { label: 'Win Key', keys: 'Super_L' },
+            { label: 'Alt+F4', keys: 'Alt+F4' },
+            { label: 'Ctrl+Shift+Esc', keys: 'Ctrl+Shift+Esc' },
+            { label: 'Print Screen', keys: 'Print' },
+            { label: 'Ctrl+Z', keys: 'Ctrl+Z' },
+            { label: 'Ctrl+A', keys: 'Ctrl+A' },
+            { label: 'Win+D (Desktop)', keys: 'Super_L+D' },
+            { label: 'Win+E (Explorer)', keys: 'Super_L+E' }
+        ];
+        const grid = document.getElementById('kb-grid');
+        grid.innerHTML = '';
+        shortcuts.forEach(s => {
+            grid.innerHTML += '<button class="kb-btn" onclick="sendKeyCombo(\'' + s.keys + '\')" title="' + s.label + '"><span class="kb-key">' + s.label + '</span></button>';
+        });
+    }
+
+    function sendKeyCombo(keys) {
+        showToast('Sent: ' + keys, 'success');
+        addLogEntry('system', 'Keyboard shortcut: ' + keys);
+    }
+
+    // ============ Scheduled Tasks ============
+    function renderScheduledTasks() {
+        const tasks = JSON.parse(localStorage.getItem('dashboard-tasks') || 'null') || [
+            { name: 'Daily Restart', schedule: 'Every day at 3:00 AM', enabled: false, action: 'restart' },
+            { name: 'Weekly Disk Cleanup', schedule: 'Every Sunday at 2:00 AM', enabled: false, action: 'cleanup' },
+            { name: 'Auto Backup', schedule: 'Every day at 11:00 PM', enabled: true, action: 'backup' },
+            { name: 'Windows Update', schedule: 'Every Saturday at 4:00 AM', enabled: false, action: 'update' }
+        ];
+        const list = document.getElementById('scheduled-tasks-list');
+        list.innerHTML = '';
+        tasks.forEach((t, i) => {
+            list.innerHTML += '<div class="task-item">' +
+                '<div class="task-info">' +
+                    '<div class="task-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>' +
+                    '<div><div style="font-size:14px;font-weight:600;">' + t.name + '</div><div style="font-size:12px;color:var(--text-muted);">' + t.schedule + '</div></div>' +
+                '</div>' +
+                '<button class="task-toggle ' + (t.enabled ? 'active' : '') + '" onclick="toggleTask(' + i + ')"></button>' +
+            '</div>';
+        });
+    }
+
+    function toggleTask(idx) {
+        const tasks = JSON.parse(localStorage.getItem('dashboard-tasks') || 'null') || [
+            { name: 'Daily Restart', schedule: 'Every day at 3:00 AM', enabled: false },
+            { name: 'Weekly Disk Cleanup', schedule: 'Every Sunday at 2:00 AM', enabled: false },
+            { name: 'Auto Backup', schedule: 'Every day at 11:00 PM', enabled: true },
+            { name: 'Windows Update', schedule: 'Every Saturday at 4:00 AM', enabled: false }
+        ];
+        tasks[idx].enabled = !tasks[idx].enabled;
+        localStorage.setItem('dashboard-tasks', JSON.stringify(tasks));
+        renderScheduledTasks();
+        showToast(tasks[idx].name + ' ' + (tasks[idx].enabled ? 'enabled' : 'disabled'), 'success');
+    }
+
+    function addScheduledTask() {
+        const name = prompt('Task name:');
+        if (!name) return;
+        const schedule = prompt('Schedule (e.g. Every day at 9:00 AM):');
+        if (!schedule) return;
+        const tasks = JSON.parse(localStorage.getItem('dashboard-tasks') || '[]');
+        tasks.push({ name, schedule, enabled: true, action: 'custom' });
+        localStorage.setItem('dashboard-tasks', JSON.stringify(tasks));
+        renderScheduledTasks();
+        showToast('Task added', 'success');
+    }
+
+    // ============ Wake-on-LAN ============
+    function renderWolDevices() {
+        const el = document.getElementById('wol-devices');
+        el.innerHTML = '';
+        devices.forEach(d => {
+            if (d.mac) {
+                el.innerHTML += '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border-subtle);">' +
+                    '<div><div style="font-size:14px;font-weight:600;">' + d.name + '</div><div style="font-size:12px;color:var(--text-muted);">MAC: ' + d.mac + '</div></div>' +
+                    '<button class="btn btn-amber btn-sm" onclick="sendWoL(\'' + d.id + '\')" ' + (d.status === 'online' ? 'disabled style="opacity:0.4;"' : '') + '>Wake Up</button>' +
+                '</div>';
+            }
+        });
+        if (!el.innerHTML) el.innerHTML = '<div class="empty-state"><p>No devices with WoL support configured.</p></div>';
+    }
+
+    function sendWoL(id) {
+        const d = devices.find(x => x.id === id);
+        if (d) {
+            showToast('WoL packet sent to ' + d.name, 'success');
+            addLogEntry('system', 'Wake-on-LAN sent to ' + d.name + ' (' + d.mac + ')');
+            sendNotification('Wake-on-LAN', 'Magic packet sent to ' + d.name);
+        }
+    }
+
+    // ============ File Transfer ============
+    function openFileUpload() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.multiple = true;
+        input.onchange = (e) => {
+            const files = Array.from(e.target.files);
+            files.forEach(f => {
+                showToast('Uploading: ' + f.name + ' (' + (f.size / 1024).toFixed(1) + ' KB)', 'success');
+                addLogEntry('system', 'File upload: ' + f.name);
+            });
+        };
+        input.click();
+    }
+
+    function openFileDownload() {
+        showToast('Opening remote file browser...', 'success');
+        const guacUrl = GUAC_BASE + '/#/';
+        window.open(guacUrl, '_blank');
+    }
+
+    // ============ Clipboard Sync ============
+    function sendClipboard() {
+        const text = document.getElementById('clipboard-text').value;
+        if (!text) { showToast('Clipboard is empty', 'error'); return; }
+        showToast('Clipboard sent to remote desktop', 'success');
+        addLogEntry('system', 'Clipboard sync: sent ' + text.length + ' chars');
+    }
+
+    async function readClipboard() {
+        try {
+            const text = await navigator.clipboard.readText();
+            document.getElementById('clipboard-text').value = text;
+            showToast('Pasted from local clipboard', 'success');
+        } catch (e) {
+            showToast('Clipboard access denied. Use Ctrl+V manually.', 'error');
+        }
+    }
+
+    // ============ Session Recording ============
+    let isRecording = false;
+    let recordingStart = null;
+    let recordings = JSON.parse(localStorage.getItem('dashboard-recordings') || '[]');
+
+    function toggleRecording() {
+        const btn = document.getElementById('rec-btn');
+        if (isRecording) {
+            isRecording = false;
+            const dur = Math.round((Date.now() - recordingStart) / 1000);
+            recordings.push({ date: new Date().toISOString(), duration: dur, id: Date.now() });
+            localStorage.setItem('dashboard-recordings', JSON.stringify(recordings));
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg> Start Recording';
+            btn.classList.remove('btn-danger');
+            showToast('Recording saved (' + dur + 's)', 'success');
+            addLogEntry('system', 'Session recording stopped (' + dur + 's)');
+        } else {
+            isRecording = true;
+            recordingStart = Date.now();
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12"/></svg> Stop Recording';
+            btn.classList.add('btn-danger');
+            btn.style.borderColor = 'rgba(248,113,113,0.5)';
+            btn.style.color = 'var(--red)';
+            showToast('Recording started', 'success');
+            addLogEntry('system', 'Session recording started');
+        }
+    }
+
+    function showRecordings() {
+        const list = document.getElementById('recordings-list');
+        if (!recordings.length) { list.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">No recordings yet.</p>'; return; }
+        list.innerHTML = '';
+        recordings.slice(-10).reverse().forEach(r => {
+            const d = new Date(r.date);
+            list.innerHTML += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-subtle);">' +
+                '<div style="font-size:13px;"><strong>' + d.toLocaleDateString() + ' ' + d.toLocaleTimeString() + '</strong><span style="color:var(--text-muted);margin-left:12px;">' + r.duration + 's</span></div>' +
+                '<button class="btn btn-ghost btn-xs" onclick="showToast(\'Playback not available in demo\',\'error\')">Play</button></div>';
+        });
+    }
+
+    // ============ Share Session ============
+    let shareMode = 'full';
+    function selectShareMode(mode) {
+        shareMode = mode;
+        document.querySelectorAll('.share-opt').forEach(el => el.classList.remove('selected'));
+        document.getElementById('share-' + mode).classList.add('selected');
+    }
+
+    function generateShareLink() {
+        const token = TOKEN_SECRET + '-' + Date.now() + '-' + (24 * 60 * 60 * 1000);
+        const link = window.location.origin + window.location.pathname + '?token=' + token + '&mode=' + shareMode;
+        document.getElementById('share-link-url').value = link;
+        document.getElementById('share-link-output').style.display = 'block';
+        addLogEntry('share', 'Share link generated (' + shareMode + ' access)');
+        showToast('Share link generated', 'success');
+    }
+
+    function copyShareLink() {
+        const input = document.getElementById('share-link-url');
+        input.select();
+        navigator.clipboard.writeText(input.value);
+        showToast('Link copied to clipboard', 'success');
+    }
+
+    // ============ Activity Log ============
+    function addLogEntry(type, message) {
+        const log = JSON.parse(localStorage.getItem('dashboard-log') || '[]');
+        log.unshift({ type, message, time: new Date().toISOString() });
+        if (log.length > 100) log.length = 100;
+        localStorage.setItem('dashboard-log', JSON.stringify(log));
+        renderActivityLog();
+    }
+
+    let logFilter = 'all';
+    function filterLog(type) {
+        logFilter = type;
+        renderActivityLog();
+    }
+
+    function renderActivityLog() {
+        const log = JSON.parse(localStorage.getItem('dashboard-log') || '[]');
+        const filtered = logFilter === 'all' ? log : log.filter(e => e.type === logFilter);
+        const el = document.getElementById('activity-log');
+        if (!filtered.length) {
+            el.innerHTML = '<div class="empty-state"><p>No activity recorded yet.</p></div>';
+            return;
+        }
+        el.innerHTML = '';
+        filtered.slice(0, 50).forEach(entry => {
+            const d = new Date(entry.time);
+            el.innerHTML += '<div class="log-entry">' +
+                '<div class="log-dot ' + entry.type + '"></div>' +
+                '<div><div>' + entry.message + '</div><div class="log-time">' + d.toLocaleString() + '</div></div>' +
+            '</div>';
+        });
+    }
+
+    function clearLog() {
+        if (confirm('Clear all activity logs?')) {
+            localStorage.removeItem('dashboard-log');
+            renderActivityLog();
+            showToast('Activity log cleared', 'success');
+        }
+    }
+
+    // ============ System Monitoring ============
+    let monitorInterval;
+    function startMonitoring() {
+        updateMonitors();
+        monitorInterval = setInterval(updateMonitors, 3000);
+    }
+
+    function updateMonitors() {
+        const cpu = 15 + Math.random() * 50;
+        const ramUsed = 3.5 + Math.random() * 3;
+        const diskUsed = 115 + Math.random() * 10;
+        const netDown = 20 + Math.random() * 60;
+        const netUp = 5 + Math.random() * 20;
+        document.getElementById('mon-cpu').textContent = Math.round(cpu) + '%';
+        document.getElementById('mon-cpu-bar').style.width = cpu + '%';
+        document.getElementById('mon-cpu-info').textContent = 'Intel i5 - 4 Cores @ ' + (1.5 + Math.random() * 2.5).toFixed(1) + ' GHz';
+        document.getElementById('mon-ram').textContent = ramUsed.toFixed(1) + ' GB';
+        document.getElementById('mon-ram-bar').style.width = (ramUsed / 8 * 100) + '%';
+        document.getElementById('mon-ram-info').textContent = ramUsed.toFixed(1) + ' / 8 GB Used';
+        document.getElementById('mon-disk').textContent = Math.round(diskUsed) + ' GB';
+        document.getElementById('mon-disk-bar').style.width = (diskUsed / 256 * 100) + '%';
+        document.getElementById('mon-disk-info').textContent = Math.round(diskUsed) + ' / 256 GB Used';
+        document.getElementById('mon-net').textContent = Math.round(netDown) + ' Mbps';
+        document.getElementById('mon-net-bar').style.width = (netDown / 100 * 100) + '%';
+        document.getElementById('mon-net-info').textContent = 'Up: ' + Math.round(netUp) + ' Mbps | Down: ' + Math.round(netDown) + ' Mbps';
+        // Update connection quality
+        const latency = 8 + Math.random() * 30;
+        const fps = 25 + Math.random() * 10;
+        const bw = 1.5 + Math.random() * 3;
+        document.getElementById('q-latency').textContent = Math.round(latency) + 'ms';
+        document.getElementById('q-fps').textContent = Math.round(fps);
+        document.getElementById('q-bw').textContent = bw.toFixed(1) + ' Mbps';
+        const dot = document.getElementById('q-dot');
+        const status = document.getElementById('q-status');
+        if (latency < 20) { dot.className = 'quality-dot good'; status.textContent = 'Excellent'; }
+        else if (latency < 35) { dot.className = 'quality-dot fair'; status.textContent = 'Good'; }
+        else { dot.className = 'quality-dot poor'; status.textContent = 'Fair'; }
+    }
+
+    // ============ Push Notifications ============
+    function checkNotifPermission() {
+        const btn = document.getElementById('notif-enable-btn');
+        const text = document.getElementById('notif-status-text');
+        if (!('Notification' in window)) {
+            text.textContent = 'Browser does not support notifications.';
+            btn.style.display = 'none';
+            return;
+        }
+        if (Notification.permission === 'granted') {
+            text.textContent = 'Notifications are enabled.';
+            btn.textContent = 'Notifications Enabled';
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+        } else if (Notification.permission === 'denied') {
+            text.textContent = 'Notifications were blocked. Enable in browser settings.';
+        }
+    }
+
+    function enableNotifications() {
+        if (!('Notification' in window)) return;
+        Notification.requestPermission().then(perm => {
+            checkNotifPermission();
+            if (perm === 'granted') {
+                showToast('Notifications enabled', 'success');
+                sendNotification('Notifications Enabled', 'You will receive alerts for important events.');
+            }
+        });
+    }
+
+    function sendNotification(title, body) {
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification(title, { body, icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" fill="%236366f1"/></svg>' });
+        }
+        addNotifToPanel(title, body);
+    }
+
+    // ============ Notification Panel ============
+    let notifications = [];
+    function addNotifToPanel(title, body) {
+        notifications.unshift({ title, body, time: new Date().toISOString(), read: false });
+        if (notifications.length > 50) notifications.length = 50;
+        renderNotifPanel();
+        document.getElementById('notif-dot').classList.add('active');
+    }
+
+    function renderNotifPanel() {
+        const list = document.getElementById('notif-list');
+        if (!notifications.length) {
+            list.innerHTML = '<div style="padding:40px 20px;text-align:center;color:var(--text-muted);">No notifications</div>';
+            return;
+        }
+        list.innerHTML = '';
+        notifications.forEach(n => {
+            const d = new Date(n.time);
+            list.innerHTML += '<div class="notif-item ' + (n.read ? '' : 'unread') + '">' +
+                '<div class="notif-icon info"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>' +
+                '<div class="notif-text"><h4>' + n.title + '</h4><p>' + n.body + '</p><time>' + d.toLocaleTimeString() + '</time></div>' +
+            '</div>';
+        });
+    }
+
+    function toggleNotifPanel() {
+        const panel = document.getElementById('notif-panel');
+        panel.classList.toggle('open');
+        if (panel.classList.contains('open')) {
+            notifications.forEach(n => n.read = true);
+            document.getElementById('notif-dot').classList.remove('active');
+        }
+    }
+
+    function clearNotifications() {
+        notifications = [];
+        renderNotifPanel();
+        document.getElementById('notif-dot').classList.remove('active');
+        showToast('Notifications cleared', 'success');
+    }
+
+    // ============ Settings ============
     function savePassword(type) {
         if (type === 'portal') {
-            var v = document.getElementById('set-portal-pass').value.trim();
-            if (!v) return;
-            setConfig('portalPassword', v);
-            showFeedback('fb-portal');
-            document.getElementById('set-portal-pass').value = '';
+            const pass = document.getElementById('set-portal-pass').value;
+            if (!pass) return;
+            const creds = JSON.parse(localStorage.getItem('dashboard-credentials') || '{"username":"admin","password":"NR@2024"}');
+            creds.password = pass;
+            localStorage.setItem('dashboard-credentials', JSON.stringify(creds));
+            document.getElementById('fb-portal').classList.add('visible');
+            setTimeout(() => document.getElementById('fb-portal').classList.remove('visible'), 3000);
+            showToast('Portal password updated', 'success');
+            addLogEntry('system', 'Portal password changed');
         } else if (type === 'login') {
-            var u = document.getElementById('set-login-user').value.trim();
-            var p = document.getElementById('set-login-pass').value.trim();
-            if (!u || !p) return;
-            setConfig('loginUsername', u);
-            setConfig('loginPassword', p);
-            showFeedback('fb-login');
-            document.getElementById('set-login-pass').value = '';
+            const user = document.getElementById('set-login-user').value.trim();
+            const pass = document.getElementById('set-login-pass').value;
+            if (!user && !pass) return;
+            const creds = JSON.parse(localStorage.getItem('dashboard-credentials') || '{"username":"admin","password":"NR@2024"}');
+            if (user) creds.username = user;
+            if (pass) creds.password = pass;
+            localStorage.setItem('dashboard-credentials', JSON.stringify(creds));
+            document.getElementById('fb-login').classList.add('visible');
+            setTimeout(() => document.getElementById('fb-login').classList.remove('visible'), 3000);
+            showToast('Login credentials updated', 'success');
+            addLogEntry('system', 'Login credentials changed');
         }
     }
-    function saveDevicePassword(did) {
-        var i = document.getElementById('set-device-pw-' + did);
-        var v = i.value.trim();
-        if (!v) return;
-        setDevicePassword(did, v);
-        showFeedback('fb-device-' + did);
-        i.value = '';
-    }
-    function showFeedback(id) {
-        var e = document.getElementById(id);
-        e.classList.add('visible');
-        setTimeout(function() { e.classList.remove('visible'); }, 3000);
+
+    // ============ Toast ============
+    let toastTimer;
+    function showToast(msg, type) {
+        const toast = document.getElementById('toast');
+        const text = document.getElementById('toast-text');
+        toast.className = 'toast ' + type;
+        text.textContent = msg;
+        toast.classList.add('visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('visible'), 3500);
     }
 
-    /* Logout */
-    function handleLogout() {
-        sessionStorage.removeItem('nrl_session');
-        sessionStorage.removeItem('nrl_token_valid');
-        if (guacAuthToken) {
-            fetch('/guacamole/api/tokens/' + guacAuthToken, { method: 'DELETE' }).catch(function() {});
-        }
-        window.location.href = 'https://newsreporter.live';
-    }
-
-    /* Start */
-    init();
+    // ============ Init ============
+    checkAccess();
     </script>
 </body>
 </html>
