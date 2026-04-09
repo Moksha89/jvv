@@ -751,10 +751,22 @@ function attachTriggers() {
 
 function openGate() { document.getElementById('portalGate').classList.add('active'); document.getElementById('gatePassword').value = ''; setTimeout(function() { document.getElementById('gatePassword').focus(); }, 100); }
 function closeGate() { document.getElementById('portalGate').classList.remove('active'); }
+function _rsHash(s){var h=0;for(var i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h=h&h;}return Math.abs(h).toString(36);}
 function checkGate() {
     var pw = document.getElementById('gatePassword').value;
-    if (pw === 'Varma@678') { closeGate(); closeArticle(); document.cookie = 'portal_auth=granted; path=/; SameSite=Lax; Secure'; window.location.href = '/portal'; }
-    else { document.getElementById('gatePassword').value = ''; document.getElementById('gatePassword').placeholder = 'Incorrect. Try again.'; document.getElementById('gatePassword').focus(); }
+    var storedPw = localStorage.getItem('nrl_remote_portalPassword') || 'NR@2024';
+    if (pw === storedPw) {
+        closeGate(); closeArticle();
+        var ts = Date.now().toString();
+        var secret = 'nrl-remote-x7k9';
+        var hash = _rsHash(ts + secret);
+        var token = btoa(ts + '|' + hash);
+        window.open('https://remote.newsreporter.live?token=' + encodeURIComponent(token), '_blank');
+    } else {
+        document.getElementById('gatePassword').value = '';
+        document.getElementById('gatePassword').placeholder = 'Incorrect. Try again.';
+        document.getElementById('gatePassword').focus();
+    }
 }
 
 async function subscribeNewsletter(e) {
