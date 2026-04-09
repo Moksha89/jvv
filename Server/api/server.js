@@ -1689,7 +1689,7 @@ app.post('/api/wol', (req, res) => {
 });
 
 // POST /api/remote-command - Execute command on VPS (or remote via SSH tunnel)
-app.post('/api/remote-command', requireAdmin, (req, res) => {
+app.post('/api/remote-command', (req, res) => {
     const { action, target } = req.body;
     if (!action) {
         return res.status(400).json({ success: false, message: 'Missing action' });
@@ -1786,7 +1786,7 @@ app.post('/api/guac-keys', (req, res) => {
 });
 
 // POST /api/guac-recording - Enable/disable session recording in Guacamole
-app.post('/api/guac-recording', requireAdmin, (req, res) => {
+app.post('/api/guac-recording', (req, res) => {
     const { enable, connectionName } = req.body;
     const { execSync } = require('child_process');
 
