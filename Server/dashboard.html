@@ -425,7 +425,7 @@
             const timestamp = parseInt(parts[0]);
             const hash = parts[1];
             const now = Date.now();
-            const validity = getConfig('tokenValidityMs') || DEFAULT_CONFIG.tokenValidityMs;
+            const validity = Number(getConfig('tokenValidityMs')) || DEFAULT_CONFIG.tokenValidityMs;
             if (now - timestamp > validity) return false;
             const expectedHash = simpleHash(parts[0] + getConfig('accessTokenSecret'));
             return hash === expectedHash;
