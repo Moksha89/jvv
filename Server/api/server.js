@@ -1856,16 +1856,21 @@ app.get('/api/guac-recordings', (req, res) => {
 
 // GET /api/file-browser - Get Guacamole shared drive file listing
 app.get('/api/file-browser', (req, res) => {
-    const dirPath = req.query.path || '/tmp/guac-drive';
+    const BASE_DIR = '/tmp/guac-drive';
+    const requestedPath = req.query.path || BASE_DIR;
+    const resolvedPath = path.resolve(requestedPath);
+    if (!resolvedPath.startsWith(BASE_DIR)) {
+        return res.status(403).json({ success: false, message: 'Access denied: path outside shared drive' });
+    }
     try {
-        const items = require('fs').readdirSync(dirPath, { withFileTypes: true }).map(d => ({
+        const items = require('fs').readdirSync(resolvedPath, { withFileTypes: true }).map(d => ({
             name: d.name,
             isDir: d.isDirectory(),
-            size: d.isFile() ? require('fs').statSync(path.join(dirPath, d.name)).size : 0
+            size: d.isFile() ? require('fs').statSync(path.join(resolvedPath, d.name)).size : 0
         }));
-        res.json({ success: true, path: dirPath, items });
+        res.json({ success: true, path: resolvedPath, items });
     } catch (err) {
-        res.json({ success: true, path: dirPath, items: [], error: err.message });
+        res.json({ success: true, path: resolvedPath, items: [], error: err.message });
     }
 });
 
