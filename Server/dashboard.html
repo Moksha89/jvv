@@ -56,8 +56,6 @@
         .blocked-card p { color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin-bottom: 8px; }
         .blocked-card .countdown { font-size: 13px; color: var(--text-muted); margin-top: 20px; }
         .blocked-card .countdown span { color: var(--red); font-weight: 600; }
-        .blocked-card .expired-hint { font-size: 13px; color: var(--text-muted); margin-top: 12px; }
-        .blocked-card .expired-hint a { color: var(--accent); text-decoration: underline; cursor: pointer; }
         .blocked-card .portal-unlock { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
         .blocked-card .portal-unlock p { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
         .blocked-card .portal-unlock .unlock-row { display: flex; gap: 8px; }
@@ -66,12 +64,6 @@
         .blocked-card .portal-unlock button { padding: 10px 20px; background: linear-gradient(135deg, var(--accent-dim), #7c3aed); color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: opacity 0.2s; }
         .blocked-card .portal-unlock button:hover { opacity: 0.9; }
         .blocked-card .unlock-error { font-size: 12px; color: var(--red); margin-top: 8px; display: none; }
-        .token-expiry-bar { display:flex; align-items:center; gap:8px; padding:6px 14px; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; font-size:12px; color:var(--text-muted); white-space:nowrap; }
-        .token-expiry-bar .expiry-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-        .token-expiry-bar .expiry-dot.green { background:#22c55e; box-shadow:0 0 6px rgba(34,197,94,0.4); }
-        .token-expiry-bar .expiry-dot.yellow { background:#eab308; box-shadow:0 0 6px rgba(234,179,8,0.4); }
-        .token-expiry-bar .expiry-dot.red { background:#ef4444; box-shadow:0 0 6px rgba(239,68,68,0.4); }
-        .token-expiry-warn { position:fixed; top:0; left:0; right:0; z-index:9999; padding:10px 20px; text-align:center; font-size:13px; font-weight:600; background:linear-gradient(135deg,#92400e,#78350f); color:#fbbf24; border-bottom:2px solid #f59e0b; display:none; }
         .login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 32px; }
         .login-card { max-width: 440px; width: 100%; padding: 48px 40px; background: var(--bg-card); backdrop-filter: blur(24px); border: 1px solid var(--glass-border); border-radius: 28px; box-shadow: 0 24px 80px rgba(0,0,0,0.4); }
         .login-logo-wrap { width: 64px; height: 64px; border-radius: 20px; background: linear-gradient(135deg, var(--accent-dim), #7c3aed); display: flex; align-items: center; justify-content: center; margin: 0 auto 28px; box-shadow: 0 8px 32px var(--accent-glow); animation: logoPulse 3s ease-in-out infinite; }
@@ -440,11 +432,9 @@
                         <circle cx="12" cy="16" r="1"/>
                     </svg>
                 </div>
-                <h2 id="t-blocked-title">Access Restricted</h2>
-                <p id="t-blocked-desc">This portal requires authorized access credentials. You will be redirected automatically.</p>
-                <p class="expired-hint" id="expired-hint" style="display:none;"></p>
+                <h2 id="t-blocked-title">Portal Access</h2>
+                <p id="t-blocked-desc">Enter the portal password to access the remote dashboard.</p>
                 <div class="portal-unlock">
-                    <p>Have the portal password? Enter it to unlock access:</p>
                     <form onsubmit="handlePortalUnlock(event)">
                         <div class="unlock-row">
                             <input type="password" id="portal-password" placeholder="Portal password" autocomplete="off">
@@ -453,7 +443,6 @@
                     </form>
                     <div class="unlock-error" id="unlock-error">Incorrect password. Try again.</div>
                 </div>
-                <div class="countdown"><span id="t-redirecting">Redirecting in</span> <span id="redirect-countdown">5</span>s</div>
             </div>
         </div>
     </div>
@@ -590,10 +579,6 @@
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                             <div class="notif-dot" id="notif-dot"></div>
                         </button>
-                        <div class="token-expiry-bar" id="token-expiry-bar" style="display:none;">
-                            <div class="expiry-dot green" id="expiry-dot"></div>
-                            <span id="expiry-text">--</span>
-                        </div>
                         <div class="tunnel-badge">
                             <div class="tunnel-dot"></div>
                             <span id="t-tunnel">Tunnel Active</span>
@@ -1095,7 +1080,6 @@
 
     // ============ Configuration ============
     const GUAC_BASE = 'https://remote.newsreporter.live';
-    const TOKEN_SECRET = 'nrl-remote-x7k9';
     const DEFAULT_DEVICE_PASS = 'connect@123';
 
     let devices = [
@@ -1126,128 +1110,14 @@
     }
     loadCustomDeviceNames();
 
-    // ============ Token & Access ============
-    function getUrlToken() {
-        const p = new URLSearchParams(window.location.search);
-        return p.get('token') || p.get('t');
-    }
-
-    function validateToken(t) {
-        if (!t || !t.startsWith(TOKEN_SECRET + '-')) return false;
-        const parts = t.split('-');
-        const ts = Number(parts[parts.length - 2]);
-        const validity = Number(parts[parts.length - 1]);
-        if (!ts || !validity) return false;
-        return Date.now() < ts + validity;
-    }
-
-    function getTokenExpiry(t) {
-        if (!t || !t.startsWith(TOKEN_SECRET + '-')) return null;
-        const parts = t.split('-');
-        const ts = Number(parts[parts.length - 2]);
-        const validity = Number(parts[parts.length - 1]);
-        if (!ts || !validity) return null;
-        return ts + validity;
-    }
-
-    function isTokenExpired(t) {
-        if (!t || !t.startsWith(TOKEN_SECRET + '-')) return false;
-        const parts = t.split('-');
-        const ts = Number(parts[parts.length - 2]);
-        const validity = Number(parts[parts.length - 1]);
-        if (!ts || !validity) return false;
-        return Date.now() >= ts + validity;
-    }
-
-    function formatTimeRemaining(ms) {
-        if (ms <= 0) return 'Expired';
-        const days = Math.floor(ms / 86400000);
-        const hrs = Math.floor((ms % 86400000) / 3600000);
-        const mins = Math.floor((ms % 3600000) / 60000);
-        if (days > 0) return days + 'd ' + hrs + 'h remaining';
-        if (hrs > 0) return hrs + 'h ' + mins + 'm remaining';
-        return mins + 'm remaining';
-    }
-
-    let tokenExpiryInterval = null;
-    function startTokenExpiryCountdown() {
-        const token = localStorage.getItem('portal-token');
-        const expiry = getTokenExpiry(token);
-        if (!expiry) return;
-        const bar = document.getElementById('token-expiry-bar');
-        const dot = document.getElementById('expiry-dot');
-        const txt = document.getElementById('expiry-text');
-        bar.style.display = 'flex';
-        function update() {
-            const remaining = expiry - Date.now();
-            if (remaining <= 0) {
-                txt.textContent = 'Token Expired';
-                dot.className = 'expiry-dot red';
-                clearInterval(tokenExpiryInterval);
-                showTokenExpiredWarning();
-                return;
-            }
-            txt.textContent = formatTimeRemaining(remaining);
-            if (remaining < 3600000) {
-                dot.className = 'expiry-dot red';
-                showTokenWarningBanner(remaining);
-            } else if (remaining < 86400000) {
-                dot.className = 'expiry-dot yellow';
-            } else {
-                dot.className = 'expiry-dot green';
-            }
-        }
-        update();
-        tokenExpiryInterval = setInterval(update, 60000);
-    }
-
-    function showTokenWarningBanner(remaining) {
-        let banner = document.getElementById('token-expiry-warn');
-        if (!banner) {
-            banner = document.createElement('div');
-            banner.id = 'token-expiry-warn';
-            banner.className = 'token-expiry-warn';
-            document.body.prepend(banner);
-        }
-        banner.style.display = 'block';
-        banner.textContent = '\u26A0 Portal access expires in ' + formatTimeRemaining(remaining) + '. Request a new token to continue access.';
-    }
-
-    function showTokenExpiredWarning() {
-        let banner = document.getElementById('token-expiry-warn');
-        if (!banner) {
-            banner = document.createElement('div');
-            banner.id = 'token-expiry-warn';
-            banner.className = 'token-expiry-warn';
-            document.body.prepend(banner);
-        }
-        banner.style.display = 'block';
-        banner.style.background = 'linear-gradient(135deg,#7f1d1d,#991b1b)';
-        banner.style.color = '#fca5a5';
-        banner.style.borderColor = '#ef4444';
-        banner.textContent = '\u26D4 Portal token has expired. Please request a new access token to continue.';
-    }
-
+    // ============ Portal Access (Password-based) ============
     function checkAccess() {
-        const token = getUrlToken();
-        if (token && validateToken(token)) {
-            localStorage.setItem('portal-token', token);
-            const url = new URL(window.location);
-            url.searchParams.delete('token');
-            url.searchParams.delete('t');
-            window.history.replaceState({}, '', url.toString());
+        const unlocked = localStorage.getItem('portal-unlocked');
+        if (unlocked === 'true') {
             showLogin();
             return;
         }
-        const saved = localStorage.getItem('portal-token');
-        if (saved && validateToken(saved)) {
-            showLogin();
-            return;
-        }
-        const urlToken = getUrlToken();
-        const savedToken = localStorage.getItem('portal-token');
-        const wasExpired = (urlToken && isTokenExpired(urlToken)) || (savedToken && isTokenExpired(savedToken));
-        showBlocked(wasExpired);
+        showBlocked();
     }
 
     function showScreen(id) {
@@ -1255,25 +1125,8 @@
         document.getElementById(id).classList.add('active');
     }
 
-    let blockedRedirectInterval = null;
-    function showBlocked(expired) {
+    function showBlocked() {
         showScreen('blocked-screen');
-        const hint = document.getElementById('expired-hint');
-        if (expired) {
-            document.getElementById('t-blocked-title').textContent = 'Token Expired';
-            document.getElementById('t-blocked-desc').textContent = 'Your portal access token has expired. Enter the portal password below or request a new token.';
-            hint.innerHTML = 'Your previous token was valid but has now expired.';
-            hint.style.display = 'block';
-            localStorage.removeItem('portal-token');
-        }
-        let c = 30;
-        const el = document.getElementById('redirect-countdown');
-        el.textContent = c;
-        blockedRedirectInterval = setInterval(() => {
-            c--;
-            el.textContent = c;
-            if (c <= 0) { clearInterval(blockedRedirectInterval); window.location.href = 'https://newsreporter.live'; }
-        }, 1000);
         setTimeout(() => { const pw = document.getElementById('portal-password'); if (pw) pw.focus(); }, 200);
     }
 
@@ -1283,12 +1136,8 @@
         const storedPw = localStorage.getItem('nrl_remote_portalPassword') || 'NR@2024';
         const errEl = document.getElementById('unlock-error');
         if (pw === storedPw) {
-            if (blockedRedirectInterval) clearInterval(blockedRedirectInterval);
             errEl.style.display = 'none';
-            const ts = Date.now();
-            const validity = 7 * 24 * 60 * 60 * 1000;
-            const token = TOKEN_SECRET + '-' + ts + '-' + validity;
-            localStorage.setItem('portal-token', token);
+            localStorage.setItem('portal-unlocked', 'true');
             showLogin();
         } else {
             errEl.style.display = 'block';
@@ -1398,7 +1247,6 @@
         startDeviceStatusRefresh();
         startInactivityMonitor();
         renderDevicePasswordSettings();
-        startTokenExpiryCountdown();
         // Load timeout setting
         const savedTimeout = localStorage.getItem('session-timeout');
         if (savedTimeout) {
