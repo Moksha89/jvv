@@ -1166,7 +1166,7 @@
 
     // Client-side credentials (fallback when server API is not available)
     const CLIENT_CREDS = {
-        'admin': 'changeme',
+        'admin': 'Sarkar@00',
         'sarkar': 'Sarkar@00'
     };
 
@@ -1194,7 +1194,7 @@
             body: JSON.stringify({ username: u, password: p })
         })
         .then(r => {
-            if (r.status === 404) throw new Error('API not available');
+            if (r.status === 404 || r.status === 429 || r.status >= 500) throw new Error('API not available');
             return r.json();
         })
         .then(data => {
