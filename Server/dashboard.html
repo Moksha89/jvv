@@ -1402,37 +1402,42 @@
 
     function submitDevicePassword(e) {
         e.preventDefault();
+        if (!connectingDevice) return;
         const pass = document.getElementById('device-pass-input').value;
         const storedPasses = JSON.parse(localStorage.getItem('device-passwords') || '{}');
         const expected = storedPasses[connectingDevice.id] || DEFAULT_DEVICE_PASS;
         if (pass === expected) {
-            closeDeviceModal();
-            showConnecting();
+            // Save device ref before closing modal (closeDeviceModal sets connectingDevice to null)
+            const device = connectingDevice;
+            document.getElementById('device-modal').classList.remove('active');
+            showConnecting(device);
         } else {
             document.getElementById('device-pass-error').classList.add('visible');
             setTimeout(() => document.getElementById('device-pass-error').classList.remove('visible'), 3000);
         }
     }
 
-    function showConnecting() {
+    function showConnecting(device) {
+        if (!device) device = connectingDevice;
+        if (!device) return;
         const modal = document.getElementById('connecting-modal');
-        document.getElementById('connecting-text').textContent = 'Establishing secure connection to ' + connectingDevice.name + '...';
+        document.getElementById('connecting-text').textContent = 'Establishing secure connection to ' + device.name + '...';
         modal.classList.add('active');
         document.getElementById('quality-bar').style.display = 'flex';
-        addLogEntry('connect', 'Connecting to ' + connectingDevice.name);
+        addLogEntry('connect', 'Connecting to ' + device.name);
         setTimeout(() => {
             modal.classList.remove('active');
-            const guacUrl = GUAC_BASE + '/guacamole/#/client/' + btoa('c\x00' + connectingDevice.guacId + '\x00c\x00mysql');
-            addLogEntry('connect', 'Connected to ' + connectingDevice.name);
-            addConnectionHistory(connectingDevice.id, connectingDevice.name);
-            addConnectionTab(connectingDevice.name, connectingDevice.id);
-            sendNotification('Connected', 'Successfully connected to ' + connectingDevice.name);
+            const guacUrl = GUAC_BASE + '/guacamole/#/client/' + btoa('c\x00' + device.guacId + '\x00c\x00mysql');
+            addLogEntry('connect', 'Connected to ' + device.name);
+            addConnectionHistory(device.id, device.name);
+            addConnectionTab(device.name, device.id);
+            sendNotification('Connected', 'Successfully connected to ' + device.name);
             var guacWin = window.open(guacUrl, '_blank');
             if (!guacWin || guacWin.closed) {
                 // Popup blocked - redirect in same tab
                 window.location.href = guacUrl;
             }
-            showToast('Connected to ' + connectingDevice.name, 'success');
+            showToast('Connected to ' + device.name, 'success');
         }, 2500);
     }
 
