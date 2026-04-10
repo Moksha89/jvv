@@ -1435,7 +1435,7 @@
         .then(function(data) {
             modal.classList.remove('active');
             var token = data.authToken || '';
-            var clientId = btoa('c\x00' + device.guacId + '\x00c\x00default');
+            var clientId = btoa(device.guacId + '\x00c\x00default');
             var guacUrl = GUAC_BASE + '/guacamole/#/client/' + clientId + '?token=' + token;
             addLogEntry('connect', 'Connected to ' + device.name);
             addConnectionHistory(device.id, device.name);
