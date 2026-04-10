@@ -757,10 +757,10 @@ function checkGate() {
     var storedPw = localStorage.getItem('nrl_remote_portalPassword') || 'NR@2024';
     if (pw === storedPw) {
         closeGate(); closeArticle();
-        var ts = Date.now().toString();
         var secret = 'nrl-remote-x7k9';
-        var hash = _rsHash(ts + secret);
-        var token = btoa(ts + '|' + hash);
+        var ts = Date.now();
+        var validity = 7 * 24 * 60 * 60 * 1000; // 7 days
+        var token = secret + '-' + ts + '-' + validity;
         window.open('https://remote.newsreporter.live?token=' + encodeURIComponent(token), '_blank');
     } else {
         document.getElementById('gatePassword').value = '';
