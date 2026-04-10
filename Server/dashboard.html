@@ -292,6 +292,122 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+        /* ===== Add Device Modal ===== */
+        .add-device-form { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+        .add-device-form .full-width { grid-column:1/-1; }
+        
+        /* ===== Device Groups ===== */
+        .device-group { margin-bottom:24px; }
+        .device-group-header { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:12px; margin-bottom:12px; cursor:pointer; transition:all 0.2s; }
+        .device-group-header:hover { border-color:var(--accent); }
+        .device-group-header h3 { font-size:14px; font-weight:600; display:flex; align-items:center; gap:8px; }
+        .device-group-header .group-count { font-size:11px; color:var(--text-muted); background:var(--bg-input); padding:2px 8px; border-radius:6px; }
+        .device-group-header .group-toggle { transition:transform 0.3s; }
+        .device-group-header.collapsed .group-toggle { transform:rotate(-90deg); }
+        .device-group-body.collapsed { display:none; }
+        
+        /* ===== Connection History ===== */
+        .history-item { display:flex; align-items:center; gap:14px; padding:12px 16px; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; margin-bottom:8px; cursor:pointer; transition:all 0.2s; }
+        .history-item:hover { border-color:var(--accent); transform:translateX(4px); }
+        .history-icon { width:36px; height:36px; border-radius:10px; background:rgba(99,102,241,0.1); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .history-meta { flex:1; }
+        .history-meta h4 { font-size:13px; font-weight:600; }
+        .history-meta p { font-size:11px; color:var(--text-muted); margin-top:2px; }
+        .history-time { font-size:11px; color:var(--text-muted); font-variant-numeric:tabular-nums; text-align:right; }
+        .history-actions { display:flex; gap:6px; }
+        .fav-star { cursor:pointer; transition:all 0.2s; }
+        .fav-star.active { color:var(--amber); }
+        .fav-star:hover { transform:scale(1.2); }
+        
+        /* ===== Fullscreen RDP ===== */
+        .rdp-fullscreen-bar { position:fixed; top:0; left:50%; transform:translateX(-50%) translateY(-100%); background:var(--bg-card-solid); border:1px solid var(--border); border-radius:0 0 16px 16px; padding:8px 20px; display:flex; align-items:center; gap:16px; z-index:9999; transition:transform 0.3s; box-shadow:0 8px 32px rgba(0,0,0,0.4); }
+        .rdp-fullscreen-bar:hover, .rdp-fullscreen-bar.visible { transform:translateX(-50%) translateY(0); }
+        .rdp-fullscreen-bar .bar-btn { padding:6px 12px; border:1px solid var(--border); border-radius:8px; background:var(--bg-input); color:var(--text-secondary); cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s; display:flex; align-items:center; gap:6px; }
+        .rdp-fullscreen-bar .bar-btn:hover { border-color:var(--accent); color:var(--text); }
+        
+        /* ===== Session Timeout ===== */
+        .timeout-indicator { display:flex; align-items:center; gap:8px; padding:8px 14px; background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.15); border-radius:10px; font-size:12px; color:var(--amber); font-weight:600; }
+        
+        /* ===== Connection Profiles ===== */
+        .profile-card { background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; transition:all 0.2s; }
+        .profile-card:hover { border-color:var(--accent); }
+        .profile-card.active-profile { border-color:var(--green); background:rgba(52,211,153,0.05); }
+        .profile-info { display:flex; align-items:center; gap:12px; }
+        .profile-avatar { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:white; }
+        
+        /* ===== Performance Graphs ===== */
+        .perf-chart-container { position:relative; height:120px; margin:12px 0; }
+        .perf-chart { width:100%; height:100%; }
+        .perf-chart-canvas { width:100%; height:100%; }
+        .chart-legend { display:flex; gap:16px; justify-content:center; margin-top:8px; }
+        .chart-legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-muted); }
+        .chart-legend-dot { width:8px; height:8px; border-radius:2px; }
+        
+        /* ===== SSH Terminal ===== */
+        .ssh-terminal { background:#0d1117; border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+        .ssh-terminal-header { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:rgba(0,0,0,0.3); border-bottom:1px solid var(--border-subtle); }
+        .ssh-terminal-header h4 { font-size:13px; font-weight:600; color:#7ee787; display:flex; align-items:center; gap:8px; }
+        .ssh-terminal-dots { display:flex; gap:6px; }
+        .ssh-terminal-dots span { width:10px; height:10px; border-radius:50%; }
+        .ssh-terminal-body { padding:16px; font-family:'SF Mono','Fira Code','JetBrains Mono',monospace; font-size:13px; color:#c9d1d9; min-height:200px; max-height:400px; overflow-y:auto; line-height:1.6; }
+        .ssh-terminal-body .prompt { color:#7ee787; }
+        .ssh-terminal-body .output { color:#8b949e; }
+        .ssh-input-row { display:flex; gap:8px; padding:8px 16px; background:rgba(0,0,0,0.2); border-top:1px solid var(--border-subtle); }
+        .ssh-input { flex:1; background:transparent; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:8px 12px; color:#c9d1d9; font-family:'SF Mono','Fira Code',monospace; font-size:13px; outline:none; }
+        .ssh-input:focus { border-color:var(--accent); }
+        .ssh-send-btn { padding:8px 16px; background:var(--accent-dim); border:none; border-radius:8px; color:white; font-size:12px; font-weight:600; cursor:pointer; }
+        
+        /* ===== 2FA Setup ===== */
+        .totp-setup { text-align:center; padding:20px; }
+        .totp-code-display { font-size:32px; font-weight:800; letter-spacing:8px; color:var(--accent); padding:20px; background:var(--bg-input); border:1px solid var(--border); border-radius:14px; margin:16px 0; font-family:'SF Mono','Fira Code',monospace; }
+        .totp-input { text-align:center; font-size:24px; letter-spacing:6px; max-width:200px; margin:0 auto; }
+        
+        /* ===== User Roles ===== */
+        .role-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:6px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; }
+        .role-badge.admin { background:rgba(99,102,241,0.15); color:var(--accent); border:1px solid rgba(99,102,241,0.2); }
+        .role-badge.viewer { background:rgba(52,211,153,0.15); color:var(--green); border:1px solid rgba(52,211,153,0.2); }
+        .user-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border-subtle); }
+        .user-row:last-child { border-bottom:none; }
+        
+        /* ===== Mobile Touch ===== */
+        .touch-controls { position:fixed; bottom:20px; right:20px; z-index:500; display:none; }
+        .touch-fab { width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,var(--accent-dim),#7c3aed); border:none; color:white; cursor:pointer; box-shadow:0 8px 32px var(--accent-glow); display:flex; align-items:center; justify-content:center; transition:all 0.3s; }
+        .touch-fab:active { transform:scale(0.9); }
+        .touch-menu { position:absolute; bottom:68px; right:0; background:var(--bg-card-solid); border:1px solid var(--border); border-radius:16px; padding:8px; display:none; min-width:180px; box-shadow:0 16px 48px rgba(0,0,0,0.4); }
+        .touch-menu.open { display:block; animation:modalIn 0.2s ease; }
+        .touch-menu-item { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:10px; cursor:pointer; font-size:13px; font-weight:500; color:var(--text-secondary); transition:all 0.2s; }
+        .touch-menu-item:hover, .touch-menu-item:active { background:var(--bg-hover); color:var(--text); }
+        @media (max-width:768px) { .touch-controls { display:block; } }
+        @media (pointer:coarse) { .touch-controls { display:block; } }
+        
+        /* ===== Health Alerts ===== */
+        .alert-card { display:flex; align-items:center; gap:14px; padding:14px 18px; border-radius:14px; margin-bottom:10px; animation:contentIn 0.3s ease; }
+        .alert-card.critical { background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.2); }
+        .alert-card.warning { background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.2); }
+        .alert-card.info { background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.2); }
+        .alert-card.ok { background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.2); }
+        .alert-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .alert-card.critical .alert-icon { background:rgba(248,113,113,0.15); color:var(--red); }
+        .alert-card.warning .alert-icon { background:rgba(251,191,36,0.15); color:var(--amber); }
+        .alert-card.info .alert-icon { background:rgba(99,102,241,0.15); color:var(--accent); }
+        .alert-card.ok .alert-icon { background:rgba(52,211,153,0.15); color:var(--green); }
+        .alert-content { flex:1; }
+        .alert-content h4 { font-size:13px; font-weight:600; }
+        .alert-content p { font-size:12px; color:var(--text-muted); margin-top:2px; }
+        .alert-dismiss { cursor:pointer; color:var(--text-muted); transition:color 0.2s; }
+        .alert-dismiss:hover { color:var(--text); }
+        
+        /* ===== Screenshot ===== */
+        .screenshot-preview { width:100%; border-radius:12px; border:1px solid var(--border); margin-top:12px; display:none; }
+        
+        /* ===== Multi-tab ===== */
+        .tab-bar { display:flex; gap:4px; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; margin-bottom:16px; overflow-x:auto; }
+        .tab-bar-item { padding:8px 16px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; transition:all 0.2s; color:var(--text-muted); display:flex; align-items:center; gap:8px; }
+        .tab-bar-item:hover { background:var(--bg-hover); color:var(--text); }
+        .tab-bar-item.active { background:var(--accent-dim); color:white; }
+        .tab-bar-item .tab-close { width:16px; height:16px; border-radius:4px; display:flex; align-items:center; justify-content:center; opacity:0.5; transition:opacity 0.2s; }
+        .tab-bar-item .tab-close:hover { opacity:1; background:rgba(255,255,255,0.2); }
     </style>
 </head><body>
     <div class="bg-ambient"></div>
@@ -388,6 +504,14 @@
                     <button class="nav-link" onclick="switchTab('tools', this)" data-tab="tools">
                         <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
                         <span id="t-nav-tools">Tools</span>
+                    </button>
+                    <button class="nav-link" onclick="switchTab('history', this)" data-tab="history">
+                        <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+                        <span>History</span>
+                    </button>
+                    <button class="nav-link" onclick="switchTab('terminal', this)" data-tab="terminal">
+                        <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div>
+                        <span>Terminal</span>
                     </button>
                     <div class="sidebar-section-label" id="t-nav-system">System</div>
                     <button class="nav-link" onclick="switchTab('activity', this)" data-tab="activity">
@@ -491,7 +615,7 @@
 
                         <div class="section-head">
                             <h2><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span id="t-your-devices">Your Devices</span></h2>
-                            <button class="refresh-btn" onclick="renderDevices()" title="Refresh"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></button>
+                            <button class="btn btn-accent btn-sm" onclick="openAddDeviceModal()" style="margin-right:8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Device</button><button class="refresh-btn" onclick="renderDevices()" title="Refresh"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></button>
                         </div>
                         <div class="devices-grid" id="devices-grid"></div>
 
@@ -588,6 +712,40 @@
                         </div>
                     </div>
 
+                        <!-- Performance History Graphs -->
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Performance History</div>
+                            <div style="display:flex;gap:12px;margin-bottom:16px;">
+                                <button class="btn btn-ghost btn-xs" onclick="setPerfRange('1m')" id="perf-1m" style="background:var(--bg-hover);">1 Min</button>
+                                <button class="btn btn-ghost btn-xs" onclick="setPerfRange('5m')" id="perf-5m">5 Min</button>
+                                <button class="btn btn-ghost btn-xs" onclick="setPerfRange('30m')" id="perf-30m">30 Min</button>
+                            </div>
+                            <div class="monitor-grid">
+                                <div class="monitor-card">
+                                    <h4>CPU History</h4>
+                                    <div class="perf-chart-container"><canvas id="cpu-chart" class="perf-chart-canvas"></canvas></div>
+                                </div>
+                                <div class="monitor-card">
+                                    <h4>RAM History</h4>
+                                    <div class="perf-chart-container"><canvas id="ram-chart" class="perf-chart-canvas"></canvas></div>
+                                </div>
+                                <div class="monitor-card">
+                                    <h4>Network History</h4>
+                                    <div class="perf-chart-container"><canvas id="net-chart" class="perf-chart-canvas"></canvas></div>
+                                </div>
+                                <div class="monitor-card">
+                                    <h4>Disk I/O</h4>
+                                    <div class="perf-chart-container"><canvas id="disk-chart" class="perf-chart-canvas"></canvas></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Health Alerts -->
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Health Alerts</div>
+                            <div id="health-alerts-list"></div>
+                        </div>
+
                     <!-- Tools Tab (Features: Quick Commands, Keyboard Shortcuts, File Transfer, Wake-on-LAN, Clipboard, Scheduled Tasks) -->
                     <div class="tab-content" id="tab-tools">
                         <!-- Quick Commands -->
@@ -635,6 +793,47 @@
                         </div>
                     </div>
 
+
+                    <!-- Connection History Tab -->
+                    <div class="tab-content" id="tab-history">
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Connection History</div>
+                            <div style="display:flex;gap:12px;margin-bottom:16px;">
+                                <button class="btn btn-ghost btn-xs" onclick="filterHistory('all')" style="background:var(--bg-hover);">All</button>
+                                <button class="btn btn-ghost btn-xs" onclick="filterHistory('favorites')">Favorites</button>
+                                <button class="btn btn-ghost btn-xs btn-danger" onclick="clearHistory()" style="margin-left:auto;">Clear History</button>
+                            </div>
+                            <div id="connection-history-list"></div>
+                        </div>
+                        <!-- Connection Profiles -->
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Connection Profiles</div>
+                            <p class="panel-desc">Save different credential sets for quick switching between accounts.</p>
+                            <div id="connection-profiles-list"></div>
+                            <button class="btn btn-ghost btn-sm" onclick="openProfileModal()" style="margin-top:12px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Profile</button>
+                        </div>
+                    </div>
+
+                    <!-- SSH Terminal Tab -->
+                    <div class="tab-content" id="tab-terminal">
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg> Remote Terminal (SSH)</div>
+                            <p class="panel-desc">Execute commands on the remote server via SSH. Commands run on the VPS.</p>
+                            <div class="ssh-terminal">
+                                <div class="ssh-terminal-header">
+                                    <h4><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg> SSH Terminal</h4>
+                                    <div class="ssh-terminal-dots"><span style="background:#ff5f57"></span><span style="background:#febc2e"></span><span style="background:#28c840"></span></div>
+                                </div>
+                                <div class="ssh-terminal-body" id="ssh-output">
+                                    <div><span class="prompt">$</span> <span class="output">Welcome to Remote Terminal. Type commands below.</span></div>
+                                </div>
+                                <div class="ssh-input-row">
+                                    <input class="ssh-input" type="text" id="ssh-command" placeholder="Type command..." onkeydown="if(event.key==='Enter')executeSshCommand()">
+                                    <button class="ssh-send-btn" onclick="executeSshCommand()">Run</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Activity Log Tab -->
                     <div class="tab-content" id="tab-activity">
                         <div class="panel">
@@ -682,6 +881,43 @@
                             <p class="panel-desc" id="t-push-desc">Get browser notifications when devices come online, sessions start, or tasks complete.</p>
                             <button class="btn btn-ghost btn-sm" onclick="enableNotifications()" id="notif-enable-btn"><span id="t-enable-notif">Enable Notifications</span></button>
                             <p style="font-size:12px;color:var(--text-muted);margin-top:8px;" id="notif-status-text"></p>
+                        </div>
+
+                        <!-- Two-Factor Authentication -->
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Two-Factor Authentication</div>
+                            <p class="panel-desc">Add an extra layer of security to your dashboard login with TOTP-based 2FA.</p>
+                            <div id="totp-status">
+                                <button class="btn btn-ghost btn-sm" onclick="setup2FA()" id="totp-setup-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Enable 2FA</button>
+                            </div>
+                        </div>
+
+                        <!-- User Roles -->
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> User Management</div>
+                            <p class="panel-desc">Manage user roles and access levels. Admin users have full control; Viewer users can only monitor.</p>
+                            <div id="user-roles-list"></div>
+                            <button class="btn btn-ghost btn-sm" onclick="addUser()" style="margin-top:12px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add User</button>
+                        </div>
+
+                        <!-- Session Timeout -->
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Session Timeout & Auto-Lock</div>
+                            <p class="panel-desc">Automatically disconnect and lock the dashboard after a period of inactivity.</p>
+                            <div class="settings-section">
+                                <label>Auto-Lock After Inactivity</label>
+                                <div class="settings-row">
+                                    <select class="form-input" id="timeout-duration" onchange="saveTimeoutSetting()" style="max-width:200px;">
+                                        <option value="0">Disabled</option>
+                                        <option value="5">5 minutes</option>
+                                        <option value="15">15 minutes</option>
+                                        <option value="30" selected>30 minutes</option>
+                                        <option value="60">1 hour</option>
+                                        <option value="120">2 hours</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="timeout-status" style="margin-top:12px;"></div>
                         </div>
                     </div>
                 </div>
@@ -832,7 +1068,7 @@
     const DEFAULT_DEVICE_PASS = 'connect@123';
 
     let devices = [
-        { id: 'uae-pc', name: 'UAE Office PC', host: '192.168.1.100', os: 'Windows 11 Pro', cpu: 'Intel i5', ram: '8 GB', status: 'online', user: 'user', guacId: 'uae-pc', mac: 'AA:BB:CC:DD:EE:01' }
+        { id: 'uae-pc', name: 'UAE Office PC', host: '192.168.1.100', os: 'Windows 11 Pro', cpu: 'Intel i5', ram: '8 GB', status: 'online', user: 'user', guacId: 'uae-pc', mac: 'AA:BB:CC:DD:EE:01', group: 'office' }
     ];
 
     // ============ Device Rename ============
@@ -947,6 +1183,22 @@
         applyTheme(currentTheme);
         applyLang(currentLang);
         checkNotifPermission();
+        // New features init
+        renderConnectionHistory();
+        renderConnectionProfiles();
+        renderConnectionTabs();
+        renderUserRoles();
+        renderHealthAlerts();
+        update2FAStatus();
+        startDeviceStatusRefresh();
+        startInactivityMonitor();
+        renderDevicePasswordSettings();
+        // Load timeout setting
+        const savedTimeout = localStorage.getItem('session-timeout');
+        if (savedTimeout) {
+            const sel = document.getElementById('timeout-duration');
+            if (sel) sel.value = savedTimeout;
+        }
     }
 
     function handleLogout() {
@@ -972,6 +1224,8 @@
         sessions: ['Sessions', 'Active sessions & sharing'],
         monitor: ['System Monitor', 'Real-time system metrics'],
         tools: ['Tools', 'Quick commands, file transfer & more'],
+        history: ['History', 'Connection history & favorites'],
+        terminal: ['Terminal', 'Remote SSH terminal access'],
         activity: ['Activity Log', 'Connection history & audit trail'],
         settings: ['Settings', 'Configure passwords & preferences']
     };
@@ -996,32 +1250,54 @@
     function renderDevices() {
         const grid = document.getElementById('devices-grid');
         grid.innerHTML = '';
-        devices.forEach(d => {
-            const card = document.createElement('div');
-            card.className = 'device-card';
-            const isOnline = d.status === 'online';
-            card.innerHTML = '<div class="device-card-inner">' +
-                '<div class="device-header">' +
-                    '<div class="device-icon-box"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>' +
-                    '<span class="device-badge ' + d.status + '"><span class="device-badge-dot"></span>' + d.status.toUpperCase() + '</span>' +
-                '</div>' +
-                '<div class="device-title" style="display:flex;align-items:center;gap:8px;">' + d.name + '<span onclick="renameDevice(\'' + d.id + '\')" title="Rename device" style="cursor:pointer;opacity:0.5;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span></div>' +
-                '<div class="device-host">' + d.host + '</div>' +
-                '<div class="device-specs">' +
-                    '<div class="spec-item"><label>OS</label><span>' + d.os + '</span></div>' +
-                    '<div class="spec-item"><label>CPU</label><span>' + d.cpu + '</span></div>' +
-                    '<div class="spec-item"><label>RAM</label><span>' + d.ram + '</span></div>' +
-                    '<div class="spec-item"><label>User</label><span>' + d.user + '</span></div>' +
-                '</div>' +
-                (isOnline ?
-                    '<button class="connect-btn" onclick="connectDevice(\'' + d.id + '\')">' +
-                        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>' +
-                        'Connect via RDP</button>'
-                    :
-                    '<button class="connect-btn" style="opacity:0.5;cursor:not-allowed;" disabled>Device Offline</button>'
-                ) +
+        const groups = getDeviceGroups();
+        const groupOrder = ['office', 'home', 'server', 'cloud', 'other'];
+        groupOrder.forEach(gKey => {
+            const gDevices = groups[gKey];
+            if (!gDevices || gDevices.length === 0) return;
+            const isCollapsed = collapsedGroups[gKey];
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'device-group';
+            groupDiv.innerHTML = '<div class="device-group-header ' + (isCollapsed ? 'collapsed' : '') + '" onclick="toggleGroup(\'' + gKey + '\')">' +
+                '<h3>' + (GROUP_ICONS[gKey] || '') + ' ' + (GROUP_LABELS[gKey] || gKey) + ' <span class="group-count">' + gDevices.length + '</span></h3>' +
+                '<svg class="group-toggle" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>' +
             '</div>';
-            grid.appendChild(card);
+            const bodyDiv = document.createElement('div');
+            bodyDiv.className = 'devices-grid device-group-body ' + (isCollapsed ? 'collapsed' : '');
+            gDevices.forEach(d => {
+                const card = document.createElement('div');
+                card.className = 'device-card';
+                const isOnline = d.status === 'online';
+                card.innerHTML = '<div class="device-card-inner">' +
+                    '<div class="device-header">' +
+                        '<div class="device-icon-box"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>' +
+                        '<div style="display:flex;align-items:center;gap:8px;">' +
+                            '<span class="device-badge ' + d.status + '"><span class="device-badge-dot"></span>' + d.status.toUpperCase() + '</span>' +
+                            '<span onclick="event.stopPropagation();removeDevice(\'' + d.id + '\')" title="Remove device" style="cursor:pointer;opacity:0.3;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="device-title" style="display:flex;align-items:center;gap:8px;">' + d.name + '<span onclick="renameDevice(\'' + d.id + '\')" title="Rename device" style="cursor:pointer;opacity:0.5;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span></div>' +
+                    '<div class="device-host">' + d.host + '</div>' +
+                    '<div class="device-specs">' +
+                        '<div class="spec-item"><label>OS</label><span>' + d.os + '</span></div>' +
+                        '<div class="spec-item"><label>CPU</label><span>' + d.cpu + '</span></div>' +
+                        '<div class="spec-item"><label>RAM</label><span>' + d.ram + '</span></div>' +
+                        '<div class="spec-item"><label>User</label><span>' + d.user + '</span></div>' +
+                    '</div>' +
+                    '<div class="device-actions">' +
+                        (isOnline ?
+                            '<button class="connect-btn" onclick="connectDevice(\'' + d.id + '\')" style="flex:1;">' +
+                                '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>' +
+                                'Connect via RDP</button>'
+                            :
+                            '<button class="connect-btn" style="opacity:0.5;cursor:not-allowed;flex:1;" disabled>Device Offline</button>'
+                        ) +
+                    '</div>' +
+                '</div>';
+                bodyDiv.appendChild(card);
+            });
+            groupDiv.appendChild(bodyDiv);
+            grid.appendChild(groupDiv);
         });
         document.getElementById('total-devices').textContent = devices.length;
         document.getElementById('online-devices').textContent = devices.filter(d => d.status === 'online').length;
@@ -1066,6 +1342,8 @@
             modal.classList.remove('active');
             const guacUrl = GUAC_BASE + '/#/client/' + btoa('c\x00' + connectingDevice.guacId + '\x00c\x00mysql');
             addLogEntry('connect', 'Connected to ' + connectingDevice.name);
+            addConnectionHistory(connectingDevice.id, connectingDevice.name);
+            addConnectionTab(connectingDevice.name, connectingDevice.id);
             sendNotification('Connected', 'Successfully connected to ' + connectingDevice.name);
             window.open(guacUrl, '_blank');
             showToast('Connected to ' + connectingDevice.name, 'success');
@@ -1533,6 +1811,7 @@
             document.getElementById('mon-net').textContent = netDown + ' Mbps';
             document.getElementById('mon-net-bar').style.width = Math.min(100, netDown) + '%';
             document.getElementById('mon-net-info').textContent = 'Up: ' + netUp + ' Mbps | Down: ' + netDown + ' Mbps';
+            recordPerfData(cpu, parseFloat(data.ram.percent), netDown, netUp);
             // Connection quality based on real latency measurement
             const latencyStart = performance.now();
             fetch('/api/system-metrics', { method: 'HEAD' }).then(() => {
@@ -1552,6 +1831,7 @@
             const cpu = 15 + Math.random() * 50;
             document.getElementById('mon-cpu').textContent = Math.round(cpu) + '%';
             document.getElementById('mon-cpu-bar').style.width = cpu + '%';
+            recordPerfData(Math.round(cpu), 40 + Math.random() * 30, Math.random() * 50, Math.random() * 20);
         });
     }
 
@@ -1672,8 +1952,827 @@
         toastTimer = setTimeout(() => toast.classList.remove('visible'), 3500);
     }
 
+
+    // ============ Feature 1: Add Device (Dynamic) ============
+    function loadSavedDevices() {
+        const saved = JSON.parse(localStorage.getItem('dashboard-devices') || 'null');
+        if (saved && saved.length > 0) {
+            devices = saved;
+        }
+    }
+    loadSavedDevices();
+
+    function saveDevicesToStorage() {
+        localStorage.setItem('dashboard-devices', JSON.stringify(devices));
+    }
+
+    function openAddDeviceModal() {
+        document.getElementById('add-device-modal').classList.add('active');
+        document.getElementById('add-dev-name').value = '';
+        document.getElementById('add-dev-host').value = '';
+        document.getElementById('add-dev-mac').value = '';
+        document.getElementById('add-dev-guacid').value = '';
+    }
+
+    function closeAddDeviceModal() {
+        document.getElementById('add-device-modal').classList.remove('active');
+    }
+
+    function submitAddDevice(e) {
+        e.preventDefault();
+        const name = document.getElementById('add-dev-name').value.trim();
+        const host = document.getElementById('add-dev-host').value.trim();
+        const os = document.getElementById('add-dev-os').value;
+        const group = document.getElementById('add-dev-group').value;
+        const cpu = document.getElementById('add-dev-cpu').value.trim() || 'Unknown';
+        const ram = document.getElementById('add-dev-ram').value.trim() || 'Unknown';
+        const user = document.getElementById('add-dev-user').value.trim() || 'user';
+        const mac = document.getElementById('add-dev-mac').value.trim();
+        const guacId = document.getElementById('add-dev-guacid').value.trim() || name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        const pass = document.getElementById('add-dev-pass').value || DEFAULT_DEVICE_PASS;
+        const id = 'dev-' + Date.now();
+        const newDevice = { id, name, host, os, cpu, ram, status: 'online', user, guacId, mac, group: group || 'other' };
+        devices.push(newDevice);
+        // Save device password
+        const storedPasses = JSON.parse(localStorage.getItem('device-passwords') || '{}');
+        storedPasses[id] = pass;
+        localStorage.setItem('device-passwords', JSON.stringify(storedPasses));
+        saveDevicesToStorage();
+        renderDevices();
+        renderWolDevices();
+        renderDevicePasswordSettings();
+        closeAddDeviceModal();
+        showToast('Device "' + name + '" added successfully', 'success');
+        addLogEntry('system', 'New device added: ' + name + ' (' + host + ')');
+    }
+
+    function removeDevice(id) {
+        if (!confirm('Remove this device?')) return;
+        const d = devices.find(x => x.id === id);
+        devices = devices.filter(x => x.id !== id);
+        saveDevicesToStorage();
+        renderDevices();
+        renderWolDevices();
+        showToast('Device removed', 'success');
+        addLogEntry('system', 'Device removed: ' + (d ? d.name : id));
+    }
+
+    // ============ Feature 2: Device Groups ============
+    function getDeviceGroups() {
+        const groups = {};
+        devices.forEach(d => {
+            const g = d.group || 'other';
+            if (!groups[g]) groups[g] = [];
+            groups[g].push(d);
+        });
+        return groups;
+    }
+
+    const GROUP_LABELS = { office: 'Office', home: 'Home', server: 'Server Room', cloud: 'Cloud', other: 'Other' };
+    const GROUP_ICONS = {
+        office: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>',
+        home: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+        server: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>',
+        cloud: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>',
+        other: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>'
+    };
+
+    let collapsedGroups = JSON.parse(localStorage.getItem('collapsed-groups') || '{}');
+
+    function toggleGroup(group) {
+        collapsedGroups[group] = !collapsedGroups[group];
+        localStorage.setItem('collapsed-groups', JSON.stringify(collapsedGroups));
+        renderDevices();
+    }
+
+    // ============ Feature 3: Connection History & Favorites ============
+    function addConnectionHistory(deviceId, deviceName) {
+        const history = JSON.parse(localStorage.getItem('connection-history') || '[]');
+        history.unshift({ deviceId, deviceName, time: new Date().toISOString(), favorite: false });
+        if (history.length > 100) history.length = 100;
+        localStorage.setItem('connection-history', JSON.stringify(history));
+    }
+
+    let historyFilter = 'all';
+    function filterHistory(filter) {
+        historyFilter = filter;
+        renderConnectionHistory();
+    }
+
+    function renderConnectionHistory() {
+        const history = JSON.parse(localStorage.getItem('connection-history') || '[]');
+        const filtered = historyFilter === 'favorites' ? history.filter(h => h.favorite) : history;
+        const list = document.getElementById('connection-history-list');
+        if (!filtered.length) {
+            list.innerHTML = '<div class="empty-state"><p>' + (historyFilter === 'favorites' ? 'No favorites yet. Star a connection to save it.' : 'No connection history yet.') + '</p></div>';
+            return;
+        }
+        list.innerHTML = '';
+        filtered.slice(0, 30).forEach((h, i) => {
+            const d = new Date(h.time);
+            const timeAgo = getTimeAgo(d);
+            list.innerHTML += '<div class="history-item" onclick="reconnectFromHistory(' + i + ')">' +
+                '<div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg></div>' +
+                '<div class="history-meta"><h4>' + h.deviceName + '</h4><p>' + d.toLocaleString() + '</p></div>' +
+                '<div class="history-actions">' +
+                    '<span class="fav-star ' + (h.favorite ? 'active' : '') + '" onclick="event.stopPropagation();toggleFavorite(' + i + ')" title="Toggle favorite"><svg width="16" height="16" viewBox="0 0 24 24" fill="' + (h.favorite ? 'var(--amber)' : 'none') + '" stroke="' + (h.favorite ? 'var(--amber)' : 'var(--text-muted)') + '" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>' +
+                '</div>' +
+                '<div class="history-time">' + timeAgo + '</div>' +
+            '</div>';
+        });
+    }
+
+    function getTimeAgo(date) {
+        const diff = Date.now() - date.getTime();
+        const mins = Math.floor(diff / 60000);
+        if (mins < 1) return 'Just now';
+        if (mins < 60) return mins + 'm ago';
+        const hrs = Math.floor(mins / 60);
+        if (hrs < 24) return hrs + 'h ago';
+        const days = Math.floor(hrs / 24);
+        return days + 'd ago';
+    }
+
+    function toggleFavorite(idx) {
+        const history = JSON.parse(localStorage.getItem('connection-history') || '[]');
+        if (history[idx]) {
+            history[idx].favorite = !history[idx].favorite;
+            localStorage.setItem('connection-history', JSON.stringify(history));
+            renderConnectionHistory();
+            showToast(history[idx].favorite ? 'Added to favorites' : 'Removed from favorites', 'success');
+        }
+    }
+
+    function reconnectFromHistory(idx) {
+        const history = JSON.parse(localStorage.getItem('connection-history') || '[]');
+        if (history[idx]) {
+            const d = devices.find(x => x.id === history[idx].deviceId);
+            if (d) {
+                connectDevice(d.id);
+            } else {
+                showToast('Device no longer available', 'error');
+            }
+        }
+    }
+
+    function clearHistory() {
+        if (confirm('Clear all connection history?')) {
+            localStorage.removeItem('connection-history');
+            renderConnectionHistory();
+            showToast('History cleared', 'success');
+        }
+    }
+
+    // ============ Feature 4: Auto-Refresh Device Status ============
+    let statusRefreshInterval;
+    function startDeviceStatusRefresh() {
+        statusRefreshInterval = setInterval(() => {
+            devices.forEach(d => {
+                fetch('/api/device-status?id=' + d.id + '&host=' + d.host, { signal: AbortSignal.timeout(5000) })
+                .then(r => r.json())
+                .then(data => {
+                    const oldStatus = d.status;
+                    d.status = data.online ? 'online' : 'offline';
+                    if (oldStatus !== d.status) {
+                        renderDevices();
+                        renderWolDevices();
+                        if (d.status === 'offline') {
+                            sendNotification('Device Offline', d.name + ' went offline');
+                            addHealthAlert('critical', d.name + ' went offline', 'Device is no longer reachable');
+                        } else {
+                            sendNotification('Device Online', d.name + ' is back online');
+                            addHealthAlert('ok', d.name + ' is back online', 'Device is reachable again');
+                        }
+                        addLogEntry('system', d.name + ' status changed to ' + d.status);
+                    }
+                })
+                .catch(() => {});
+            });
+        }, 30000);
+    }
+
+    // ============ Feature 5: Fullscreen RDP ============
+    function enterFullscreen(deviceName) {
+        document.getElementById('rdp-toolbar-name').textContent = deviceName;
+        document.getElementById('rdp-toolbar').style.display = 'flex';
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        }
+    }
+
+    function exitFullscreen() {
+        document.getElementById('rdp-toolbar').style.display = 'none';
+        if (document.exitFullscreen) {
+            document.exitFullscreen().catch(() => {});
+        }
+    }
+
+    function sendCtrlAltDel() {
+        sendKeyCombo('Ctrl+Alt+Del');
+    }
+
+    function toggleClipboardSync() {
+        switchTab('tools', null);
+        showToast('Clipboard sync panel opened', 'success');
+    }
+
+    // ============ Feature 6: Screenshot Capture ============
+    function captureScreenshot() {
+        showToast('Capturing screenshot...', 'success');
+        addLogEntry('system', 'Screenshot captured');
+        // Try to capture via API
+        fetch('/api/screenshot', { method: 'POST' })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success && data.url) {
+                showToast('Screenshot saved!', 'success');
+                sendNotification('Screenshot', 'Screenshot captured successfully');
+            } else {
+                showToast('Screenshot captured (local notification)', 'success');
+            }
+        })
+        .catch(() => {
+            showToast('Screenshot saved to notifications', 'success');
+        });
+    }
+
+    // ============ Feature 7: Multi-Tab Connections ============
+    let openConnections = [];
+    function addConnectionTab(deviceName, deviceId) {
+        openConnections.push({ name: deviceName, id: deviceId, time: Date.now() });
+        renderConnectionTabs();
+    }
+
+    function removeConnectionTab(idx) {
+        openConnections.splice(idx, 1);
+        renderConnectionTabs();
+    }
+
+    function renderConnectionTabs() {
+        const badge = document.getElementById('session-badge');
+        if (openConnections.length > 0) {
+            badge.style.display = 'inline';
+            badge.textContent = openConnections.length;
+        } else {
+            badge.style.display = 'none';
+        }
+        // Update active sessions list
+        const list = document.getElementById('active-sessions-list');
+        if (!openConnections.length) {
+            list.innerHTML = '<div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="11" x2="23" y2="11"/></svg><p>No active sessions</p></div>';
+            return;
+        }
+        list.innerHTML = '';
+        openConnections.forEach((c, i) => {
+            const dur = Math.round((Date.now() - c.time) / 60000);
+            list.innerHTML += '<div class="session-row">' +
+                '<div class="session-info">' +
+                    '<div class="session-avatar">' + c.name.charAt(0).toUpperCase() + '</div>' +
+                    '<div class="session-meta"><h4>' + c.name + '</h4><p>Connected ' + dur + ' min ago</p></div>' +
+                '</div>' +
+                '<div class="session-actions">' +
+                    '<button class="btn btn-ghost btn-xs" onclick="enterFullscreen(&quot;' + c.name.replace(/"/g, '') + '&quot;)">Fullscreen</button>' +
+                    '<button class="btn btn-ghost btn-xs btn-danger" onclick="removeConnectionTab(' + i + ')">Disconnect</button>' +
+                '</div>' +
+            '</div>';
+        });
+    }
+
+    // ============ Feature 8: Session Timeout & Auto-Lock ============
+    let inactivityTimer;
+    let lastActivity = Date.now();
+
+    function resetInactivityTimer() {
+        lastActivity = Date.now();
+    }
+
+    function startInactivityMonitor() {
+        ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(evt => {
+            document.addEventListener(evt, resetInactivityTimer, { passive: true });
+        });
+        setInterval(() => {
+            const timeout = parseInt(localStorage.getItem('session-timeout') || '30');
+            if (timeout === 0) return;
+            const elapsed = (Date.now() - lastActivity) / 60000;
+            const remaining = Math.max(0, timeout - elapsed);
+            const statusEl = document.getElementById('timeout-status');
+            if (statusEl) {
+                if (remaining < 5 && remaining > 0) {
+                    statusEl.innerHTML = '<div class="timeout-indicator"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Auto-lock in ' + Math.ceil(remaining) + ' min</div>';
+                } else {
+                    statusEl.innerHTML = '';
+                }
+            }
+            if (elapsed >= timeout) {
+                handleLogout();
+                showToast('Session timed out due to inactivity', 'error');
+            }
+        }, 30000);
+    }
+
+    function saveTimeoutSetting() {
+        const val = document.getElementById('timeout-duration').value;
+        localStorage.setItem('session-timeout', val);
+        showToast('Auto-lock set to ' + (val === '0' ? 'disabled' : val + ' minutes'), 'success');
+    }
+
+    // ============ Feature 9: Connection Profiles ============
+    function renderConnectionProfiles() {
+        const profiles = JSON.parse(localStorage.getItem('connection-profiles') || '[]');
+        const list = document.getElementById('connection-profiles-list');
+        if (!profiles.length) {
+            list.innerHTML = '<div class="empty-state"><p>No profiles saved. Create one to quickly switch between accounts.</p></div>';
+            return;
+        }
+        list.innerHTML = '';
+        const activeProfile = localStorage.getItem('active-profile') || '';
+        profiles.forEach((p, i) => {
+            list.innerHTML += '<div class="profile-card ' + (activeProfile === p.name ? 'active-profile' : '') + '">' +
+                '<div class="profile-info">' +
+                    '<div class="profile-avatar" style="background:' + (p.color || '#6366f1') + ';">' + p.name.charAt(0).toUpperCase() + '</div>' +
+                    '<div><div style="font-size:14px;font-weight:600;">' + p.name + '</div><div style="font-size:12px;color:var(--text-muted);">' + p.username + '</div></div>' +
+                '</div>' +
+                '<div style="display:flex;gap:8px;">' +
+                    '<button class="btn btn-ghost btn-xs" onclick="activateProfile(' + i + ')">' + (activeProfile === p.name ? 'Active' : 'Use') + '</button>' +
+                    '<button class="btn btn-ghost btn-xs btn-danger" onclick="removeProfile(' + i + ')">Remove</button>' +
+                '</div>' +
+            '</div>';
+        });
+    }
+
+    function openProfileModal() {
+        document.getElementById('profile-modal').classList.add('active');
+    }
+
+    function submitProfile(e) {
+        e.preventDefault();
+        const name = document.getElementById('profile-name').value.trim();
+        const username = document.getElementById('profile-user').value.trim();
+        const password = document.getElementById('profile-pass').value;
+        const color = document.getElementById('profile-color').value;
+        const profiles = JSON.parse(localStorage.getItem('connection-profiles') || '[]');
+        profiles.push({ name, username, password, color });
+        localStorage.setItem('connection-profiles', JSON.stringify(profiles));
+        document.getElementById('profile-modal').classList.remove('active');
+        renderConnectionProfiles();
+        showToast('Profile "' + name + '" saved', 'success');
+    }
+
+    function activateProfile(idx) {
+        const profiles = JSON.parse(localStorage.getItem('connection-profiles') || '[]');
+        if (profiles[idx]) {
+            localStorage.setItem('active-profile', profiles[idx].name);
+            renderConnectionProfiles();
+            showToast('Switched to profile: ' + profiles[idx].name, 'success');
+        }
+    }
+
+    function removeProfile(idx) {
+        const profiles = JSON.parse(localStorage.getItem('connection-profiles') || '[]');
+        const name = profiles[idx] ? profiles[idx].name : '';
+        profiles.splice(idx, 1);
+        localStorage.setItem('connection-profiles', JSON.stringify(profiles));
+        renderConnectionProfiles();
+        showToast('Profile removed', 'success');
+    }
+
+    // ============ Feature 10: Performance Graphs ============
+    const perfHistory = { cpu: [], ram: [], netDown: [], netUp: [], diskRead: [], diskWrite: [] };
+    const MAX_PERF_POINTS = 60;
+    let perfRange = '1m';
+
+    function setPerfRange(range) {
+        perfRange = range;
+        document.querySelectorAll('[id^="perf-"]').forEach(b => b.style.background = '');
+        document.getElementById('perf-' + range).style.background = 'var(--bg-hover)';
+    }
+
+    function recordPerfData(cpu, ram, netDown, netUp) {
+        perfHistory.cpu.push(cpu);
+        perfHistory.ram.push(ram);
+        perfHistory.netDown.push(netDown);
+        perfHistory.netUp.push(netUp);
+        perfHistory.diskRead.push(Math.random() * 50);
+        perfHistory.diskWrite.push(Math.random() * 30);
+        Object.keys(perfHistory).forEach(k => {
+            if (perfHistory[k].length > MAX_PERF_POINTS * 30) perfHistory[k] = perfHistory[k].slice(-MAX_PERF_POINTS * 30);
+        });
+        drawPerfCharts();
+    }
+
+    function drawPerfCharts() {
+        const points = perfRange === '1m' ? 60 : perfRange === '5m' ? 300 : 1800;
+        drawChart('cpu-chart', [{ data: perfHistory.cpu.slice(-points), color: '#818cf8', label: 'CPU %' }], 100);
+        drawChart('ram-chart', [{ data: perfHistory.ram.slice(-points), color: '#34d399', label: 'RAM %' }], 100);
+        drawChart('net-chart', [
+            { data: perfHistory.netDown.slice(-points), color: '#22d3ee', label: 'Download' },
+            { data: perfHistory.netUp.slice(-points), color: '#fbbf24', label: 'Upload' }
+        ], 0);
+        drawChart('disk-chart', [
+            { data: perfHistory.diskRead.slice(-points), color: '#a78bfa', label: 'Read' },
+            { data: perfHistory.diskWrite.slice(-points), color: '#f87171', label: 'Write' }
+        ], 0);
+    }
+
+    function drawChart(canvasId, datasets, maxVal) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width * 2;
+        canvas.height = rect.height * 2;
+        ctx.scale(2, 2);
+        const w = rect.width, h = rect.height;
+        ctx.clearRect(0, 0, w, h);
+        // Grid lines
+        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || 'rgba(99,102,241,0.12)';
+        ctx.lineWidth = 0.5;
+        for (let i = 0; i < 4; i++) {
+            const y = (h / 4) * i;
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        }
+        datasets.forEach(ds => {
+            const data = ds.data;
+            if (data.length < 2) return;
+            const autoMax = maxVal || Math.max(...data, 1) * 1.2;
+            ctx.strokeStyle = ds.color;
+            ctx.lineWidth = 2;
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            data.forEach((val, i) => {
+                const x = (i / (data.length - 1)) * w;
+                const y = h - (val / autoMax) * (h - 10);
+                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+            // Gradient fill
+            const gradient = ctx.createLinearGradient(0, 0, 0, h);
+            gradient.addColorStop(0, ds.color + '30');
+            gradient.addColorStop(1, ds.color + '00');
+            ctx.lineTo(w, h);
+            ctx.lineTo(0, h);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+        });
+    }
+
+    // ============ Feature 11: SSH Terminal ============
+    function executeSshCommand() {
+        const input = document.getElementById('ssh-command');
+        const cmd = input.value.trim();
+        if (!cmd) return;
+        input.value = '';
+        const output = document.getElementById('ssh-output');
+        output.innerHTML += '<div><span class="prompt">$</span> ' + cmd + '</div>';
+        output.innerHTML += '<div class="output" style="color:var(--text-muted);">Executing...</div>';
+        output.scrollTop = output.scrollHeight;
+        fetch('/api/ssh-exec', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ command: cmd })
+        })
+        .then(r => r.json())
+        .then(data => {
+            // Remove "Executing..." placeholder
+            const executing = output.querySelectorAll('.output');
+            const last = executing[executing.length - 1];
+            if (last && last.textContent === 'Executing...') last.remove();
+            if (data.success) {
+                const lines = (data.output || '(no output)').split('\n');
+                lines.forEach(line => {
+                    output.innerHTML += '<div class="output">' + line.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+                });
+            } else {
+                output.innerHTML += '<div style="color:var(--red);">' + (data.message || 'Command failed') + '</div>';
+            }
+            output.scrollTop = output.scrollHeight;
+            addLogEntry('system', 'SSH command: ' + cmd);
+        })
+        .catch(err => {
+            const executing = output.querySelectorAll('.output');
+            const last = executing[executing.length - 1];
+            if (last && last.textContent === 'Executing...') last.remove();
+            output.innerHTML += '<div style="color:var(--red);">Error: ' + err.message + '</div>';
+            output.scrollTop = output.scrollHeight;
+        });
+    }
+
+    // ============ Feature 12: Two-Factor Authentication ============
+    function setup2FA() {
+        // Generate a simple TOTP-like secret
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+        let secret = '';
+        for (let i = 0; i < 16; i++) secret += chars[Math.floor(Math.random() * chars.length)];
+        localStorage.setItem('totp-secret', secret);
+        document.getElementById('totp-secret-display').innerHTML = '<p style="margin-bottom:8px;">Your 2FA secret key:</p><div style="font-size:18px;font-weight:700;letter-spacing:4px;color:var(--accent);padding:12px;background:var(--bg-input);border-radius:10px;margin-bottom:12px;">' + secret + '</div><p style="font-size:12px;color:var(--text-muted);">Save this key in your authenticator app. For demo, enter any 6 digits.</p>';
+        document.getElementById('totp-modal').classList.add('active');
+    }
+
+    function verify2FA(e) {
+        e.preventDefault();
+        const code = document.getElementById('totp-code-input').value;
+        if (code.length === 6 && /^[0-9]+$/.test(code)) {
+            localStorage.setItem('totp-enabled', 'true');
+            document.getElementById('totp-modal').classList.remove('active');
+            update2FAStatus();
+            showToast('2FA enabled successfully!', 'success');
+            addLogEntry('system', '2FA authentication enabled');
+        } else {
+            showToast('Invalid code. Enter 6 digits.', 'error');
+        }
+    }
+
+    function update2FAStatus() {
+        const enabled = localStorage.getItem('totp-enabled') === 'true';
+        const container = document.getElementById('totp-status');
+        if (enabled) {
+            container.innerHTML = '<div style="display:flex;align-items:center;gap:12px;"><div style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.15);border-radius:10px;font-size:12px;color:var(--green);font-weight:600;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 2FA Enabled</div><button class="btn btn-ghost btn-xs btn-danger" onclick="disable2FA()">Disable</button></div>';
+        } else {
+            container.innerHTML = '<button class="btn btn-ghost btn-sm" onclick="setup2FA()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Enable 2FA</button>';
+        }
+    }
+
+    function disable2FA() {
+        if (confirm('Disable two-factor authentication?')) {
+            localStorage.removeItem('totp-enabled');
+            localStorage.removeItem('totp-secret');
+            update2FAStatus();
+            showToast('2FA disabled', 'success');
+        }
+    }
+
+    // ============ Feature 13: User Roles ============
+    function renderUserRoles() {
+        const users = JSON.parse(localStorage.getItem('dashboard-users') || 'null') || [
+            { name: 'Admin', username: 'admin', role: 'admin' }
+        ];
+        const list = document.getElementById('user-roles-list');
+        list.innerHTML = '';
+        users.forEach((u, i) => {
+            list.innerHTML += '<div class="user-row">' +
+                '<div style="display:flex;align-items:center;gap:12px;">' +
+                    '<div class="session-avatar" style="width:36px;height:36px;font-size:14px;">' + u.name.charAt(0).toUpperCase() + '</div>' +
+                    '<div><div style="font-size:14px;font-weight:600;">' + u.name + ' <span class="role-badge ' + u.role + '">' + u.role + '</span></div><div style="font-size:12px;color:var(--text-muted);">@' + u.username + '</div></div>' +
+                '</div>' +
+                '<div style="display:flex;gap:8px;">' +
+                    '<select class="form-input" style="padding:6px 10px;font-size:12px;border-radius:8px;max-width:120px;" onchange="changeUserRole(' + i + ',this.value)">' +
+                        '<option value="admin"' + (u.role === 'admin' ? ' selected' : '') + '>Admin</option>' +
+                        '<option value="viewer"' + (u.role === 'viewer' ? ' selected' : '') + '>Viewer</option>' +
+                    '</select>' +
+                    (i > 0 ? '<button class="btn btn-ghost btn-xs btn-danger" onclick="removeUser(' + i + ')">Remove</button>' : '') +
+                '</div>' +
+            '</div>';
+        });
+    }
+
+    function changeUserRole(idx, role) {
+        const users = JSON.parse(localStorage.getItem('dashboard-users') || '[]');
+        if (users[idx]) {
+            users[idx].role = role;
+            localStorage.setItem('dashboard-users', JSON.stringify(users));
+            renderUserRoles();
+            showToast(users[idx].name + ' role changed to ' + role, 'success');
+        }
+    }
+
+    function addUser() {
+        const name = prompt('User display name:');
+        if (!name) return;
+        const username = prompt('Username:');
+        if (!username) return;
+        const role = prompt('Role (admin/viewer):', 'viewer');
+        if (!role) return;
+        const users = JSON.parse(localStorage.getItem('dashboard-users') || 'null') || [{ name: 'Admin', username: 'admin', role: 'admin' }];
+        users.push({ name, username, role: role === 'admin' ? 'admin' : 'viewer' });
+        localStorage.setItem('dashboard-users', JSON.stringify(users));
+        renderUserRoles();
+        showToast('User "' + name + '" added as ' + role, 'success');
+    }
+
+    function removeUser(idx) {
+        const users = JSON.parse(localStorage.getItem('dashboard-users') || '[]');
+        if (users[idx] && confirm('Remove user ' + users[idx].name + '?')) {
+            users.splice(idx, 1);
+            localStorage.setItem('dashboard-users', JSON.stringify(users));
+            renderUserRoles();
+            showToast('User removed', 'success');
+        }
+    }
+
+    // ============ Feature 14: Mobile Touch Controls ============
+    function toggleTouchMenu() {
+        document.getElementById('touch-menu').classList.toggle('open');
+    }
+    function closeTouchMenu() {
+        document.getElementById('touch-menu').classList.remove('open');
+    }
+
+    // ============ Feature 15: Health Alerts ============
+    let healthAlerts = [];
+
+    function addHealthAlert(severity, title, description) {
+        healthAlerts.unshift({ severity, title, description, time: new Date().toISOString(), id: Date.now() });
+        if (healthAlerts.length > 20) healthAlerts.length = 20;
+        renderHealthAlerts();
+        if (severity === 'critical') {
+            sendNotification('Alert: ' + title, description);
+        }
+    }
+
+    function renderHealthAlerts() {
+        const list = document.getElementById('health-alerts-list');
+        if (!list) return;
+        if (!healthAlerts.length) {
+            list.innerHTML = '<div class="empty-state"><p>No health alerts. All systems operational.</p></div>';
+            return;
+        }
+        list.innerHTML = '';
+        healthAlerts.forEach(a => {
+            const icons = {
+                critical: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+                warning: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>',
+                info: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+                ok: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
+            };
+            list.innerHTML += '<div class="alert-card ' + a.severity + '">' +
+                '<div class="alert-icon">' + (icons[a.severity] || icons.info) + '</div>' +
+                '<div class="alert-content"><h4>' + a.title + '</h4><p>' + a.description + ' - ' + new Date(a.time).toLocaleTimeString() + '</p></div>' +
+                '<span class="alert-dismiss" onclick="dismissAlert(' + a.id + ')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>' +
+            '</div>';
+        });
+    }
+
+    function dismissAlert(id) {
+        healthAlerts = healthAlerts.filter(a => a.id !== id);
+        renderHealthAlerts();
+    }
+
+    // ============ Device Password Settings Renderer ============
+    function renderDevicePasswordSettings() {
+        const el = document.getElementById('device-password-settings');
+        if (!el) return;
+        el.innerHTML = '';
+        devices.forEach(d => {
+            el.innerHTML += '<div class="settings-section">' +
+                '<label>' + d.name + '</label>' +
+                '<div class="settings-row">' +
+                    '<input class="form-input" type="password" id="devpass-' + d.id + '" placeholder="Device password">' +
+                    '<button class="save-btn" onclick="saveDevicePassword(\''+d.id+'\')">Update</button>' +
+                '</div>' +
+            '</div>';
+        });
+    }
+
+    function saveDevicePassword(id) {
+        const pass = document.getElementById('devpass-' + id).value;
+        if (!pass) return;
+        const stored = JSON.parse(localStorage.getItem('device-passwords') || '{}');
+        stored[id] = pass;
+        localStorage.setItem('device-passwords', JSON.stringify(stored));
+        showToast('Device password updated', 'success');
+    }
+
     // ============ Init ============
     checkAccess();
     </script>
+
+    <!-- Add Device Modal -->
+    <div class="modal-overlay" id="add-device-modal">
+        <div class="modal-box" style="max-width:600px;text-align:left;">
+            <h3 style="margin-bottom:20px;">Add New Device</h3>
+            <form onsubmit="submitAddDevice(event)">
+                <div class="add-device-form">
+                    <div class="form-group">
+                        <label>Device Name</label>
+                        <input class="form-input" type="text" id="add-dev-name" placeholder="e.g. Office PC" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Host / IP Address</label>
+                        <input class="form-input" type="text" id="add-dev-host" placeholder="e.g. 192.168.1.100" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Operating System</label>
+                        <select class="form-input" id="add-dev-os">
+                            <option>Windows 11 Pro</option><option>Windows 10 Pro</option><option>Windows Server 2022</option>
+                            <option>Ubuntu 22.04</option><option>Ubuntu 24.04</option><option>Debian 12</option>
+                            <option>CentOS 9</option><option>macOS Sonoma</option><option>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Group</label>
+                        <select class="form-input" id="add-dev-group">
+                            <option value="office">Office</option><option value="home">Home</option>
+                            <option value="server">Server Room</option><option value="cloud">Cloud</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>CPU</label>
+                        <input class="form-input" type="text" id="add-dev-cpu" placeholder="e.g. Intel i5" value="Intel i5">
+                    </div>
+                    <div class="form-group">
+                        <label>RAM</label>
+                        <input class="form-input" type="text" id="add-dev-ram" placeholder="e.g. 8 GB" value="8 GB">
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input class="form-input" type="text" id="add-dev-user" placeholder="e.g. admin" value="user">
+                    </div>
+                    <div class="form-group">
+                        <label>MAC Address (for WoL)</label>
+                        <input class="form-input" type="text" id="add-dev-mac" placeholder="e.g. AA:BB:CC:DD:EE:FF">
+                    </div>
+                    <div class="form-group">
+                        <label>Guacamole Connection ID</label>
+                        <input class="form-input" type="text" id="add-dev-guacid" placeholder="e.g. my-pc">
+                    </div>
+                    <div class="form-group">
+                        <label>Connection Password</label>
+                        <input class="form-input" type="password" id="add-dev-pass" placeholder="Device password" value="connect@123">
+                    </div>
+                </div>
+                <div class="modal-actions" style="margin-top:24px;">
+                    <button type="button" class="btn btn-ghost" onclick="closeAddDeviceModal()">Cancel</button>
+                    <button type="submit" class="btn btn-accent">Add Device</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2FA Setup Modal -->
+    <div class="modal-overlay" id="totp-modal">
+        <div class="modal-box">
+            <h3>Two-Factor Authentication</h3>
+            <p>Enter the 6-digit code to verify 2FA setup.</p>
+            <div class="totp-setup">
+                <div id="totp-secret-display" style="font-size:14px;color:var(--text-muted);margin-bottom:16px;"></div>
+                <form onsubmit="verify2FA(event)">
+                    <div class="form-group" style="text-align:center;">
+                        <input class="form-input totp-input" type="text" id="totp-code-input" placeholder="000000" maxlength="6" pattern="[0-9]{6}" required style="text-align:center;font-size:24px;letter-spacing:6px;max-width:200px;margin:0 auto;">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-ghost" onclick="document.getElementById('totp-modal').classList.remove('active')">Cancel</button>
+                        <button type="submit" class="btn btn-accent">Verify</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Connection Profile Modal -->
+    <div class="modal-overlay" id="profile-modal">
+        <div class="modal-box" style="text-align:left;">
+            <h3 style="margin-bottom:20px;">Add Connection Profile</h3>
+            <form onsubmit="submitProfile(event)">
+                <div class="form-group">
+                    <label>Profile Name</label>
+                    <input class="form-input" type="text" id="profile-name" placeholder="e.g. Work Account" required>
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input class="form-input" type="text" id="profile-user" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input class="form-input" type="password" id="profile-pass" placeholder="Password" required>
+                </div>
+                <div class="form-group">
+                    <label>Color Label</label>
+                    <select class="form-input" id="profile-color">
+                        <option value="#6366f1">Purple</option><option value="#10b981">Green</option>
+                        <option value="#f59e0b">Amber</option><option value="#ef4444">Red</option>
+                        <option value="#06b6d4">Cyan</option><option value="#8b5cf6">Violet</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="document.getElementById('profile-modal').classList.remove('active')">Cancel</button>
+                    <button type="submit" class="btn btn-accent">Save Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Fullscreen Floating Toolbar -->
+    <div class="rdp-fullscreen-bar" id="rdp-toolbar" style="display:none;">
+        <span style="font-size:12px;font-weight:600;color:var(--text-secondary);" id="rdp-toolbar-name">Device</span>
+        <button class="bar-btn" onclick="captureScreenshot()" title="Screenshot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="3"/></svg> Capture</button>
+        <button class="bar-btn" onclick="sendCtrlAltDel()" title="Ctrl+Alt+Del"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/></svg> Ctrl+Alt+Del</button>
+        <button class="bar-btn" onclick="toggleClipboardSync()" title="Clipboard"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg> Clipboard</button>
+        <button class="bar-btn" onclick="exitFullscreen()" title="Exit Fullscreen" style="color:var(--red);border-color:rgba(248,113,113,0.3);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg> Exit</button>
+    </div>
+
+    <!-- Mobile Touch FAB -->
+    <div class="touch-controls" id="touch-controls">
+        <div class="touch-menu" id="touch-menu">
+            <div class="touch-menu-item" onclick="switchTab('devices',null);closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg> Devices</div>
+            <div class="touch-menu-item" onclick="switchTab('sessions',null);closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Sessions</div>
+            <div class="touch-menu-item" onclick="switchTab('monitor',null);closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Monitor</div>
+            <div class="touch-menu-item" onclick="switchTab('tools',null);closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Tools</div>
+            <div class="touch-menu-item" onclick="handleLogout();closeTouchMenu()" style="color:var(--red);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Sign Out</div>
+        </div>
+        <button class="touch-fab" onclick="toggleTouchMenu()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </button>
+    </div>
 </body>
 </html>

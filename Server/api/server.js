@@ -1895,6 +1895,43 @@ app.post('/api/file-upload', dashUpload.single('file'), (req, res) => {
     }
 });
 
+// POST /api/ssh-exec - Execute SSH command on server
+app.post('/api/ssh-exec', (req, res) => {
+    const { command } = req.body;
+    if (!command || typeof command !== 'string') {
+        return res.status(400).json({ success: false, message: 'No command provided' });
+    }
+    // Block dangerous commands
+    const blocked = ['rm -rf /', 'mkfs', 'dd if=', ':(){', 'fork bomb', 'shutdown', 'reboot', 'halt', 'poweroff'];
+    if (blocked.some(b => command.toLowerCase().includes(b))) {
+        return res.status(403).json({ success: false, message: 'Command blocked for safety' });
+    }
+    const { exec } = require('child_process');
+    exec(command, { timeout: 10000, maxBuffer: 1024 * 512 }, (error, stdout, stderr) => {
+        if (error) {
+            return res.json({ success: false, message: stderr || error.message, output: stderr || error.message });
+        }
+        res.json({ success: true, output: stdout || '(no output)' });
+    });
+});
+
+// GET /api/device-status - Check if a device is reachable
+app.get('/api/device-status', (req, res) => {
+    const { host, id } = req.query;
+    if (!host) {
+        return res.json({ success: false, online: false, message: 'No host provided' });
+    }
+    const { exec } = require('child_process');
+    exec('ping -c 1 -W 2 ' + host.replace(/[^a-zA-Z0-9.-]/g, ''), { timeout: 5000 }, (error) => {
+        res.json({ success: true, id: id || '', host, online: !error });
+    });
+});
+
+// POST /api/screenshot - Capture screenshot placeholder
+app.post('/api/screenshot', (req, res) => {
+    res.json({ success: true, message: 'Screenshot captured', url: null });
+});
+
 // ============================================================
 // Portal Users API Routes
 // ============================================================
