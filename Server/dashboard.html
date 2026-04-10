@@ -1083,7 +1083,7 @@
     const DEFAULT_DEVICE_PASS = 'connect@123';
 
     let devices = [
-        { id: 'uae-pc', name: 'UAE Office PC', host: '192.168.1.100', os: 'Windows 11 Pro', cpu: 'Intel i5', ram: '8 GB', status: 'online', user: 'user', guacId: '1', mac: 'AA:BB:CC:DD:EE:01', group: 'office', serverDeviceId: 'VARMA678-29194' }
+        { id: 'uae-pc', name: 'UAE Office PC', host: '192.168.1.100', os: 'Windows 11 Pro', cpu: 'Intel i5', ram: '8 GB', status: 'online', user: 'user', guacId: 'UAE-PC', mac: 'AA:BB:CC:DD:EE:01', group: 'office', serverDeviceId: 'VARMA678-29194' }
     ];
 
     // ============ Device Rename ============
@@ -1425,20 +1425,33 @@
         modal.classList.add('active');
         document.getElementById('quality-bar').style.display = 'flex';
         addLogEntry('connect', 'Connecting to ' + device.name);
-        setTimeout(() => {
+        // Authenticate with Guacamole API first, then open connection
+        fetch(GUAC_BASE + '/guacamole/api/tokens', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'username=admin&password=Sarkar%4000'
+        })
+        .then(function(resp) { return resp.json(); })
+        .then(function(data) {
             modal.classList.remove('active');
-            const guacUrl = GUAC_BASE + '/guacamole/#/client/' + btoa('c\x00' + device.guacId + '\x00c\x00mysql');
+            var token = data.authToken || '';
+            var clientId = btoa('c\x00' + device.guacId + '\x00c\x00default');
+            var guacUrl = GUAC_BASE + '/guacamole/#/client/' + clientId + '?token=' + token;
             addLogEntry('connect', 'Connected to ' + device.name);
             addConnectionHistory(device.id, device.name);
             addConnectionTab(device.name, device.id);
             sendNotification('Connected', 'Successfully connected to ' + device.name);
             var guacWin = window.open(guacUrl, '_blank');
             if (!guacWin || guacWin.closed) {
-                // Popup blocked - redirect in same tab
                 window.location.href = guacUrl;
             }
             showToast('Connected to ' + device.name, 'success');
-        }, 2500);
+        })
+        .catch(function(err) {
+            modal.classList.remove('active');
+            addLogEntry('error', 'Connection failed: ' + err.message);
+            showToast('Connection failed: ' + err.message, 'error');
+        });
     }
 
     // ============ Bookmarks ============
