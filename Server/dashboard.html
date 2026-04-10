@@ -1151,22 +1151,75 @@
         showScreen('login-screen');
     }
 
+    // Auth token helper - all API calls should use this
+    function getAuthHeaders() {
+        const token = sessionStorage.getItem('dashboard-auth-token');
+        return token ? { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+    }
+
+    function authFetch(url, options) {
+        options = options || {};
+        options.headers = Object.assign({}, getAuthHeaders(), options.headers || {});
+        return fetch(url, options);
+    }
+
     function handleLogin(e) {
         e.preventDefault();
         const u = document.getElementById('login-user').value.trim();
         const p = document.getElementById('login-pass').value;
-        const stored = JSON.parse(localStorage.getItem('dashboard-credentials') || 'null');
-        const validUser = stored ? stored.username : 'admin';
-        const validPass = stored ? stored.password : 'NR@2024';
-        if (u === validUser && p === validPass) {
-            sessionStorage.setItem('dashboard-logged-in', 'true');
-            addLogEntry('login', 'User "' + u + '" logged in');
-            showDashboard();
-        } else {
+        fetch('/api/dashboard/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: u, password: p })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success && data.token) {
+                sessionStorage.setItem('dashboard-auth-token', data.token);
+                sessionStorage.setItem('dashboard-logged-in', 'true');
+                sessionStorage.setItem('dashboard-user-role', data.user.role);
+                sessionStorage.setItem('dashboard-username', data.user.username);
+                addLogEntry('login', 'User "' + u + '" logged in');
+                showDashboard();
+            } else if (data.requires2FA) {
+                // Show 2FA input
+                const code = prompt('Enter your 2FA code:');
+                if (code) {
+                    fetch('/api/dashboard/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: u, password: p, totpCode: code })
+                    })
+                    .then(r => r.json())
+                    .then(data2 => {
+                        if (data2.success && data2.token) {
+                            sessionStorage.setItem('dashboard-auth-token', data2.token);
+                            sessionStorage.setItem('dashboard-logged-in', 'true');
+                            sessionStorage.setItem('dashboard-user-role', data2.user.role);
+                            sessionStorage.setItem('dashboard-username', data2.user.username);
+                            addLogEntry('login', 'User "' + u + '" logged in with 2FA');
+                            showDashboard();
+                        } else {
+                            const err = document.getElementById('login-error');
+                            err.textContent = data2.message || 'Invalid 2FA code';
+                            err.classList.add('visible');
+                            setTimeout(() => err.classList.remove('visible'), 3000);
+                        }
+                    });
+                }
+            } else {
+                const err = document.getElementById('login-error');
+                err.textContent = data.message || 'Invalid credentials';
+                err.classList.add('visible');
+                setTimeout(() => err.classList.remove('visible'), 3000);
+            }
+        })
+        .catch(() => {
             const err = document.getElementById('login-error');
+            err.textContent = 'Server error. Please try again.';
             err.classList.add('visible');
             setTimeout(() => err.classList.remove('visible'), 3000);
-        }
+        });
     }
 
     function showDashboard() {
@@ -1203,6 +1256,9 @@
 
     function handleLogout() {
         sessionStorage.removeItem('dashboard-logged-in');
+        sessionStorage.removeItem('dashboard-auth-token');
+        sessionStorage.removeItem('dashboard-user-role');
+        sessionStorage.removeItem('dashboard-username');
         addLogEntry('login', 'User logged out');
         showLogin();
     }
@@ -1918,25 +1974,41 @@
         if (type === 'portal') {
             const pass = document.getElementById('set-portal-pass').value;
             if (!pass) return;
-            const creds = JSON.parse(localStorage.getItem('dashboard-credentials') || '{"username":"admin","password":"NR@2024"}');
-            creds.password = pass;
-            localStorage.setItem('dashboard-credentials', JSON.stringify(creds));
-            document.getElementById('fb-portal').classList.add('visible');
-            setTimeout(() => document.getElementById('fb-portal').classList.remove('visible'), 3000);
-            showToast('Portal password updated', 'success');
-            addLogEntry('system', 'Portal password changed');
+            authFetch('/api/dashboard/change-password', {
+                method: 'POST',
+                body: JSON.stringify({ newPassword: pass })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('fb-portal').classList.add('visible');
+                    setTimeout(() => document.getElementById('fb-portal').classList.remove('visible'), 3000);
+                    showToast('Password updated on server', 'success');
+                    addLogEntry('system', 'Password changed via server');
+                } else {
+                    showToast(data.message || 'Failed to update password', 'error');
+                }
+            })
+            .catch(() => showToast('Server error', 'error'));
         } else if (type === 'login') {
-            const user = document.getElementById('set-login-user').value.trim();
             const pass = document.getElementById('set-login-pass').value;
-            if (!user && !pass) return;
-            const creds = JSON.parse(localStorage.getItem('dashboard-credentials') || '{"username":"admin","password":"NR@2024"}');
-            if (user) creds.username = user;
-            if (pass) creds.password = pass;
-            localStorage.setItem('dashboard-credentials', JSON.stringify(creds));
-            document.getElementById('fb-login').classList.add('visible');
-            setTimeout(() => document.getElementById('fb-login').classList.remove('visible'), 3000);
-            showToast('Login credentials updated', 'success');
-            addLogEntry('system', 'Login credentials changed');
+            if (!pass) return;
+            authFetch('/api/dashboard/change-password', {
+                method: 'POST',
+                body: JSON.stringify({ newPassword: pass })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('fb-login').classList.add('visible');
+                    setTimeout(() => document.getElementById('fb-login').classList.remove('visible'), 3000);
+                    showToast('Login password updated', 'success');
+                    addLogEntry('system', 'Login password changed');
+                } else {
+                    showToast(data.message || 'Failed to update', 'error');
+                }
+            })
+            .catch(() => showToast('Server error', 'error'));
         }
     }
 
@@ -1955,15 +2027,35 @@
 
     // ============ Feature 1: Add Device (Dynamic) ============
     function loadSavedDevices() {
-        const saved = JSON.parse(localStorage.getItem('dashboard-devices') || 'null');
-        if (saved && saved.length > 0) {
-            devices = saved;
-        }
+        authFetch('/api/dashboard/devices')
+        .then(r => r.json())
+        .then(data => {
+            if (data.success && data.devices && data.devices.length > 0) {
+                devices = data.devices;
+                renderDevices();
+                renderWolDevices();
+            } else {
+                // Fallback to localStorage for backward compat
+                const saved = JSON.parse(localStorage.getItem('dashboard-devices') || 'null');
+                if (saved && saved.length > 0) devices = saved;
+            }
+        })
+        .catch(() => {
+            const saved = JSON.parse(localStorage.getItem('dashboard-devices') || 'null');
+            if (saved && saved.length > 0) devices = saved;
+        });
     }
     loadSavedDevices();
 
     function saveDevicesToStorage() {
         localStorage.setItem('dashboard-devices', JSON.stringify(devices));
+        // Also persist to server
+        devices.forEach(d => {
+            authFetch('/api/dashboard/devices', {
+                method: 'POST',
+                body: JSON.stringify(d)
+            }).catch(() => {});
+        });
     }
 
     function openAddDeviceModal() {
@@ -2128,7 +2220,7 @@
     function startDeviceStatusRefresh() {
         statusRefreshInterval = setInterval(() => {
             devices.forEach(d => {
-                fetch('/api/device-status?id=' + d.id + '&host=' + d.host, { signal: AbortSignal.timeout(5000) })
+                authFetch('/api/device-status?id=' + d.id + '&host=' + d.host, { signal: AbortSignal.timeout(5000) })
                 .then(r => r.json())
                 .then(data => {
                     const oldStatus = d.status;
@@ -2181,7 +2273,7 @@
         showToast('Capturing screenshot...', 'success');
         addLogEntry('system', 'Screenshot captured');
         // Try to capture via API
-        fetch('/api/screenshot', { method: 'POST' })
+        authFetch('/api/screenshot', { method: 'POST' })
         .then(r => r.json())
         .then(data => {
             if (data.success && data.url) {
@@ -2426,9 +2518,8 @@
         output.innerHTML += '<div><span class="prompt">$</span> ' + cmd + '</div>';
         output.innerHTML += '<div class="output" style="color:var(--text-muted);">Executing...</div>';
         output.scrollTop = output.scrollHeight;
-        fetch('/api/ssh-exec', {
+        authFetch('/api/ssh-exec', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ command: cmd })
         })
         .then(r => r.json())
@@ -2457,82 +2548,147 @@
         });
     }
 
-    // ============ Feature 12: Two-Factor Authentication ============
+    // ============ Feature 12: Two-Factor Authentication (Server-Side) ============
+    let pending2FASecret = null;
+
     function setup2FA() {
-        // Generate a simple TOTP-like secret
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-        let secret = '';
-        for (let i = 0; i < 16; i++) secret += chars[Math.floor(Math.random() * chars.length)];
-        localStorage.setItem('totp-secret', secret);
-        document.getElementById('totp-secret-display').innerHTML = '<p style="margin-bottom:8px;">Your 2FA secret key:</p><div style="font-size:18px;font-weight:700;letter-spacing:4px;color:var(--accent);padding:12px;background:var(--bg-input);border-radius:10px;margin-bottom:12px;">' + secret + '</div><p style="font-size:12px;color:var(--text-muted);">Save this key in your authenticator app. For demo, enter any 6 digits.</p>';
-        document.getElementById('totp-modal').classList.add('active');
+        authFetch('/api/dashboard/2fa/setup', { method: 'POST' })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success && data.secret) {
+                pending2FASecret = data.secret;
+                const otpUrl = data.otpauthUrl || '';
+                document.getElementById('totp-secret-display').innerHTML = '<p style="margin-bottom:8px;">Your 2FA secret key:</p><div style="font-size:18px;font-weight:700;letter-spacing:4px;color:var(--accent);padding:12px;background:var(--bg-input);border-radius:10px;margin-bottom:12px;">' + data.secret + '</div>' + (otpUrl ? '<p style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">Or scan this URL in your authenticator app:</p><div style="font-size:10px;word-break:break-all;padding:8px;background:var(--bg-input);border-radius:8px;margin-bottom:12px;">' + otpUrl + '</div>' : '') + '<p style="font-size:12px;color:var(--text-muted);">Enter the 6-digit code from your authenticator app to verify.</p>';
+                document.getElementById('totp-modal').classList.add('active');
+            } else {
+                showToast(data.message || 'Failed to setup 2FA', 'error');
+            }
+        })
+        .catch(() => showToast('Server error', 'error'));
     }
 
     function verify2FA(e) {
         e.preventDefault();
         const code = document.getElementById('totp-code-input').value;
         if (code.length === 6 && /^[0-9]+$/.test(code)) {
-            localStorage.setItem('totp-enabled', 'true');
-            document.getElementById('totp-modal').classList.remove('active');
-            update2FAStatus();
-            showToast('2FA enabled successfully!', 'success');
-            addLogEntry('system', '2FA authentication enabled');
+            authFetch('/api/dashboard/2fa/verify', {
+                method: 'POST',
+                body: JSON.stringify({ code: code })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('totp-modal').classList.remove('active');
+                    update2FAStatus();
+                    showToast('2FA enabled successfully!', 'success');
+                    addLogEntry('system', '2FA authentication enabled');
+                } else {
+                    showToast(data.message || 'Invalid code', 'error');
+                }
+            })
+            .catch(() => showToast('Server error', 'error'));
         } else {
             showToast('Invalid code. Enter 6 digits.', 'error');
         }
     }
 
     function update2FAStatus() {
-        const enabled = localStorage.getItem('totp-enabled') === 'true';
-        const container = document.getElementById('totp-status');
-        if (enabled) {
-            container.innerHTML = '<div style="display:flex;align-items:center;gap:12px;"><div style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.15);border-radius:10px;font-size:12px;color:var(--green);font-weight:600;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 2FA Enabled</div><button class="btn btn-ghost btn-xs btn-danger" onclick="disable2FA()">Disable</button></div>';
-        } else {
-            container.innerHTML = '<button class="btn btn-ghost btn-sm" onclick="setup2FA()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Enable 2FA</button>';
-        }
+        authFetch('/api/dashboard/verify')
+        .then(r => r.json())
+        .then(data => {
+            const enabled = data.success && data.user && data.user.totp_enabled;
+            const container = document.getElementById('totp-status');
+            if (enabled) {
+                container.innerHTML = '<div style="display:flex;align-items:center;gap:12px;"><div style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.15);border-radius:10px;font-size:12px;color:var(--green);font-weight:600;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 2FA Enabled</div><button class="btn btn-ghost btn-xs btn-danger" onclick="disable2FA()">Disable</button></div>';
+            } else {
+                container.innerHTML = '<button class="btn btn-ghost btn-sm" onclick="setup2FA()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Enable 2FA</button>';
+            }
+        })
+        .catch(() => {
+            // Fallback to localStorage
+            const enabled = localStorage.getItem('totp-enabled') === 'true';
+            const container = document.getElementById('totp-status');
+            if (enabled) {
+                container.innerHTML = '<div style="display:flex;align-items:center;gap:12px;"><div style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.15);border-radius:10px;font-size:12px;color:var(--green);font-weight:600;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 2FA Enabled</div><button class="btn btn-ghost btn-xs btn-danger" onclick="disable2FA()">Disable</button></div>';
+            } else {
+                container.innerHTML = '<button class="btn btn-ghost btn-sm" onclick="setup2FA()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Enable 2FA</button>';
+            }
+        });
     }
 
     function disable2FA() {
         if (confirm('Disable two-factor authentication?')) {
-            localStorage.removeItem('totp-enabled');
-            localStorage.removeItem('totp-secret');
-            update2FAStatus();
-            showToast('2FA disabled', 'success');
+            authFetch('/api/dashboard/2fa/disable', { method: 'POST' })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    localStorage.removeItem('totp-enabled');
+                    localStorage.removeItem('totp-secret');
+                    update2FAStatus();
+                    showToast('2FA disabled', 'success');
+                } else {
+                    showToast(data.message || 'Failed to disable 2FA', 'error');
+                }
+            })
+            .catch(() => showToast('Server error', 'error'));
         }
     }
 
-    // ============ Feature 13: User Roles ============
+    // ============ Feature 13: User Roles (Server-Side) ============
+    let cachedUsers = [];
+
     function renderUserRoles() {
-        const users = JSON.parse(localStorage.getItem('dashboard-users') || 'null') || [
-            { name: 'Admin', username: 'admin', role: 'admin' }
-        ];
+        authFetch('/api/dashboard/users')
+        .then(r => r.json())
+        .then(data => {
+            if (data.success && data.users) {
+                cachedUsers = data.users;
+                renderUserRolesUI(data.users);
+            }
+        })
+        .catch(() => {
+            // Fallback to localStorage
+            const users = JSON.parse(localStorage.getItem('dashboard-users') || 'null') || [{ name: 'Admin', username: 'admin', role: 'admin' }];
+            renderUserRolesUI(users);
+        });
+    }
+
+    function renderUserRolesUI(users) {
         const list = document.getElementById('user-roles-list');
         list.innerHTML = '';
         users.forEach((u, i) => {
+            const displayName = u.display_name || u.name || u.username;
             list.innerHTML += '<div class="user-row">' +
                 '<div style="display:flex;align-items:center;gap:12px;">' +
-                    '<div class="session-avatar" style="width:36px;height:36px;font-size:14px;">' + u.name.charAt(0).toUpperCase() + '</div>' +
-                    '<div><div style="font-size:14px;font-weight:600;">' + u.name + ' <span class="role-badge ' + u.role + '">' + u.role + '</span></div><div style="font-size:12px;color:var(--text-muted);">@' + u.username + '</div></div>' +
+                    '<div class="session-avatar" style="width:36px;height:36px;font-size:14px;">' + displayName.charAt(0).toUpperCase() + '</div>' +
+                    '<div><div style="font-size:14px;font-weight:600;">' + displayName + ' <span class="role-badge ' + u.role + '">' + u.role + '</span></div><div style="font-size:12px;color:var(--text-muted);">@' + u.username + '</div></div>' +
                 '</div>' +
                 '<div style="display:flex;gap:8px;">' +
-                    '<select class="form-input" style="padding:6px 10px;font-size:12px;border-radius:8px;max-width:120px;" onchange="changeUserRole(' + i + ',this.value)">' +
+                    '<select class="form-input" style="padding:6px 10px;font-size:12px;border-radius:8px;max-width:120px;" onchange="changeUserRole(' + (u.id || i) + ',this.value)">' +
                         '<option value="admin"' + (u.role === 'admin' ? ' selected' : '') + '>Admin</option>' +
                         '<option value="viewer"' + (u.role === 'viewer' ? ' selected' : '') + '>Viewer</option>' +
                     '</select>' +
-                    (i > 0 ? '<button class="btn btn-ghost btn-xs btn-danger" onclick="removeUser(' + i + ')">Remove</button>' : '') +
+                    (i > 0 ? '<button class="btn btn-ghost btn-xs btn-danger" onclick="removeUser(' + (u.id || i) + ')">Remove</button>' : '') +
                 '</div>' +
             '</div>';
         });
     }
 
-    function changeUserRole(idx, role) {
-        const users = JSON.parse(localStorage.getItem('dashboard-users') || '[]');
-        if (users[idx]) {
-            users[idx].role = role;
-            localStorage.setItem('dashboard-users', JSON.stringify(users));
-            renderUserRoles();
-            showToast(users[idx].name + ' role changed to ' + role, 'success');
-        }
+    function changeUserRole(userId, role) {
+        authFetch('/api/dashboard/users', {
+            method: 'PUT',
+            body: JSON.stringify({ id: userId, role: role })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                renderUserRoles();
+                showToast('User role updated to ' + role, 'success');
+            } else {
+                showToast(data.message || 'Failed to update role', 'error');
+            }
+        })
+        .catch(() => showToast('Server error', 'error'));
     }
 
     function addUser() {
@@ -2540,23 +2696,42 @@
         if (!name) return;
         const username = prompt('Username:');
         if (!username) return;
+        const password = prompt('Password:');
+        if (!password) return;
         const role = prompt('Role (admin/viewer):', 'viewer');
         if (!role) return;
-        const users = JSON.parse(localStorage.getItem('dashboard-users') || 'null') || [{ name: 'Admin', username: 'admin', role: 'admin' }];
-        users.push({ name, username, role: role === 'admin' ? 'admin' : 'viewer' });
-        localStorage.setItem('dashboard-users', JSON.stringify(users));
-        renderUserRoles();
-        showToast('User "' + name + '" added as ' + role, 'success');
+        authFetch('/api/dashboard/users', {
+            method: 'POST',
+            body: JSON.stringify({ username, password, display_name: name, role: role === 'admin' ? 'admin' : 'viewer' })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                renderUserRoles();
+                showToast('User "' + name + '" added as ' + role, 'success');
+            } else {
+                showToast(data.message || 'Failed to add user', 'error');
+            }
+        })
+        .catch(() => showToast('Server error', 'error'));
     }
 
-    function removeUser(idx) {
-        const users = JSON.parse(localStorage.getItem('dashboard-users') || '[]');
-        if (users[idx] && confirm('Remove user ' + users[idx].name + '?')) {
-            users.splice(idx, 1);
-            localStorage.setItem('dashboard-users', JSON.stringify(users));
-            renderUserRoles();
-            showToast('User removed', 'success');
-        }
+    function removeUser(userId) {
+        if (!confirm('Remove this user?')) return;
+        authFetch('/api/dashboard/users', {
+            method: 'DELETE',
+            body: JSON.stringify({ id: userId })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                renderUserRoles();
+                showToast('User removed', 'success');
+            } else {
+                showToast(data.message || 'Failed to remove user', 'error');
+            }
+        })
+        .catch(() => showToast('Server error', 'error'));
     }
 
     // ============ Feature 14: Mobile Touch Controls ============
