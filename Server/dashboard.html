@@ -1083,7 +1083,7 @@
     const DEFAULT_DEVICE_PASS = 'connect@123';
 
     let devices = [
-        { id: 'uae-pc', name: 'UAE Office PC', host: '192.168.1.100', os: 'Windows 11 Pro', cpu: 'Intel i5', ram: '8 GB', status: 'online', user: 'user', guacId: 'uae-pc', mac: 'AA:BB:CC:DD:EE:01', group: 'office' }
+        { id: 'uae-pc', name: 'UAE Office PC', host: '192.168.1.100', os: 'Windows 11 Pro', cpu: 'Intel i5', ram: '8 GB', status: 'online', user: 'user', guacId: 'uae-pc', mac: 'AA:BB:CC:DD:EE:01', group: 'office', serverDeviceId: 'VARMA678-29194' }
     ];
 
     // ============ Device Rename ============
@@ -2247,14 +2247,43 @@
 
     // ============ Feature 4: Auto-Refresh Device Status ============
     let statusRefreshInterval;
-    function startDeviceStatusRefresh() {
-        statusRefreshInterval = setInterval(() => {
-            devices.forEach(d => {
-                authFetch('/api/device-status?id=' + d.id + '&host=' + d.host, { signal: AbortSignal.timeout(5000) })
+    function checkDeviceStatusOnce(d) {
+        // Prefer server heartbeat-based status if device has a serverDeviceId
+        if (d.serverDeviceId) {
+            return fetch('/api/devices/' + d.serverDeviceId, { signal: AbortSignal.timeout(5000) })
                 .then(r => r.json())
                 .then(data => {
+                    if (data.success && data.device) return data.device.isOnline;
+                    return null;
+                })
+                .catch(() => null);
+        }
+        // Fallback to ping-based check
+        return authFetch('/api/device-status?id=' + d.id + '&host=' + d.host, { signal: AbortSignal.timeout(5000) })
+            .then(r => r.json())
+            .then(data => data.online)
+            .catch(() => null);
+    }
+
+    function startDeviceStatusRefresh() {
+        // Check immediately on load
+        devices.forEach(d => {
+            checkDeviceStatusOnce(d).then(online => {
+                if (online === null) return;
+                const oldStatus = d.status;
+                d.status = online ? 'online' : 'offline';
+                if (oldStatus !== d.status) {
+                    renderDevices();
+                    renderWolDevices();
+                }
+            });
+        });
+        statusRefreshInterval = setInterval(() => {
+            devices.forEach(d => {
+                checkDeviceStatusOnce(d).then(online => {
+                    if (online === null) return;
                     const oldStatus = d.status;
-                    d.status = data.online ? 'online' : 'offline';
+                    d.status = online ? 'online' : 'offline';
                     if (oldStatus !== d.status) {
                         renderDevices();
                         renderWolDevices();
@@ -2267,8 +2296,7 @@
                         }
                         addLogEntry('system', d.name + ' status changed to ' + d.status);
                     }
-                })
-                .catch(() => {});
+                });
             });
         }, 30000);
     }
