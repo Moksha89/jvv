@@ -1425,18 +1425,11 @@
         modal.classList.add('active');
         document.getElementById('quality-bar').style.display = 'flex';
         addLogEntry('connect', 'Connecting to ' + device.name);
-        // Authenticate with Guacamole API first, then open connection
-        fetch(GUAC_BASE + '/guacamole/api/tokens', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'username=admin&password=Sarkar%4000'
-        })
-        .then(function(resp) { return resp.json(); })
-        .then(function(data) {
+        // Use auth bridge page for seamless Guacamole authentication
+        var clientId = btoa(device.guacId + '\x00c\x00default');
+        var guacUrl = GUAC_BASE + '/guac-auth.html?client=' + encodeURIComponent(clientId);
+        setTimeout(function() {
             modal.classList.remove('active');
-            var token = data.authToken || '';
-            var clientId = btoa(device.guacId + '\x00c\x00default');
-            var guacUrl = GUAC_BASE + '/guacamole/#/client/' + clientId + '?token=' + token;
             addLogEntry('connect', 'Connected to ' + device.name);
             addConnectionHistory(device.id, device.name);
             addConnectionTab(device.name, device.id);
@@ -1446,12 +1439,7 @@
                 window.location.href = guacUrl;
             }
             showToast('Connected to ' + device.name, 'success');
-        })
-        .catch(function(err) {
-            modal.classList.remove('active');
-            addLogEntry('error', 'Connection failed: ' + err.message);
-            showToast('Connection failed: ' + err.message, 'error');
-        });
+        }, 1500);
     }
 
     // ============ Bookmarks ============
