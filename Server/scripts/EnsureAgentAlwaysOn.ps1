@@ -19,13 +19,67 @@
 $ErrorActionPreference = "Continue"
 
 # ======================== CONFIGURATION ========================
-$INSTALL_DIR   = "C:\Program Files\RemoteAgent"
-$DATA_DIR      = "$env:ProgramData\RemoteAgent"
-$LOG_DIR       = "$DATA_DIR\Logs"
 $TASK_NAME     = "RemoteAccessAgent"
 $WATCHDOG_TASK = "RemoteAccessAgent-Watchdog"
-$FRP_EXE       = "$INSTALL_DIR\frpc.exe"
-$FRP_CONFIG    = "$DATA_DIR\frpc.toml"
+
+# Auto-detect FRP location: check common paths
+$FRP_EXE = $null
+$FRP_DIR = $null
+$searchPaths = @(
+    "C:\frp",
+    "C:\Program Files\RemoteAgent",
+    "C:\Program Files (x86)\RemoteAgent",
+    "$env:ProgramFiles\RemoteAgent",
+    "$env:USERPROFILE\frp"
+)
+
+# First try to find from running process
+$runningFrp = Get-Process -Name "frpc" -ErrorAction SilentlyContinue | Select-Object -First 1
+if ($runningFrp -and $runningFrp.Path) {
+    $FRP_EXE = $runningFrp.Path
+    $FRP_DIR = Split-Path $FRP_EXE -Parent
+    Write-Host "    Found running FRP at: $FRP_EXE" -ForegroundColor Green
+}
+
+# If not running, search common paths
+if (-not $FRP_EXE) {
+    foreach ($p in $searchPaths) {
+        if (Test-Path "$p\frpc.exe") {
+            $FRP_EXE = "$p\frpc.exe"
+            $FRP_DIR = $p
+            break
+        }
+    }
+}
+
+# Set paths based on detected location
+if ($FRP_DIR) {
+    $INSTALL_DIR   = $FRP_DIR
+} else {
+    $INSTALL_DIR   = "C:\frp"
+}
+
+$DATA_DIR      = $INSTALL_DIR
+$LOG_DIR       = "$INSTALL_DIR\Logs"
+
+# Auto-detect config file
+$FRP_CONFIG = $null
+$configNames = @("frpc.toml", "frpc.ini", "frpc.conf")
+foreach ($cfg in $configNames) {
+    if (Test-Path "$INSTALL_DIR\$cfg") {
+        $FRP_CONFIG = "$INSTALL_DIR\$cfg"
+        break
+    }
+}
+if (-not $FRP_CONFIG -and (Test-Path "$env:ProgramData\RemoteAgent")) {
+    foreach ($cfg in $configNames) {
+        if (Test-Path "$env:ProgramData\RemoteAgent\$cfg") {
+            $FRP_CONFIG = "$env:ProgramData\RemoteAgent\$cfg"
+            break
+        }
+    }
+}
+
 $LAUNCHER_BAT  = "$INSTALL_DIR\start-tunnel.bat"
 $LAUNCHER_VBS  = "$INSTALL_DIR\start-tunnel-hidden.vbs"
 # ===============================================================
@@ -39,23 +93,23 @@ Write-Host ""
 # ---- Check if agent is installed ----
 Write-Host "  [1/7] Checking agent installation..." -ForegroundColor Yellow
 
-if (-not (Test-Path $FRP_EXE)) {
-    Write-Host "    ERROR: FRP client not found at $FRP_EXE" -ForegroundColor Red
-    Write-Host "    Please run Setup-RemoteAgent.bat first to install the agent." -ForegroundColor Red
+if (-not $FRP_EXE -or -not (Test-Path $FRP_EXE)) {
+    Write-Host "    ERROR: FRP client (frpc.exe) not found!" -ForegroundColor Red
+    Write-Host "    Searched: $($searchPaths -join ', ')" -ForegroundColor Red
+    Write-Host "    Please install the agent first or check the path." -ForegroundColor Red
     Write-Host ""
     Read-Host "Press Enter to exit"
     exit 1
 }
 
-if (-not (Test-Path $FRP_CONFIG)) {
-    Write-Host "    ERROR: FRP config not found at $FRP_CONFIG" -ForegroundColor Red
-    Write-Host "    Please run Setup-RemoteAgent.bat first to install the agent." -ForegroundColor Red
-    Write-Host ""
-    Read-Host "Press Enter to exit"
-    exit 1
+if (-not $FRP_CONFIG) {
+    Write-Host "    WARNING: No config file found. Will use default: $INSTALL_DIR\frpc.toml" -ForegroundColor Yellow
+    $FRP_CONFIG = "$INSTALL_DIR\frpc.toml"
 }
 
-Write-Host "    Agent found at $INSTALL_DIR" -ForegroundColor Green
+Write-Host "    FRP executable: $FRP_EXE" -ForegroundColor Green
+Write-Host "    FRP config:     $FRP_CONFIG" -ForegroundColor Green
+Write-Host "    Install dir:    $INSTALL_DIR" -ForegroundColor Green
 
 # ---- Ensure log directory exists ----
 if (-not (Test-Path $LOG_DIR)) {
@@ -127,32 +181,32 @@ Write-Host "    Auto-start task '$TASK_NAME' created (runs on boot)" -Foreground
 Write-Host "  [5/7] Setting up watchdog (auto-restart if crashed)..." -ForegroundColor Yellow
 
 $watchdogScript = "$INSTALL_DIR\watchdog.ps1"
-$watchdogContent = @'
+$watchdogContent = @"
 # Remote Access Agent Watchdog
 # Checks if FRP is running, restarts if not
 
-$FRP_EXE = "C:\Program Files\RemoteAgent\frpc.exe"
-$LAUNCHER_VBS = "C:\Program Files\RemoteAgent\start-tunnel-hidden.vbs"
-$LOG_DIR = "$env:ProgramData\RemoteAgent\Logs"
+`$FRP_EXE = "$FRP_EXE"
+`$LAUNCHER_VBS = "$LAUNCHER_VBS"
+`$LOG_DIR = "$LOG_DIR"
 
-$timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-$frpRunning = Get-Process -Name "frpc" -ErrorAction SilentlyContinue
+`$timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+`$frpRunning = Get-Process -Name "frpc" -ErrorAction SilentlyContinue
 
-if (-not $frpRunning) {
-    "$timestamp - FRP not running. Restarting..." | Out-File -Append "$LOG_DIR\watchdog.log"
+if (-not `$frpRunning) {
+    "`$timestamp - FRP not running. Restarting..." | Out-File -Append "`$LOG_DIR\watchdog.log"
     
     # Kill any zombie processes
     Stop-Process -Name "frpc" -Force -ErrorAction SilentlyContinue
     Start-Sleep -Seconds 2
     
     # Restart via hidden launcher
-    & wscript.exe $LAUNCHER_VBS
+    & wscript.exe `$LAUNCHER_VBS
     
-    "$timestamp - FRP restarted successfully." | Out-File -Append "$LOG_DIR\watchdog.log"
+    "`$timestamp - FRP restarted successfully." | Out-File -Append "`$LOG_DIR\watchdog.log"
 } else {
-    "$timestamp - FRP is running (PID: $($frpRunning.Id))." | Out-File -Append "$LOG_DIR\watchdog.log"
+    "`$timestamp - FRP is running (PID: `$(`$frpRunning.Id))." | Out-File -Append "`$LOG_DIR\watchdog.log"
 }
-'@
+"@
 
 Set-Content -Path $watchdogScript -Value $watchdogContent -Force
 
