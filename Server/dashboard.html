@@ -1422,12 +1422,16 @@
         addLogEntry('connect', 'Connecting to ' + connectingDevice.name);
         setTimeout(() => {
             modal.classList.remove('active');
-            const guacUrl = GUAC_BASE + '/#/client/' + btoa('c\x00' + connectingDevice.guacId + '\x00c\x00mysql');
+            const guacUrl = GUAC_BASE + '/guacamole/#/client/' + btoa('c\x00' + connectingDevice.guacId + '\x00c\x00mysql');
             addLogEntry('connect', 'Connected to ' + connectingDevice.name);
             addConnectionHistory(connectingDevice.id, connectingDevice.name);
             addConnectionTab(connectingDevice.name, connectingDevice.id);
             sendNotification('Connected', 'Successfully connected to ' + connectingDevice.name);
-            window.open(guacUrl, '_blank');
+            var guacWin = window.open(guacUrl, '_blank');
+            if (!guacWin || guacWin.closed) {
+                // Popup blocked - redirect in same tab
+                window.location.href = guacUrl;
+            }
             showToast('Connected to ' + connectingDevice.name, 'success');
         }, 2500);
     }
@@ -1678,7 +1682,7 @@
         showToast('Opening Guacamole file browser...', 'success');
         addLogEntry('system', 'File download: opened Guacamole file browser');
         // Open Guacamole's built-in SFTP file browser
-        const guacUrl = GUAC_BASE + '/#/';
+        const guacUrl = GUAC_BASE + '/guacamole/#/';
         window.open(guacUrl, '_blank');
         // Also fetch file listing from shared drive
         fetch('/api/file-browser')
