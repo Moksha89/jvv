@@ -1895,19 +1895,46 @@ app.post('/api/file-upload', dashUpload.single('file'), (req, res) => {
     }
 });
 
-// POST /api/ssh-exec - Execute SSH command on server
+// POST /api/ssh-exec - Execute safe read-only commands on server (allowlist-based)
 app.post('/api/ssh-exec', (req, res) => {
     const { command } = req.body;
     if (!command || typeof command !== 'string') {
         return res.status(400).json({ success: false, message: 'No command provided' });
     }
-    // Block dangerous commands
-    const blocked = ['rm -rf /', 'mkfs', 'dd if=', ':(){', 'fork bomb', 'shutdown', 'reboot', 'halt', 'poweroff'];
-    if (blocked.some(b => command.toLowerCase().includes(b))) {
-        return res.status(403).json({ success: false, message: 'Command blocked for safety' });
+    // Allowlist: only safe, read-only commands are permitted
+    const allowedCommands = {
+        'whoami': 'whoami',
+        'hostname': 'hostname',
+        'uptime': 'uptime',
+        'date': 'date',
+        'df -h': 'df -h',
+        'free -h': 'free -h',
+        'top -bn1 | head -20': 'top -bn1 | head -20',
+        'ps aux --sort=-%mem | head -15': 'ps aux --sort=-%mem | head -15',
+        'ls /tmp': 'ls /tmp',
+        'ls -la /tmp': 'ls -la /tmp',
+        'cat /proc/cpuinfo | head -25': 'cat /proc/cpuinfo | head -25',
+        'cat /proc/meminfo | head -10': 'cat /proc/meminfo | head -10',
+        'ip addr': 'ip addr',
+        'netstat -tlnp 2>/dev/null || ss -tlnp': 'netstat -tlnp 2>/dev/null || ss -tlnp',
+        'docker ps': 'docker ps',
+        'docker ps -a': 'docker ps -a',
+        'systemctl status guacamole 2>/dev/null || echo "not a systemd service"': 'systemctl status guacamole 2>/dev/null || echo "not a systemd service"',
+        'uname -a': 'uname -a',
+        'w': 'w',
+        'last -10': 'last -10'
+    };
+    const trimmed = command.trim();
+    const safeCmd = allowedCommands[trimmed];
+    if (!safeCmd) {
+        return res.status(403).json({
+            success: false,
+            message: 'Command not allowed. Only safe read-only commands are permitted.',
+            allowed: Object.keys(allowedCommands)
+        });
     }
     const { exec } = require('child_process');
-    exec(command, { timeout: 10000, maxBuffer: 1024 * 512 }, (error, stdout, stderr) => {
+    exec(safeCmd, { timeout: 10000, maxBuffer: 1024 * 512 }, (error, stdout, stderr) => {
         if (error) {
             return res.json({ success: false, message: stderr || error.message, output: stderr || error.message });
         }
