@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Find PIN codes for all post offices in India. Search by PIN code, post office name, or browse by state and district. Instant PIN code lookup for all Indian states.">
+<meta name="keywords" content="PIN code, pincode, postal code, post office, India PIN code finder, postal index number, India Post">
+<title>PIN Code Finder - All India Post Office PIN Codes | News Reporter Live</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href="https://newsreporter.live/pincode">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PIN Code Finder - All India Post Office PIN Codes">
+<meta property="og:description" content="Find PIN codes for all post offices in India. Search by PIN code or post office name.">
+<meta property="og:url" content="https://newsreporter.live/pincode">
+<meta property="og:site_name" content="News Reporter Live">
+<meta name="robots" content="index, follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is a PIN Code and why is it important?", "acceptedAnswer": {"@type": "Answer", "text": "PIN Code (Postal Index Number) is a 6-digit code used by India Post to identify specific post offices. It is essential for accurate mail delivery, online shopping deliveries, and address verification. Without the correct PIN code, your mail or package may be delayed or misdelivered."}}, {"@type": "Question", "name": "How many post offices are there in India?", "acceptedAnswer": {"@type": "Answer", "text": "India has over 1,55,000 post offices, making it the largest postal network in the world. About 90% of these are in rural areas. India Post employs over 4 lakh people and handles over 15 billion mail pieces annually."}}, {"@type": "Question", "name": "Can two post offices have the same PIN code?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, multiple post offices (sub-offices and branch offices) can share the same PIN code as the head post office in their area. The PIN code identifies the delivery area, not necessarily a single post office building."}}, {"@type": "Question", "name": "What is the difference between HPO, SO, and BO?", "acceptedAnswer": {"@type": "Answer", "text": "A Head Post Office (HPO) is the main post office in a district. A Sub Post Office (SO) operates under an HPO and serves a specific area. A Branch Post Office (BO) is the smallest unit, usually in rural areas, operating under an SO. Branch offices may share the PIN code of their parent sub-office."}}, {"@type": "Question", "name": "How do I find the PIN code for my area?", "acceptedAnswer": {"@type": "Answer", "text": "You can find your area's PIN code using our PIN Code Finder above — either enter a 6-digit PIN code to get post office details, or search by your area/locality name. You can also find PIN codes on your utility bills, bank statements, or by asking at your nearest post office."}}, {"@type": "Question", "name": "Is PIN code the same as ZIP code?", "acceptedAnswer": {"@type": "Answer", "text": "PIN code is India's equivalent of the ZIP code used in the United States. Both serve the same purpose — identifying geographic areas for mail delivery. However, Indian PIN codes are always 6 digits, while US ZIP codes are 5 digits (sometimes extended to 9 with a hyphen)."}}]}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://newsreporter.live"}, {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://newsreporter.live"}, {"@type": "ListItem", "position": 3, "name": "PIN Code Finder", "item": "https://newsreporter.live/pincode"}]}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "WebApplication", "name": "PIN Code Finder India - Search All Post Offices", "description": "Find PIN codes for all 1,55,000+ post offices in India. Search by PIN code, post office name, city, or state.", "url": "https://newsreporter.live/pincode", "applicationCategory": "WebApplication", "operatingSystem": "All", "browserRequirements": "Requires JavaScript", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "INR"}, "publisher": {"@type": "Organization", "name": "News Reporter Live", "url": "https://newsreporter.live"}, "inLanguage": "en-IN", "isAccessibleForFree": true}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--primary:#E53935;--primary-light:#dbeafe;--accent:#D32F2F;--success:#059669;--warning:#d97706;--red:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.1);--radius:12px}
+
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.site-header{background:var(--card);border-bottom:1px solid var(--border);padding:0;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:all 0.3s;box-shadow:var(--shadow)}
+.header-top{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px 24px}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#E53935,#D32F2F);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px}
+.logo h1{font-family:'Playfair Display',serif;font-size:22px;color:var(--text);line-height:1.1}
+.logo span{font-size:11px;color:var(--text3);letter-spacing:1px}
+.header-right{display:flex;align-items:center;gap:16px}
+
+.back-btn{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:8px 18px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;text-decoration:none}
+.back-btn:hover{opacity:.9;text-decoration:none}
+
+.site-nav{background:var(--card);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1280px;margin:0 auto;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+.nav-inner::-webkit-scrollbar{display:none}
+.nav-item{padding:12px 18px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;text-decoration:none;display:block}
+.nav-item:hover{color:var(--primary);background:var(--primary-light);text-decoration:none}
+.nav-item.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+
+.breadcrumb{max-width:1280px;margin:0 auto;padding:16px 24px 0;font-size:13px;color:var(--text3)}
+.breadcrumb a{color:var(--text3)}
+.breadcrumb a:hover{color:var(--primary)}
+
+.hero{max-width:1280px;margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 420px;gap:32px;align-items:start}
+@media(max-width:900px){.hero{grid-template-columns:1fr;padding:16px}}
+.hero-left h2{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;margin-bottom:12px;color:var(--text)}
+.hero-left p{color:var(--text2);font-size:15px;line-height:1.7;margin-bottom:20px}
+.info-box{background:var(--primary-light);border:1px solid var(--primary);border-radius:var(--radius);padding:16px 20px;margin-bottom:20px}
+.info-box h3{font-size:15px;font-weight:600;color:var(--primary);margin-bottom:8px}
+.info-box p{font-size:13px;color:var(--text2);line-height:1.6}
+.show-more-btn{color:var(--primary);font-size:13px;cursor:pointer;font-weight:500;border:none;background:none;padding:0}
+.extra-info{display:none}
+.extra-info.show{display:block}
+
+.finder-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-lg)}
+.finder-card h3{font-size:20px;font-weight:700;text-align:center;margin-bottom:20px;font-family:'Playfair Display',serif}
+.finder-tabs{display:flex;gap:0;margin-bottom:20px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.finder-tab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--text2);border:none;transition:all .2s}
+.finder-tab.active{background:var(--primary);color:#fff}
+.finder-panel{display:none}
+.finder-panel.active{display:block}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.form-group select,.form-group input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--bg);color:var(--text);font-family:inherit;outline:none;transition:border .2s}
+.form-group select:focus,.form-group input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(30,64,175,.1)}
+.find-btn{width:100%;padding:12px;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;transition:transform .2s,box-shadow .2s;text-transform:uppercase;letter-spacing:1px}
+.find-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(220,38,38,.3)}
+
+.result-panel{display:none;margin-top:16px}
+.result-panel.show{display:block}
+.result-count{font-size:13px;color:var(--text2);margin-bottom:12px;font-weight:500}
+.po-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;transition:all .2s}
+.po-card:hover{border-color:var(--primary);box-shadow:var(--shadow-lg)}
+.po-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.po-name{font-size:15px;font-weight:700;color:var(--text)}
+.po-type-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px;white-space:nowrap}
+.po-pin{font-size:22px;font-weight:800;color:var(--primary);letter-spacing:2px;font-family:monospace}
+.po-details{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.po-detail{font-size:12px;color:var(--text2)}
+.po-detail strong{color:var(--text);font-weight:600}
+.copy-btn{display:inline-flex;align-items:center;gap:4px;background:var(--primary);color:#fff;border:none;border-radius:6px;padding:4px 12px;font-size:12px;cursor:pointer;margin-left:8px;font-weight:600}
+.copy-btn:hover{opacity:.9}
+.pin-display{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+
+.loading{display:none;text-align:center;padding:20px}
+.loading.show{display:block}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:13px;color:var(--text3)}
+
+.error-msg{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:12px 16px;border-radius:8px;font-size:13px;margin-top:12px;display:none}
+.error-msg.show{display:block}
+
+.section{max-width:1280px;margin:0 auto;padding:0 24px 32px}
+.section h2{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--primary)}
+
+.states-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.state-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px}
+.state-card:hover{border-color:var(--primary);box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.state-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.state-name{font-size:13px;font-weight:600;color:var(--text)}
+.state-circles{font-size:11px;color:var(--text3)}
+
+.popular-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.popular-po-card{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s}
+.popular-po-card:hover{border-color:var(--primary);box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.ppc-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;flex-shrink:0}
+.ppc-info{overflow:hidden}
+.ppc-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ppc-pin{font-size:12px;color:var(--text3);font-family:monospace;font-weight:600}
+
+.about-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:32px}
+.about-section h3{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:12px}
+.about-section p{color:var(--text2);font-size:14px;line-height:1.7;margin-bottom:12px}
+.about-section ul{padding-left:20px;color:var(--text2);font-size:14px;line-height:1.8}
+
+.faq-item{border:1px solid var(--border);border-radius:10px;margin-bottom:8px;overflow:hidden}
+.faq-q{padding:14px 18px;font-weight:600;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--card);color:var(--text)}
+.faq-q:hover{background:var(--bg)}
+.faq-a{padding:0 18px;max-height:0;overflow:hidden;transition:all .3s;color:var(--text2);font-size:13px;line-height:1.7}
+.faq-item.open .faq-a{padding:0 18px 14px;max-height:500px}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-arrow{transition:transform .3s;color:var(--text3)}
+
+.site-footer{background:var(--card);border-top:1px solid var(--border);padding:32px 24px;margin-top:40px}
+.footer-inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px}
+.footer-col h4{font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text)}
+.footer-col a{display:block;font-size:13px;color:var(--text2);padding:3px 0}
+.footer-col a:hover{color:var(--primary);text-decoration:none}
+.footer-col p{font-size:12px;color:var(--text3);line-height:1.6}
+.footer-bottom{max-width:1280px;margin:16px auto 0;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--text3);text-align:center}
+
+.pin-structure{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+.pin-part{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.pin-part .digits{font-size:24px;font-weight:800;color:var(--primary);font-family:monospace}
+.pin-part .label{font-size:11px;color:var(--text3);margin-top:4px}
+.pin-part .desc{font-size:12px;color:var(--text2);margin-top:4px}
+
+@media(max-width:768px){
+.header-top{flex-wrap:wrap;gap:8px}
+.logo h1{font-size:18px}
+.hero-left h2{font-size:24px}
+.po-details{grid-template-columns:1fr}
+.footer-inner{grid-template-columns:1fr 1fr}
+.pin-structure{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+.hero{padding:12px}
+.finder-card{padding:16px}
+.section{padding:0 12px 24px}
+.footer-inner{grid-template-columns:1fr}
+.states-grid{grid-template-columns:1fr 1fr}
+}
+
+    </style>
+<link rel="stylesheet" href="/common.css?v=2">
+</head>
+<body>
+
+<header class="site-header">
+<div class="header-top">
+<a href="/" class="logo">
+<div class="logo-icon">NR</div>
+<div><h1>News Reporter</h1><span>Live &#8226; Trusted &#8226; Independent</span></div>
+</a>
+<div class="header-right">
+<a href="/" class="back-btn">&#8592; Back to News</a>
+</div>
+</div>
+</header>
+
+<nav class="site-nav">
+<div class="nav-inner">
+<a class="nav-item" href="/">Home</a>
+<a class="nav-item" href="/movies">&#127916; Movies</a>
+<a class="nav-item" href="/cricket-live">&#127951; Live Scores</a>
+<a class="nav-item" href="/financial-aids">&#128176; Financial Aids</a>
+<a class="nav-item" href="/cbse">&#127891; CBSE Study</a>
+<a class="nav-item" href="/ifsc-codes">&#127975; IFSC Codes</a>
+<a class="nav-item active" href="/pincode">&#128238; PIN Codes</a>
+<a class="nav-item" href="/loan-calculator">&#128176; Loan Calc</a>
+<a class="nav-item" href="/investment-calculator">&#128200; SIP Calc</a>
+<a class="nav-item" href="/directory">&#127758; Directory</a>
+</div>
+</nav>
+
+<div class="breadcrumb">
+<a href="/">Home</a> &#8250; <a href="/pincode">Utilities</a> &#8250; PIN Code Finder
+</div>
+
+<div class="hero">
+<div class="hero-left">
+<h2>PIN Code Finder</h2>
+<p><strong>PIN Code</strong> (Postal Index Number) is a 6-digit code used by India Post to identify specific post offices across India. It was introduced on 15 August 1972 to simplify the sorting and delivery of mail.</p>
+<div class="info-box">
+<h3>How PIN Code Works</h3>
+<p>The first digit indicates the region, the second digit the sub-region, the third the sorting district, and the last three digits identify the specific post office. For example, in <strong>110001</strong>: 1 = Northern Region, 11 = Delhi, 0 = Delhi sorting district, 001 = Connaught Place post office.</p>
+</div>
+<div class="extra-info" id="extraInfo">
+<div class="pin-structure">
+<div class="pin-part"><div class="digits">1st</div><div class="label">Region</div><div class="desc">Postal Zone (1-9)</div></div>
+<div class="pin-part"><div class="digits">2nd</div><div class="label">Sub-Region</div><div class="desc">State/Circle</div></div>
+<div class="pin-part"><div class="digits">3-6th</div><div class="label">Branch</div><div class="desc">Sorting District + Post Office</div></div>
+</div>
+<p style="font-size:13px;color:var(--text2)">India is divided into 9 postal zones (1-8 for regions, 9 for Army Postal Service). Each zone covers specific states and union territories. The PIN code system helps India Post route over 15 billion mail pieces annually across 1.5 lakh+ post offices.</p>
+</div>
+<button class="show-more-btn" onclick="toggleMore()">Show More...</button>
+</div>
+
+<div class="finder-card">
+<h3>&#128205; PIN Code Finder</h3>
+<div class="finder-tabs">
+<button class="finder-tab active" onclick="switchTab('pin')">Enter PIN Code</button>
+<button class="finder-tab" onclick="switchTab('name')">Search by Name</button>
+</div>
+
+<div class="finder-panel active" id="panel-pin">
+<div class="form-group">
+<label>Enter 6-Digit PIN Code</label>
+<input type="text" id="pinInput" placeholder="e.g. 110001" maxlength="6" oninput="this.value=this.value.replace(/[^0-9]/g,'')" onkeydown="if(event.key==='Enter')lookupPin()">
+</div>
+<button class="find-btn" onclick="lookupPin()">&#128269; Get Post Office Details</button>
+</div>
+
+<div class="finder-panel" id="panel-name">
+<div class="form-group">
+<label>Post Office / Area Name</label>
+<input type="text" id="nameInput" placeholder="e.g. Connaught Place, Bandra, Anna Nagar" onkeydown="if(event.key==='Enter')lookupByName()">
+</div>
+<div class="form-group">
+<label>State (Optional)</label>
+<select id="stateFilter">
+<option value="">-- All States --</option>
+<option>Andaman and Nicobar Islands</option>
+<option>Andhra Pradesh</option>
+<option>Arunachal Pradesh</option>
+<option>Assam</option>
+<option>Bihar</option>
+<option>Chandigarh</option>
+<option>Chhattisgarh</option>
+<option>Dadra and Nagar Haveli</option>
+<option>Daman and Diu</option>
+<option>Delhi</option>
+<option>Goa</option>
+<option>Gujarat</option>
+<option>Haryana</option>
+<option>Himachal Pradesh</option>
+<option>Jammu and Kashmir</option>
+<option>Jharkhand</option>
+<option>Karnataka</option>
+<option>Kerala</option>
+<option>Ladakh</option>
+<option>Lakshadweep</option>
+<option>Madhya Pradesh</option>
+<option>Maharashtra</option>
+<option>Manipur</option>
+<option>Meghalaya</option>
+<option>Mizoram</option>
+<option>Nagaland</option>
+<option>Odisha</option>
+<option>Puducherry</option>
+<option>Punjab</option>
+<option>Rajasthan</option>
+<option>Sikkim</option>
+<option>Tamil Nadu</option>
+<option>Telangana</option>
+<option>Tripura</option>
+<option>Uttar Pradesh</option>
+<option>Uttarakhand</option>
+<option>West Bengal</option>
+</select>
+</div>
+<button class="find-btn" onclick="lookupByName()">&#128269; Search Post Offices</button>
+</div>
+
+<div class="loading" id="loading"><div class="spinner"></div><div class="loading-text">Looking up PIN code...</div></div>
+<div class="error-msg" id="errorMsg"></div>
+<div class="result-panel" id="resultPanel">
+<div class="result-count" id="resultCount"></div>
+<div id="resultCards"></div>
+</div>
+</div>
+</div>
+
+<!-- Popular Cities -->
+<div class="section">
+<h2>&#127968; Popular Cities &amp; PIN Codes</h2>
+<div class="popular-grid" id="popularGrid"></div>
+</div>
+
+<!-- Browse by State -->
+<div class="section">
+<h2>&#127757; Browse by State</h2>
+<div class="states-grid" id="statesGrid"></div>
+</div>
+
+<!-- About PIN Code -->
+<div class="section">
+<div class="about-section">
+<h3>What is a PIN Code?</h3>
+<p>PIN Code stands for <strong>Postal Index Number</strong>. It is a 6-digit numerical code assigned by India Post (Department of Posts, Government of India) to every post office in the country. The PIN code system was introduced on <strong>15 August 1972</strong> by Shriram Bhikaji Velankar, an additional secretary in the Union Ministry of Communications.</p>
+<p>India has over <strong>1,55,000 post offices</strong> &mdash; the largest postal network in the world. Each post office has a unique PIN code that helps in efficient sorting and delivery of mail and parcels.</p>
+<h3 style="margin-top:16px">PIN Code Zones in India</h3>
+<ul>
+<li><strong>Zone 1</strong> &mdash; Delhi, Haryana, Punjab, Himachal Pradesh, Jammu &amp; Kashmir, Chandigarh</li>
+<li><strong>Zone 2</strong> &mdash; Uttar Pradesh, Uttarakhand</li>
+<li><strong>Zone 3</strong> &mdash; Rajasthan, Gujarat, Daman &amp; Diu, Dadra &amp; Nagar Haveli</li>
+<li><strong>Zone 4</strong> &mdash; Maharashtra, Goa, Madhya Pradesh, Chhattisgarh</li>
+<li><strong>Zone 5</strong> &mdash; Andhra Pradesh, Telangana, Karnataka</li>
+<li><strong>Zone 6</strong> &mdash; Tamil Nadu, Kerala, Puducherry, Lakshadweep</li>
+<li><strong>Zone 7</strong> &mdash; West Bengal, Odisha, Assam, Sikkim, NE States, Andaman &amp; Nicobar</li>
+<li><strong>Zone 8</strong> &mdash; Bihar, Jharkhand</li>
+<li><strong>Zone 9</strong> &mdash; Army Postal Service (APS)</li>
+</ul>
+</div>
+</div>
+
+<!-- FAQ -->
+<div class="section">
+<h2>&#10067; Frequently Asked Questions</h2>
+<div class="faq-item">
+<div class="faq-q" onclick="toggleFaq(this)">What is a PIN Code and why is it important? <span class="faq-arrow">&#9660;</span></div>
+<div class="faq-a">PIN Code (Postal Index Number) is a 6-digit code used by India Post to identify specific post offices. It is essential for accurate mail delivery, online shopping deliveries, and address verification. Without the correct PIN code, your mail or package may be delayed or misdelivered.</div>
+</div>
+<div class="faq-item">
+<div class="faq-q" onclick="toggleFaq(this)">How many post offices are there in India? <span class="faq-arrow">&#9660;</span></div>
+<div class="faq-a">India has over 1,55,000 post offices, making it the largest postal network in the world. About 90% of these are in rural areas. India Post employs over 4 lakh people and handles over 15 billion mail pieces annually.</div>
+</div>
+<div class="faq-item">
+<div class="faq-q" onclick="toggleFaq(this)">Can two post offices have the same PIN code? <span class="faq-arrow">&#9660;</span></div>
+<div class="faq-a">Yes, multiple post offices (sub-offices and branch offices) can share the same PIN code as the head post office in their area. The PIN code identifies the delivery area, not necessarily a single post office building.</div>
+</div>
+<div class="faq-item">
+<div class="faq-q" onclick="toggleFaq(this)">What is the difference between HPO, SO, and BO? <span class="faq-arrow">&#9660;</span></div>
+<div class="faq-a">A <strong>Head Post Office (HPO)</strong> is the main post office in a district. A <strong>Sub Post Office (SO)</strong> operates under an HPO and serves a specific area. A <strong>Branch Post Office (BO)</strong> is the smallest unit, usually in rural areas, operating under an SO. Branch offices may share the PIN code of their parent sub-office.</div>
+</div>
+<div class="faq-item">
+<div class="faq-q" onclick="toggleFaq(this)">How do I find the PIN code for my area? <span class="faq-arrow">&#9660;</span></div>
+<div class="faq-a">You can find your area's PIN code using our PIN Code Finder above &mdash; either enter a 6-digit PIN code to get post office details, or search by your area/locality name. You can also find PIN codes on your utility bills, bank statements, or by asking at your nearest post office.</div>
+</div>
+<div class="faq-item">
+<div class="faq-q" onclick="toggleFaq(this)">Is PIN code the same as ZIP code? <span class="faq-arrow">&#9660;</span></div>
+<div class="faq-a">PIN code is India's equivalent of the ZIP code used in the United States. Both serve the same purpose &mdash; identifying geographic areas for mail delivery. However, Indian PIN codes are always 6 digits, while US ZIP codes are 5 digits (sometimes extended to 9 with a hyphen).</div>
+</div>
+</div>
+
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-col">
+<h4>News Reporter Live</h4>
+<a href="/">Home</a>
+<a href="/?cat=politics">Politics</a>
+<a href="/?cat=business">Business</a>
+<a href="/?cat=sports">Sports</a>
+<a href="/?cat=technology">Technology</a>
+</div>
+<div class="footer-col">
+<h4>Utilities</h4>
+<a href="/pincode">PIN Code Finder</a>
+<a href="/ifsc-codes">IFSC Code Finder</a>
+<a href="/?cat=business">Business News</a>
+<a href="/?cat=business">Markets</a>
+</div>
+<div class="footer-col">
+<h4>Popular Searches</h4>
+<a href="javascript:void(0)" onclick="quickSearch('110001')">Delhi PIN Codes</a>
+<a href="javascript:void(0)" onclick="quickSearch('400001')">Mumbai PIN Codes</a>
+<a href="javascript:void(0)" onclick="quickSearch('560001')">Bangalore PIN Codes</a>
+<a href="javascript:void(0)" onclick="quickSearch('600001')">Chennai PIN Codes</a>
+<a href="javascript:void(0)" onclick="quickSearch('700001')">Kolkata PIN Codes</a>
+</div>
+<div class="footer-col">
+<h4>About</h4>
+<p>PIN code data is sourced from India Post. We use the India Post public API for real-time lookups. Always verify your PIN code with your local post office for critical deliveries.</p>
+<p style="margin-top:8px">&#169; 2024-2026 News Reporter Live. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+<script>
+
+// Tab switching
+function switchTab(tab){
+  document.querySelectorAll('.finder-tab').forEach(function(t,i){t.classList.toggle('active',i===(tab==='pin'?0:1));});
+  document.getElementById('panel-pin').classList.toggle('active',tab==='pin');
+  document.getElementById('panel-name').classList.toggle('active',tab==='name');
+  clearResults();
+}
+
+// Show more
+function toggleMore(){
+  var el=document.getElementById('extraInfo');
+  el.classList.toggle('show');
+  event.target.textContent=el.classList.contains('show')?'Show Less...':'Show More...';
+}
+
+// FAQ
+function toggleFaq(el){el.parentElement.classList.toggle('open');}
+
+// Clear results
+function clearResults(){
+  document.getElementById('resultPanel').classList.remove('show');
+  document.getElementById('errorMsg').classList.remove('show');
+  document.getElementById('loading').classList.remove('show');
+}
+
+// Lookup by PIN code
+function lookupPin(){
+  var pin=document.getElementById('pinInput').value.trim();
+  if(!/^[0-9]{6}$/.test(pin)){showError('Please enter a valid 6-digit PIN code.');return;}
+  clearResults();
+  showLoading('Looking up PIN code...');
+  fetch('/api/pincode/'+pin)
+    .then(function(r){return r.json();})
+    .then(function(data){
+      hideLoading();
+      if(data.success && data.data && data.data.length>0){
+        showResults(data.data);
+      } else {
+        showError(data.message||'PIN code not found. Please check and try again.');
+      }
+    })
+    .catch(function(){hideLoading();showError('Unable to fetch PIN code details. Please try again.');});
+}
+
+// Lookup by name
+function lookupByName(){
+  var name=document.getElementById('nameInput').value.trim();
+  var state=document.getElementById('stateFilter').value;
+  if(name.length<3){showError('Please enter at least 3 characters to search.');return;}
+  clearResults();
+  showLoading('Searching post offices...');
+  var params=new URLSearchParams({name:name});
+  if(state)params.append('state',state);
+  fetch('/api/pincode/search?'+params)
+    .then(function(r){return r.json();})
+    .then(function(data){
+      hideLoading();
+      if(data.success && data.data && data.data.length>0){
+        showResults(data.data);
+      } else {
+        showError(data.message||'No post offices found. Try a different search term.');
+      }
+    })
+    .catch(function(){hideLoading();showError('Unable to search. Please try again.');});
+}
+
+// Quick search
+function quickSearch(pin){
+  switchTab('pin');
+  document.getElementById('pinInput').value=pin;
+  lookupPin();
+  document.querySelector('.finder-card').scrollIntoView({behavior:'smooth'});
+}
+
+// Show results
+function showResults(offices){
+  var panel=document.getElementById('resultPanel');
+  var count=document.getElementById('resultCount');
+  var cards=document.getElementById('resultCards');
+  count.textContent='Found '+offices.length+' post office'+(offices.length>1?'s':'');
+  cards.innerHTML=offices.map(renderPOCard).join('');
+  panel.classList.add('show');
+}
+
+function renderPOCard(o){
+  var pin=o.Pincode||o.pincode||'';
+  var name=o.Name||o.name||'';
+  var type=o.BranchType||o.branchType||o.type||'Post Office';
+  var dist=o.District||o.district||'';
+  var state=o.State||o.state||'';
+  var div2=o.Division||o.division||'';
+  var region=o.Region||o.region||'';
+  var circle=o.Circle||o.circle||'';
+  var delivery=o.DeliveryStatus||o.deliveryStatus||'';
+  var typeColor=type.toLowerCase().indexOf('head')>=0?'#D32F2F':type.toLowerCase().indexOf('sub')>=0?'#059669':'#E53935';
+  return '<div class="po-card">'
+    +'<div class="po-header"><div class="po-name">'+name+'</div>'
+    +'<span class="po-type-badge" style="background:'+typeColor+'20;color:'+typeColor+'">'+type+'</span></div>'
+    +'<div class="pin-display"><div class="po-pin">'+pin+'</div>'
+    +'<button class="copy-btn" onclick="copyPin(\''+pin+'\',this)">&#128203; Copy</button></div>'
+    +'<div class="po-details">'
+    +(dist?'<div class="po-detail"><strong>District:</strong> '+dist+'</div>':'')
+    +(state?'<div class="po-detail"><strong>State:</strong> '+state+'</div>':'')
+    +(div2?'<div class="po-detail"><strong>Division:</strong> '+div2+'</div>':'')
+    +(region?'<div class="po-detail"><strong>Region:</strong> '+region+'</div>':'')
+    +(circle?'<div class="po-detail"><strong>Circle:</strong> '+circle+'</div>':'')
+    +(delivery?'<div class="po-detail"><strong>Delivery:</strong> '+delivery+'</div>':'')
+    +'</div></div>';
+}
+
+function copyPin(pin,btn){
+  navigator.clipboard.writeText(pin).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.innerHTML='&#128203; Copy';},2000);});
+}
+
+function showLoading(msg){
+  var l=document.getElementById('loading');
+  l.querySelector('.loading-text').textContent=msg||'Loading...';
+  l.classList.add('show');
+}
+function hideLoading(){document.getElementById('loading').classList.remove('show');}
+function showError(msg){var e=document.getElementById('errorMsg');e.textContent=msg;e.classList.add('show');}
+
+// Popular cities data
+var POPULAR = [
+  {name:'Connaught Place, Delhi',pin:'110001',color:'#E53935'},
+  {name:'Colaba, Mumbai',pin:'400001',color:'#D32F2F'},
+  {name:'MG Road, Bangalore',pin:'560001',color:'#059669'},
+  {name:'Anna Salai, Chennai',pin:'600002',color:'#dc2626'},
+  {name:'Park Street, Kolkata',pin:'700016',color:'#d97706'},
+  {name:'Banjara Hills, Hyderabad',pin:'500034',color:'#0891b2'},
+  {name:'Civil Lines, Ahmedabad',pin:'380001',color:'#D32F2F'},
+  {name:'Ashok Nagar, Jaipur',pin:'302001',color:'#059669'},
+  {name:'Hazratganj, Lucknow',pin:'226001',color:'#E53935'},
+  {name:'Shivaji Nagar, Pune',pin:'411005',color:'#dc2626'},
+  {name:'Sector 17, Chandigarh',pin:'160017',color:'#d97706'},
+  {name:'Lal Darwaja, Surat',pin:'395003',color:'#0891b2'},
+  {name:'Varanasi GPO',pin:'221001',color:'#E53935'},
+  {name:'Indore GPO',pin:'452001',color:'#D32F2F'},
+  {name:'Bhopal GPO',pin:'462001',color:'#059669'},
+  {name:'Patna GPO',pin:'800001',color:'#dc2626'}
+];
+
+document.getElementById('popularGrid').innerHTML=POPULAR.map(function(p){
+  return '<div class="popular-po-card" onclick="quickSearch(\''+p.pin+'\')">'
+    +'<div class="ppc-icon" style="background:'+p.color+'">'+p.pin.substring(0,2)+'</div>'
+    +'<div class="ppc-info"><div class="ppc-name">'+p.name+'</div>'
+    +'<div class="ppc-pin">PIN: '+p.pin+'</div></div></div>';
+}).join('');
+
+// States grid
+var STATES = [
+  {name:'Andhra Pradesh',icon:'\uD83C\uDF34',pin:'500001'},
+  {name:'Assam',icon:'\uD83C\uDF75',pin:'781001'},
+  {name:'Bihar',icon:'\uD83C\uDFDB\uFE0F',pin:'800001'},
+  {name:'Chhattisgarh',icon:'\uD83C\uDF3F',pin:'492001'},
+  {name:'Delhi',icon:'\uD83C\uDFD9\uFE0F',pin:'110001'},
+  {name:'Goa',icon:'\uD83C\uDFD6\uFE0F',pin:'403001'},
+  {name:'Gujarat',icon:'\uD83E\uDD81',pin:'380001'},
+  {name:'Haryana',icon:'\uD83C\uDF3E',pin:'122001'},
+  {name:'Himachal Pradesh',icon:'\uD83C\uDFD4\uFE0F',pin:'171001'},
+  {name:'Jharkhand',icon:'\u26CF\uFE0F',pin:'834001'},
+  {name:'Karnataka',icon:'\uD83C\uDF3A',pin:'560001'},
+  {name:'Kerala',icon:'\uD83C\uDF34',pin:'695001'},
+  {name:'Madhya Pradesh',icon:'\uD83D\uDC2F',pin:'462001'},
+  {name:'Maharashtra',icon:'\uD83C\uDFD9\uFE0F',pin:'400001'},
+  {name:'Manipur',icon:'\uD83C\uDF38',pin:'795001'},
+  {name:'Meghalaya',icon:'\uD83C\uDF27\uFE0F',pin:'793001'},
+  {name:'Mizoram',icon:'\uD83C\uDFDE\uFE0F',pin:'796001'},
+  {name:'Nagaland',icon:'\uD83E\uDD85',pin:'797001'},
+  {name:'Odisha',icon:'\uD83D\uDED5',pin:'751001'},
+  {name:'Punjab',icon:'\uD83C\uDF3E',pin:'141001'},
+  {name:'Rajasthan',icon:'\uD83C\uDFDC\uFE0F',pin:'302001'},
+  {name:'Sikkim',icon:'\uD83C\uDFD4\uFE0F',pin:'737101'},
+  {name:'Tamil Nadu',icon:'\uD83D\uDED5',pin:'600001'},
+  {name:'Telangana',icon:'\uD83D\uDC8E',pin:'500001'},
+  {name:'Tripura',icon:'\uD83C\uDF3F',pin:'799001'},
+  {name:'Uttar Pradesh',icon:'\uD83D\uDD4C',pin:'226001'},
+  {name:'Uttarakhand',icon:'\uD83C\uDFD4\uFE0F',pin:'248001'},
+  {name:'West Bengal',icon:'\uD83D\uDC2F',pin:'700001'}
+];
+
+document.getElementById('statesGrid').innerHTML=STATES.map(function(s){
+  return '<div class="state-card" onclick="searchByState(\''+s.name+'\')">'
+    +'<div class="state-icon">'+s.icon+'</div>'
+    +'<div><div class="state-name">'+s.name+'</div>'
+    +'<div class="state-circles">Click to browse</div></div></div>';
+}).join('');
+
+function searchByState(state){
+  switchTab('name');
+  document.getElementById('nameInput').value='';
+  var sel=document.getElementById('stateFilter');
+  for(var i=0;i<sel.options.length;i++){
+    if(sel.options[i].text===state){sel.selectedIndex=i;break;}
+  }
+  document.querySelector('.finder-card').scrollIntoView({behavior:'smooth'});
+}
+</script>
+<script src="/common.js?v=2" defer></script>
+
+<!-- SEO: Internal Linking Section -->
+<section style="max-width:1280px;margin:40px auto 0;padding:0 24px">
+<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:28px 32px;margin-bottom:24px">
+<h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:16px;color:#0f172a">Explore More on News Reporter Live</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px">
+<div>
+<h3 style="font-size:14px;font-weight:700;color:#E53935;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Financial Tools</h3>
+<ul style="list-style:none;padding:0;margin:0">
+<li style="margin-bottom:8px"><a href="/investment-calculator" style="color:#475569;text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px"><span style="color:#E53935">&#8250;</span> SIP & SWP Investment Calculator</a></li>
+<li style="margin-bottom:8px"><a href="/loan-calculator" style="color:#475569;text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px"><span style="color:#E53935">&#8250;</span> EMI & Loan Calculator</a></li>
+<li style="margin-bottom:8px"><a href="/financial-aids" style="color:#475569;text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px"><span style="color:#E53935">&#8250;</span> Government Financial Aid Programs</a></li>
+<li style="margin-bottom:8px"><a href="/ifsc-codes" style="color:#475569;text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px"><span style="color:#E53935">&#8250;</span> IFSC Code Finder - All Banks</a></li>
+</ul>
+</div>
+<div>
+<h3 style="font-size:14px;font-weight:700;color:#E53935;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Directory & Lookup</h3>
+<ul style="list-style:none;padding:0;margin:0">
+<li style="margin-bottom:8px"><a href="/directory" style="color:#475569;text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px"><span style="color:#E53935">&#8250;</span> India Business & Services Directory</a></li>
+<li style="margin-bottom:8px"><a href="/pincode" style="color:#475569;text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px"><span style="color:#E53935">&#8250;</span> PIN Code Finder - All India</a></li>
+<li style="margin-bottom:8px"><a href="/ifsc-codes" style="color:#475569;text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px"><span style="color:#E53935">&#8250;</span> Bank IFSC & Branch Locator</a></li>
+</ul>
+</div>
+<div>
+<h3 style="font-size:14px;font-weight:700;color:#E53935;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Entertainment & Education</h3>
+<ul style="list-style:none;padding:0;margin:0">
+<li style="margin-bottom:8px"><a href="/movies" style="color:#475569;text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px"><span style="color:#E53935">&#8250;</span> Latest Movies & Reviews</a></li>
+<li style="margin-bottom:8px"><a href="/cricket-live" style="color:#475569;text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px"><span style="color:#E53935">&#8250;</span> Live Cricket Scores & Stats</a></li>
+<li style="margin-bottom:8px"><a href="/cbse" style="color:#475569;text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px"><span style="color:#E53935">&#8250;</span> CBSE Study Materials - Class 1-12</a></li>
+</ul>
+</div>
+<div>
+<h3 style="font-size:14px;font-weight:700;color:#E53935;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Latest News</h3>
+<ul style="list-style:none;padding:0;margin:0">
+<li style="margin-bottom:8px"><a href="/" style="color:#475569;text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px"><span style="color:#E53935">&#8250;</span> Breaking News & Headlines</a></li>
+<li style="margin-bottom:8px"><a href="/?cat=politics" style="color:#475569;text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px"><span style="color:#E53935">&#8250;</span> Political News & Analysis</a></li>
+<li style="margin-bottom:8px"><a href="/?cat=business" style="color:#475569;text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px"><span style="color:#E53935">&#8250;</span> Business & Economy News</a></li>
+<li style="margin-bottom:8px"><a href="/?cat=technology" style="color:#475569;text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px"><span style="color:#E53935">&#8250;</span> Technology & Science Updates</a></li>
+<li style="margin-bottom:8px"><a href="/?cat=sports" style="color:#475569;text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px"><span style="color:#E53935">&#8250;</span> Sports News & Live Scores</a></li>
+<li style="margin-bottom:8px"><a href="/?cat=entertainment" style="color:#475569;text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px"><span style="color:#E53935">&#8250;</span> Entertainment & Bollywood</a></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+
+</body>
+</html>

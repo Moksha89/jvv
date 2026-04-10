@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Allow: /investment-calculator
+Allow: /loan-calculator
+Allow: /ifsc-codes
+Allow: /pincode
+Allow: /directory
+Allow: /cricket-live
+
+Disallow: /admin
+Disallow: /api/
+Disallow: /portal
+
+Sitemap: https://newsreporter.live/sitemap.xml

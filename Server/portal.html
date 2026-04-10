@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>document.cookie="portal_auth=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax;Secure";</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0f172a">
+    <title>Remote Access Portal</title>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-primary: #0f172a; --bg-secondary: #1e293b; --bg-tertiary: #334155;
+            --text-primary: #f1f5f9; --text-secondary: #94a3b8; --text-muted: #64748b;
+            --accent: #3b82f6; --accent-hover: #2563eb; --success: #22c55e;
+            --danger: #ef4444; --warning: #f59e0b; --border: #334155;
+            --sidebar-width: 280px; --header-height: 56px;
+            --vnc-color: #8b5cf6; --vnc-hover: #7c3aed;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; overflow: hidden; }
+        .header { height: var(--header-height); background: var(--bg-secondary); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; z-index: 100; position: relative; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .menu-btn { background: none; border: none; color: var(--text-primary); cursor: pointer; padding: 8px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .menu-btn:hover { background: var(--bg-tertiary); }
+        .menu-btn svg { width: 22px; height: 22px; }
+        .logo { font-size: 18px; font-weight: 700; }
+        .logo span { color: var(--accent); }
+        .header-right { display: flex; align-items: center; gap: 8px; }
+        .header-btn { background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); cursor: pointer; padding: 6px 12px; border-radius: 8px; font-size: 13px; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+        .header-btn:hover { background: var(--accent); border-color: var(--accent); }
+        .header-btn svg { width: 16px; height: 16px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .status-dot.online { background: var(--success); box-shadow: 0 0 6px var(--success); }
+        .status-dot.offline { background: var(--danger); }
+        .main-container { display: flex; height: calc(100vh - var(--header-height)); }
+        .sidebar { width: var(--sidebar-width); background: var(--bg-secondary); border-right: 1px solid var(--border); display: flex; flex-direction: column; transition: transform 0.3s ease, width 0.3s ease; overflow-y: auto; overflow-x: hidden; z-index: 90; }
+        .sidebar.collapsed { transform: translateX(-100%); width: 0; min-width: 0; }
+        .sidebar-section { padding: 16px; border-bottom: 1px solid var(--border); }
+        .sidebar-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; }
+        .device-card { background: var(--bg-tertiary); border-radius: 10px; padding: 14px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+        .device-card:hover { border-color: var(--accent); }
+        .device-card.active { border-color: var(--accent); background: rgba(59, 130, 246, 0.1); }
+        .device-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .device-card-name { font-size: 14px; font-weight: 600; }
+        .device-card-details { font-size: 12px; color: var(--text-secondary); }
+        .device-card-status { font-size: 11px; padding: 3px 8px; border-radius: 12px; font-weight: 600; }
+        .device-card-status.online { background: rgba(34,197,94,0.15); color: var(--success); }
+        .device-card-status.offline { background: rgba(239,68,68,0.15); color: var(--danger); }
+        .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: background 0.2s; color: var(--text-secondary); font-size: 14px; }
+        .sidebar-item:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+        .sidebar-item.active { background: rgba(59,130,246,0.15); color: var(--accent); }
+        .sidebar-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .quick-action-btn { background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 8px; padding: 10px; text-align: center; cursor: pointer; transition: all 0.2s; color: var(--text-secondary); font-size: 12px; }
+        .quick-action-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .quick-action-btn svg { width: 20px; height: 20px; margin: 0 auto 4px; display: block; }
+        .content { flex: 1; display: flex; flex-direction: column; position: relative; background: #000; }
+        .connection-view { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
+        .connection-view iframe { width: 100%; height: 100%; border: none; }
+        .welcome-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: var(--bg-primary); padding: 20px; text-align: center; }
+        .welcome-icon { width: 80px; height: 80px; background: var(--bg-secondary); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; border: 1px solid var(--border); }
+        .welcome-icon svg { width: 40px; height: 40px; color: var(--accent); }
+        .welcome-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .welcome-subtitle { color: var(--text-secondary); font-size: 14px; max-width: 500px; line-height: 1.5; margin-bottom: 24px; }
+        .connect-modes { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; justify-content: center; }
+        .connect-mode-card { background: var(--bg-secondary); border: 2px solid var(--border); border-radius: 16px; padding: 24px 20px; width: 220px; cursor: pointer; transition: all 0.2s; text-align: center; }
+        .connect-mode-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        .connect-mode-card.rdp-mode:hover { border-color: var(--accent); }
+        .connect-mode-card.vnc-mode:hover { border-color: var(--vnc-color); }
+        .connect-mode-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
+        .rdp-mode .connect-mode-icon { background: rgba(59,130,246,0.15); color: var(--accent); }
+        .vnc-mode .connect-mode-icon { background: rgba(139,92,246,0.15); color: var(--vnc-color); }
+        .connect-mode-icon svg { width: 24px; height: 24px; }
+        .connect-mode-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+        .connect-mode-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+        .connect-mode-badge { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600; margin-top: 8px; }
+        .rdp-mode .connect-mode-badge { background: rgba(59,130,246,0.15); color: var(--accent); }
+        .vnc-mode .connect-mode-badge { background: rgba(139,92,246,0.15); color: var(--vnc-color); }
+        .vnc-setup-note { font-size: 11px; color: var(--warning); margin-top: 6px; }
+        .floating-toolbar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(30,41,59,0.95); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 16px; padding: 8px; display: none; gap: 4px; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+        .floating-toolbar.visible { display: flex; }
+        .float-btn { background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: 10px; border-radius: 10px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .float-btn:hover, .float-btn.active { background: var(--bg-tertiary); color: var(--accent); }
+        .float-btn svg { width: 20px; height: 20px; }
+        .stats-bar { height: 32px; background: var(--bg-secondary); border-top: 1px solid var(--border); display: flex; align-items: center; padding: 0 16px; gap: 16px; font-size: 12px; color: var(--text-muted); }
+        .stats-bar .stat { display: flex; align-items: center; gap: 4px; }
+        .stats-bar .stat svg { width: 14px; height: 14px; }
+        .settings-panel { position: fixed; top: var(--header-height); right: 0; width: 320px; height: calc(100vh - var(--header-height)); background: var(--bg-secondary); border-left: 1px solid var(--border); z-index: 95; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; padding: 20px; }
+        .settings-panel.open { transform: translateX(0); }
+        .settings-title { font-size: 16px; font-weight: 600; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .settings-group { margin-bottom: 20px; }
+        .settings-group-title { font-size: 12px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 10px; }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .setting-label { font-size: 14px; color: var(--text-secondary); }
+        .toggle { position: relative; width: 44px; height: 24px; cursor: pointer; }
+        .toggle input { display: none; }
+        .toggle-slider { position: absolute; inset: 0; background: var(--bg-tertiary); border-radius: 12px; transition: 0.3s; }
+        .toggle-slider::before { content: ''; position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s; }
+        .toggle input:checked + .toggle-slider { background: var(--accent); }
+        .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+        .custom-select { background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); padding: 6px 10px; border-radius: 6px; font-size: 13px; outline: none; cursor: pointer; }
+        .osk-overlay { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(30,41,59,0.98); border-top: 1px solid var(--border); padding: 12px; display: none; z-index: 300; }
+        .osk-overlay.visible { display: block; }
+        .osk-input { width: 100%; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); padding: 12px; border-radius: 8px; font-size: 16px; outline: none; }
+        .osk-hint { font-size: 12px; color: var(--text-muted); margin-top: 6px; text-align: center; }
+        .clipboard-panel { position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: none; z-index: 250; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+        .clipboard-panel.visible { display: block; }
+        .clipboard-panel textarea { width: 100%; height: 100px; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); border-radius: 8px; padding: 10px; font-size: 14px; resize: vertical; outline: none; }
+        .clipboard-panel .btn-row { display: flex; gap: 8px; margin-top: 10px; }
+        .clipboard-panel .btn-row button { flex: 1; padding: 8px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 500; }
+        .btn-copy { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border) !important; }
+        .btn-send { background: var(--accent); color: white; }
+        .loading-overlay { position: absolute; inset: 0; background: var(--bg-primary); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; }
+        .loading-overlay.hidden { display: none; }
+        .spinner { width: 40px; height: 40px; border: 3px solid var(--bg-tertiary); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { color: var(--text-secondary); font-size: 14px; }
+        .conn-mode-indicator { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+        .conn-mode-indicator.rdp { background: rgba(59,130,246,0.15); color: var(--accent); }
+        .conn-mode-indicator.vnc { background: rgba(139,92,246,0.15); color: var(--vnc-color); }
+        .login-screen { position: fixed; inset: 0; background: var(--bg-primary); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .login-screen.hidden { display: none; }
+        .login-box { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 40px; width: 90%; max-width: 400px; text-align: center; }
+        .login-box .login-icon { width: 64px; height: 64px; background: var(--bg-tertiary); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+        .login-box .login-icon svg { width: 32px; height: 32px; color: var(--accent); }
+        .login-box h2 { font-size: 22px; margin-bottom: 6px; }
+        .login-box p { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+        .login-field { width: 100%; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); padding: 12px 14px; border-radius: 10px; font-size: 15px; outline: none; margin-bottom: 12px; transition: border-color 0.2s; }
+        .login-field:focus { border-color: var(--accent); }
+        .login-field::placeholder { color: var(--text-muted); }
+        .login-submit { width: 100%; background: var(--accent); color: white; border: none; padding: 13px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 8px; }
+        .login-submit:hover { background: var(--accent-hover); }
+        .login-error { color: var(--danger); font-size: 13px; margin-top: 10px; display: none; }
+        .login-error.visible { display: block; }
+        @media (max-width: 768px) {
+            .sidebar { position: fixed; top: var(--header-height); left: 0; bottom: 0; z-index: 90; width: var(--sidebar-width); }
+            .sidebar.collapsed { transform: translateX(-100%); }
+            .header-btn span { display: none; }
+            .settings-panel { width: 100%; }
+            .floating-toolbar { bottom: 12px; }
+            .stats-bar { display: none; }
+            .connect-modes { flex-direction: column; align-items: center; }
+            .connect-mode-card { width: 90%; max-width: 280px; }
+        }
+        @media (max-width: 480px) { .sidebar { width: 100%; } .welcome-title { font-size: 20px; } }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 3px; }
+        .fade-in { animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <div class="login-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h2>Remote Access Portal</h2>
+            <p>Enter your credentials to access the dashboard</p>
+            <form onsubmit="return handleLogin(event)" autocomplete="off">
+                <input class="login-field" type="text" id="loginUser" placeholder="Username" autocomplete="new-password" required/>
+                <input class="login-field" type="password" id="loginPass" placeholder="Password" autocomplete="new-password" required/>
+                <button class="login-submit" type="submit">Sign In</button>
+            </form>
+            <div class="login-error" id="loginError">Invalid username or password</div>
+        </div>
+    </div>
+
+    <div class="header">
+        <div class="header-left">
+            <button class="menu-btn" onclick="toggleSidebar()" title="Toggle sidebar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div class="logo"><span>Remote</span> Access</div>
+        </div>
+        <div class="header-right">
+            <span class="conn-mode-indicator" id="connModeIndicator" style="display:none;"></span>
+            <button class="header-btn" onclick="refreshDevices()" title="Refresh">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+                <span>Refresh</span>
+            </button>
+            <button class="header-btn" onclick="toggleSettings()" title="Settings">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                <span>Settings</span>
+            </button>
+            <button class="header-btn" onclick="portalLogout()" title="Logout" style="background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.3);color:#ef4444;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <span>Logout</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Devices</div>
+                <div id="deviceList"><div class="device-card" style="text-align:center; color: var(--text-muted);">Loading...</div></div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Quick Actions</div>
+                <div class="quick-actions">
+                    <div class="quick-action-btn" onclick="toggleFullscreen()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                        Fullscreen
+                    </div>
+                    <div class="quick-action-btn" onclick="toggleKeyboard()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 16h8"/></svg>
+                        Keyboard
+                    </div>
+                    <div class="quick-action-btn" onclick="toggleClipboard()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+                        Clipboard
+                    </div>
+                    <div class="quick-action-btn" onclick="lockRemoteScreen()" title="Turn off the physical monitor on the remote PC (VNC keeps working)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        Monitor Off
+                    </div>
+                    <div class="quick-action-btn" onclick="sendCtrlAltDel()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/></svg>
+                        Ctrl+Alt+Del
+                    </div>
+                    <div class="quick-action-btn" onclick="takeScreenshot()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                        Screenshot
+                    </div>
+                    <div class="quick-action-btn" onclick="disconnectSession()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Disconnect
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Navigation</div>
+                <div class="sidebar-item active" onclick="showPage('remote')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    Remote Desktop
+                </div>
+                <div class="sidebar-item" onclick="toggleSettings()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    Settings
+                </div>
+                <div class="sidebar-item" onclick="portalLogout()" style="color: var(--danger);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Logout
+                </div>
+            </div>
+            <div class="sidebar-section" style="border-bottom: none;">
+                <div class="sidebar-section-title">Server</div>
+                <div style="font-size: 12px; color: var(--text-muted); line-height: 1.8;">
+                    <div>VPS: <span style="color: var(--text-secondary);" id="serverIp">YOUR_SERVER_IP</span></div>
+                    <div>FRP: <span style="color: var(--text-secondary);">Port 7000</span></div>
+                    <div>API: <span style="color: var(--text-secondary);">Port 3000</span></div>
+                    <div>Status: <span class="status-dot online" id="serverStatusDot"></span> <span id="serverStatusText" style="color: var(--success);">Online</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content" id="content">
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="welcome-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </div>
+                <div class="welcome-title">Connect to Your PC</div>
+                <div class="welcome-subtitle">Choose a connection mode. <strong>Same Screen</strong> mirrors your actual desktop. <strong>New Session</strong> opens a separate session. <strong>Private Session</strong> locks the physical screen for privacy.</div>
+                <div class="connect-modes">
+                    <div class="connect-mode-card vnc-mode" onclick="connectSameScreen()">
+                        <div class="connect-mode-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+                        </div>
+                        <div class="connect-mode-title">Same Screen</div>
+                        <div class="connect-mode-desc">See and control the exact same desktop your PC is showing right now</div>
+                        <span class="connect-mode-badge">VNC - Screen Mirror</span>
+                        <div class="vnc-setup-note" id="vncSetupNote" style="display:none;">Requires VNC Server setup</div>
+                    </div>
+                    <div class="connect-mode-card rdp-mode" onclick="connectNewSession()">
+                        <div class="connect-mode-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><line x1="7" y1="10" x2="12" y2="10"/><line x1="15" y1="7" x2="15" y2="13"/></svg>
+                        </div>
+                        <div class="connect-mode-title">New Session</div>
+                        <div class="connect-mode-desc">Open a separate desktop session (runs independently from local user)</div>
+                        <span class="connect-mode-badge">RDP - Separate Session</span>
+                    </div>
+                    <div class="connect-mode-card vnc-mode" onclick="connectPrivateSameScreen()" style="border-color:rgba(239,68,68,0.3);">
+                        <div class="connect-mode-icon" style="color:#ef4444;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        </div>
+                        <div class="connect-mode-title">Private Same Screen</div>
+                        <div class="connect-mode-desc">Mirrors your desktop remotely and turns off the physical monitor so nobody at the PC can see</div>
+                        <span class="connect-mode-badge" style="background:rgba(239,68,68,0.15);color:#ef4444;">VNC + Monitor Off</span>
+                    </div>
+                    <div class="connect-mode-card rdp-mode" onclick="showExternalRdpForm()" style="border-color:rgba(34,197,94,0.3);">
+                        <div class="connect-mode-icon" style="color:#22c55e;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        </div>
+                        <div class="connect-mode-title">Connect to Cloud VM</div>
+                        <div class="connect-mode-desc">Connect to any Windows VM using its IP address, username, and password (Azure, AWS, etc.)</div>
+                        <span class="connect-mode-badge" style="background:rgba(34,197,94,0.15);color:#22c55e;">RDP - External IP</span>
+                    </div>
+                </div>
+                <div id="externalRdpForm" style="display:none; margin-top:16px; background:var(--bg-tertiary); border-radius:12px; padding:20px; border:1px solid var(--border);">
+                    <div style="font-size:15px; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" style="width:20px;height:20px;"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        Connect to Cloud VM
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+                        <div>
+                            <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">IP Address / Hostname *</label>
+                            <input id="extRdpHost" type="text" placeholder="e.g. 52.186.10.25" style="width:100%; padding:10px 12px; background:var(--bg-secondary); border:1px solid var(--border); border-radius:8px; color:var(--text-primary); font-size:14px; outline:none;" />
+                        </div>
+                        <div>
+                            <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">Port</label>
+                            <input id="extRdpPort" type="text" placeholder="3389" value="3389" style="width:100%; padding:10px 12px; background:var(--bg-secondary); border:1px solid var(--border); border-radius:8px; color:var(--text-primary); font-size:14px; outline:none;" />
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+                        <div>
+                            <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">Username *</label>
+                            <input id="extRdpUser" type="text" placeholder="Administrator" style="width:100%; padding:10px 12px; background:var(--bg-secondary); border:1px solid var(--border); border-radius:8px; color:var(--text-primary); font-size:14px; outline:none;" />
+                        </div>
+                        <div>
+                            <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">Password *</label>
+                            <input id="extRdpPass" type="password" placeholder="Password" style="width:100%; padding:10px 12px; background:var(--bg-secondary); border:1px solid var(--border); border-radius:8px; color:var(--text-primary); font-size:14px; outline:none;" />
+                        </div>
+                    </div>
+                    <div style="margin-bottom:14px;">
+                        <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">Label (optional)</label>
+                        <input id="extRdpLabel" type="text" placeholder="e.g. Azure Dev Server" style="width:100%; padding:10px 12px; background:var(--bg-secondary); border:1px solid var(--border); border-radius:8px; color:var(--text-primary); font-size:14px; outline:none;" />
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button onclick="connectExternalRdp()" style="flex:1; padding:10px; background:#22c55e; color:white; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#16a34a'" onmouseout="this.style.background='#22c55e'">Connect</button>
+                        <button onclick="hideExternalRdpForm()" style="padding:10px 20px; background:var(--bg-secondary); color:var(--text-secondary); border:1px solid var(--border); border-radius:8px; font-size:14px; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='var(--bg-secondary)'">Cancel</button>
+                    </div>
+                </div>
+                <div style="margin-top: 8px; font-size: 12px; color: var(--text-muted);" id="deviceCountText">Loading devices...</div>
+            </div>
+
+            <div class="connection-view" id="connectionView" style="display:none;">
+                <div class="loading-overlay" id="loadingOverlay">
+                    <div class="spinner"></div>
+                    <div class="loading-text" id="loadingText">Connecting to remote desktop...</div>
+                </div>
+                <iframe id="rdpFrame" allow="clipboard-read; clipboard-write"></iframe>
+            </div>
+
+            <div class="stats-bar" id="statsBar">
+                <div class="stat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    <span id="connectionTime">Not connected</span>
+                </div>
+                <div class="stat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span id="connQuality">-</span>
+                </div>
+                <div class="stat" style="margin-left: auto;"><span id="lastRefresh">Auto-refresh: 15s</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-toolbar" id="floatingToolbar">
+        <button class="float-btn" onclick="toggleSidebar()" title="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <button class="float-btn" onclick="toggleFullscreen()" title="Fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+        <button class="float-btn" onclick="toggleKeyboard()" title="Keyboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 16h8"/></svg></button>
+        <button class="float-btn" onclick="toggleClipboard()" title="Clipboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></button>
+        <button class="float-btn" onclick="lockRemoteScreen()" title="Lock Remote Screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>
+        <button class="float-btn" onclick="sendCtrlAltDel()" title="Ctrl+Alt+Del"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/></svg></button>
+        <button class="float-btn" onclick="disconnectSession()" title="Disconnect"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+    </div>
+
+    <div class="osk-overlay" id="oskOverlay">
+        <input class="osk-input" id="oskInput" placeholder="Type here to send text to remote PC..." autocomplete="off" autocapitalize="off"/>
+        <div class="osk-hint">Type and press Enter to send. Tap outside to close.</div>
+    </div>
+
+    <div class="clipboard-panel" id="clipboardPanel">
+        <div style="font-size: 14px; font-weight: 600; margin-bottom: 10px;">Clipboard Sync</div>
+        <textarea id="clipboardText" placeholder="Paste text here to send to remote PC, or copy text from remote..."></textarea>
+        <div class="btn-row">
+            <button class="btn-copy" onclick="copyFromClipboard()">Paste from device</button>
+            <button class="btn-send" onclick="sendToClipboard()">Send to remote</button>
+        </div>
+    </div>
+
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-title">Settings <button class="menu-btn" onclick="toggleSettings()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="settings-group">
+            <div class="settings-group-title">Display</div>
+            <div class="setting-row"><span class="setting-label">Quality</span>
+                <select class="custom-select" id="qualitySetting" onchange="updateQuality()"><option value="low">Low (Fastest)</option><option value="medium" selected>Medium</option><option value="high">High</option><option value="ultra">Ultra (Best)</option></select>
+            </div>
+            <div class="setting-row"><span class="setting-label">Auto-fit screen</span><label class="toggle"><input type="checkbox" checked id="autoFitToggle" onchange="toggleAutoFit()"><span class="toggle-slider"></span></label></div>
+            <div class="setting-row"><span class="setting-label">Show wallpaper</span><label class="toggle"><input type="checkbox" checked id="wallpaperToggle"><span class="toggle-slider"></span></label></div>
+        </div>
+        <div class="settings-group">
+            <div class="settings-group-title">Input</div>
+            <div class="setting-row"><span class="setting-label">Touch as mouse</span><label class="toggle"><input type="checkbox" checked id="touchMouseToggle"><span class="toggle-slider"></span></label></div>
+            <div class="setting-row"><span class="setting-label">Sound</span><label class="toggle"><input type="checkbox" id="soundToggle"><span class="toggle-slider"></span></label></div>
+        </div>
+        <div class="settings-group">
+            <div class="settings-group-title">Connection</div>
+            <div class="setting-row"><span class="setting-label">Auto-reconnect</span><label class="toggle"><input type="checkbox" checked id="autoReconnectToggle"><span class="toggle-slider"></span></label></div>
+            <div class="setting-row"><span class="setting-label">Auto-refresh interval</span>
+                <select class="custom-select" id="refreshInterval" onchange="updateRefreshInterval()"><option value="5">5 seconds</option><option value="15" selected>15 seconds</option><option value="30">30 seconds</option><option value="60">60 seconds</option></select>
+            </div>
+        </div>
+        <div class="settings-group">
+            <div class="settings-group-title">About</div>
+            <div style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">Remote Access Portal v2.0<br>Powered by Apache Guacamole<br>FRP Reverse Tunnel</div>
+        </div>
+        <div class="settings-group">
+            <div class="settings-group-title">Add New PC</div>
+            <div style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 10px;">Download and run the installer on any Windows PC to connect it to this relay server. This single file installs everything (FRP tunnel, RDP, RDP Wrapper, VNC, performance tuning).</div>
+            <a href="javascript:void(0)" onclick="forceDownload('/api/download/setup','Setup-RemoteAgent.bat')" style="display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:white;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;transition:background 0.2s;margin-bottom:8px;cursor:pointer;" onmouseover="this.style.background='var(--accent-hover)'" onmouseout="this.style.background='var(--accent)'">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download Complete Installer (.bat)
+            </a>
+        </div>
+        <div class="settings-group">
+            <div class="settings-group-title">Remove Agent from PC</div>
+            <div style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 10px;">Download and run on a Windows PC to completely remove the remote access agent. Stops tunnels, removes scheduled tasks, uninstalls TightVNC & RDP Wrapper, deregisters the device from the server, and cleans up all files.</div>
+            <a href="javascript:void(0)" onclick="forceDownload('/api/download/uninstall','Uninstall-RemoteAgent.bat')" style="display:inline-flex;align-items:center;gap:6px;background:#dc3545;color:white;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;transition:background 0.2s;margin-bottom:8px;cursor:pointer;" onmouseover="this.style.background='#c82333'" onmouseout="this.style.background='#dc3545'">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                Download Uninstaller (.bat)
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '';
+        const GUAC_BASE = '/guacamole';
+        let sidebarOpen = window.innerWidth > 768;
+        let settingsOpen = false;
+        let connected = false;
+        let connectionStartTime = null;
+        let refreshTimer = null;
+        let refreshIntervalMs = 15000;
+        let devices = [];
+        let frpProxies = [];
+        let currentMode = null;
+        let selectedDevice = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.innerWidth <= 768) { document.getElementById('sidebar').classList.add('collapsed'); sidebarOpen = false; }
+            refreshDevices();
+            startAutoRefresh();
+            checkVncAvailability();
+        });
+
+        function forceDownload(url, filename) {
+            fetch(url).then(r => r.blob()).then(blob => {
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename;
+                document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(a.href);
+            }).catch(() => { window.open(url, '_blank'); });
+        }
+
+        function toggleSidebar() { sidebarOpen = !sidebarOpen; document.getElementById('sidebar').classList.toggle('collapsed', !sidebarOpen); }
+        function toggleSettings() { settingsOpen = !settingsOpen; document.getElementById('settingsPanel').classList.toggle('open', settingsOpen); }
+
+        async function checkVncAvailability() {
+            try {
+                const res = await fetch(API_BASE + '/api/frp/proxies').catch(() => null);
+                if (res && res.ok) {
+                    const data = await res.json();
+                    const vncProxy = (data.proxies || []).find(p => p.name && p.name.startsWith('vnc-') && p.status === 'online');
+                    document.getElementById('vncSetupNote').style.display = vncProxy ? 'none' : 'block';
+                }
+            } catch(e) {}
+        }
+
+        async function refreshDevices() {
+            try {
+                const [healthRes, devicesRes, frpRes] = await Promise.all([
+                    fetch(API_BASE + '/api/health').catch(() => null),
+                    fetch(API_BASE + '/api/portal/devices').catch(() => null),
+                    fetch(API_BASE + '/api/frp/proxies').catch(() => null)
+                ]);
+                const serverOnline = healthRes && healthRes.ok;
+                document.getElementById('serverStatusDot').className = 'status-dot ' + (serverOnline ? 'online' : 'offline');
+                document.getElementById('serverStatusText').textContent = serverOnline ? 'Online' : 'Offline';
+                document.getElementById('serverStatusText').style.color = serverOnline ? 'var(--success)' : 'var(--danger)';
+                if (devicesRes && devicesRes.ok) { const data = await devicesRes.json(); devices = data.devices || []; }
+                if (frpRes && frpRes.ok) { const data = await frpRes.json(); frpProxies = data.proxies || []; }
+                renderDevices();
+            } catch (e) { console.error('Refresh error:', e); }
+        }
+
+        function renderDevices() {
+            const list = document.getElementById('deviceList');
+            const allDevices = [];
+            // Only show devices that are registered in the database
+            for (const dev of devices) {
+                const matchingProxy = frpProxies.find(p => p.name && !p.name.startsWith('vnc-') && (p.name.includes(dev.deviceId) || p.name.includes(dev.hostname)));
+                const isOnline = matchingProxy && matchingProxy.status === 'online';
+                const rdpPort = matchingProxy && matchingProxy.conf ? matchingProxy.conf.remotePort : (dev.remotePort || 33890);
+                const devName = matchingProxy ? matchingProxy.name.replace('rdp-', '') : dev.deviceId;
+                const vncProxy = frpProxies.find(p => p.name && p.name.startsWith('vnc-') && (p.name.includes(dev.deviceId) || p.name.includes(dev.hostname)));
+                const hasVnc = vncProxy && vncProxy.status === 'online';
+                const vncPort = vncProxy && vncProxy.conf ? vncProxy.conf.remotePort : (rdpPort + 25110);
+                allDevices.push({
+                    name: devName,
+                    displayName: dev.hostname || devName,
+                    status: isOnline ? 'online' : 'offline',
+                    rdpPort: rdpPort,
+                    vncPort: vncPort,
+                    version: matchingProxy ? (matchingProxy.clientVersion || '') : '',
+                    hasVnc: hasVnc
+                });
+            }
+            // Filter devices based on user role and assignments
+            const isAdmin = currentUser && currentUser.role === 'admin';
+            const assignedIds = (currentUser && currentUser.assignedDevices) || [];
+            const visibleDevices = isAdmin ? allDevices : allDevices.filter(d => {
+                return assignedIds.some(aid => aid === d.name || d.name.includes(aid) || aid.includes(d.name));
+            });
+            const onlineCount = visibleDevices.filter(d => d.status === 'online').length;
+            document.getElementById('deviceCountText').textContent = visibleDevices.length + ' device(s)' + (isAdmin ? ' (admin - all)' : '') + ', ' + onlineCount + ' online';
+            if (visibleDevices.length === 0) {
+                list.innerHTML = '<div style="text-align:center; color: var(--text-muted); padding: 20px; font-size: 13px;">' + (isAdmin ? 'No devices found.<br>Run Setup-RemoteAgent.bat on your PC.' : 'No devices assigned to you.<br>Contact admin for access.') + '</div>';
+                return;
+            }
+            if (!selectedDevice || !visibleDevices.some(d => d.name === selectedDevice.name)) {
+                selectedDevice = visibleDevices.find(d => d.status === 'online') || visibleDevices[0];
+            }
+            list.innerHTML = visibleDevices.map(d => {
+                const on = d.status === 'online';
+                const sel = selectedDevice && selectedDevice.name === d.name ? ' active' : '';
+                const vncBadge = d.hasVnc ? '<div style="margin-top:4px;"><span style="font-size:10px;background:rgba(139,92,246,0.15);color:#8b5cf6;padding:2px 6px;border-radius:8px;">VNC Ready</span></div>' : '';
+                return '<div class="device-card' + sel + '" onclick="selectDevice(\'' + d.name.replace(/'/g, "\\'") + '\');"><div class="device-card-header"><span class="device-card-name">' + d.displayName + '</span><span class="device-card-status ' + d.status + '">' + (on ? 'ONLINE' : 'OFFLINE') + '</span></div><div class="device-card-details">RDP :' + d.rdpPort + (d.hasVnc ? ' &middot; VNC :' + d.vncPort : '') + (d.version ? ' &middot; FRP v' + d.version : '') + '</div>' + vncBadge + '</div>';
+            }).join('');
+        }
+
+        function selectDevice(name) {
+            const allDevices = getAllDevicesList();
+            selectedDevice = allDevices.find(d => d.name === name);
+            renderDevices();
+            if (selectedDevice && selectedDevice.status === 'online') showConnectOptions();
+        }
+
+        function getAllDevicesList() {
+            const allDevices = [];
+            // Only show devices registered in the database
+            for (const dev of devices) {
+                const matchingProxy = frpProxies.find(p => p.name && !p.name.startsWith('vnc-') && (p.name.includes(dev.deviceId) || p.name.includes(dev.hostname)));
+                const isOnline = matchingProxy && matchingProxy.status === 'online';
+                const rdpPort = matchingProxy && matchingProxy.conf ? matchingProxy.conf.remotePort : (dev.remotePort || 33890);
+                const devName = matchingProxy ? matchingProxy.name.replace('rdp-', '').replace(/-+$/, '') : dev.deviceId;
+                const vncProxy = frpProxies.find(p => p.name && p.name.startsWith('vnc-') && (p.name.includes(dev.deviceId) || p.name.includes(dev.hostname)));
+                const hasVnc = vncProxy && vncProxy.status === 'online';
+                const vncPort = vncProxy && vncProxy.conf ? vncProxy.conf.remotePort : (rdpPort + 25110);
+                allDevices.push({ name: devName, displayName: dev.hostname || devName, status: isOnline ? 'online' : 'offline', rdpPort, vncPort, version: matchingProxy ? (matchingProxy.clientVersion || '') : '', hasVnc });
+            }
+            return allDevices;
+        }
+
+        let portalAuth = sessionStorage.getItem('portalAuth') === 'true';
+        let currentUser = JSON.parse(sessionStorage.getItem('portalUser') || 'null');
+        if (portalAuth && currentUser) document.getElementById('loginScreen').classList.add('hidden');
+
+        // Auto-logout after 3 minutes of idle (no mouse/keyboard/touch activity)
+        let idleTimer = null;
+        const IDLE_TIMEOUT = 3 * 60 * 1000; // 3 minutes
+        function resetIdleTimer() {
+            if (idleTimer) clearTimeout(idleTimer);
+            if (portalAuth) {
+                idleTimer = setTimeout(() => {
+                    portalLogout();
+                    alert('You have been logged out due to inactivity.');
+                }, IDLE_TIMEOUT);
+            }
+        }
+        ['mousemove','mousedown','keydown','touchstart','scroll','click'].forEach(evt => {
+            document.addEventListener(evt, resetIdleTimer, { passive: true });
+        });
+        resetIdleTimer();
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('loginUser').value;
+            const pass = document.getElementById('loginPass').value;
+            try {
+                const res = await fetch(API_BASE + '/api/portal/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: user, password: pass })
+                });
+                const data = await res.json();
+                if (data.success && data.user) {
+                    currentUser = data.user;
+                    sessionStorage.setItem('portalAuth', 'true');
+                    sessionStorage.setItem('portalUser', JSON.stringify(currentUser));
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('loginError').classList.remove('visible');
+                    document.getElementById('loginUser').value = '';
+                    document.getElementById('loginPass').value = '';
+                    portalAuth = true; refreshDevices(); resetIdleTimer();
+                } else {
+                    document.getElementById('loginError').classList.add('visible');
+                }
+            } catch (err) {
+                console.error('Login error:', err);
+                document.getElementById('loginError').classList.add('visible');
+            }
+            return false;
+        }
+
+        function portalLogout() {
+            sessionStorage.removeItem('portalAuth'); sessionStorage.removeItem('portalUser');
+            portalAuth = false; currentUser = null; guacToken = null;
+            if (idleTimer) clearTimeout(idleTimer);
+            disconnectSession();
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('loginUser').value = ''; document.getElementById('loginPass').value = '';
+        }
+
+        let guacToken = null;
+        async function getGuacToken() {
+            if (guacToken) return guacToken;
+            try {
+                const res = await fetch(GUAC_BASE + '/api/tokens', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'username=admin&password=' + encodeURIComponent(window._guacPass || 'Sarkar@00') });
+                if (res.ok) { const data = await res.json(); guacToken = data.authToken; return guacToken; }
+            } catch (e) { console.error('Guac auth error:', e); }
+            return null;
+        }
+
+        function showConnectOptions() {
+            document.getElementById('welcomeScreen').style.display = 'flex';
+            document.getElementById('connectionView').style.display = 'none';
+        }
+
+        function connectSameScreen() {
+            if (!selectedDevice) { alert('No device selected'); return; }
+            const vncUser = prompt('Enter Windows username for ' + selectedDevice.displayName + ':');
+            if (!vncUser) return;
+            const vncPass = prompt('Enter Windows password for ' + vncUser + ':');
+            if (!vncPass) return;
+            currentMode = 'vnc';
+            const connName = selectedDevice.displayName + ' - Same Screen';
+            connectWithProfile(connName, 'vnc');
+        }
+        function connectNewSession() {
+            if (!selectedDevice) { alert('No device selected'); return; }
+            const rdpUser = prompt('Enter Windows username for ' + selectedDevice.displayName + ':');
+            if (!rdpUser) return;
+            const rdpPass = prompt('Enter Windows password for ' + rdpUser + ':');
+            if (!rdpPass) return;
+            currentMode = 'rdp';
+            const connName = selectedDevice.displayName + ' - Desktop';
+            const port = selectedDevice.rdpPort;
+            // Set credentials in Guacamole config before connecting
+            fetch(API_BASE + '/api/set-rdp-creds', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ connName, username: rdpUser, password: rdpPass, port: String(port) })
+            }).then(r => r.json()).then(data => {
+                if (data.success) {
+                    // Small delay to let Guacamole pick up the new config
+                    setTimeout(() => connectWithProfile(connName, 'rdp'), 1000);
+                } else {
+                    alert('Failed to set credentials: ' + (data.message || 'Unknown error'));
+                }
+            }).catch(() => alert('Could not reach server to set credentials.'));
+        }
+        function connectPrivateSameScreen() {
+            if (!selectedDevice) { alert('No device selected'); return; }
+            const vncUser = prompt('Enter Windows username for ' + selectedDevice.displayName + ':');
+            if (!vncUser) return;
+            const vncPass = prompt('Enter Windows password for ' + vncUser + ':');
+            if (!vncPass) return;
+            currentMode = 'vnc';
+            pendingMonitorOffUser = vncUser;
+            pendingMonitorOffPass = vncPass;
+            const connName = selectedDevice.displayName + ' - Same Screen';
+            connectWithProfile(connName, 'vnc');
+            // Turn off physical monitor after VNC connects using the credentials provided
+            setTimeout(() => {
+                const port = selectedDevice.rdpPort;
+                fetch(API_BASE + '/api/monitor-off?port=' + port + '&user=' + encodeURIComponent(vncUser) + '&pass=' + encodeURIComponent(vncPass))
+                    .then(r => r.json()).then(data => {
+                        if (data.success) console.log('Monitor off command sent');
+                    }).catch(() => {});
+            }, 5000);
+        }
+
+        let externalConnName = null;
+
+        function showExternalRdpForm() {
+            document.getElementById('externalRdpForm').style.display = 'block';
+        }
+        function hideExternalRdpForm() {
+            document.getElementById('externalRdpForm').style.display = 'none';
+        }
+
+        function connectExternalRdp() {
+            const host = document.getElementById('extRdpHost').value.trim();
+            const port = document.getElementById('extRdpPort').value.trim() || '3389';
+            const user = document.getElementById('extRdpUser').value.trim();
+            const pass = document.getElementById('extRdpPass').value;
+            const label = document.getElementById('extRdpLabel').value.trim();
+            if (!host || !user || !pass) { alert('Please fill in IP, username, and password.'); return; }
+            hideExternalRdpForm();
+            currentMode = 'external-rdp';
+            fetch(API_BASE + '/api/connect-external-rdp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ hostname: host, port, username: user, password: pass, label: label || undefined })
+            }).then(r => r.json()).then(data => {
+                if (data.success) {
+                    externalConnName = data.connName;
+                    setTimeout(() => connectWithProfile(data.connName, 'rdp'), 1000);
+                } else {
+                    alert('Failed to create connection: ' + (data.message || 'Unknown error'));
+                }
+            }).catch(() => alert('Could not reach server.'));
+        }
+
+        async function connectWithProfile(connName, mode) {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('connectionView').style.display = 'flex';
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+            document.getElementById('floatingToolbar').classList.add('visible');
+            const modeLabel = mode === 'vnc' ? 'Same Screen (VNC)' : 'New Session (RDP)';
+            document.getElementById('loadingText').textContent = 'Connecting via ' + modeLabel + '...';
+            const indicator = document.getElementById('connModeIndicator');
+            indicator.style.display = 'inline-flex';
+            indicator.className = 'conn-mode-indicator ' + mode;
+            indicator.textContent = mode === 'vnc' ? 'VNC - Same Screen' : 'RDP - New Session';
+            if (window.innerWidth <= 768) { document.getElementById('sidebar').classList.add('collapsed'); sidebarOpen = false; }
+            const token = await getGuacToken();
+            const frame = document.getElementById('rdpFrame');
+            const encoded = btoa(connName + '\0c\0default');
+            frame.src = token ? GUAC_BASE + '/#/client/' + encoded + '?token=' + token : GUAC_BASE + '/#/client/' + encoded;
+            connected = true; connectionStartTime = Date.now(); updateConnectionTimer();
+            frame.onload = () => { setTimeout(() => { document.getElementById('loadingOverlay').classList.add('hidden'); document.getElementById('connQuality').textContent = 'Connected (' + modeLabel + ')'; focusRemoteFrame(); }, 2000); };
+        }
+
+        function disconnectSession() {
+            // Clear RDP credentials on disconnect for security
+            if (currentMode === 'rdp' && selectedDevice) {
+                const connName = selectedDevice.displayName + ' - Desktop';
+                const port = selectedDevice.rdpPort;
+                fetch(API_BASE + '/api/clear-rdp-creds', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ connName, port: String(port) })
+                }).catch(() => {});
+            }
+            // Clean up external RDP connection from Guacamole
+            if (currentMode === 'external-rdp' && externalConnName) {
+                fetch(API_BASE + '/api/disconnect-external-rdp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ connName: externalConnName })
+                }).catch(() => {});
+                externalConnName = null;
+            }
+            document.getElementById('rdpFrame').src = 'about:blank';
+            document.getElementById('welcomeScreen').style.display = 'flex';
+            document.getElementById('connectionView').style.display = 'none';
+            document.getElementById('floatingToolbar').classList.remove('visible');
+            document.getElementById('oskOverlay').classList.remove('visible');
+            document.getElementById('clipboardPanel').classList.remove('visible');
+            document.getElementById('connModeIndicator').style.display = 'none';
+            connected = false; currentMode = null; connectionStartTime = null;
+            document.getElementById('connectionTime').textContent = 'Not connected';
+            document.getElementById('connQuality').textContent = '-';
+        }
+
+        function updateConnectionTimer() {
+            if (!connectionStartTime) return;
+            const elapsed = Math.floor((Date.now() - connectionStartTime) / 1000);
+            const h = Math.floor(elapsed / 3600), m = Math.floor((elapsed % 3600) / 60), s = elapsed % 60;
+            document.getElementById('connectionTime').textContent = (h > 0 ? h + 'h ' : '') + m + 'm ' + s + 's';
+            if (connected) setTimeout(updateConnectionTimer, 1000);
+        }
+
+        // Focus the Guacamole iframe so keyboard works
+        function focusRemoteFrame() {
+            const frame = document.getElementById('rdpFrame');
+            if (frame && connected) { frame.focus(); }
+        }
+        // Click on connection view focuses iframe
+        document.getElementById('connectionView').addEventListener('click', function(e) {
+            if (e.target === this || e.target.id === 'rdpFrame') focusRemoteFrame();
+        });
+        // Refocus after any floating toolbar button click
+        document.querySelectorAll('.float-btn').forEach(btn => {
+            btn.addEventListener('click', () => { setTimeout(focusRemoteFrame, 300); });
+        });
+        // Refocus after sidebar interactions
+        document.querySelectorAll('.quick-action-btn').forEach(btn => {
+            btn.addEventListener('click', () => { setTimeout(focusRemoteFrame, 300); });
+        });
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) { (document.getElementById('content') || document.documentElement).requestFullscreen().catch(() => {}); }
+            else { document.exitFullscreen().catch(() => {}); }
+            setTimeout(focusRemoteFrame, 500);
+        }
+
+        function toggleKeyboard() {
+            const overlay = document.getElementById('oskOverlay');
+            overlay.classList.toggle('visible');
+            if (overlay.classList.contains('visible')) {
+                document.getElementById('oskInput').focus();
+            } else {
+                focusRemoteFrame();
+            }
+        }
+
+        document.getElementById('oskInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); this.value = ''; } });
+        document.getElementById('oskOverlay').addEventListener('click', function(e) { if (e.target === this) { this.classList.remove('visible'); focusRemoteFrame(); } });
+
+        function toggleClipboard() { document.getElementById('clipboardPanel').classList.toggle('visible'); }
+        async function copyFromClipboard() { try { document.getElementById('clipboardText').value = await navigator.clipboard.readText(); } catch(e) { alert('Clipboard access denied.'); } }
+        function sendToClipboard() { const t = document.getElementById('clipboardText').value; if(t) navigator.clipboard.writeText(t).then(() => alert('Text copied! Use Ctrl+V in remote.')).catch(() => alert('Could not access clipboard.')); }
+        function lockRemoteScreen() {
+            if (!connected || !selectedDevice) { alert('Connect to a device first.'); return; }
+            turnOffRemoteMonitor();
+        }
+        function turnOffRemoteMonitor() {
+            if (!selectedDevice) { alert('No device selected'); return; }
+            const user = prompt('Enter Windows username for the remote PC:');
+            if (!user) return;
+            const pass = prompt('Enter Windows password for ' + user + ':');
+            if (!pass) return;
+            const port = selectedDevice.rdpPort;
+            fetch(API_BASE + '/api/monitor-off?port=' + port + '&user=' + encodeURIComponent(user) + '&pass=' + encodeURIComponent(pass))
+                .then(r => r.json()).then(data => {
+                    if (data.success) alert('Monitor off command sent! The physical display should turn off while your VNC session continues working.');
+                    else alert('Could not turn off monitor: ' + (data.message || 'Unknown error'));
+                }).catch(() => alert('Could not reach server.'));
+        }
+        function sendCtrlAltDel() { if (connected) alert('Use Guacamole menu (Ctrl+Alt+Shift) inside the remote session, then select "Send Ctrl+Alt+Del".'); }
+        function takeScreenshot() { if (connected) alert('Right-click inside the remote session and choose "Save image as..." or use Print Screen.'); }
+        function updateQuality() { document.getElementById('connQuality').textContent = 'Quality: ' + document.getElementById('qualitySetting').value; }
+        function toggleAutoFit() {}
+        function updateRefreshInterval() { const v = parseInt(document.getElementById('refreshInterval').value); refreshIntervalMs = v * 1000; document.getElementById('lastRefresh').textContent = 'Auto-refresh: ' + v + 's'; startAutoRefresh(); }
+        function startAutoRefresh() { if (refreshTimer) clearInterval(refreshTimer); refreshTimer = setInterval(refreshDevices, refreshIntervalMs); }
+        function showPage(page) { document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active')); if(event && event.currentTarget) event.currentTarget.classList.add('active'); }
+        if (portalAuth && currentUser) getGuacToken().then(t => { if(t) console.log('Guacamole pre-authenticated'); });
+        window.addEventListener('resize', () => { if (window.innerWidth <= 768 && sidebarOpen) { document.getElementById('sidebar').classList.add('collapsed'); sidebarOpen = false; } });
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+        document.addEventListener('touchend', (e) => { const d = e.changedTouches[0].clientX - touchStartX; if (touchStartX < 30 && d > 80) { document.getElementById('sidebar').classList.remove('collapsed'); sidebarOpen = true; } if (sidebarOpen && d < -80) { document.getElementById('sidebar').classList.add('collapsed'); sidebarOpen = false; } }, { passive: true });
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  
+  <!-- Main Pages -->
+  <url>
+    <loc>https://newsreporter.live/</loc>
+    <changefreq>hourly</changefreq>
+    <priority>1.0</priority>
+    <lastmod>2026-03-17</lastmod>
+  </url>
+
+  <!-- Financial Tools -->
+  <url>
+    <loc>https://newsreporter.live/investment-calculator</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2026-03-17</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://newsreporter.live/loan-calculator</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2026-03-16</lastmod>
+  </url>
+
+  <!-- Lookup Tools -->
+  <url>
+    <loc>https://newsreporter.live/ifsc-codes</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2026-03-15</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://newsreporter.live/pincode</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2026-03-15</lastmod>
+  </url>
+
+  <!-- Directory -->
+  <url>
+    <loc>https://newsreporter.live/directory</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-03-15</lastmod>
+  </url>
+
+  <!-- Sports -->
+  <url>
+    <loc>https://newsreporter.live/cricket-live</loc>
+    <changefreq>always</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2026-03-17</lastmod>
+  </url>
+
+  <!-- Financial Aids -->
+  <url>
+    <loc>https://newsreporter.live/financial-aids</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2026-03-17</lastmod>
+  </url>
+
+  <!-- Education - CBSE -->
+  <url>
+    <loc>https://newsreporter.live/cbse</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2026-03-17</lastmod>
+  </url>
+
+</urlset>

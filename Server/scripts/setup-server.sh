@@ -85,27 +85,19 @@ cat > "$INSTALL_DIR/frps.toml" << EOF
 bindAddr = "0.0.0.0"
 bindPort = ${FRP_BIND_PORT}
 
-[auth]
-method = "token"
-token = "${AUTH_TOKEN}"
+auth.method = "token"
+auth.token = "${AUTH_TOKEN}"
 
-[transport]
-tls.force = false
+transport.tls.force = false
 
-[webServer]
-addr = "127.0.0.1"
-port = ${FRP_DASHBOARD_PORT}
-user = "admin"
-password = "${DASHBOARD_PASSWORD}"
+webServer.addr = "127.0.0.1"
+webServer.port = ${FRP_DASHBOARD_PORT}
+webServer.user = "admin"
+webServer.password = "${DASHBOARD_PASSWORD}"
 
-[log]
-to = "${FRP_LOG_DIR}/frps.log"
-level = "info"
-maxDays = 30
-
-allowPorts = [
-    { start = 33800, end = 34000 }
-]
+log.to = "${FRP_LOG_DIR}/frps.log"
+log.level = "info"
+log.maxDays = 30
 EOF
 
 echo -e "${GREEN}  FRP Server configured${NC}"
