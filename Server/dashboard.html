@@ -1164,6 +1164,26 @@
         return fetch(url, options);
     }
 
+    // Client-side credentials (fallback when server API is not available)
+    const CLIENT_CREDS = {
+        'admin': 'changeme',
+        'sarkar': 'Sarkar@00'
+    };
+
+    function clientSideLogin(u, p) {
+        const storedCreds = JSON.parse(localStorage.getItem('dashboard-credentials') || '{}');
+        const allCreds = Object.assign({}, CLIENT_CREDS, storedCreds);
+        if (allCreds[u] && allCreds[u] === p) {
+            sessionStorage.setItem('dashboard-logged-in', 'true');
+            sessionStorage.setItem('dashboard-user-role', u === 'admin' || u === 'sarkar' ? 'admin' : 'viewer');
+            sessionStorage.setItem('dashboard-username', u);
+            addLogEntry('login', 'User "' + u + '" logged in');
+            showDashboard();
+            return true;
+        }
+        return false;
+    }
+
     function handleLogin(e) {
         e.preventDefault();
         const u = document.getElementById('login-user').value.trim();
@@ -1173,7 +1193,10 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: u, password: p })
         })
-        .then(r => r.json())
+        .then(r => {
+            if (r.status === 404) throw new Error('API not available');
+            return r.json();
+        })
         .then(data => {
             if (data.success && data.token) {
                 sessionStorage.setItem('dashboard-auth-token', data.token);
@@ -1183,7 +1206,6 @@
                 addLogEntry('login', 'User "' + u + '" logged in');
                 showDashboard();
             } else if (data.requires2FA) {
-                // Show 2FA input
                 const code = prompt('Enter your 2FA code:');
                 if (code) {
                     fetch('/api/dashboard/login', {
@@ -1216,10 +1238,13 @@
             }
         })
         .catch(() => {
-            const err = document.getElementById('login-error');
-            err.textContent = 'Server error. Please try again.';
-            err.classList.add('visible');
-            setTimeout(() => err.classList.remove('visible'), 3000);
+            // Server API not available - fall back to client-side login
+            if (!clientSideLogin(u, p)) {
+                const err = document.getElementById('login-error');
+                err.textContent = 'Invalid credentials';
+                err.classList.add('visible');
+                setTimeout(() => err.classList.remove('visible'), 3000);
+            }
         });
     }
 
