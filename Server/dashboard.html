@@ -58,6 +58,14 @@
         .blocked-card .countdown span { color: var(--red); font-weight: 600; }
         .blocked-card .expired-hint { font-size: 13px; color: var(--text-muted); margin-top: 12px; }
         .blocked-card .expired-hint a { color: var(--accent); text-decoration: underline; cursor: pointer; }
+        .blocked-card .portal-unlock { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+        .blocked-card .portal-unlock p { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+        .blocked-card .portal-unlock .unlock-row { display: flex; gap: 8px; }
+        .blocked-card .portal-unlock input { flex: 1; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 14px; outline: none; }
+        .blocked-card .portal-unlock input:focus { border-color: var(--accent); }
+        .blocked-card .portal-unlock button { padding: 10px 20px; background: linear-gradient(135deg, var(--accent-dim), #7c3aed); color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: opacity 0.2s; }
+        .blocked-card .portal-unlock button:hover { opacity: 0.9; }
+        .blocked-card .unlock-error { font-size: 12px; color: var(--red); margin-top: 8px; display: none; }
         .token-expiry-bar { display:flex; align-items:center; gap:8px; padding:6px 14px; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; font-size:12px; color:var(--text-muted); white-space:nowrap; }
         .token-expiry-bar .expiry-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
         .token-expiry-bar .expiry-dot.green { background:#22c55e; box-shadow:0 0 6px rgba(34,197,94,0.4); }
@@ -435,6 +443,16 @@
                 <h2 id="t-blocked-title">Access Restricted</h2>
                 <p id="t-blocked-desc">This portal requires authorized access credentials. You will be redirected automatically.</p>
                 <p class="expired-hint" id="expired-hint" style="display:none;"></p>
+                <div class="portal-unlock">
+                    <p>Have the portal password? Enter it to unlock access:</p>
+                    <form onsubmit="handlePortalUnlock(event)">
+                        <div class="unlock-row">
+                            <input type="password" id="portal-password" placeholder="Portal password" autocomplete="off">
+                            <button type="submit">Unlock</button>
+                        </div>
+                    </form>
+                    <div class="unlock-error" id="unlock-error">Incorrect password. Try again.</div>
+                </div>
                 <div class="countdown"><span id="t-redirecting">Redirecting in</span> <span id="redirect-countdown">5</span>s</div>
             </div>
         </div>
@@ -1237,24 +1255,46 @@
         document.getElementById(id).classList.add('active');
     }
 
+    let blockedRedirectInterval = null;
     function showBlocked(expired) {
         showScreen('blocked-screen');
         const hint = document.getElementById('expired-hint');
         if (expired) {
             document.getElementById('t-blocked-title').textContent = 'Token Expired';
-            document.getElementById('t-blocked-desc').textContent = 'Your portal access token has expired. Please request a new token from your administrator.';
-            hint.innerHTML = 'Your previous token was valid but has now expired. A new token is needed to regain access.';
+            document.getElementById('t-blocked-desc').textContent = 'Your portal access token has expired. Enter the portal password below or request a new token.';
+            hint.innerHTML = 'Your previous token was valid but has now expired.';
             hint.style.display = 'block';
             localStorage.removeItem('portal-token');
         }
-        let c = 10;
+        let c = 30;
         const el = document.getElementById('redirect-countdown');
         el.textContent = c;
-        const iv = setInterval(() => {
+        blockedRedirectInterval = setInterval(() => {
             c--;
             el.textContent = c;
-            if (c <= 0) { clearInterval(iv); window.location.href = 'https://newsreporter.live'; }
+            if (c <= 0) { clearInterval(blockedRedirectInterval); window.location.href = 'https://newsreporter.live'; }
         }, 1000);
+        setTimeout(() => { const pw = document.getElementById('portal-password'); if (pw) pw.focus(); }, 200);
+    }
+
+    function handlePortalUnlock(e) {
+        e.preventDefault();
+        const pw = document.getElementById('portal-password').value;
+        const storedPw = localStorage.getItem('nrl_remote_portalPassword') || 'NR@2024';
+        const errEl = document.getElementById('unlock-error');
+        if (pw === storedPw) {
+            if (blockedRedirectInterval) clearInterval(blockedRedirectInterval);
+            errEl.style.display = 'none';
+            const ts = Date.now();
+            const validity = 7 * 24 * 60 * 60 * 1000;
+            const token = TOKEN_SECRET + '-' + ts + '-' + validity;
+            localStorage.setItem('portal-token', token);
+            showLogin();
+        } else {
+            errEl.style.display = 'block';
+            document.getElementById('portal-password').value = '';
+            document.getElementById('portal-password').focus();
+        }
     }
 
     function showLogin() {
