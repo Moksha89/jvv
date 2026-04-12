@@ -953,12 +953,25 @@
     <!-- Device Password Modal -->
     <div class="modal-overlay" id="device-modal">
         <div class="modal-box">
-            <h3 id="device-modal-title">Enter Device Password</h3>
-            <p id="device-modal-desc">Authentication required to connect</p>
+            <h3 id="device-modal-title">Connect to Device</h3>
+            <p id="device-modal-desc">Enter credentials to connect via RDP</p>
             <form onsubmit="submitDevicePassword(event)">
                 <div class="form-group">
                     <label id="t-device-pass-label">Device Password</label>
-                    <input class="form-input" type="password" id="device-pass-input" placeholder="Enter password" required>
+                    <input class="form-input" type="password" id="device-pass-input" placeholder="Enter device password" required>
+                </div>
+                <div class="form-group" style="margin-top:12px;">
+                    <label>Windows Username <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+                    <input class="form-input" type="text" id="rdp-username-input" placeholder="Or enter on Windows login screen">
+                </div>
+                <div class="form-group" style="margin-top:12px;">
+                    <label>Windows Password <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+                    <input class="form-input" type="password" id="rdp-password-input" placeholder="Or enter on Windows login screen">
+                </div>
+                <div style="margin-top:8px;">
+                    <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);cursor:pointer;">
+                        <input type="checkbox" id="rdp-save-creds" style="width:auto;"> Remember credentials for this device
+                    </label>
                 </div>
                 <div class="error-msg" id="device-pass-error">Incorrect password</div>
                 <div class="modal-actions">
@@ -1081,9 +1094,27 @@
     // ============ Configuration ============
     const GUAC_BASE = 'https://remote.newsreporter.live';
     const DEFAULT_DEVICE_PASS = 'connect@123';
+    // Guacamole auth - get token on demand
+    function getGuacToken(callback) {
+        var u = sessionStorage.getItem('dashboard-username') || '';
+        var creds = Object.assign({}, CLIENT_CREDS, JSON.parse(localStorage.getItem('dashboard-credentials') || '{}'));
+        var p = creds[u] || '';
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', GUAC_BASE + '/guacamole/api/tokens', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+                callback(data.authToken);
+            } else { callback(null); }
+        };
+        xhr.onerror = function() { callback(null); };
+        xhr.send('username=' + encodeURIComponent(u) + '&password=' + encodeURIComponent(p));
+    }
 
     let devices = [
-        { id: 'uae-pc', name: 'UAE Office PC', host: '192.168.1.100', os: 'Windows 11 Pro', cpu: 'Intel i5', ram: '8 GB', status: 'online', user: 'user', guacId: 'UAE-PC', mac: 'AA:BB:CC:DD:EE:01', group: 'office', serverDeviceId: 'VARMA678-29194' }
+        { id: 'varma-pc', name: 'Varma PC', host: '192.168.1.101', os: 'Windows 11 Pro', cpu: 'Intel i5', ram: '8 GB', status: 'online', user: '', guacId: 'VARMA-PC', mac: 'AA:BB:CC:DD:EE:01', group: 'office', serverDeviceId: 'VARMA678-29194', frpPort: 33891 },
+        { id: 'uae-pc', name: 'UAE Office PC', host: '192.168.1.100', os: 'Windows 11 Pro', cpu: 'Intel i5', ram: '8 GB', status: 'offline', user: '', guacId: 'UAE-PC', mac: 'AA:BB:CC:DD:EE:02', group: 'office', serverDeviceId: 'UAE-PC-001', frpPort: 33892 }
     ];
 
     // ============ Device Rename ============
@@ -1392,6 +1423,12 @@
         document.getElementById('device-modal-title').textContent = 'Connect to ' + connectingDevice.name;
         document.getElementById('device-pass-input').value = '';
         document.getElementById('device-pass-error').classList.remove('visible');
+        // Load saved RDP credentials if available
+        var savedCreds = JSON.parse(localStorage.getItem('rdp-credentials') || '{}');
+        var creds = savedCreds[id] || {};
+        document.getElementById('rdp-username-input').value = creds.username || '';
+        document.getElementById('rdp-password-input').value = creds.password || '';
+        document.getElementById('rdp-save-creds').checked = !!creds.username;
         document.getElementById('device-modal').classList.add('active');
     }
 
@@ -1404,16 +1441,29 @@
         e.preventDefault();
         if (!connectingDevice) return;
         const pass = document.getElementById('device-pass-input').value;
+        const rdpUser = document.getElementById('rdp-username-input').value.trim();
+        const rdpPass = document.getElementById('rdp-password-input').value;
+        const saveCreds = document.getElementById('rdp-save-creds').checked;
         const storedPasses = JSON.parse(localStorage.getItem('device-passwords') || '{}');
         const expected = storedPasses[connectingDevice.id] || DEFAULT_DEVICE_PASS;
         if (pass === expected) {
-            // Save device ref before closing modal (closeDeviceModal sets connectingDevice to null)
+            // Windows credentials are optional - user can type them on Windows login screen
+            // Save RDP credentials if checkbox is checked
+            if (saveCreds) {
+                var savedCreds = JSON.parse(localStorage.getItem('rdp-credentials') || '{}');
+                savedCreds[connectingDevice.id] = { username: rdpUser, password: rdpPass };
+                localStorage.setItem('rdp-credentials', JSON.stringify(savedCreds));
+            }
+            // Save device ref before closing modal
             const device = connectingDevice;
+            device._rdpUser = rdpUser;
+            device._rdpPass = rdpPass;
             document.getElementById('device-modal').classList.remove('active');
             showConnecting(device);
         } else {
+            document.getElementById('device-pass-error').textContent = 'Incorrect device password';
             document.getElementById('device-pass-error').classList.add('visible');
-            setTimeout(() => document.getElementById('device-pass-error').classList.remove('visible'), 3000);
+            setTimeout(() => { document.getElementById('device-pass-error').classList.remove('visible'); document.getElementById('device-pass-error').textContent = 'Incorrect password'; }, 3000);
         }
     }
 
@@ -1425,21 +1475,27 @@
         modal.classList.add('active');
         document.getElementById('quality-bar').style.display = 'flex';
         addLogEntry('connect', 'Connecting to ' + device.name);
-        // Use auth bridge page for seamless Guacamole authentication
+        // Get Guacamole auth token, then open auth bridge with token
         var clientId = btoa(device.guacId + '\x00c\x00default');
-        var guacUrl = GUAC_BASE + '/guac-auth.html?client=' + encodeURIComponent(clientId);
-        setTimeout(function() {
-            modal.classList.remove('active');
-            addLogEntry('connect', 'Connected to ' + device.name);
-            addConnectionHistory(device.id, device.name);
-            addConnectionTab(device.name, device.id);
-            sendNotification('Connected', 'Successfully connected to ' + device.name);
-            var guacWin = window.open(guacUrl, '_blank');
-            if (!guacWin || guacWin.closed) {
-                window.location.href = guacUrl;
-            }
-            showToast('Connected to ' + device.name, 'success');
-        }, 1500);
+        getGuacToken(function(token) {
+            var guacUrl = GUAC_BASE + '/guac-auth.html?client=' + encodeURIComponent(clientId) + '&name=' + encodeURIComponent(device.name);
+            if (token) guacUrl += '&token=' + encodeURIComponent(token);
+            setTimeout(function() {
+                modal.classList.remove('active');
+                addLogEntry('connect', 'Connected to ' + device.name);
+                addConnectionHistory(device.id, device.name);
+                addConnectionTab(device.name, device.id);
+                sendNotification('Connected', 'Successfully connected to ' + device.name);
+                var guacWin = window.open(guacUrl, '_blank');
+                if (!guacWin || guacWin.closed) {
+                    window.location.href = guacUrl;
+                }
+                showToast('Connected to ' + device.name, 'success');
+                // Clear sensitive data from device object
+                delete device._rdpUser;
+                delete device._rdpPass;
+            }, 1500);
+        });
     }
 
     // ============ Bookmarks ============
