@@ -3227,6 +3227,25 @@
     function closeTouchMenu() {
         document.getElementById('touch-menu').classList.remove('open');
     }
+    function toggleMobileKeyboard() {
+        var inp = document.getElementById('mobile-keyboard-input');
+        if (inp) {
+            inp.focus();
+            showToast('Mobile keyboard toggled', 'success');
+        }
+    }
+    function sendKeyCombo(keys) {
+        // Send key combination via Guacamole if active session exists
+        if (typeof guacClient !== 'undefined' && guacClient) {
+            keys.forEach(function(k) { guacClient.sendKeyEvent(1, parseInt(k)); });
+            setTimeout(function() {
+                keys.reverse().forEach(function(k) { guacClient.sendKeyEvent(0, parseInt(k)); });
+            }, 100);
+            showToast('Key combo sent', 'success');
+        } else {
+            showToast('No active RDP session', 'error');
+        }
+    }
 
     // ============ Feature 15: Health Alerts ============
     let healthAlerts = [];
@@ -3422,18 +3441,28 @@
         <button class="bar-btn" onclick="exitFullscreen()" title="Exit Fullscreen" style="color:var(--red);border-color:rgba(248,113,113,0.3);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg> Exit</button>
     </div>
 
-    <!-- Mobile Touch FAB -->
+    <!-- Mobile Touch FAB with RDP Controls -->
     <div class="touch-controls" id="touch-controls">
         <div class="touch-menu" id="touch-menu">
+            <div style="padding:8px 14px 4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">Navigation</div>
             <div class="touch-menu-item" onclick="switchTab('devices',null);closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg> Devices</div>
             <div class="touch-menu-item" onclick="switchTab('sessions',null);closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Sessions</div>
             <div class="touch-menu-item" onclick="switchTab('monitor',null);closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Monitor</div>
             <div class="touch-menu-item" onclick="switchTab('tools',null);closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Tools</div>
+            <div style="margin:4px 14px;border-top:1px solid var(--border-subtle);"></div>
+            <div style="padding:8px 14px 4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">RDP Controls</div>
+            <div class="touch-menu-item" onclick="sendCtrlAltDel();closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/></svg> Ctrl+Alt+Del</div>
+            <div class="touch-menu-item" onclick="sendKeyCombo(['65507','65513','65535']);closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="22" height="12" rx="2"/><line x1="7" y1="12" x2="17" y2="12"/></svg> Windows Key</div>
+            <div class="touch-menu-item" onclick="toggleClipboardSync();closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg> Clipboard Sync</div>
+            <div class="touch-menu-item" onclick="toggleMobileKeyboard();closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="6" y1="16" x2="18" y2="16"/></svg> Toggle Keyboard</div>
+            <div style="margin:4px 14px;border-top:1px solid var(--border-subtle);"></div>
             <div class="touch-menu-item" onclick="handleLogout();closeTouchMenu()" style="color:var(--red);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Sign Out</div>
         </div>
         <button class="touch-fab" onclick="toggleTouchMenu()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         </button>
     </div>
+    <!-- Hidden input for mobile keyboard toggle -->
+    <input type="text" id="mobile-keyboard-input" style="position:fixed;top:-100px;left:-100px;opacity:0;width:1px;height:1px;" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 </body>
 </html>
