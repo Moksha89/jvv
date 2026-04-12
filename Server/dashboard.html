@@ -2106,28 +2106,13 @@
         });
     }
 
-    // ============ Share Session ============
+    // ============ Share Session (legacy - replaced by Share Access Links) ============
     let shareMode = 'full';
     function selectShareMode(mode) {
         shareMode = mode;
         document.querySelectorAll('.share-opt').forEach(el => el.classList.remove('selected'));
-        document.getElementById('share-' + mode).classList.add('selected');
-    }
-
-    function generateShareLink() {
-        const token = TOKEN_SECRET + '-' + Date.now() + '-' + (24 * 60 * 60 * 1000);
-        const link = window.location.origin + window.location.pathname + '?token=' + token + '&mode=' + shareMode;
-        document.getElementById('share-link-url').value = link;
-        document.getElementById('share-link-output').style.display = 'block';
-        addLogEntry('share', 'Share link generated (' + shareMode + ' access)');
-        showToast('Share link generated', 'success');
-    }
-
-    function copyShareLink() {
-        const input = document.getElementById('share-link-url');
-        input.select();
-        navigator.clipboard.writeText(input.value);
-        showToast('Link copied to clipboard', 'success');
+        var el = document.getElementById('share-' + mode);
+        if (el) el.classList.add('selected');
     }
 
     // ============ Activity Log ============
