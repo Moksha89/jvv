@@ -93,6 +93,9 @@ body { background: #0a0a1a; color: #fff; font-family: -apple-system, BlinkMacSys
             frame.src = guacUrl;
             frame.style.display = 'block';
             document.getElementById('loading-screen').style.display = 'none';
+            // Focus iframe so keyboard input goes to RDP session
+            frame.addEventListener('load', function() { frame.focus(); });
+            setTimeout(function() { frame.focus(); }, 500);
         } else {
             document.getElementById('loading-screen').innerHTML = '<div class="error"><h2>Authentication failed</h2><p>' + xhr.responseText + '</p></div>';
         }
@@ -194,12 +197,17 @@ function disconnectSession() {
     }
 }
 
-// Keyboard shortcut: F11 for fullscreen
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'F11') {
-        e.preventDefault();
-        toggleFullscreen();
+// Click anywhere outside toolbar to refocus iframe for keyboard input
+document.addEventListener('click', function(e) {
+    if (!toolbar.contains(e.target) && !document.getElementById('clipboard-panel').contains(e.target)) {
+        var frame = document.getElementById('guac-frame');
+        if (frame) frame.focus();
     }
+});
+
+// Refocus iframe when mouse enters it
+document.getElementById('guac-frame').addEventListener('mouseenter', function() {
+    this.focus();
 });
 </script>
 </body>
