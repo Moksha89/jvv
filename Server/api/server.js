@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -15,7 +16,10 @@ const crypto = require('crypto');
 
 const http = require('http');
 const https = require('https');
+const WebSocket = require('ws');
 const { INDIA_DIRECTORY, generateDistrictDetail, generateMandalDetail, generateVillageDetail } = require('./directory_data');
+const { requireAuth } = require('./middleware/auth');
+const dashboardRoutes = require('./routes/dashboard');
 
 // Category-specific author profiles for SEO
 const CATEGORY_AUTHORS = {
@@ -299,10 +303,11 @@ app.use(helmet({
         directives: {
             defaultSrc: ["'self'"],
             scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+            scriptSrcAttr: ["'unsafe-inline'"],
             styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             fontSrc: ["'self'", "https://fonts.gstatic.com"],
             imgSrc: ["'self'", "data:", "https:", "http:"],
-            connectSrc: ["'self'", "https:"],
+            connectSrc: ["'self'", "https:", "ws:", "wss:"],
             frameSrc: ["'none'"],
             objectSrc: ["'none'"],
             baseUri: ["'self'"]
@@ -315,10 +320,13 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(morgan('combined'));
 
+// Trust proxy for correct client IP behind Cloudflare/nginx
+app.set('trust proxy', true);
+
 // Rate limiting - general API
 const generalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 500,
+    max: 2000,
     message: { success: false, message: 'Too many requests, please try again later' },
     standardHeaders: true,
     legacyHeaders: false
@@ -948,6 +956,12 @@ const stmts = {
         WHERE is_online = 1 AND last_heartbeat < datetime('now', '-2 minutes')
     `),
 };
+
+// ============================================================
+// Mount Dashboard Routes (server-side auth, devices, 2FA, roles)
+// ============================================================
+dashboardRoutes.init(db);
+app.use('/api/dashboard', dashboardRoutes.router);
 
 // ============================================================
 // Auth Middleware & Admin Login
@@ -1896,7 +1910,7 @@ app.post('/api/file-upload', dashUpload.single('file'), (req, res) => {
 });
 
 // POST /api/ssh-exec - Execute safe read-only commands on server (allowlist-based)
-app.post('/api/ssh-exec', (req, res) => {
+app.post('/api/ssh-exec', requireAuth, (req, res) => {
     const { command } = req.body;
     if (!command || typeof command !== 'string') {
         return res.status(400).json({ success: false, message: 'No command provided' });
@@ -1942,8 +1956,8 @@ app.post('/api/ssh-exec', (req, res) => {
     });
 });
 
-// GET /api/device-status - Check if a device is reachable
-app.get('/api/device-status', (req, res) => {
+// GET /api/device-status - Check if a device is reachable (requires auth)
+app.get('/api/device-status', requireAuth, (req, res) => {
     const { host, id } = req.query;
     if (!host) {
         return res.json({ success: false, online: false, message: 'No host provided' });
@@ -1954,8 +1968,8 @@ app.get('/api/device-status', (req, res) => {
     });
 });
 
-// POST /api/screenshot - Capture screenshot placeholder
-app.post('/api/screenshot', (req, res) => {
+// POST /api/screenshot - Capture screenshot placeholder (requires auth)
+app.post('/api/screenshot', requireAuth, (req, res) => {
     res.json({ success: true, message: 'Screenshot captured', url: null });
 });
 
@@ -5803,10 +5817,61 @@ process.on('SIGINT', () => {
 });
 
 // ============================================================
-// Start Server
+// Start Server with WebSocket support
 // ============================================================
 
-app.listen(PORT, '0.0.0.0', () => {
+const server = http.createServer(app);
+
+// WebSocket server for real-time updates
+const wss = new WebSocket.Server({ server, path: '/ws' });
+const wsClients = new Set();
+
+wss.on('connection', (ws, req) => {
+    wsClients.add(ws);
+    ws.isAlive = true;
+
+    ws.on('pong', () => { ws.isAlive = true; });
+    ws.on('close', () => { wsClients.delete(ws); });
+    ws.on('error', () => { wsClients.delete(ws); });
+
+    // Send initial connection confirmation
+    ws.send(JSON.stringify({ type: 'connected', timestamp: new Date().toISOString() }));
+});
+
+// Heartbeat to detect stale connections
+const wsHeartbeat = setInterval(() => {
+    wss.clients.forEach(ws => {
+        if (!ws.isAlive) return ws.terminate();
+        ws.isAlive = false;
+        ws.ping();
+    });
+}, 30000);
+
+wss.on('close', () => clearInterval(wsHeartbeat));
+
+// Broadcast function for real-time updates
+function wsBroadcast(type, data) {
+    const message = JSON.stringify({ type, data, timestamp: new Date().toISOString() });
+    wsClients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(message);
+        }
+    });
+}
+
+// Broadcast device status changes periodically
+setInterval(() => {
+    try {
+        const staleDevices = stmts.getStaleDevices.all();
+        if (staleDevices.length > 0) {
+            staleDevices.forEach(d => stmts.setOffline.run(d.device_id));
+            wsBroadcast('device_status_change', { offlineDevices: staleDevices.map(d => d.device_id) });
+        }
+    } catch (e) { /* ignore */ }
+}, 30000);
+
+server.listen(PORT, '0.0.0.0', () => {
     console.log(`Remote Access Relay API running on port ${PORT}`);
+    console.log(`WebSocket server running on ws://0.0.0.0:${PORT}/ws`);
     console.log(`Database: ${DB_PATH}`);
 });

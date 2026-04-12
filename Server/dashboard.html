@@ -56,6 +56,14 @@
         .blocked-card p { color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin-bottom: 8px; }
         .blocked-card .countdown { font-size: 13px; color: var(--text-muted); margin-top: 20px; }
         .blocked-card .countdown span { color: var(--red); font-weight: 600; }
+        .blocked-card .portal-unlock { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+        .blocked-card .portal-unlock p { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+        .blocked-card .portal-unlock .unlock-row { display: flex; gap: 8px; }
+        .blocked-card .portal-unlock input { flex: 1; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 14px; outline: none; }
+        .blocked-card .portal-unlock input:focus { border-color: var(--accent); }
+        .blocked-card .portal-unlock button { padding: 10px 20px; background: linear-gradient(135deg, var(--accent-dim), #7c3aed); color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: opacity 0.2s; }
+        .blocked-card .portal-unlock button:hover { opacity: 0.9; }
+        .blocked-card .unlock-error { font-size: 12px; color: var(--red); margin-top: 8px; display: none; }
         .login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 32px; }
         .login-card { max-width: 440px; width: 100%; padding: 48px 40px; background: var(--bg-card); backdrop-filter: blur(24px); border: 1px solid var(--glass-border); border-radius: 28px; box-shadow: 0 24px 80px rgba(0,0,0,0.4); }
         .login-logo-wrap { width: 64px; height: 64px; border-radius: 20px; background: linear-gradient(135deg, var(--accent-dim), #7c3aed); display: flex; align-items: center; justify-content: center; margin: 0 auto 28px; box-shadow: 0 8px 32px var(--accent-glow); animation: logoPulse 3s ease-in-out infinite; }
@@ -82,6 +90,9 @@
         .btn-danger { border-color: rgba(248,113,113,0.25); color: var(--red); }
         .btn-danger:hover { background: rgba(248,113,113,0.1); border-color: var(--red); }
         .btn-success { background: var(--green-dim); color: white; border: none; }
+        .share-dur-btn { background:var(--bg-hover);border:1px solid var(--border-subtle);color:var(--text-secondary);padding:8px 4px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;text-align:center; }
+        .share-dur-btn:hover { border-color:rgba(34,211,153,0.4);color:#fff;background:rgba(34,211,153,0.08); }
+        .share-dur-btn.active { border-color:rgba(34,211,153,0.6);color:#34d399;background:rgba(34,211,153,0.12);font-weight:600; }
         .btn-amber { background: rgba(251,191,36,0.15); color: var(--amber); border: 1px solid rgba(251,191,36,0.25); }
         .dashboard-layout { display: flex; min-height: 100vh; position: relative; z-index: 1; }
         .sidebar { width: var(--sidebar-width); height: 100vh; position: fixed; top: 0; left: 0; background: var(--bg-card); backdrop-filter: blur(20px); border-right: 1px solid var(--border); z-index: 100; display: flex; flex-direction: column; transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; }
@@ -141,32 +152,32 @@
         .section-head h2 { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
         .section-head .refresh-btn { width: 36px; height: 36px; border-radius: 10px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
         .section-head .refresh-btn:hover { color: var(--accent); border-color: var(--accent); transform: rotate(180deg); }
-        .devices-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px; }
-        .device-card { background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 0; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden; }
+        .devices-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .device-card { background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 14px; padding: 0; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden; }
         .device-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent-dim), #7c3aed, var(--accent)); opacity: 0; transition: opacity 0.3s; }
-        .device-card:hover { border-color: rgba(99,102,241,0.3); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .device-card:hover { border-color: rgba(99,102,241,0.3); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
         .device-card:hover::before { opacity: 1; }
-        .device-card-inner { padding: 28px; }
-        .device-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
-        .device-icon-box { width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.08)); border: 1px solid rgba(99,102,241,0.15); display: flex; align-items: center; justify-content: center; }
-        .device-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .device-card-inner { padding: 14px; }
+        .device-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+        .device-icon-box { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.08)); border: 1px solid rgba(99,102,241,0.15); display: flex; align-items: center; justify-content: center; }
+        .device-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 100px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
         .device-badge.online { background: rgba(52,211,153,0.1); color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
         .device-badge.offline { background: rgba(248,113,113,0.1); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
         .device-badge-dot { width: 6px; height: 6px; border-radius: 50%; }
         .device-badge.online .device-badge-dot { background: var(--green); box-shadow: 0 0 6px var(--green-glow); }
         .device-badge.offline .device-badge-dot { background: var(--red); }
-        .device-title { font-size: 19px; font-weight: 700; margin-bottom: 4px; }
-        .device-host { font-size: 13px; color: var(--text-muted); font-family: 'SF Mono','Fira Code','JetBrains Mono',monospace; margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
+        .device-title { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+        .device-host { font-size: 11px; color: var(--text-muted); font-family: 'SF Mono','Fira Code','JetBrains Mono',monospace; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
         .device-host::before { content: ''; width: 6px; height: 6px; border-radius: 2px; background: var(--accent-dim); display: inline-block; }
-        .device-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 18px; background: rgba(0,0,0,0.15); border-radius: 14px; margin-bottom: 22px; border: 1px solid var(--border-subtle); }
+        .device-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 10px; background: rgba(0,0,0,0.15); border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border-subtle); }
         [data-theme="light"] .device-specs { background: rgba(0,0,0,0.03); }
-        .spec-item label { display: block; font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 3px; }
-        .spec-item span { font-size: 14px; font-weight: 600; color: var(--text); }
-        .device-actions { display: flex; gap: 8px; margin-bottom: 14px; }
+        .spec-item label { display: block; font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 1px; }
+        .spec-item span { font-size: 12px; font-weight: 600; color: var(--text); }
+        .device-actions { display: flex; gap: 6px; margin-bottom: 0; }
         .device-actions button { flex: 1; }
-        .connect-btn { width: 100%; padding: 13px; border: none; border-radius: 14px; background: linear-gradient(135deg, var(--accent-dim), #7c3aed); color: white; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; position: relative; overflow: hidden; }
+        .connect-btn { width: 100%; padding: 9px; border: none; border-radius: 10px; background: linear-gradient(135deg, var(--accent-dim), #7c3aed); color: white; font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; overflow: hidden; }
         .connect-btn::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent); opacity: 0; transition: opacity 0.3s; }
-        .connect-btn:hover { box-shadow: 0 8px 32px var(--accent-glow); transform: translateY(-1px); }
+        .connect-btn:hover { box-shadow: 0 4px 16px var(--accent-glow); transform: translateY(-1px); }
         .connect-btn:hover::after { opacity: 1; }
         .panel { background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 28px; margin-bottom: 20px; }
         .panel-title { font-size: 16px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle); }
@@ -286,7 +297,7 @@
         .bookmark-item:hover { border-color: var(--accent); }
         .bookmark-info { display: flex; align-items: center; gap: 12px; }
         .bookmark-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(99,102,241,0.1); display: flex; align-items: center; justify-content: center; }
-        @media (max-width: 1024px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .devices-grid { grid-template-columns: 1fr; } .monitor-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 1024px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .devices-grid { grid-template-columns: repeat(2, 1fr); } .monitor-grid { grid-template-columns: 1fr; } }
         @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); box-shadow: 16px 0 48px rgba(0,0,0,0.5); } .main-content { margin-left: 0; } .mobile-menu-btn { display: flex; } .topbar { padding: 0 20px; } .topbar-clock { display: none; } .content-area { padding: 20px 16px 40px; } .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; } .stat-value { font-size: 22px; } .login-card, .blocked-card { padding: 36px 28px; } .share-options { flex-direction: column; } .modal-box { padding: 32px 24px; } .toast { right: 16px; left: 16px; max-width: none; bottom: 20px; } .notif-panel { width: 100%; } .cmd-grid { grid-template-columns: 1fr 1fr; } }
         @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } .tunnel-badge { display: none; } .quality-bar { flex-wrap: wrap; } }
         ::-webkit-scrollbar { width: 6px; }
@@ -424,9 +435,17 @@
                         <circle cx="12" cy="16" r="1"/>
                     </svg>
                 </div>
-                <h2 id="t-blocked-title">Access Restricted</h2>
-                <p id="t-blocked-desc">This portal requires authorized access credentials. You will be redirected automatically.</p>
-                <div class="countdown"><span id="t-redirecting">Redirecting in</span> <span id="redirect-countdown">5</span>s</div>
+                <h2 id="t-blocked-title">Portal Access</h2>
+                <p id="t-blocked-desc">Enter the portal password to access the remote dashboard.</p>
+                <div class="portal-unlock">
+                    <form onsubmit="handlePortalUnlock(event)">
+                        <div class="unlock-row">
+                            <input type="password" id="portal-password" placeholder="Portal password" autocomplete="off">
+                            <button type="submit">Unlock</button>
+                        </div>
+                    </form>
+                    <div class="unlock-error" id="unlock-error">Incorrect password. Try again.</div>
+                </div>
             </div>
         </div>
     </div>
@@ -572,7 +591,7 @@
 
                 <div class="content-area">
                     <!-- Connection Quality Bar -->
-                    <div class="quality-bar" id="quality-bar" style="display:none;">
+                    <div class="quality-bar" id="quality-bar" style="display:flex;">
                         <div class="quality-item"><div class="quality-dot good" id="q-dot"></div><span id="q-status">Excellent</span></div>
                         <div class="quality-item">Latency: <strong id="q-latency">12ms</strong></div>
                         <div class="quality-item">FPS: <strong id="q-fps">30</strong></div>
@@ -606,10 +625,10 @@
                             </div>
                             <div class="stat-card">
                                 <div class="stat-card-top">
-                                    <div class="stat-icon-wrap amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                                    <div class="stat-icon-wrap amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
                                 </div>
-                                <div class="stat-value" style="font-size:20px;">Cloudflare</div>
-                                <div class="stat-label" id="t-tunnel-provider">Tunnel Provider</div>
+                                <div class="stat-value" style="font-size:18px;" id="total-traffic">0 B</div>
+                                <div class="stat-label" id="t-tunnel-provider">Today's Traffic</div>
                             </div>
                         </div>
 
@@ -669,7 +688,7 @@
                                     <span id="t-generate-share">Generate Share Link</span>
                                 </button>
                             </div>
-                            <div id="share-link-output" style="display:none;">
+                            <div id="share-link-output-old" style="display:none;">
                                 <div class="share-link-box">
                                     <input type="text" id="share-link-url" readonly>
                                     <button class="copy-btn" onclick="copyShareLink()" id="t-copy-btn">Copy</button>
@@ -790,6 +809,13 @@
                             <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span id="t-scheduled-tasks">Scheduled Tasks</span></div>
                             <div id="scheduled-tasks-list"></div>
                             <button class="btn btn-ghost btn-sm" onclick="addScheduledTask()" style="margin-top:12px;" id="t-add-task-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> <span id="t-add-task">Add Task</span></button>
+                        </div>
+                        <!-- Shared Access Links -->
+                        <div class="panel">
+                            <div class="panel-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Shared Access Links</div>
+                            <p class="panel-desc">Generate temporary links to give others access to specific devices without sharing login credentials.</p>
+                            <div id="shared-links-list"></div>
+                            <button class="btn btn-ghost btn-sm" onclick="openShareModal()" style="margin-top:12px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Generate New Link</button>
                         </div>
                     </div>
 
@@ -937,12 +963,25 @@
     <!-- Device Password Modal -->
     <div class="modal-overlay" id="device-modal">
         <div class="modal-box">
-            <h3 id="device-modal-title">Enter Device Password</h3>
-            <p id="device-modal-desc">Authentication required to connect</p>
+            <h3 id="device-modal-title">Connect to Device</h3>
+            <p id="device-modal-desc">Enter credentials to connect via RDP</p>
             <form onsubmit="submitDevicePassword(event)">
                 <div class="form-group">
                     <label id="t-device-pass-label">Device Password</label>
-                    <input class="form-input" type="password" id="device-pass-input" placeholder="Enter password" required>
+                    <input class="form-input" type="password" id="device-pass-input" placeholder="Enter device password" required>
+                </div>
+                <div class="form-group" style="margin-top:12px;">
+                    <label>Windows Username <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+                    <input class="form-input" type="text" id="rdp-username-input" placeholder="Or enter on Windows login screen">
+                </div>
+                <div class="form-group" style="margin-top:12px;">
+                    <label>Windows Password <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+                    <input class="form-input" type="password" id="rdp-password-input" placeholder="Or enter on Windows login screen">
+                </div>
+                <div style="margin-top:8px;">
+                    <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);cursor:pointer;">
+                        <input type="checkbox" id="rdp-save-creds" style="width:auto;"> Remember credentials for this device
+                    </label>
                 </div>
                 <div class="error-msg" id="device-pass-error">Incorrect password</div>
                 <div class="modal-actions">
@@ -950,6 +989,71 @@
                     <button type="submit" class="btn btn-accent" id="t-connect-btn">Connect</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Share Access Link Modal -->
+    <div class="modal-overlay" id="share-modal">
+        <div class="modal-box" style="max-width:520px;padding:0;overflow:hidden;">
+            <!-- Header -->
+            <div style="background:linear-gradient(135deg,rgba(34,211,153,0.12),rgba(99,102,241,0.08));padding:24px 28px 16px;border-bottom:1px solid rgba(34,211,153,0.15);">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:40px;height:40px;background:rgba(34,211,153,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    </div>
+                    <div>
+                        <h3 style="font-size:18px;margin:0;">Share Device Access</h3>
+                        <p style="color:var(--text-muted);font-size:12px;margin:2px 0 0;">Generate a temporary link — no login needed for recipients</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Form -->
+            <div style="padding:20px 28px 24px;">
+                <div class="form-group">
+                    <label style="font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:6px;">Device</label>
+                    <select class="form-input" id="share-device-select" style="background:var(--bg-hover);border:1px solid var(--border-subtle);color:#fff;padding:10px 12px;border-radius:10px;font-size:14px;"></select>
+                </div>
+                <div class="form-group" style="margin-top:14px;">
+                    <label style="font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:6px;">Access Duration</label>
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="share-duration-grid">
+                        <button type="button" class="share-dur-btn" data-val="30" onclick="selectShareDuration(this)">30 min</button>
+                        <button type="button" class="share-dur-btn" data-val="60" onclick="selectShareDuration(this)">1 hour</button>
+                        <button type="button" class="share-dur-btn active" data-val="120" onclick="selectShareDuration(this)">2 hours</button>
+                        <button type="button" class="share-dur-btn" data-val="240" onclick="selectShareDuration(this)">4 hours</button>
+                        <button type="button" class="share-dur-btn" data-val="480" onclick="selectShareDuration(this)">8 hours</button>
+                        <button type="button" class="share-dur-btn" data-val="1440" onclick="selectShareDuration(this)">24 hours</button>
+                    </div>
+                    <input type="hidden" id="share-duration" value="120">
+                </div>
+                <div class="form-group" style="margin-top:14px;">
+                    <label style="font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:6px;">Label <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+                    <input class="form-input" type="text" id="share-label" placeholder="e.g. For John - maintenance work" style="background:var(--bg-hover);border:1px solid var(--border-subtle);color:#fff;padding:10px 12px;border-radius:10px;font-size:14px;">
+                </div>
+                <!-- Result area -->
+                <div id="share-result" style="display:none;margin-top:18px;">
+                    <div style="background:rgba(34,211,153,0.08);border:1px solid rgba(34,211,153,0.25);border-radius:12px;padding:16px;">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            <span style="font-size:13px;font-weight:600;color:#34d399;">Link Generated Successfully</span>
+                        </div>
+                        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:8px;">
+                            <input type="text" id="share-link-output" readonly style="flex:1;background:transparent;border:none;outline:none;color:#e2e8f0;font-size:12px;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                            <button type="button" onclick="copyShareLink()" id="share-copy-btn" style="background:linear-gradient(135deg,#22d3a0,#34d399);color:#000;border:none;padding:6px 16px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.2s;">Copy Link</button>
+                        </div>
+                        <p style="font-size:12px;color:var(--text-muted);margin-top:8px;display:flex;align-items:center;gap:6px;" id="share-expiry-info">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <span id="share-expiry-text"></span>
+                        </p>
+                    </div>
+                </div>
+                <div style="display:flex;gap:10px;margin-top:18px;">
+                    <button type="button" class="btn btn-ghost" onclick="closeShareModal()" style="flex:1;padding:10px;">Close</button>
+                    <button type="button" class="btn btn-accent" onclick="generateShareLink()" id="share-generate-btn" style="flex:1.5;padding:10px;background:linear-gradient(135deg,rgba(34,211,153,0.8),#22d3a0);font-weight:600;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                        Generate Link
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -976,7 +1080,7 @@
             't-blocked-title':'Access Restricted','t-blocked-desc':'This portal requires authorized access credentials.','t-redirecting':'Redirecting in',
             't-welcome':'Welcome Back','t-signin-desc':'Sign in to access your remote devices','t-username-label':'Username','t-password-label':'Password','t-signin-btn':'Sign In',
             't-nav-main':'Main','t-nav-devices':'Devices','t-nav-sessions':'Sessions','t-nav-monitor':'Monitor','t-nav-tools':'Tools','t-nav-system':'System','t-nav-activity':'Activity Log','t-nav-settings':'Settings','t-signout':'Sign out',
-            't-total-devices':'Total Devices','t-online-now':'Online Now','t-active-sessions':'Active Sessions','t-tunnel-provider':'Tunnel Provider','t-your-devices':'Your Devices',
+            't-total-devices':'Total Devices','t-online-now':'Online Now','t-active-sessions':'Active Sessions','t-tunnel-provider':'Today\'s Traffic','t-your-devices':'Your Devices',
             't-bookmarks':'Bookmarks','t-add-bookmark-btn':'+ Add',
             't-active-sessions-title':'Active Sessions','t-no-sessions':'No active sessions',
             't-session-recording':'Session Recording','t-recording-desc':'Record your remote sessions for playback and audit purposes.','t-start-recording':'Start Recording','t-view-recordings':'View Recordings',
@@ -995,7 +1099,7 @@
             't-blocked-title':'Acceso Restringido','t-blocked-desc':'Este portal requiere credenciales de acceso autorizadas.','t-redirecting':'Redirigiendo en',
             't-welcome':'Bienvenido','t-signin-desc':'Inicie sesion para acceder a sus dispositivos remotos','t-username-label':'Usuario','t-password-label':'Contrasena','t-signin-btn':'Iniciar Sesion',
             't-nav-main':'Principal','t-nav-devices':'Dispositivos','t-nav-sessions':'Sesiones','t-nav-monitor':'Monitor','t-nav-tools':'Herramientas','t-nav-system':'Sistema','t-nav-activity':'Registro','t-nav-settings':'Ajustes','t-signout':'Cerrar sesion',
-            't-total-devices':'Total Dispositivos','t-online-now':'En Linea','t-active-sessions':'Sesiones Activas','t-tunnel-provider':'Proveedor Tunel','t-your-devices':'Tus Dispositivos',
+            't-total-devices':'Total Dispositivos','t-online-now':'En Linea','t-active-sessions':'Sesiones Activas','t-tunnel-provider':'Tráfico de Hoy','t-your-devices':'Tus Dispositivos',
             't-bookmarks':'Marcadores','t-add-bookmark-btn':'+ Agregar',
             't-active-sessions-title':'Sesiones Activas','t-no-sessions':'No hay sesiones activas',
             't-system-monitor':'Monitor del Sistema','t-quick-commands':'Comandos Rapidos','t-keyboard-shortcuts':'Atajos de Teclado','t-kb-desc':'Enviar combinaciones de teclas al escritorio remoto.',
@@ -1064,11 +1168,28 @@
 
     // ============ Configuration ============
     const GUAC_BASE = 'https://remote.newsreporter.live';
-    const TOKEN_SECRET = 'nrl-remote-x7k9';
     const DEFAULT_DEVICE_PASS = 'connect@123';
+    // Guacamole auth - get token on demand
+    function getGuacToken(callback) {
+        var u = sessionStorage.getItem('dashboard-username') || '';
+        var creds = Object.assign({}, CLIENT_CREDS, JSON.parse(localStorage.getItem('dashboard-credentials') || '{}'));
+        var p = creds[u] || '';
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', GUAC_BASE + '/guacamole/api/tokens', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+                callback(data.authToken);
+            } else { callback(null); }
+        };
+        xhr.onerror = function() { callback(null); };
+        xhr.send('username=' + encodeURIComponent(u) + '&password=' + encodeURIComponent(p));
+    }
 
     let devices = [
-        { id: 'uae-pc', name: 'UAE Office PC', host: '192.168.1.100', os: 'Windows 11 Pro', cpu: 'Intel i5', ram: '8 GB', status: 'online', user: 'user', guacId: 'uae-pc', mac: 'AA:BB:CC:DD:EE:01', group: 'office' }
+        { id: 'varma-pc', name: 'Varma PC', host: '192.168.1.101', os: 'Windows 11 Pro', cpu: 'Intel i5', ram: '8 GB', status: 'online', user: '', guacId: 'VARMA-PC', mac: 'AA:BB:CC:DD:EE:01', group: 'office', serverDeviceId: 'VARMA678-29194', frpPort: 33891 },
+        { id: 'uae-pc', name: 'UAE Office PC', host: '192.168.1.100', os: 'Windows 11 Pro', cpu: 'Intel i5', ram: '8 GB', status: 'online', user: '', guacId: 'UAE-PC', mac: 'AA:BB:CC:DD:EE:02', group: 'office', serverDeviceId: 'UAE-PC-001', frpPort: 33892 }
     ];
 
     // ============ Device Rename ============
@@ -1095,34 +1216,10 @@
     }
     loadCustomDeviceNames();
 
-    // ============ Token & Access ============
-    function getUrlToken() {
-        const p = new URLSearchParams(window.location.search);
-        return p.get('token') || p.get('t');
-    }
-
-    function validateToken(t) {
-        if (!t || !t.startsWith(TOKEN_SECRET + '-')) return false;
-        const parts = t.split('-');
-        const ts = Number(parts[parts.length - 2]);
-        const validity = Number(parts[parts.length - 1]);
-        if (!ts || !validity) return false;
-        return Date.now() < ts + validity;
-    }
-
+    // ============ Portal Access (Password-based) ============
     function checkAccess() {
-        const token = getUrlToken();
-        if (token && validateToken(token)) {
-            localStorage.setItem('portal-token', token);
-            const url = new URL(window.location);
-            url.searchParams.delete('token');
-            url.searchParams.delete('t');
-            window.history.replaceState({}, '', url.toString());
-            showLogin();
-            return;
-        }
-        const saved = localStorage.getItem('portal-token');
-        if (saved && validateToken(saved)) {
+        const unlocked = localStorage.getItem('portal-unlocked');
+        if (unlocked === 'true') {
             showLogin();
             return;
         }
@@ -1136,13 +1233,26 @@
 
     function showBlocked() {
         showScreen('blocked-screen');
-        let c = 5;
-        const el = document.getElementById('redirect-countdown');
-        const iv = setInterval(() => {
-            c--;
-            el.textContent = c;
-            if (c <= 0) { clearInterval(iv); window.location.href = 'https://newsreporter.live'; }
-        }, 1000);
+        setTimeout(() => { const pw = document.getElementById('portal-password'); if (pw) pw.focus(); }, 200);
+    }
+
+    function handlePortalUnlock(e) {
+        e.preventDefault();
+        const pw = document.getElementById('portal-password').value;
+        // Portal password: check hardcoded default first, then any custom password from localStorage
+        const defaultPw = 'NR@2024';
+        const customPw = localStorage.getItem('nrl_remote_portalPassword');
+        const storedPw = (pw === defaultPw) ? defaultPw : (customPw || defaultPw);
+        const errEl = document.getElementById('unlock-error');
+        if (pw === storedPw) {
+            errEl.style.display = 'none';
+            localStorage.setItem('portal-unlocked', 'true');
+            showLogin();
+        } else {
+            errEl.style.display = 'block';
+            document.getElementById('portal-password').value = '';
+            document.getElementById('portal-password').focus();
+        }
     }
 
     function showLogin() {
@@ -1151,22 +1261,100 @@
         showScreen('login-screen');
     }
 
+    // Auth token helper - all API calls should use this
+    function getAuthHeaders() {
+        const token = sessionStorage.getItem('dashboard-auth-token');
+        return token ? { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+    }
+
+    function authFetch(url, options) {
+        options = options || {};
+        options.headers = Object.assign({}, getAuthHeaders(), options.headers || {});
+        return fetch(url, options);
+    }
+
+    // Client-side credentials (fallback when server API is not available)
+    const CLIENT_CREDS = {
+        'admin': 'Sarkar@00',
+        'sarkar': 'Sarkar@00'
+    };
+
+    function clientSideLogin(u, p) {
+        const storedCreds = JSON.parse(localStorage.getItem('dashboard-credentials') || '{}');
+        const allCreds = Object.assign({}, CLIENT_CREDS, storedCreds);
+        if (allCreds[u] && allCreds[u] === p) {
+            sessionStorage.setItem('dashboard-logged-in', 'true');
+            sessionStorage.setItem('dashboard-user-role', u === 'admin' || u === 'sarkar' ? 'admin' : 'viewer');
+            sessionStorage.setItem('dashboard-username', u);
+            addLogEntry('login', 'User "' + u + '" logged in');
+            showDashboard();
+            return true;
+        }
+        return false;
+    }
+
     function handleLogin(e) {
         e.preventDefault();
         const u = document.getElementById('login-user').value.trim();
         const p = document.getElementById('login-pass').value;
-        const stored = JSON.parse(localStorage.getItem('dashboard-credentials') || 'null');
-        const validUser = stored ? stored.username : 'admin';
-        const validPass = stored ? stored.password : 'NR@2024';
-        if (u === validUser && p === validPass) {
-            sessionStorage.setItem('dashboard-logged-in', 'true');
-            addLogEntry('login', 'User "' + u + '" logged in');
-            showDashboard();
-        } else {
-            const err = document.getElementById('login-error');
-            err.classList.add('visible');
-            setTimeout(() => err.classList.remove('visible'), 3000);
-        }
+        fetch('/api/dashboard/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: u, password: p })
+        })
+        .then(r => {
+            if (r.status === 404 || r.status === 429 || r.status >= 500) throw new Error('API not available');
+            return r.json();
+        })
+        .then(data => {
+            if (data.success && data.token) {
+                sessionStorage.setItem('dashboard-auth-token', data.token);
+                sessionStorage.setItem('dashboard-logged-in', 'true');
+                sessionStorage.setItem('dashboard-user-role', data.user.role);
+                sessionStorage.setItem('dashboard-username', data.user.username);
+                addLogEntry('login', 'User "' + u + '" logged in');
+                showDashboard();
+            } else if (data.requires2FA) {
+                const code = prompt('Enter your 2FA code:');
+                if (code) {
+                    fetch('/api/dashboard/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: u, password: p, totpCode: code })
+                    })
+                    .then(r => r.json())
+                    .then(data2 => {
+                        if (data2.success && data2.token) {
+                            sessionStorage.setItem('dashboard-auth-token', data2.token);
+                            sessionStorage.setItem('dashboard-logged-in', 'true');
+                            sessionStorage.setItem('dashboard-user-role', data2.user.role);
+                            sessionStorage.setItem('dashboard-username', data2.user.username);
+                            addLogEntry('login', 'User "' + u + '" logged in with 2FA');
+                            showDashboard();
+                        } else {
+                            const err = document.getElementById('login-error');
+                            err.textContent = data2.message || 'Invalid 2FA code';
+                            err.classList.add('visible');
+                            setTimeout(() => err.classList.remove('visible'), 3000);
+                        }
+                    });
+                }
+            } else {
+                const err = document.getElementById('login-error');
+                err.textContent = data.message || 'Invalid credentials';
+                err.classList.add('visible');
+                setTimeout(() => err.classList.remove('visible'), 3000);
+            }
+        })
+        .catch(() => {
+            // Server API not available - fall back to client-side login
+            if (!clientSideLogin(u, p)) {
+                const err = document.getElementById('login-error');
+                err.textContent = 'Invalid credentials';
+                err.classList.add('visible');
+                setTimeout(() => err.classList.remove('visible'), 3000);
+            }
+        });
     }
 
     function showDashboard() {
@@ -1203,6 +1391,9 @@
 
     function handleLogout() {
         sessionStorage.removeItem('dashboard-logged-in');
+        sessionStorage.removeItem('dashboard-auth-token');
+        sessionStorage.removeItem('dashboard-user-role');
+        sessionStorage.removeItem('dashboard-username');
         addLogEntry('login', 'User logged out');
         showLogin();
     }
@@ -1268,11 +1459,25 @@
                 const card = document.createElement('div');
                 card.className = 'device-card';
                 const isOnline = d.status === 'online';
+                var connsBadge = (d._frpConns > 0) ? '<span style="background:rgba(34,211,153,0.15);color:var(--green);font-size:10px;padding:2px 6px;border-radius:4px;margin-left:4px;">' + d._frpConns + ' conn</span>' : '';
+                var trafficRow = '';
+                if (d._frpTrafficIn || d._frpTrafficOut) {
+                    trafficRow = '<div style="display:flex;gap:12px;margin-top:8px;padding:6px 8px;background:rgba(99,102,241,0.06);border-radius:6px;font-size:11px;color:var(--text-muted);">' +
+                        '<span title="Download today"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" style="vertical-align:middle;margin-right:2px;"><polyline points="7 13 12 18 17 13"/><line x1="12" y1="18" x2="12" y2="6"/></svg>' + formatTraffic(d._frpTrafficIn || 0) + '</span>' +
+                        '<span title="Upload today"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" style="vertical-align:middle;margin-right:2px;"><polyline points="17 11 12 6 7 11"/><line x1="12" y1="6" x2="12" y2="18"/></svg>' + formatTraffic(d._frpTrafficOut || 0) + '</span>' +
+                        (d._frpVersion ? '<span title="FRP Agent Version" style="margin-left:auto;">v' + d._frpVersion + '</span>' : '') +
+                    '</div>';
+                }
+                var lastSeenRow = '';
+                if (d._frpLastStart) {
+                    lastSeenRow = '<div style="font-size:10px;color:var(--text-muted);margin-top:4px;">Last connected: ' + d._frpLastStart + '</div>';
+                }
                 card.innerHTML = '<div class="device-card-inner">' +
                     '<div class="device-header">' +
-                        '<div class="device-icon-box"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>' +
+                        '<div class="device-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>' +
                         '<div style="display:flex;align-items:center;gap:8px;">' +
                             '<span class="device-badge ' + d.status + '"><span class="device-badge-dot"></span>' + d.status.toUpperCase() + '</span>' +
+                            connsBadge +
                             '<span onclick="event.stopPropagation();removeDevice(\'' + d.id + '\')" title="Remove device" style="cursor:pointer;opacity:0.3;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>' +
                         '</div>' +
                     '</div>' +
@@ -1282,15 +1487,21 @@
                         '<div class="spec-item"><label>OS</label><span>' + d.os + '</span></div>' +
                         '<div class="spec-item"><label>CPU</label><span>' + d.cpu + '</span></div>' +
                         '<div class="spec-item"><label>RAM</label><span>' + d.ram + '</span></div>' +
-                        '<div class="spec-item"><label>User</label><span>' + d.user + '</span></div>' +
+                        '<div class="spec-item"><label>User</label><span>' + (d.user || 'N/A') + '</span></div>' +
                     '</div>' +
+                    trafficRow +
+                    lastSeenRow +
                     '<div class="device-actions">' +
                         (isOnline ?
                             '<button class="connect-btn" onclick="connectDevice(\'' + d.id + '\')" style="flex:1;">' +
                                 '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>' +
-                                'Connect via RDP</button>'
+                                'Connect via RDP</button>' +
+                            '<button class="connect-btn" onclick="event.stopPropagation();openShareModal(\'' + d.id + '\')" style="flex:0.6;background:rgba(34,211,153,0.1);border-color:rgba(34,211,153,0.3);" title="Generate shareable access link">' +
+                                '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>' +
+                                'Share</button>'
                             :
-                            '<button class="connect-btn" style="opacity:0.5;cursor:not-allowed;flex:1;" disabled>Device Offline</button>'
+                            '<button class="connect-btn" style="opacity:0.5;cursor:not-allowed;flex:1;" disabled>Device Offline</button>' +
+                            (d.mac ? '<button class="connect-btn" onclick="event.stopPropagation();sendWoL(\'' + d.id + '\')" style="flex:0.5;background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.3);" title="Wake on LAN"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg> Wake</button>' : '')
                         ) +
                     '</div>' +
                 '</div>';
@@ -1310,6 +1521,12 @@
         document.getElementById('device-modal-title').textContent = 'Connect to ' + connectingDevice.name;
         document.getElementById('device-pass-input').value = '';
         document.getElementById('device-pass-error').classList.remove('visible');
+        // Load saved RDP credentials if available
+        var savedCreds = JSON.parse(localStorage.getItem('rdp-credentials') || '{}');
+        var creds = savedCreds[id] || {};
+        document.getElementById('rdp-username-input').value = creds.username || '';
+        document.getElementById('rdp-password-input').value = creds.password || '';
+        document.getElementById('rdp-save-creds').checked = !!creds.username;
         document.getElementById('device-modal').classList.add('active');
     }
 
@@ -1320,35 +1537,295 @@
 
     function submitDevicePassword(e) {
         e.preventDefault();
+        if (!connectingDevice) return;
         const pass = document.getElementById('device-pass-input').value;
+        const rdpUser = document.getElementById('rdp-username-input').value.trim();
+        const rdpPass = document.getElementById('rdp-password-input').value;
+        const saveCreds = document.getElementById('rdp-save-creds').checked;
         const storedPasses = JSON.parse(localStorage.getItem('device-passwords') || '{}');
         const expected = storedPasses[connectingDevice.id] || DEFAULT_DEVICE_PASS;
         if (pass === expected) {
-            closeDeviceModal();
-            showConnecting();
+            // Windows credentials are optional - user can type them on Windows login screen
+            // Save RDP credentials if checkbox is checked
+            if (saveCreds) {
+                var savedCreds = JSON.parse(localStorage.getItem('rdp-credentials') || '{}');
+                savedCreds[connectingDevice.id] = { username: rdpUser, password: rdpPass };
+                localStorage.setItem('rdp-credentials', JSON.stringify(savedCreds));
+            }
+            // Save device ref before closing modal
+            const device = connectingDevice;
+            device._rdpUser = rdpUser;
+            device._rdpPass = rdpPass;
+            document.getElementById('device-modal').classList.remove('active');
+            showConnecting(device);
         } else {
+            document.getElementById('device-pass-error').textContent = 'Incorrect device password';
             document.getElementById('device-pass-error').classList.add('visible');
-            setTimeout(() => document.getElementById('device-pass-error').classList.remove('visible'), 3000);
+            setTimeout(() => { document.getElementById('device-pass-error').classList.remove('visible'); document.getElementById('device-pass-error').textContent = 'Incorrect password'; }, 3000);
         }
     }
 
-    function showConnecting() {
+    function showConnecting(device) {
+        if (!device) device = connectingDevice;
+        if (!device) return;
         const modal = document.getElementById('connecting-modal');
-        document.getElementById('connecting-text').textContent = 'Establishing secure connection to ' + connectingDevice.name + '...';
+        document.getElementById('connecting-text').textContent = 'Establishing secure connection to ' + device.name + '...';
         modal.classList.add('active');
         document.getElementById('quality-bar').style.display = 'flex';
-        addLogEntry('connect', 'Connecting to ' + connectingDevice.name);
-        setTimeout(() => {
+        addLogEntry('connect', 'Connecting to ' + device.name);
+        // Build auth bridge URL with Guacamole credentials for fresh token auth
+        var clientId = btoa(device.guacId + '\x00c\x00default');
+        var u = sessionStorage.getItem('dashboard-username') || 'admin';
+        var creds = Object.assign({}, CLIENT_CREDS, JSON.parse(localStorage.getItem('dashboard-credentials') || '{}'));
+        var p = creds[u] || '';
+        var guacUrl = GUAC_BASE + '/guac-auth.html?client=' + encodeURIComponent(clientId) + '&name=' + encodeURIComponent(device.name) + '&gu=' + encodeURIComponent(u) + '&gp=' + encodeURIComponent(p);
+        // Open window IMMEDIATELY in user gesture context to avoid popup blockers
+        // Opening inside setTimeout breaks the gesture chain and browsers block the popup
+        var guacWin = window.open(guacUrl, '_blank');
+        setTimeout(function() {
             modal.classList.remove('active');
-            const guacUrl = GUAC_BASE + '/#/client/' + btoa('c\x00' + connectingDevice.guacId + '\x00c\x00mysql');
-            addLogEntry('connect', 'Connected to ' + connectingDevice.name);
-            addConnectionHistory(connectingDevice.id, connectingDevice.name);
-            addConnectionTab(connectingDevice.name, connectingDevice.id);
-            sendNotification('Connected', 'Successfully connected to ' + connectingDevice.name);
-            window.open(guacUrl, '_blank');
-            showToast('Connected to ' + connectingDevice.name, 'success');
-        }, 2500);
+            addLogEntry('connect', 'Connected to ' + device.name);
+            addConnectionHistory(device.id, device.name);
+            addConnectionTab(device.name, device.id);
+            sendNotification('Connected', 'Successfully connected to ' + device.name);
+            // Fallback: if popup was still blocked, navigate current page
+            if (!guacWin || guacWin.closed) {
+                window.location.href = guacUrl;
+            }
+            showToast('Connected to ' + device.name, 'success');
+            // Clear sensitive data from device object
+            delete device._rdpUser;
+            delete device._rdpPass;
+        }, 1500);
     }
+
+    // ============ Share Access Links ============
+    const SHARE_SECRET = 'nrl-remote-share-2024';
+
+    function generateShareToken() {
+        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var token = '';
+        for (var i = 0; i < 32; i++) token += chars.charAt(Math.floor(Math.random() * chars.length));
+        return token;
+    }
+
+    function simpleSign(data) {
+        var str = JSON.stringify(data) + SHARE_SECRET;
+        var hash = 0;
+        for (var i = 0; i < str.length; i++) {
+            var c = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + c;
+            hash = hash & hash;
+        }
+        return Math.abs(hash).toString(36);
+    }
+
+    function selectShareDuration(btn) {
+        var grid = document.getElementById('share-duration-grid');
+        var btns = grid.querySelectorAll('.share-dur-btn');
+        for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+        btn.classList.add('active');
+        document.getElementById('share-duration').value = btn.getAttribute('data-val');
+    }
+
+    function openShareModal(deviceId) {
+        var sel = document.getElementById('share-device-select');
+        sel.innerHTML = '';
+        devices.filter(function(d) { return d.status === 'online'; }).forEach(function(d) {
+            var opt = document.createElement('option');
+            opt.value = d.id;
+            opt.textContent = d.name;
+            sel.appendChild(opt);
+        });
+        if (deviceId) sel.value = deviceId;
+        document.getElementById('share-result').style.display = 'none';
+        document.getElementById('share-generate-btn').style.display = '';
+        document.getElementById('share-label').value = '';
+        document.getElementById('share-duration').value = '120';
+        // Reset duration buttons
+        var btns = document.querySelectorAll('.share-dur-btn');
+        for (var i = 0; i < btns.length; i++) {
+            btns[i].classList.toggle('active', btns[i].getAttribute('data-val') === '120');
+        }
+        document.getElementById('share-modal').classList.add('active');
+    }
+
+    function closeShareModal() {
+        document.getElementById('share-modal').classList.remove('active');
+    }
+
+    function generateShareLink() {
+        var deviceId = document.getElementById('share-device-select').value;
+        var device = devices.find(function(d) { return d.id === deviceId; });
+        if (!device) { showToast('Please select a device', 'error'); return; }
+
+        var minutes = parseInt(document.getElementById('share-duration').value);
+        if (!minutes || minutes < 1) { showToast('Please select a duration', 'error'); return; }
+
+        var label = document.getElementById('share-label').value.trim();
+        var expiry = Date.now() + (minutes * 60 * 1000);
+        var token = generateShareToken();
+
+        // Get Guacamole credentials
+        var u = sessionStorage.getItem('dashboard-username') || 'admin';
+        var creds = Object.assign({}, CLIENT_CREDS, JSON.parse(localStorage.getItem('dashboard-credentials') || '{}'));
+        var p = creds[u] || '';
+
+        var shareData = {
+            t: token,
+            d: device.guacId,
+            n: device.name,
+            e: expiry,
+            gu: u,
+            gp: p
+        };
+        shareData.s = simpleSign({ t: token, d: device.guacId, e: expiry });
+
+        var encoded = btoa(JSON.stringify(shareData));
+        var shareUrl = window.location.origin + '/share-access.html?code=' + encodeURIComponent(encoded);
+
+        // Save to local storage for management
+        var sharedLinks = JSON.parse(localStorage.getItem('shared-access-links') || '[]');
+        sharedLinks.push({
+            token: token,
+            deviceId: device.id,
+            deviceName: device.name,
+            label: label,
+            created: Date.now(),
+            expiry: expiry,
+            minutes: minutes,
+            url: shareUrl
+        });
+        localStorage.setItem('shared-access-links', JSON.stringify(sharedLinks));
+
+        // Show result - use querySelector to target the INPUT specifically (avoids duplicate ID issues)
+        var shareLinkInput = document.querySelector('#share-result input[type="text"]') || document.querySelector('input#share-link-output');
+        if (shareLinkInput) shareLinkInput.value = shareUrl;
+        // Store URL on a data attribute as backup for copy function
+        var shareResultDiv = document.getElementById('share-result');
+        if (shareResultDiv) shareResultDiv.setAttribute('data-share-url', shareUrl);
+        var expiryDate = new Date(expiry);
+        document.getElementById('share-expiry-text').textContent = 'Expires: ' + expiryDate.toLocaleString() + ' (' + formatDuration(minutes) + ')';
+        document.getElementById('share-result').style.display = 'block';
+        document.getElementById('share-generate-btn').style.display = 'none';
+
+        addLogEntry('share', 'Generated share link for ' + device.name + ' (' + formatDuration(minutes) + ')' + (label ? ' - ' + label : ''));
+        renderSharedLinks();
+        showToast('Share link generated!', 'success');
+    }
+
+    function formatDuration(minutes) {
+        if (minutes < 60) return minutes + ' min';
+        if (minutes < 1440) return Math.floor(minutes / 60) + 'h ' + (minutes % 60 > 0 ? (minutes % 60) + 'm' : '');
+        return Math.floor(minutes / 1440) + 'd ' + Math.floor((minutes % 1440) / 60) + 'h';
+    }
+
+    function robustCopy(text, successMsg) {
+        // Try modern clipboard API first, then fallback to execCommand
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function() {
+                showToast(successMsg || 'Copied to clipboard!', 'success');
+            }).catch(function() { fallbackCopy(text, successMsg); });
+        } else {
+            fallbackCopy(text, successMsg);
+        }
+    }
+    function fallbackCopy(text, successMsg) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try { document.execCommand('copy'); showToast(successMsg || 'Copied to clipboard!', 'success'); }
+        catch(e) { showToast('Copy failed - please copy manually', 'error'); }
+        document.body.removeChild(ta);
+    }
+
+    function copyShareLink() {
+        // Use multiple strategies to find the URL - handles duplicate ID edge cases
+        var shareResult = document.getElementById('share-result');
+        var url = '';
+        // Strategy 1: data attribute on share-result div
+        if (shareResult) url = shareResult.getAttribute('data-share-url') || '';
+        // Strategy 2: find the input inside share-result
+        if (!url && shareResult) { var inp = shareResult.querySelector('input[type="text"]'); if (inp) url = inp.value || ''; }
+        // Strategy 3: get from localStorage as last resort
+        if (!url) { var links = JSON.parse(localStorage.getItem('shared-access-links') || '[]'); if (links.length) url = links[links.length - 1].url || ''; }
+        var btn = document.getElementById('share-copy-btn');
+        if (!url) { showToast('No link to copy - try generating again', 'error'); return; }
+        robustCopy(url, 'Link copied to clipboard!');
+        if (btn) {
+            btn.textContent = 'Copied!';
+            btn.style.background = '#22c55e';
+            setTimeout(function() { btn.textContent = 'Copy Link'; btn.style.background = 'linear-gradient(135deg,#22d3a0,#34d399)'; }, 2000);
+        }
+    }
+
+    function renderSharedLinks() {
+        var list = document.getElementById('shared-links-list');
+        var links = JSON.parse(localStorage.getItem('shared-access-links') || '[]');
+        // Clean up expired links older than 24h
+        var now = Date.now();
+        links = links.filter(function(l) { return l.expiry > now - 86400000; });
+        localStorage.setItem('shared-access-links', JSON.stringify(links));
+
+        if (!links.length) {
+            list.innerHTML = '<div class="empty-state"><p style="font-size:13px;color:var(--text-muted);">No shared links yet. Generate one from a device card or click the button below.</p></div>';
+            return;
+        }
+        list.innerHTML = '';
+        links.sort(function(a, b) { return b.created - a.created; }).forEach(function(link, idx) {
+            var isExpired = link.expiry < now;
+            var timeLeft = isExpired ? 'Expired' : formatTimeLeft(link.expiry - now);
+            var statusColor = isExpired ? 'var(--red)' : 'var(--green)';
+            var statusText = isExpired ? 'EXPIRED' : 'ACTIVE';
+            list.innerHTML += '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg-hover);border-radius:10px;margin-bottom:8px;border:1px solid ' + (isExpired ? 'rgba(248,113,113,0.15)' : 'rgba(34,211,153,0.15)') + ';">' +
+                '<div style="flex:1;min-width:0;">' +
+                    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">' +
+                        '<span style="font-size:14px;font-weight:600;">' + link.deviceName + '</span>' +
+                        '<span style="font-size:11px;padding:2px 8px;border-radius:4px;background:' + statusColor + '20;color:' + statusColor + ';font-weight:600;">' + statusText + '</span>' +
+                    '</div>' +
+                    (link.label ? '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:2px;">' + link.label + '</div>' : '') +
+                    '<div style="font-size:12px;color:var(--text-muted);">' + (isExpired ? 'Expired ' + new Date(link.expiry).toLocaleString() : 'Expires in ' + timeLeft) + '</div>' +
+                '</div>' +
+                '<div style="display:flex;gap:6px;flex-shrink:0;">' +
+                    (!isExpired ? '<button class="btn btn-ghost btn-xs" onclick="copyLinkByIndex(' + idx + ')" title="Copy link">Copy</button>' : '') +
+                    '<button class="btn btn-ghost btn-xs btn-danger" onclick="revokeShareLink(' + idx + ')" title="Revoke">' + (isExpired ? 'Remove' : 'Revoke') + '</button>' +
+                '</div>' +
+            '</div>';
+        });
+    }
+
+    function formatTimeLeft(ms) {
+        var m = Math.floor(ms / 60000);
+        if (m < 60) return m + ' min';
+        var h = Math.floor(m / 60);
+        if (h < 24) return h + 'h ' + (m % 60) + 'm';
+        return Math.floor(h / 24) + 'd ' + (h % 24) + 'h';
+    }
+
+    function copyLinkByIndex(idx) {
+        var links = JSON.parse(localStorage.getItem('shared-access-links') || '[]');
+        if (links[idx]) {
+            robustCopy(links[idx].url, 'Link copied!');
+        }
+    }
+
+    function revokeShareLink(idx) {
+        var links = JSON.parse(localStorage.getItem('shared-access-links') || '[]');
+        if (links[idx]) {
+            var name = links[idx].deviceName;
+            links.splice(idx, 1);
+            localStorage.setItem('shared-access-links', JSON.stringify(links));
+            renderSharedLinks();
+            showToast('Link for ' + name + ' revoked', 'success');
+            addLogEntry('share', 'Revoked share link for ' + name);
+        }
+    }
+
+    // Render shared links on load
+    setTimeout(renderSharedLinks, 100);
 
     // ============ Bookmarks ============
     function loadBookmarks() {
@@ -1596,7 +2073,7 @@
         showToast('Opening Guacamole file browser...', 'success');
         addLogEntry('system', 'File download: opened Guacamole file browser');
         // Open Guacamole's built-in SFTP file browser
-        const guacUrl = GUAC_BASE + '/#/';
+        const guacUrl = GUAC_BASE + '/guacamole/#/';
         window.open(guacUrl, '_blank');
         // Also fetch file listing from shared drive
         fetch('/api/file-browser')
@@ -1714,28 +2191,13 @@
         });
     }
 
-    // ============ Share Session ============
+    // ============ Share Session (legacy - replaced by Share Access Links) ============
     let shareMode = 'full';
     function selectShareMode(mode) {
         shareMode = mode;
         document.querySelectorAll('.share-opt').forEach(el => el.classList.remove('selected'));
-        document.getElementById('share-' + mode).classList.add('selected');
-    }
-
-    function generateShareLink() {
-        const token = TOKEN_SECRET + '-' + Date.now() + '-' + (24 * 60 * 60 * 1000);
-        const link = window.location.origin + window.location.pathname + '?token=' + token + '&mode=' + shareMode;
-        document.getElementById('share-link-url').value = link;
-        document.getElementById('share-link-output').style.display = 'block';
-        addLogEntry('share', 'Share link generated (' + shareMode + ' access)');
-        showToast('Share link generated', 'success');
-    }
-
-    function copyShareLink() {
-        const input = document.getElementById('share-link-url');
-        input.select();
-        navigator.clipboard.writeText(input.value);
-        showToast('Link copied to clipboard', 'success');
+        var el = document.getElementById('share-' + mode);
+        if (el) el.classList.add('selected');
     }
 
     // ============ Activity Log ============
@@ -1918,25 +2380,41 @@
         if (type === 'portal') {
             const pass = document.getElementById('set-portal-pass').value;
             if (!pass) return;
-            const creds = JSON.parse(localStorage.getItem('dashboard-credentials') || '{"username":"admin","password":"NR@2024"}');
-            creds.password = pass;
-            localStorage.setItem('dashboard-credentials', JSON.stringify(creds));
-            document.getElementById('fb-portal').classList.add('visible');
-            setTimeout(() => document.getElementById('fb-portal').classList.remove('visible'), 3000);
-            showToast('Portal password updated', 'success');
-            addLogEntry('system', 'Portal password changed');
+            authFetch('/api/dashboard/change-password', {
+                method: 'POST',
+                body: JSON.stringify({ newPassword: pass })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('fb-portal').classList.add('visible');
+                    setTimeout(() => document.getElementById('fb-portal').classList.remove('visible'), 3000);
+                    showToast('Password updated on server', 'success');
+                    addLogEntry('system', 'Password changed via server');
+                } else {
+                    showToast(data.message || 'Failed to update password', 'error');
+                }
+            })
+            .catch(() => showToast('Server error', 'error'));
         } else if (type === 'login') {
-            const user = document.getElementById('set-login-user').value.trim();
             const pass = document.getElementById('set-login-pass').value;
-            if (!user && !pass) return;
-            const creds = JSON.parse(localStorage.getItem('dashboard-credentials') || '{"username":"admin","password":"NR@2024"}');
-            if (user) creds.username = user;
-            if (pass) creds.password = pass;
-            localStorage.setItem('dashboard-credentials', JSON.stringify(creds));
-            document.getElementById('fb-login').classList.add('visible');
-            setTimeout(() => document.getElementById('fb-login').classList.remove('visible'), 3000);
-            showToast('Login credentials updated', 'success');
-            addLogEntry('system', 'Login credentials changed');
+            if (!pass) return;
+            authFetch('/api/dashboard/change-password', {
+                method: 'POST',
+                body: JSON.stringify({ newPassword: pass })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('fb-login').classList.add('visible');
+                    setTimeout(() => document.getElementById('fb-login').classList.remove('visible'), 3000);
+                    showToast('Login password updated', 'success');
+                    addLogEntry('system', 'Login password changed');
+                } else {
+                    showToast(data.message || 'Failed to update', 'error');
+                }
+            })
+            .catch(() => showToast('Server error', 'error'));
         }
     }
 
@@ -1955,15 +2433,35 @@
 
     // ============ Feature 1: Add Device (Dynamic) ============
     function loadSavedDevices() {
-        const saved = JSON.parse(localStorage.getItem('dashboard-devices') || 'null');
-        if (saved && saved.length > 0) {
-            devices = saved;
-        }
+        authFetch('/api/dashboard/devices')
+        .then(r => r.json())
+        .then(data => {
+            if (data.success && data.devices && data.devices.length > 0) {
+                devices = data.devices;
+                renderDevices();
+                renderWolDevices();
+            } else {
+                // Fallback to localStorage for backward compat
+                const saved = JSON.parse(localStorage.getItem('dashboard-devices') || 'null');
+                if (saved && saved.length > 0) devices = saved;
+            }
+        })
+        .catch(() => {
+            const saved = JSON.parse(localStorage.getItem('dashboard-devices') || 'null');
+            if (saved && saved.length > 0) devices = saved;
+        });
     }
     loadSavedDevices();
 
     function saveDevicesToStorage() {
         localStorage.setItem('dashboard-devices', JSON.stringify(devices));
+        // Also persist to server
+        devices.forEach(d => {
+            authFetch('/api/dashboard/devices', {
+                method: 'POST',
+                body: JSON.stringify(d)
+            }).catch(() => {});
+        });
     }
 
     function openAddDeviceModal() {
@@ -2123,32 +2621,131 @@
         }
     }
 
-    // ============ Feature 4: Auto-Refresh Device Status ============
+    // ============ Feature 4: Real-Time FRP API Device Status ============
     let statusRefreshInterval;
+    let frpProxyCache = {};
+    let frpTotalTrafficIn = 0;
+    let frpTotalTrafficOut = 0;
+
+    // Map FRP proxy names to device frpPort for matching
+    function findFrpProxyForDevice(d, proxies) {
+        if (!proxies || !proxies.length) return null;
+        // Match by remote port
+        if (d.frpPort) {
+            var match = proxies.find(function(p) { return p.conf && p.conf.remotePort === d.frpPort; });
+            if (match) return match;
+        }
+        // Match by name containing device id
+        var idLower = d.id.toLowerCase().replace(/[^a-z0-9]/g, '');
+        return proxies.find(function(p) {
+            var pName = (p.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            return pName.indexOf(idLower) !== -1 || idLower.indexOf(pName) !== -1;
+        }) || null;
+    }
+
+    function formatTraffic(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+        if (bytes < 1073741824) return (bytes / 1048576).toFixed(1) + ' MB';
+        return (bytes / 1073741824).toFixed(2) + ' GB';
+    }
+
+    function fetchFrpStatus() {
+        return fetch('/frp-api/proxy/tcp', { signal: AbortSignal.timeout(8000) })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data && data.proxies) return data.proxies;
+                return [];
+            })
+            .catch(function() { return []; });
+    }
+
+    function updateDeviceStatusFromFrp(proxies) {
+        var changed = false;
+        frpTotalTrafficIn = 0;
+        frpTotalTrafficOut = 0;
+        var totalConns = 0;
+        proxies.forEach(function(p) {
+            frpTotalTrafficIn += (p.todayTrafficIn || 0);
+            frpTotalTrafficOut += (p.todayTrafficOut || 0);
+            totalConns += (p.curConns || 0);
+        });
+        devices.forEach(function(d) {
+            var proxy = findFrpProxyForDevice(d, proxies);
+            var oldStatus = d.status;
+            if (proxy) {
+                frpProxyCache[d.id] = proxy;
+                d.status = proxy.status === 'online' ? 'online' : 'offline';
+                d._frpConns = proxy.curConns || 0;
+                d._frpTrafficIn = proxy.todayTrafficIn || 0;
+                d._frpTrafficOut = proxy.todayTrafficOut || 0;
+                d._frpLastStart = proxy.lastStartTime || '';
+                d._frpLastClose = proxy.lastCloseTime || '';
+                d._frpVersion = proxy.clientVersion || '';
+            } else {
+                d._frpConns = 0;
+                d._frpTrafficIn = 0;
+                d._frpTrafficOut = 0;
+            }
+            if (oldStatus !== d.status) {
+                changed = true;
+                if (d.status === 'offline') {
+                    sendNotification('Device Offline', d.name + ' went offline');
+                    addHealthAlert('critical', d.name + ' went offline', 'Device is no longer reachable');
+                } else {
+                    sendNotification('Device Online', d.name + ' is back online');
+                    addHealthAlert('ok', d.name + ' is back online', 'Device is reachable again');
+                }
+                addLogEntry('system', d.name + ' status changed to ' + d.status);
+            }
+        });
+        // Update stats
+        document.getElementById('active-sessions-count').textContent = totalConns;
+        var bwEl = document.getElementById('q-bw');
+        if (bwEl) bwEl.textContent = formatTraffic(frpTotalTrafficIn + frpTotalTrafficOut);
+        // Update traffic stats card if exists
+        var trafficEl = document.getElementById('total-traffic');
+        if (trafficEl) trafficEl.textContent = formatTraffic(frpTotalTrafficIn + frpTotalTrafficOut);
+        return changed;
+    }
+
     function startDeviceStatusRefresh() {
-        statusRefreshInterval = setInterval(() => {
-            devices.forEach(d => {
-                fetch('/api/device-status?id=' + d.id + '&host=' + d.host, { signal: AbortSignal.timeout(5000) })
-                .then(r => r.json())
-                .then(data => {
-                    const oldStatus = d.status;
-                    d.status = data.online ? 'online' : 'offline';
-                    if (oldStatus !== d.status) {
-                        renderDevices();
-                        renderWolDevices();
-                        if (d.status === 'offline') {
-                            sendNotification('Device Offline', d.name + ' went offline');
-                            addHealthAlert('critical', d.name + ' went offline', 'Device is no longer reachable');
-                        } else {
-                            sendNotification('Device Online', d.name + ' is back online');
-                            addHealthAlert('ok', d.name + ' is back online', 'Device is reachable again');
-                        }
-                        addLogEntry('system', d.name + ' status changed to ' + d.status);
-                    }
-                })
-                .catch(() => {});
+        // Check immediately on load via FRP API
+        fetchFrpStatus().then(function(proxies) {
+            var changed = updateDeviceStatusFromFrp(proxies);
+            renderDevices();
+            renderWolDevices();
+        });
+        statusRefreshInterval = setInterval(function() {
+            fetchFrpStatus().then(function(proxies) {
+                var changed = updateDeviceStatusFromFrp(proxies);
+                if (changed) {
+                    renderDevices();
+                    renderWolDevices();
+                }
+                // Always update the live traffic/connection indicators
+                updateLiveIndicators();
             });
-        }, 30000);
+        }, 15000); // Check every 15 seconds for near-real-time updates
+    }
+
+    function updateLiveIndicators() {
+        // Update connection quality bar if visible
+        var qBar = document.getElementById('quality-bar');
+        if (qBar && qBar.style.display !== 'none') {
+            var totalConns = devices.reduce(function(s, d) { return s + (d._frpConns || 0); }, 0);
+            var qDot = document.getElementById('q-dot');
+            var qStatus = document.getElementById('q-status');
+            if (totalConns > 0) {
+                qDot.className = 'quality-dot good';
+                qStatus.textContent = 'Connected (' + totalConns + ' active)';
+            } else {
+                qDot.className = 'quality-dot ok';
+                qStatus.textContent = 'Idle';
+            }
+            document.getElementById('q-fps').textContent = totalConns > 0 ? '30' : '--';
+            document.getElementById('q-bw').textContent = formatTraffic(frpTotalTrafficIn + frpTotalTrafficOut);
+        }
     }
 
     // ============ Feature 5: Fullscreen RDP ============
@@ -2181,7 +2778,7 @@
         showToast('Capturing screenshot...', 'success');
         addLogEntry('system', 'Screenshot captured');
         // Try to capture via API
-        fetch('/api/screenshot', { method: 'POST' })
+        authFetch('/api/screenshot', { method: 'POST' })
         .then(r => r.json())
         .then(data => {
             if (data.success && data.url) {
@@ -2426,9 +3023,8 @@
         output.innerHTML += '<div><span class="prompt">$</span> ' + cmd + '</div>';
         output.innerHTML += '<div class="output" style="color:var(--text-muted);">Executing...</div>';
         output.scrollTop = output.scrollHeight;
-        fetch('/api/ssh-exec', {
+        authFetch('/api/ssh-exec', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ command: cmd })
         })
         .then(r => r.json())
@@ -2457,82 +3053,147 @@
         });
     }
 
-    // ============ Feature 12: Two-Factor Authentication ============
+    // ============ Feature 12: Two-Factor Authentication (Server-Side) ============
+    let pending2FASecret = null;
+
     function setup2FA() {
-        // Generate a simple TOTP-like secret
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-        let secret = '';
-        for (let i = 0; i < 16; i++) secret += chars[Math.floor(Math.random() * chars.length)];
-        localStorage.setItem('totp-secret', secret);
-        document.getElementById('totp-secret-display').innerHTML = '<p style="margin-bottom:8px;">Your 2FA secret key:</p><div style="font-size:18px;font-weight:700;letter-spacing:4px;color:var(--accent);padding:12px;background:var(--bg-input);border-radius:10px;margin-bottom:12px;">' + secret + '</div><p style="font-size:12px;color:var(--text-muted);">Save this key in your authenticator app. For demo, enter any 6 digits.</p>';
-        document.getElementById('totp-modal').classList.add('active');
+        authFetch('/api/dashboard/2fa/setup', { method: 'POST' })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success && data.secret) {
+                pending2FASecret = data.secret;
+                const otpUrl = data.otpauthUrl || '';
+                document.getElementById('totp-secret-display').innerHTML = '<p style="margin-bottom:8px;">Your 2FA secret key:</p><div style="font-size:18px;font-weight:700;letter-spacing:4px;color:var(--accent);padding:12px;background:var(--bg-input);border-radius:10px;margin-bottom:12px;">' + data.secret + '</div>' + (otpUrl ? '<p style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">Or scan this URL in your authenticator app:</p><div style="font-size:10px;word-break:break-all;padding:8px;background:var(--bg-input);border-radius:8px;margin-bottom:12px;">' + otpUrl + '</div>' : '') + '<p style="font-size:12px;color:var(--text-muted);">Enter the 6-digit code from your authenticator app to verify.</p>';
+                document.getElementById('totp-modal').classList.add('active');
+            } else {
+                showToast(data.message || 'Failed to setup 2FA', 'error');
+            }
+        })
+        .catch(() => showToast('Server error', 'error'));
     }
 
     function verify2FA(e) {
         e.preventDefault();
         const code = document.getElementById('totp-code-input').value;
         if (code.length === 6 && /^[0-9]+$/.test(code)) {
-            localStorage.setItem('totp-enabled', 'true');
-            document.getElementById('totp-modal').classList.remove('active');
-            update2FAStatus();
-            showToast('2FA enabled successfully!', 'success');
-            addLogEntry('system', '2FA authentication enabled');
+            authFetch('/api/dashboard/2fa/verify', {
+                method: 'POST',
+                body: JSON.stringify({ code: code })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('totp-modal').classList.remove('active');
+                    update2FAStatus();
+                    showToast('2FA enabled successfully!', 'success');
+                    addLogEntry('system', '2FA authentication enabled');
+                } else {
+                    showToast(data.message || 'Invalid code', 'error');
+                }
+            })
+            .catch(() => showToast('Server error', 'error'));
         } else {
             showToast('Invalid code. Enter 6 digits.', 'error');
         }
     }
 
     function update2FAStatus() {
-        const enabled = localStorage.getItem('totp-enabled') === 'true';
-        const container = document.getElementById('totp-status');
-        if (enabled) {
-            container.innerHTML = '<div style="display:flex;align-items:center;gap:12px;"><div style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.15);border-radius:10px;font-size:12px;color:var(--green);font-weight:600;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 2FA Enabled</div><button class="btn btn-ghost btn-xs btn-danger" onclick="disable2FA()">Disable</button></div>';
-        } else {
-            container.innerHTML = '<button class="btn btn-ghost btn-sm" onclick="setup2FA()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Enable 2FA</button>';
-        }
+        authFetch('/api/dashboard/verify')
+        .then(r => r.json())
+        .then(data => {
+            const enabled = data.success && data.user && data.user.totp_enabled;
+            const container = document.getElementById('totp-status');
+            if (enabled) {
+                container.innerHTML = '<div style="display:flex;align-items:center;gap:12px;"><div style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.15);border-radius:10px;font-size:12px;color:var(--green);font-weight:600;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 2FA Enabled</div><button class="btn btn-ghost btn-xs btn-danger" onclick="disable2FA()">Disable</button></div>';
+            } else {
+                container.innerHTML = '<button class="btn btn-ghost btn-sm" onclick="setup2FA()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Enable 2FA</button>';
+            }
+        })
+        .catch(() => {
+            // Fallback to localStorage
+            const enabled = localStorage.getItem('totp-enabled') === 'true';
+            const container = document.getElementById('totp-status');
+            if (enabled) {
+                container.innerHTML = '<div style="display:flex;align-items:center;gap:12px;"><div style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.15);border-radius:10px;font-size:12px;color:var(--green);font-weight:600;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 2FA Enabled</div><button class="btn btn-ghost btn-xs btn-danger" onclick="disable2FA()">Disable</button></div>';
+            } else {
+                container.innerHTML = '<button class="btn btn-ghost btn-sm" onclick="setup2FA()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Enable 2FA</button>';
+            }
+        });
     }
 
     function disable2FA() {
         if (confirm('Disable two-factor authentication?')) {
-            localStorage.removeItem('totp-enabled');
-            localStorage.removeItem('totp-secret');
-            update2FAStatus();
-            showToast('2FA disabled', 'success');
+            authFetch('/api/dashboard/2fa/disable', { method: 'POST' })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    localStorage.removeItem('totp-enabled');
+                    localStorage.removeItem('totp-secret');
+                    update2FAStatus();
+                    showToast('2FA disabled', 'success');
+                } else {
+                    showToast(data.message || 'Failed to disable 2FA', 'error');
+                }
+            })
+            .catch(() => showToast('Server error', 'error'));
         }
     }
 
-    // ============ Feature 13: User Roles ============
+    // ============ Feature 13: User Roles (Server-Side) ============
+    let cachedUsers = [];
+
     function renderUserRoles() {
-        const users = JSON.parse(localStorage.getItem('dashboard-users') || 'null') || [
-            { name: 'Admin', username: 'admin', role: 'admin' }
-        ];
+        authFetch('/api/dashboard/users')
+        .then(r => r.json())
+        .then(data => {
+            if (data.success && data.users) {
+                cachedUsers = data.users;
+                renderUserRolesUI(data.users);
+            }
+        })
+        .catch(() => {
+            // Fallback to localStorage
+            const users = JSON.parse(localStorage.getItem('dashboard-users') || 'null') || [{ name: 'Admin', username: 'admin', role: 'admin' }];
+            renderUserRolesUI(users);
+        });
+    }
+
+    function renderUserRolesUI(users) {
         const list = document.getElementById('user-roles-list');
         list.innerHTML = '';
         users.forEach((u, i) => {
+            const displayName = u.display_name || u.name || u.username;
             list.innerHTML += '<div class="user-row">' +
                 '<div style="display:flex;align-items:center;gap:12px;">' +
-                    '<div class="session-avatar" style="width:36px;height:36px;font-size:14px;">' + u.name.charAt(0).toUpperCase() + '</div>' +
-                    '<div><div style="font-size:14px;font-weight:600;">' + u.name + ' <span class="role-badge ' + u.role + '">' + u.role + '</span></div><div style="font-size:12px;color:var(--text-muted);">@' + u.username + '</div></div>' +
+                    '<div class="session-avatar" style="width:36px;height:36px;font-size:14px;">' + displayName.charAt(0).toUpperCase() + '</div>' +
+                    '<div><div style="font-size:14px;font-weight:600;">' + displayName + ' <span class="role-badge ' + u.role + '">' + u.role + '</span></div><div style="font-size:12px;color:var(--text-muted);">@' + u.username + '</div></div>' +
                 '</div>' +
                 '<div style="display:flex;gap:8px;">' +
-                    '<select class="form-input" style="padding:6px 10px;font-size:12px;border-radius:8px;max-width:120px;" onchange="changeUserRole(' + i + ',this.value)">' +
+                    '<select class="form-input" style="padding:6px 10px;font-size:12px;border-radius:8px;max-width:120px;" onchange="changeUserRole(' + (u.id || i) + ',this.value)">' +
                         '<option value="admin"' + (u.role === 'admin' ? ' selected' : '') + '>Admin</option>' +
                         '<option value="viewer"' + (u.role === 'viewer' ? ' selected' : '') + '>Viewer</option>' +
                     '</select>' +
-                    (i > 0 ? '<button class="btn btn-ghost btn-xs btn-danger" onclick="removeUser(' + i + ')">Remove</button>' : '') +
+                    (i > 0 ? '<button class="btn btn-ghost btn-xs btn-danger" onclick="removeUser(' + (u.id || i) + ')">Remove</button>' : '') +
                 '</div>' +
             '</div>';
         });
     }
 
-    function changeUserRole(idx, role) {
-        const users = JSON.parse(localStorage.getItem('dashboard-users') || '[]');
-        if (users[idx]) {
-            users[idx].role = role;
-            localStorage.setItem('dashboard-users', JSON.stringify(users));
-            renderUserRoles();
-            showToast(users[idx].name + ' role changed to ' + role, 'success');
-        }
+    function changeUserRole(userId, role) {
+        authFetch('/api/dashboard/users', {
+            method: 'PUT',
+            body: JSON.stringify({ id: userId, role: role })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                renderUserRoles();
+                showToast('User role updated to ' + role, 'success');
+            } else {
+                showToast(data.message || 'Failed to update role', 'error');
+            }
+        })
+        .catch(() => showToast('Server error', 'error'));
     }
 
     function addUser() {
@@ -2540,23 +3201,42 @@
         if (!name) return;
         const username = prompt('Username:');
         if (!username) return;
+        const password = prompt('Password:');
+        if (!password) return;
         const role = prompt('Role (admin/viewer):', 'viewer');
         if (!role) return;
-        const users = JSON.parse(localStorage.getItem('dashboard-users') || 'null') || [{ name: 'Admin', username: 'admin', role: 'admin' }];
-        users.push({ name, username, role: role === 'admin' ? 'admin' : 'viewer' });
-        localStorage.setItem('dashboard-users', JSON.stringify(users));
-        renderUserRoles();
-        showToast('User "' + name + '" added as ' + role, 'success');
+        authFetch('/api/dashboard/users', {
+            method: 'POST',
+            body: JSON.stringify({ username, password, display_name: name, role: role === 'admin' ? 'admin' : 'viewer' })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                renderUserRoles();
+                showToast('User "' + name + '" added as ' + role, 'success');
+            } else {
+                showToast(data.message || 'Failed to add user', 'error');
+            }
+        })
+        .catch(() => showToast('Server error', 'error'));
     }
 
-    function removeUser(idx) {
-        const users = JSON.parse(localStorage.getItem('dashboard-users') || '[]');
-        if (users[idx] && confirm('Remove user ' + users[idx].name + '?')) {
-            users.splice(idx, 1);
-            localStorage.setItem('dashboard-users', JSON.stringify(users));
-            renderUserRoles();
-            showToast('User removed', 'success');
-        }
+    function removeUser(userId) {
+        if (!confirm('Remove this user?')) return;
+        authFetch('/api/dashboard/users', {
+            method: 'DELETE',
+            body: JSON.stringify({ id: userId })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                renderUserRoles();
+                showToast('User removed', 'success');
+            } else {
+                showToast(data.message || 'Failed to remove user', 'error');
+            }
+        })
+        .catch(() => showToast('Server error', 'error'));
     }
 
     // ============ Feature 14: Mobile Touch Controls ============
@@ -2565,6 +3245,25 @@
     }
     function closeTouchMenu() {
         document.getElementById('touch-menu').classList.remove('open');
+    }
+    function toggleMobileKeyboard() {
+        var inp = document.getElementById('mobile-keyboard-input');
+        if (inp) {
+            inp.focus();
+            showToast('Mobile keyboard toggled', 'success');
+        }
+    }
+    function sendKeyCombo(keys) {
+        // Send key combination via Guacamole if active session exists
+        if (typeof guacClient !== 'undefined' && guacClient) {
+            keys.forEach(function(k) { guacClient.sendKeyEvent(1, parseInt(k)); });
+            setTimeout(function() {
+                keys.reverse().forEach(function(k) { guacClient.sendKeyEvent(0, parseInt(k)); });
+            }, 100);
+            showToast('Key combo sent', 'success');
+        } else {
+            showToast('No active RDP session', 'error');
+        }
     }
 
     // ============ Feature 15: Health Alerts ============
@@ -2761,18 +3460,28 @@
         <button class="bar-btn" onclick="exitFullscreen()" title="Exit Fullscreen" style="color:var(--red);border-color:rgba(248,113,113,0.3);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg> Exit</button>
     </div>
 
-    <!-- Mobile Touch FAB -->
+    <!-- Mobile Touch FAB with RDP Controls -->
     <div class="touch-controls" id="touch-controls">
         <div class="touch-menu" id="touch-menu">
+            <div style="padding:8px 14px 4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">Navigation</div>
             <div class="touch-menu-item" onclick="switchTab('devices',null);closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg> Devices</div>
             <div class="touch-menu-item" onclick="switchTab('sessions',null);closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Sessions</div>
             <div class="touch-menu-item" onclick="switchTab('monitor',null);closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Monitor</div>
             <div class="touch-menu-item" onclick="switchTab('tools',null);closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Tools</div>
+            <div style="margin:4px 14px;border-top:1px solid var(--border-subtle);"></div>
+            <div style="padding:8px 14px 4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">RDP Controls</div>
+            <div class="touch-menu-item" onclick="sendCtrlAltDel();closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/></svg> Ctrl+Alt+Del</div>
+            <div class="touch-menu-item" onclick="sendKeyCombo(['65507','65513','65535']);closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="22" height="12" rx="2"/><line x1="7" y1="12" x2="17" y2="12"/></svg> Windows Key</div>
+            <div class="touch-menu-item" onclick="toggleClipboardSync();closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg> Clipboard Sync</div>
+            <div class="touch-menu-item" onclick="toggleMobileKeyboard();closeTouchMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="6" y1="16" x2="18" y2="16"/></svg> Toggle Keyboard</div>
+            <div style="margin:4px 14px;border-top:1px solid var(--border-subtle);"></div>
             <div class="touch-menu-item" onclick="handleLogout();closeTouchMenu()" style="color:var(--red);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Sign Out</div>
         </div>
         <button class="touch-fab" onclick="toggleTouchMenu()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         </button>
     </div>
+    <!-- Hidden input for mobile keyboard toggle -->
+    <input type="text" id="mobile-keyboard-input" style="position:fixed;top:-100px;left:-100px;opacity:0;width:1px;height:1px;" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 </body>
 </html>

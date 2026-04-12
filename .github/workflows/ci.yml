@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Server/api
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: Server/api/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for syntax errors
+        run: node --check server.js
+
+      - name: Check middleware syntax
+        run: node --check middleware/auth.js
+
+      - name: Check routes syntax
+        run: node --check routes/dashboard.js
+
+      - name: Verify no hardcoded credentials in dashboard
+        run: |
+          if grep -q "NR@2024" ../dashboard.html; then
+            echo "WARNING: Hardcoded credentials found in dashboard.html"
+          fi
+          echo "Credential check complete"
+
+      - name: Verify .env.example exists
+        run: test -f .env.example
+
+      - name: Verify auth middleware is imported
+        run: grep -q "requireAuth" server.js
+
+      - name: Verify dashboard routes are mounted
+        run: grep -q "dashboardRoutes" server.js

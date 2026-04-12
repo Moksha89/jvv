@@ -39,6 +39,9 @@ credentials.txt
 config.dat
 *.key
 *.pem
+.env
+.env.*
+!.env.example
 
 # Build artifacts
 publish/
