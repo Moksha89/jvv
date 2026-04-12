@@ -149,7 +149,7 @@
         .section-head h2 { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
         .section-head .refresh-btn { width: 36px; height: 36px; border-radius: 10px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
         .section-head .refresh-btn:hover { color: var(--accent); border-color: var(--accent); transform: rotate(180deg); }
-        .devices-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+        .devices-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
         .device-card { background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 14px; padding: 0; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden; }
         .device-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent-dim), #7c3aed, var(--accent)); opacity: 0; transition: opacity 0.3s; }
         .device-card:hover { border-color: rgba(99,102,241,0.3); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
@@ -294,7 +294,7 @@
         .bookmark-item:hover { border-color: var(--accent); }
         .bookmark-info { display: flex; align-items: center; gap: 12px; }
         .bookmark-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(99,102,241,0.1); display: flex; align-items: center; justify-content: center; }
-        @media (max-width: 1024px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .devices-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } .monitor-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 1024px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .devices-grid { grid-template-columns: repeat(2, 1fr); } .monitor-grid { grid-template-columns: 1fr; } }
         @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); box-shadow: 16px 0 48px rgba(0,0,0,0.5); } .main-content { margin-left: 0; } .mobile-menu-btn { display: flex; } .topbar { padding: 0 20px; } .topbar-clock { display: none; } .content-area { padding: 20px 16px 40px; } .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; } .stat-value { font-size: 22px; } .login-card, .blocked-card { padding: 36px 28px; } .share-options { flex-direction: column; } .modal-box { padding: 32px 24px; } .toast { right: 16px; left: 16px; max-width: none; bottom: 20px; } .notif-panel { width: 100%; } .cmd-grid { grid-template-columns: 1fr 1fr; } }
         @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } .tunnel-badge { display: none; } .quality-bar { flex-wrap: wrap; } }
         ::-webkit-scrollbar { width: 6px; }
@@ -1114,7 +1114,7 @@
 
     let devices = [
         { id: 'varma-pc', name: 'Varma PC', host: '192.168.1.101', os: 'Windows 11 Pro', cpu: 'Intel i5', ram: '8 GB', status: 'online', user: '', guacId: 'VARMA-PC', mac: 'AA:BB:CC:DD:EE:01', group: 'office', serverDeviceId: 'VARMA678-29194', frpPort: 33891 },
-        { id: 'uae-pc', name: 'UAE Office PC', host: '192.168.1.100', os: 'Windows 11 Pro', cpu: 'Intel i5', ram: '8 GB', status: 'offline', user: '', guacId: 'UAE-PC', mac: 'AA:BB:CC:DD:EE:02', group: 'office', serverDeviceId: 'UAE-PC-001', frpPort: 33892 }
+        { id: 'uae-pc', name: 'UAE Office PC', host: '192.168.1.100', os: 'Windows 11 Pro', cpu: 'Intel i5', ram: '8 GB', status: 'online', user: '', guacId: 'UAE-PC', mac: 'AA:BB:CC:DD:EE:02', group: 'office', serverDeviceId: 'UAE-PC-001', frpPort: 33892 }
     ];
 
     // ============ Device Rename ============
