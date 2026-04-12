@@ -424,6 +424,161 @@ router.delete('/profiles/:id', requireAuth, (req, res) => {
 });
 
 // ============================================================
+// Server-side Share Link Validation & Encrypted Tokens
+// ============================================================
+
+// Create share_links table in init
+function initShareLinks() {
+    if (!db) return;
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS share_links (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            token TEXT UNIQUE NOT NULL,
+            device_id TEXT NOT NULL,
+            device_name TEXT NOT NULL,
+            duration INTEGER NOT NULL,
+            created_by INTEGER,
+            created_at TEXT DEFAULT (datetime('now')),
+            expires_at TEXT NOT NULL,
+            revoked INTEGER DEFAULT 0,
+            access_count INTEGER DEFAULT 0,
+            last_accessed_at TEXT,
+            ip_whitelist TEXT DEFAULT ''
+        );
+    `);
+}
+
+// POST /api/dashboard/share - Create a share link (server-side)
+router.post('/share', requireAuth, (req, res) => {
+    try {
+        initShareLinks();
+        const { deviceId, deviceName, duration } = req.body;
+        if (!deviceId || !duration) {
+            return res.status(400).json({ success: false, message: 'Device ID and duration are required' });
+        }
+        const durationMs = parseInt(duration);
+        if (isNaN(durationMs) || durationMs < 60000 || durationMs > 86400000) {
+            return res.status(400).json({ success: false, message: 'Duration must be between 1 minute and 24 hours' });
+        }
+        // Generate encrypted token
+        const payload = {
+            deviceId,
+            deviceName: deviceName || deviceId,
+            duration: durationMs,
+            createdAt: Date.now(),
+            nonce: crypto.randomBytes(8).toString('hex')
+        };
+        const tokenData = JSON.stringify(payload);
+        const iv = crypto.randomBytes(16);
+        const key = crypto.createHash('sha256').update(JWT_SECRET + 'share-link-key').digest();
+        const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+        let encrypted = cipher.update(tokenData, 'utf8', 'hex');
+        encrypted += cipher.final('hex');
+        const token = iv.toString('hex') + ':' + encrypted;
+        const signature = crypto.createHmac('sha256', JWT_SECRET).update(token).digest('hex').substring(0, 16);
+        const fullToken = token + ':' + signature;
+
+        const expiresAt = new Date(Date.now() + durationMs).toISOString();
+        db.prepare(`INSERT INTO share_links (token, device_id, device_name, duration, created_by, expires_at)
+            VALUES (?, ?, ?, ?, ?, ?)`).run(
+            fullToken, deviceId, deviceName || deviceId, durationMs, req.user.id, expiresAt
+        );
+
+        res.json({ success: true, token: fullToken, expiresAt });
+    } catch (err) {
+        console.error('Share link creation error:', err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+// GET /api/dashboard/share/validate - Validate a share token (public endpoint, no auth needed)
+router.get('/share/validate', (req, res) => {
+    try {
+        initShareLinks();
+        const { token } = req.query;
+        if (!token) {
+            return res.status(400).json({ success: false, message: 'Token is required' });
+        }
+        // Verify signature
+        const parts = token.split(':');
+        if (parts.length < 3) {
+            return res.status(400).json({ success: false, message: 'Invalid token format' });
+        }
+        const sig = parts[parts.length - 1];
+        const tokenBody = parts.slice(0, -1).join(':');
+        const expectedSig = crypto.createHmac('sha256', JWT_SECRET).update(tokenBody).digest('hex').substring(0, 16);
+        if (sig !== expectedSig) {
+            return res.status(403).json({ success: false, message: 'Invalid token signature' });
+        }
+        // Decrypt payload
+        const iv = Buffer.from(parts[0], 'hex');
+        const encryptedData = parts[1];
+        const key = crypto.createHash('sha256').update(JWT_SECRET + 'share-link-key').digest();
+        const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+        let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
+        decrypted += decipher.final('utf8');
+        const payload = JSON.parse(decrypted);
+
+        // Check DB record
+        const record = db.prepare('SELECT * FROM share_links WHERE token = ?').get(token);
+        if (record) {
+            if (record.revoked) {
+                return res.status(403).json({ success: false, message: 'This share link has been revoked' });
+            }
+            if (new Date(record.expires_at) < new Date()) {
+                return res.status(403).json({ success: false, message: 'This share link has expired' });
+            }
+            // Update access count
+            db.prepare("UPDATE share_links SET access_count = access_count + 1, last_accessed_at = datetime('now') WHERE id = ?").run(record.id);
+        }
+        // Also check token-embedded expiry
+        const expiresAt = payload.createdAt + payload.duration;
+        if (Date.now() > expiresAt) {
+            return res.status(403).json({ success: false, message: 'This share link has expired' });
+        }
+        const remainingMs = expiresAt - Date.now();
+
+        res.json({
+            success: true,
+            deviceId: payload.deviceId,
+            deviceName: payload.deviceName,
+            remainingMs,
+            expiresAt: new Date(expiresAt).toISOString()
+        });
+    } catch (err) {
+        console.error('Share link validation error:', err);
+        res.status(403).json({ success: false, message: 'Invalid or corrupted token' });
+    }
+});
+
+// GET /api/dashboard/share/list - List all share links (admin)
+router.get('/share/list', requireAuth, (req, res) => {
+    try {
+        initShareLinks();
+        const links = db.prepare(`SELECT id, device_id, device_name, duration, created_at, expires_at, revoked, access_count, last_accessed_at
+            FROM share_links ORDER BY created_at DESC LIMIT 100`).all();
+        res.json({ success: true, links });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// POST /api/dashboard/share/revoke - Revoke a share link
+router.post('/share/revoke', requireAuth, (req, res) => {
+    try {
+        initShareLinks();
+        const { id } = req.body;
+        if (!id) {
+            return res.status(400).json({ success: false, message: 'Share link ID is required' });
+        }
+        db.prepare("UPDATE share_links SET revoked = 1 WHERE id = ?").run(id);
+        res.json({ success: true, message: 'Share link revoked' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ============================================================
 // Audit Log (server-side persistence)
 // ============================================================
 
