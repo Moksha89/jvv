@@ -100,21 +100,10 @@ body { background: #0a0a1a; color: #fff; font-family: -apple-system, BlinkMacSys
     xhr.onerror = function() {
         document.getElementById('loading-screen').innerHTML = '<div class="error"><h2>Connection error</h2><p>Could not reach the server</p></div>';
     };
-    // Check if token was passed directly (preferred) or credentials
-    var passedToken = params.get('token');
-    if (passedToken) {
-        // Token passed directly - skip auth, load client
-        window._guacToken = passedToken;
-        var guacUrl = '/guacamole/#/client/' + encodeURIComponent(clientId) + '?token=' + encodeURIComponent(passedToken);
-        var frame = document.getElementById('guac-frame');
-        frame.src = guacUrl;
-        frame.style.display = 'block';
-        document.getElementById('loading-screen').style.display = 'none';
-        return;
-    }
+    // Always authenticate fresh with Guacamole API using credentials
     var gu = params.get('gu') || '';
     var gp = params.get('gp') || '';
-    if (!gu || !gp) { document.getElementById('loading-screen').innerHTML = '<div class="error"><h2>Error: Missing auth</h2></div>'; return; }
+    if (!gu || !gp) { document.getElementById('loading-screen').innerHTML = '<div class="error"><h2>Error: Missing auth credentials</h2></div>'; return; }
     xhr.send('username=' + encodeURIComponent(gu) + '&password=' + encodeURIComponent(gp));
 })();
 
