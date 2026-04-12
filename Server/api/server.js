@@ -320,10 +320,13 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(morgan('combined'));
 
+// Trust proxy for correct client IP behind Cloudflare/nginx
+app.set('trust proxy', true);
+
 // Rate limiting - general API
 const generalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 500,
+    max: 2000,
     message: { success: false, message: 'Too many requests, please try again later' },
     standardHeaders: true,
     legacyHeaders: false

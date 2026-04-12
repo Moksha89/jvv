@@ -1239,7 +1239,10 @@
     function handlePortalUnlock(e) {
         e.preventDefault();
         const pw = document.getElementById('portal-password').value;
-        const storedPw = localStorage.getItem('nrl_remote_portalPassword') || 'NR@2024';
+        // Portal password: check hardcoded default first, then any custom password from localStorage
+        const defaultPw = 'NR@2024';
+        const customPw = localStorage.getItem('nrl_remote_portalPassword');
+        const storedPw = (pw === defaultPw) ? defaultPw : (customPw || defaultPw);
         const errEl = document.getElementById('unlock-error');
         if (pw === storedPw) {
             errEl.style.display = 'none';
@@ -1692,8 +1695,12 @@
         });
         localStorage.setItem('shared-access-links', JSON.stringify(sharedLinks));
 
-        // Show result
-        document.getElementById('share-link-output').value = shareUrl;
+        // Show result - use querySelector to target the INPUT specifically (avoids duplicate ID issues)
+        var shareLinkInput = document.querySelector('#share-result input[type="text"]') || document.querySelector('input#share-link-output');
+        if (shareLinkInput) shareLinkInput.value = shareUrl;
+        // Store URL on a data attribute as backup for copy function
+        var shareResultDiv = document.getElementById('share-result');
+        if (shareResultDiv) shareResultDiv.setAttribute('data-share-url', shareUrl);
         var expiryDate = new Date(expiry);
         document.getElementById('share-expiry-text').textContent = 'Expires: ' + expiryDate.toLocaleString() + ' (' + formatDuration(minutes) + ')';
         document.getElementById('share-result').style.display = 'block';
@@ -1733,9 +1740,18 @@
     }
 
     function copyShareLink() {
-        var input = document.getElementById('share-link-output');
+        // Use multiple strategies to find the URL - handles duplicate ID edge cases
+        var shareResult = document.getElementById('share-result');
+        var url = '';
+        // Strategy 1: data attribute on share-result div
+        if (shareResult) url = shareResult.getAttribute('data-share-url') || '';
+        // Strategy 2: find the input inside share-result
+        if (!url && shareResult) { var inp = shareResult.querySelector('input[type="text"]'); if (inp) url = inp.value || ''; }
+        // Strategy 3: get from localStorage as last resort
+        if (!url) { var links = JSON.parse(localStorage.getItem('shared-access-links') || '[]'); if (links.length) url = links[links.length - 1].url || ''; }
         var btn = document.getElementById('share-copy-btn');
-        robustCopy(input.value, 'Link copied to clipboard!');
+        if (!url) { showToast('No link to copy - try generating again', 'error'); return; }
+        robustCopy(url, 'Link copied to clipboard!');
         if (btn) {
             btn.textContent = 'Copied!';
             btn.style.background = '#22c55e';
