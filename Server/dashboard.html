@@ -90,6 +90,9 @@
         .btn-danger { border-color: rgba(248,113,113,0.25); color: var(--red); }
         .btn-danger:hover { background: rgba(248,113,113,0.1); border-color: var(--red); }
         .btn-success { background: var(--green-dim); color: white; border: none; }
+        .share-dur-btn { background:var(--bg-hover);border:1px solid var(--border-subtle);color:var(--text-secondary);padding:8px 4px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;text-align:center; }
+        .share-dur-btn:hover { border-color:rgba(34,211,153,0.4);color:#fff;background:rgba(34,211,153,0.08); }
+        .share-dur-btn.active { border-color:rgba(34,211,153,0.6);color:#34d399;background:rgba(34,211,153,0.12);font-weight:600; }
         .btn-amber { background: rgba(251,191,36,0.15); color: var(--amber); border: 1px solid rgba(251,191,36,0.25); }
         .dashboard-layout { display: flex; min-height: 100vh; position: relative; z-index: 1; }
         .sidebar { width: var(--sidebar-width); height: 100vh; position: fixed; top: 0; left: 0; background: var(--bg-card); backdrop-filter: blur(20px); border-right: 1px solid var(--border); z-index: 100; display: flex; flex-direction: column; transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; }
@@ -991,44 +994,65 @@
 
     <!-- Share Access Link Modal -->
     <div class="modal-overlay" id="share-modal">
-        <div class="modal-box" style="max-width:480px;">
-            <h3 style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Share Device Access</h3>
-            <p style="color:var(--text-secondary);font-size:13px;margin-top:4px;">Generate a temporary link for someone to access this device without needing login credentials.</p>
-            <div class="form-group" style="margin-top:16px;">
-                <label>Device</label>
-                <select class="form-input" id="share-device-select"></select>
-            </div>
-            <div class="form-group" style="margin-top:12px;">
-                <label>Access Duration</label>
-                <select class="form-input" id="share-duration">
-                    <option value="30">30 minutes</option>
-                    <option value="60">1 hour</option>
-                    <option value="120" selected>2 hours</option>
-                    <option value="240">4 hours</option>
-                    <option value="480">8 hours</option>
-                    <option value="1440">24 hours</option>
-                    <option value="custom">Custom...</option>
-                </select>
-            </div>
-            <div class="form-group" id="share-custom-duration-group" style="margin-top:12px;display:none;">
-                <label>Custom Duration (minutes)</label>
-                <input class="form-input" type="number" id="share-custom-minutes" min="5" max="10080" placeholder="e.g. 90">
-            </div>
-            <div class="form-group" style="margin-top:12px;">
-                <label>Label <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
-                <input class="form-input" type="text" id="share-label" placeholder="e.g. For John - maintenance work">
-            </div>
-            <div id="share-result" style="display:none;margin-top:16px;">
-                <label style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:8px;display:block;">Link Generated!</label>
-                <div style="display:flex;gap:8px;">
-                    <input class="form-input" type="text" id="share-link-output" readonly style="font-size:12px;flex:1;">
-                    <button class="btn btn-accent btn-sm" onclick="copyShareLink()" style="white-space:nowrap;">Copy</button>
+        <div class="modal-box" style="max-width:520px;padding:0;overflow:hidden;">
+            <!-- Header -->
+            <div style="background:linear-gradient(135deg,rgba(34,211,153,0.12),rgba(99,102,241,0.08));padding:24px 28px 16px;border-bottom:1px solid rgba(34,211,153,0.15);">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:40px;height:40px;background:rgba(34,211,153,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    </div>
+                    <div>
+                        <h3 style="font-size:18px;margin:0;">Share Device Access</h3>
+                        <p style="color:var(--text-muted);font-size:12px;margin:2px 0 0;">Generate a temporary link — no login needed for recipients</p>
+                    </div>
                 </div>
-                <p style="font-size:12px;color:var(--text-muted);margin-top:8px;" id="share-expiry-info"></p>
             </div>
-            <div class="modal-actions" style="margin-top:16px;">
-                <button type="button" class="btn btn-ghost" onclick="closeShareModal()">Close</button>
-                <button type="button" class="btn btn-accent" onclick="generateShareLink()" id="share-generate-btn" style="background:linear-gradient(135deg,var(--green-dim),var(--green));">Generate Link</button>
+            <!-- Form -->
+            <div style="padding:20px 28px 24px;">
+                <div class="form-group">
+                    <label style="font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:6px;">Device</label>
+                    <select class="form-input" id="share-device-select" style="background:var(--bg-hover);border:1px solid var(--border-subtle);color:#fff;padding:10px 12px;border-radius:10px;font-size:14px;"></select>
+                </div>
+                <div class="form-group" style="margin-top:14px;">
+                    <label style="font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:6px;">Access Duration</label>
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="share-duration-grid">
+                        <button type="button" class="share-dur-btn" data-val="30" onclick="selectShareDuration(this)">30 min</button>
+                        <button type="button" class="share-dur-btn" data-val="60" onclick="selectShareDuration(this)">1 hour</button>
+                        <button type="button" class="share-dur-btn active" data-val="120" onclick="selectShareDuration(this)">2 hours</button>
+                        <button type="button" class="share-dur-btn" data-val="240" onclick="selectShareDuration(this)">4 hours</button>
+                        <button type="button" class="share-dur-btn" data-val="480" onclick="selectShareDuration(this)">8 hours</button>
+                        <button type="button" class="share-dur-btn" data-val="1440" onclick="selectShareDuration(this)">24 hours</button>
+                    </div>
+                    <input type="hidden" id="share-duration" value="120">
+                </div>
+                <div class="form-group" style="margin-top:14px;">
+                    <label style="font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:6px;">Label <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+                    <input class="form-input" type="text" id="share-label" placeholder="e.g. For John - maintenance work" style="background:var(--bg-hover);border:1px solid var(--border-subtle);color:#fff;padding:10px 12px;border-radius:10px;font-size:14px;">
+                </div>
+                <!-- Result area -->
+                <div id="share-result" style="display:none;margin-top:18px;">
+                    <div style="background:rgba(34,211,153,0.08);border:1px solid rgba(34,211,153,0.25);border-radius:12px;padding:16px;">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            <span style="font-size:13px;font-weight:600;color:#34d399;">Link Generated Successfully</span>
+                        </div>
+                        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:8px;">
+                            <input type="text" id="share-link-output" readonly style="flex:1;background:transparent;border:none;outline:none;color:#e2e8f0;font-size:12px;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                            <button type="button" onclick="copyShareLink()" id="share-copy-btn" style="background:linear-gradient(135deg,#22d3a0,#34d399);color:#000;border:none;padding:6px 16px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.2s;">Copy Link</button>
+                        </div>
+                        <p style="font-size:12px;color:var(--text-muted);margin-top:8px;display:flex;align-items:center;gap:6px;" id="share-expiry-info">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <span id="share-expiry-text"></span>
+                        </p>
+                    </div>
+                </div>
+                <div style="display:flex;gap:10px;margin-top:18px;">
+                    <button type="button" class="btn btn-ghost" onclick="closeShareModal()" style="flex:1;padding:10px;">Close</button>
+                    <button type="button" class="btn btn-accent" onclick="generateShareLink()" id="share-generate-btn" style="flex:1.5;padding:10px;background:linear-gradient(135deg,rgba(34,211,153,0.8),#22d3a0);font-weight:600;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                        Generate Link
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1573,6 +1597,14 @@
         return Math.abs(hash).toString(36);
     }
 
+    function selectShareDuration(btn) {
+        var grid = document.getElementById('share-duration-grid');
+        var btns = grid.querySelectorAll('.share-dur-btn');
+        for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+        btn.classList.add('active');
+        document.getElementById('share-duration').value = btn.getAttribute('data-val');
+    }
+
     function openShareModal(deviceId) {
         var sel = document.getElementById('share-device-select');
         sel.innerHTML = '';
@@ -1587,7 +1619,11 @@
         document.getElementById('share-generate-btn').style.display = '';
         document.getElementById('share-label').value = '';
         document.getElementById('share-duration').value = '120';
-        document.getElementById('share-custom-duration-group').style.display = 'none';
+        // Reset duration buttons
+        var btns = document.querySelectorAll('.share-dur-btn');
+        for (var i = 0; i < btns.length; i++) {
+            btns[i].classList.toggle('active', btns[i].getAttribute('data-val') === '120');
+        }
         document.getElementById('share-modal').classList.add('active');
     }
 
@@ -1595,24 +1631,13 @@
         document.getElementById('share-modal').classList.remove('active');
     }
 
-    // Show/hide custom duration input
-    document.getElementById('share-duration').addEventListener('change', function() {
-        document.getElementById('share-custom-duration-group').style.display = this.value === 'custom' ? 'block' : 'none';
-    });
-
     function generateShareLink() {
         var deviceId = document.getElementById('share-device-select').value;
         var device = devices.find(function(d) { return d.id === deviceId; });
         if (!device) { showToast('Please select a device', 'error'); return; }
 
-        var durationVal = document.getElementById('share-duration').value;
-        var minutes;
-        if (durationVal === 'custom') {
-            minutes = parseInt(document.getElementById('share-custom-minutes').value);
-            if (!minutes || minutes < 5) { showToast('Minimum duration is 5 minutes', 'error'); return; }
-        } else {
-            minutes = parseInt(durationVal);
-        }
+        var minutes = parseInt(document.getElementById('share-duration').value);
+        if (!minutes || minutes < 1) { showToast('Please select a duration', 'error'); return; }
 
         var label = document.getElementById('share-label').value.trim();
         var expiry = Date.now() + (minutes * 60 * 1000);
@@ -1653,7 +1678,7 @@
         // Show result
         document.getElementById('share-link-output').value = shareUrl;
         var expiryDate = new Date(expiry);
-        document.getElementById('share-expiry-info').textContent = 'Expires: ' + expiryDate.toLocaleString() + ' (' + formatDuration(minutes) + ')';
+        document.getElementById('share-expiry-text').textContent = 'Expires: ' + expiryDate.toLocaleString() + ' (' + formatDuration(minutes) + ')';
         document.getElementById('share-result').style.display = 'block';
         document.getElementById('share-generate-btn').style.display = 'none';
 
@@ -1668,12 +1693,37 @@
         return Math.floor(minutes / 1440) + 'd ' + Math.floor((minutes % 1440) / 60) + 'h';
     }
 
+    function robustCopy(text, successMsg) {
+        // Try modern clipboard API first, then fallback to execCommand
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function() {
+                showToast(successMsg || 'Copied to clipboard!', 'success');
+            }).catch(function() { fallbackCopy(text, successMsg); });
+        } else {
+            fallbackCopy(text, successMsg);
+        }
+    }
+    function fallbackCopy(text, successMsg) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try { document.execCommand('copy'); showToast(successMsg || 'Copied to clipboard!', 'success'); }
+        catch(e) { showToast('Copy failed - please copy manually', 'error'); }
+        document.body.removeChild(ta);
+    }
+
     function copyShareLink() {
         var input = document.getElementById('share-link-output');
-        input.select();
-        document.execCommand('copy');
-        try { navigator.clipboard.writeText(input.value); } catch(e) {}
-        showToast('Link copied to clipboard!', 'success');
+        var btn = document.getElementById('share-copy-btn');
+        robustCopy(input.value, 'Link copied to clipboard!');
+        if (btn) {
+            btn.textContent = 'Copied!';
+            btn.style.background = '#22c55e';
+            setTimeout(function() { btn.textContent = 'Copy Link'; btn.style.background = 'linear-gradient(135deg,#22d3a0,#34d399)'; }, 2000);
+        }
     }
 
     function renderSharedLinks() {
@@ -1722,8 +1772,7 @@
     function copyLinkByIndex(idx) {
         var links = JSON.parse(localStorage.getItem('shared-access-links') || '[]');
         if (links[idx]) {
-            try { navigator.clipboard.writeText(links[idx].url); } catch(e) {}
-            showToast('Link copied!', 'success');
+            robustCopy(links[idx].url, 'Link copied!');
         }
     }
 
