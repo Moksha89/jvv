@@ -76,7 +76,48 @@ body { background: #0a0a1a; color: #fff; font-family: -apple-system, BlinkMacSys
     
     document.getElementById('tb-conn-name').textContent = connName;
     
+    // Known connection names for fallback resolution
+    var KNOWN_CONNECTIONS = {
+        'VARMA-PC': true, 'UAE-PC': true
+    };
+
+    // Try to extract the connection name from the client ID (Base64 of "NAME\0c\0default")
+    function extractConnName(b64) {
+        try {
+            var decoded = atob(b64);
+            var parts = decoded.split('\x00');
+            if (parts.length >= 1) return parts[0];
+        } catch(e) {}
+        return null;
+    }
+
+    // Build the correct client ID from a connection name
+    function buildClientId(name) {
+        return btoa(name + '\x00c\x00default');
+    }
+
+    // Resolve the client ID: if the provided one decodes to a known connection, regenerate it
+    // This handles CDN-cached pages that may send a corrupted Base64 string
+    var resolvedClientId = clientId;
+    var extractedName = extractConnName(clientId);
+    if (extractedName && KNOWN_CONNECTIONS[extractedName]) {
+        // Regenerate to ensure clean Base64 encoding
+        resolvedClientId = buildClientId(extractedName);
+    } else {
+        // Try matching the connection name from URL 'name' param
+        // Map display names to Guacamole connection names
+        var nameMap = { 'Varma PC': 'VARMA-PC', 'UAE Office PC': 'UAE-PC' };
+        var guacConnName = nameMap[connName];
+        if (guacConnName) {
+            resolvedClientId = buildClientId(guacConnName);
+        }
+    }
+
     // Authenticate with Guacamole API
+    var gu = params.get('gu') || '';
+    var gp = params.get('gp') || '';
+    if (!gu || !gp) { document.getElementById('loading-screen').innerHTML = '<div class="error"><h2>Error: Missing auth credentials</h2></div>'; return; }
+
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/guacamole/api/tokens', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -87,8 +128,8 @@ body { background: #0a0a1a; color: #fff; font-family: -apple-system, BlinkMacSys
             // Store token
             window._guacToken = token;
             try { localStorage.setItem('GUAC_AUTH_TOKEN', '"' + token + '"'); } catch(e) {}
-            // Load Guacamole client in iframe
-            var guacUrl = '/guacamole/#/client/' + encodeURIComponent(clientId) + '?token=' + encodeURIComponent(token);
+            // Load Guacamole client in iframe using the resolved client ID
+            var guacUrl = '/guacamole/#/client/' + encodeURIComponent(resolvedClientId) + '?token=' + encodeURIComponent(token);
             var frame = document.getElementById('guac-frame');
             frame.src = guacUrl;
             frame.style.display = 'block';
@@ -103,10 +144,6 @@ body { background: #0a0a1a; color: #fff; font-family: -apple-system, BlinkMacSys
     xhr.onerror = function() {
         document.getElementById('loading-screen').innerHTML = '<div class="error"><h2>Connection error</h2><p>Could not reach the server</p></div>';
     };
-    // Always authenticate fresh with Guacamole API using credentials
-    var gu = params.get('gu') || '';
-    var gp = params.get('gp') || '';
-    if (!gu || !gp) { document.getElementById('loading-screen').innerHTML = '<div class="error"><h2>Error: Missing auth credentials</h2></div>'; return; }
     xhr.send('username=' + encodeURIComponent(gu) + '&password=' + encodeURIComponent(gp));
 })();
 
