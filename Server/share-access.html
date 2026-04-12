@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head><title>Shared Remote Access</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #06080f; color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+.page-center { display: flex; align-items: center; justify-content: center; min-height: 100vh; flex-direction: column; padding: 20px; }
+.card { background: rgba(15,20,35,0.9); border: 1px solid rgba(99,102,241,0.2); border-radius: 16px; padding: 32px; max-width: 460px; width: 100%; text-align: center; }
+.card h2 { font-size: 22px; margin-bottom: 8px; }
+.card p { color: #9ca3c4; font-size: 14px; margin-bottom: 20px; }
+.spinner { width: 40px; height: 40px; border: 3px solid rgba(99,102,241,0.3); border-top-color: #818cf8; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.error-icon { width: 56px; height: 56px; background: rgba(248,113,113,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+.success-icon { width: 56px; height: 56px; background: rgba(34,211,153,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+.info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 14px; }
+.info-row:last-child { border-bottom: none; }
+.info-label { color: #5c6488; }
+.info-value { font-weight: 600; }
+.btn { padding: 10px 24px; border-radius: 10px; border: none; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; }
+.btn-primary { background: linear-gradient(135deg, #6366f1, #818cf8); color: #fff; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(99,102,241,0.4); }
+.btn-ghost { background: rgba(255,255,255,0.06); color: #9ca3c4; border: 1px solid rgba(255,255,255,0.1); }
+.btn-ghost:hover { background: rgba(255,255,255,0.1); }
+.countdown { font-size: 13px; color: #fbbf24; margin-top: 16px; padding: 8px 16px; background: rgba(251,191,36,0.1); border-radius: 8px; display: inline-block; }
+.timer-bar { height: 4px; background: rgba(99,102,241,0.2); border-radius: 2px; margin-top: 16px; overflow: hidden; }
+.timer-bar-fill { height: 100%; background: linear-gradient(90deg, #34d399, #6366f1); transition: width 1s linear; }
+/* Toolbar */
+#rdp-toolbar { position: fixed; top: 0; left: 0; right: 0; height: 40px; background: rgba(15,15,30,0.95); display: flex; align-items: center; padding: 0 12px; gap: 8px; z-index: 99999; transform: translateY(-100%); transition: transform 0.3s; border-bottom: 1px solid rgba(34,211,153,0.3); }
+#rdp-toolbar.visible { transform: translateY(0); }
+#rdp-toolbar .tb-btn { background: rgba(34,211,153,0.15); border: 1px solid rgba(34,211,153,0.3); color: #fff; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 6px; transition: background 0.2s; }
+#rdp-toolbar .tb-btn:hover { background: rgba(34,211,153,0.3); }
+#rdp-toolbar .tb-title { font-size: 14px; font-weight: 600; color: #34d399; margin-right: auto; }
+#rdp-toolbar .tb-timer { font-size: 12px; color: #fbbf24; background: rgba(251,191,36,0.1); padding: 2px 10px; border-radius: 4px; }
+#toolbar-toggle { position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 60px; height: 6px; background: rgba(34,211,153,0.5); border-radius: 0 0 6px 6px; cursor: pointer; z-index: 99998; transition: opacity 0.3s; }
+#toolbar-toggle:hover { background: rgba(34,211,153,0.8); height: 8px; }
+#guac-frame { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; border: none; display: none; }
+#guac-frame.with-toolbar { top: 40px; height: calc(100vh - 40px); }
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="page-center" id="loading-screen">
+    <div class="card">
+        <div class="spinner"></div>
+        <h2>Validating Access Link...</h2>
+        <p>Please wait while we verify your access permissions</p>
+    </div>
+</div>
+
+<div class="page-center hidden" id="error-screen">
+    <div class="card">
+        <div class="error-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        </div>
+        <h2 id="error-title">Access Denied</h2>
+        <p id="error-message">This link is invalid or has expired.</p>
+        <button class="btn btn-ghost" onclick="window.close()" style="margin-top:16px;">Close</button>
+    </div>
+</div>
+
+<div class="page-center hidden" id="ready-screen">
+    <div class="card">
+        <div class="success-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <h2>Remote Access Ready</h2>
+        <p>You have been granted temporary access to this device.</p>
+        <div style="margin: 16px 0; text-align: left;">
+            <div class="info-row"><span class="info-label">Device</span><span class="info-value" id="info-device">-</span></div>
+            <div class="info-row"><span class="info-label">Time Remaining</span><span class="info-value" id="info-time">-</span></div>
+            <div class="info-row"><span class="info-label">Expires At</span><span class="info-value" id="info-expiry">-</span></div>
+        </div>
+        <div class="timer-bar"><div class="timer-bar-fill" id="timer-bar-fill" style="width:100%;"></div></div>
+        <button class="btn btn-primary" onclick="startConnection()" style="margin-top:20px; width:100%;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:6px;"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            Connect Now
+        </button>
+        <p style="font-size:12px;color:#5c6488;margin-top:12px;">Connection will auto-disconnect when the timer expires.</p>
+    </div>
+</div>
+
+<div id="toolbar-toggle" class="hidden" title="Show/hide toolbar"></div>
+<div id="rdp-toolbar" class="hidden">
+    <span class="tb-title" id="tb-conn-name">Shared Access</span>
+    <span class="tb-timer" id="tb-timer">--:--</span>
+    <button class="tb-btn" onclick="toggleFullscreen()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        Fullscreen
+    </button>
+    <button class="tb-btn" onclick="disconnectSession()" style="border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.15);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Disconnect
+    </button>
+    <span style="font-size:11px;color:#5c6488;margin-left:auto;">Shared Access - Hover top edge for toolbar</span>
+</div>
+
+<iframe id="guac-frame" allowfullscreen></iframe>
+
+<script>
+(function() {
+    var SHARE_SECRET = 'nrl-remote-share-2024';
+    var shareData = null;
+    var timerInterval = null;
+
+    function simpleSign(data) {
+        var str = JSON.stringify(data) + SHARE_SECRET;
+        var hash = 0;
+        for (var i = 0; i < str.length; i++) {
+            var c = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + c;
+            hash = hash & hash;
+        }
+        return Math.abs(hash).toString(36);
+    }
+
+    function showScreen(id) {
+        ['loading-screen', 'error-screen', 'ready-screen'].forEach(function(s) {
+            document.getElementById(s).classList.add('hidden');
+        });
+        document.getElementById(id).classList.remove('hidden');
+    }
+
+    function showError(title, msg) {
+        document.getElementById('error-title').textContent = title;
+        document.getElementById('error-message').textContent = msg;
+        showScreen('error-screen');
+    }
+
+    function formatTimeLeft(ms) {
+        var totalSec = Math.floor(ms / 1000);
+        var h = Math.floor(totalSec / 3600);
+        var m = Math.floor((totalSec % 3600) / 60);
+        var s = totalSec % 60;
+        if (h > 0) return h + 'h ' + m + 'm ' + s + 's';
+        if (m > 0) return m + 'm ' + s + 's';
+        return s + 's';
+    }
+
+    function formatTimerShort(ms) {
+        var totalSec = Math.floor(ms / 1000);
+        var h = Math.floor(totalSec / 3600);
+        var m = Math.floor((totalSec % 3600) / 60);
+        var s = totalSec % 60;
+        var pad = function(n) { return n < 10 ? '0' + n : '' + n; };
+        if (h > 0) return pad(h) + ':' + pad(m) + ':' + pad(s);
+        return pad(m) + ':' + pad(s);
+    }
+
+    // Parse and validate
+    try {
+        var params = new URLSearchParams(window.location.search);
+        var code = params.get('code');
+        if (!code) { showError('Invalid Link', 'No access code provided.'); return; }
+
+        var decoded = JSON.parse(atob(decodeURIComponent(code)));
+        if (!decoded.t || !decoded.d || !decoded.e || !decoded.gu || !decoded.gp || !decoded.s) {
+            showError('Invalid Link', 'The access link is malformed.'); return;
+        }
+
+        // Verify signature
+        var expectedSig = simpleSign({ t: decoded.t, d: decoded.d, e: decoded.e });
+        if (decoded.s !== expectedSig) {
+            showError('Invalid Link', 'This link has been tampered with.'); return;
+        }
+
+        // Check expiry
+        var now = Date.now();
+        if (decoded.e < now) {
+            showError('Link Expired', 'This access link has expired. Please request a new link from the administrator.');
+            return;
+        }
+
+        shareData = decoded;
+
+        // Show ready screen with info
+        document.getElementById('info-device').textContent = decoded.n || decoded.d;
+        document.getElementById('info-expiry').textContent = new Date(decoded.e).toLocaleString();
+
+        function updateTimer() {
+            var remaining = shareData.e - Date.now();
+            if (remaining <= 0) {
+                clearInterval(timerInterval);
+                disconnectSession();
+                showError('Session Expired', 'Your access time has ended. The session has been disconnected.');
+                return;
+            }
+            document.getElementById('info-time').textContent = formatTimeLeft(remaining);
+            document.getElementById('tb-timer').textContent = formatTimerShort(remaining);
+            // Update timer bar (approximate based on typical session)
+            var totalDuration = shareData.e - (shareData.e - 7200000); // fallback 2h
+            var pct = Math.min(100, (remaining / (shareData.e - now) * 100));
+            document.getElementById('timer-bar-fill').style.width = pct + '%';
+        }
+        timerInterval = setInterval(updateTimer, 1000);
+        updateTimer();
+
+        showScreen('ready-screen');
+
+    } catch(e) {
+        showError('Invalid Link', 'Could not decode the access link. It may be corrupted.');
+    }
+
+    // Start connection
+    window.startConnection = function() {
+        if (!shareData) return;
+        document.getElementById('ready-screen').classList.add('hidden');
+
+        // Authenticate with Guacamole
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/guacamole/api/tokens', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+                var token = data.authToken;
+                var clientId = btoa(shareData.d + '\x00c\x00default');
+                var guacUrl = '/guacamole/#/client/' + encodeURIComponent(clientId) + '?token=' + encodeURIComponent(token);
+
+                var frame = document.getElementById('guac-frame');
+                frame.src = guacUrl;
+                frame.style.display = 'block';
+
+                // Show toolbar
+                document.getElementById('toolbar-toggle').classList.remove('hidden');
+                document.getElementById('rdp-toolbar').classList.remove('hidden');
+                document.getElementById('tb-conn-name').textContent = (shareData.n || 'Shared Access') + ' (Shared)';
+
+                // Focus iframe for keyboard
+                frame.addEventListener('load', function() { frame.focus(); });
+                setTimeout(function() { frame.focus(); }, 500);
+
+                document.title = 'Shared: ' + (shareData.n || 'Remote Desktop');
+            } else {
+                showError('Connection Failed', 'Could not authenticate with the remote desktop server. Please try again.');
+                showScreen('error-screen');
+            }
+        };
+        xhr.onerror = function() {
+            showError('Connection Error', 'Could not reach the remote desktop server.');
+            showScreen('error-screen');
+        };
+        xhr.send('username=' + encodeURIComponent(shareData.gu) + '&password=' + encodeURIComponent(shareData.gp));
+    };
+
+    // Toolbar
+    var toolbar = document.getElementById('rdp-toolbar');
+    var toggle = document.getElementById('toolbar-toggle');
+    var toolbarVisible = false;
+
+    toggle.addEventListener('click', function() {
+        toolbarVisible = !toolbarVisible;
+        toolbar.classList.toggle('visible', toolbarVisible);
+        document.getElementById('guac-frame').classList.toggle('with-toolbar', toolbarVisible);
+    });
+
+    document.addEventListener('mousemove', function(e) {
+        if (e.clientY < 5 && !toolbarVisible && document.getElementById('guac-frame').style.display === 'block') {
+            toolbarVisible = true;
+            toolbar.classList.add('visible');
+            document.getElementById('guac-frame').classList.add('with-toolbar');
+        }
+    });
+
+    var hideTimer = null;
+    toolbar.addEventListener('mouseleave', function() {
+        hideTimer = setTimeout(function() {
+            toolbarVisible = false;
+            toolbar.classList.remove('visible');
+            document.getElementById('guac-frame').classList.remove('with-toolbar');
+        }, 3000);
+    });
+    toolbar.addEventListener('mouseenter', function() {
+        if (hideTimer) clearTimeout(hideTimer);
+    });
+
+    // Refocus iframe on click/mouseenter
+    document.addEventListener('click', function(e) {
+        if (!toolbar.contains(e.target)) {
+            var frame = document.getElementById('guac-frame');
+            if (frame && frame.style.display === 'block') frame.focus();
+        }
+    });
+    document.getElementById('guac-frame').addEventListener('mouseenter', function() {
+        if (this.style.display === 'block') this.focus();
+    });
+
+    window.toggleFullscreen = function() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(function() {
+                document.getElementById('guac-frame').requestFullscreen().catch(function() {});
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    };
+
+    window.disconnectSession = function() {
+        var frame = document.getElementById('guac-frame');
+        if (frame) { frame.src = 'about:blank'; frame.style.display = 'none'; }
+        document.getElementById('toolbar-toggle').classList.add('hidden');
+        document.getElementById('rdp-toolbar').classList.add('hidden');
+        toolbar.classList.remove('visible');
+        if (timerInterval) clearInterval(timerInterval);
+        showError('Disconnected', 'The remote desktop session has ended.');
+    };
+})();
+</script>
+</body>
+</html>
