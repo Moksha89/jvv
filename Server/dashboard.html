@@ -1579,13 +1579,16 @@
         var creds = Object.assign({}, CLIENT_CREDS, JSON.parse(localStorage.getItem('dashboard-credentials') || '{}'));
         var p = creds[u] || '';
         var guacUrl = GUAC_BASE + '/guac-auth.html?client=' + encodeURIComponent(clientId) + '&name=' + encodeURIComponent(device.name) + '&gu=' + encodeURIComponent(u) + '&gp=' + encodeURIComponent(p);
+        // Open window IMMEDIATELY in user gesture context to avoid popup blockers
+        // Opening inside setTimeout breaks the gesture chain and browsers block the popup
+        var guacWin = window.open(guacUrl, '_blank');
         setTimeout(function() {
             modal.classList.remove('active');
             addLogEntry('connect', 'Connected to ' + device.name);
             addConnectionHistory(device.id, device.name);
             addConnectionTab(device.name, device.id);
             sendNotification('Connected', 'Successfully connected to ' + device.name);
-            var guacWin = window.open(guacUrl, '_blank');
+            // Fallback: if popup was still blocked, navigate current page
             if (!guacWin || guacWin.closed) {
                 window.location.href = guacUrl;
             }
